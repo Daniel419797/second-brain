@@ -5,8 +5,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-COPY requirements.txt pyproject.toml .python-version ./
-RUN python -m pip install --upgrade pip && python -m pip install --no-cache-dir -r requirements.txt
+COPY requirements-api.txt pyproject.toml .python-version ./
+RUN python -m pip install --upgrade pip && python -m pip install --no-cache-dir -r requirements-api.txt
 
 COPY api ./api
 COPY core ./core

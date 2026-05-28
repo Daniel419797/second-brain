@@ -24,6 +24,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 ## Cloud deployment
 
 - Choose Render, Railway, or another host.
+- Deploy the API with `deploy/Dockerfile.api`; it installs `requirements-api.txt` instead of the full local desktop/voice stack.
 - Set `JARVIS_API_PASSWORD` and a strong `JARVIS_API_SECRET` in the platform secret store.
 - Set only provider keys needed by the deployment. Do not upload local `.env`.
 - Configure `DATABASE_URL` and enable `cloud_sync_enabled` only after a real PostgreSQL database is ready.

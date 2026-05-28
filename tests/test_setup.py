@@ -596,6 +596,43 @@ def test_requirements_are_pinned_and_complete():
     assert all("==" in line for line in requirements if line and not line.startswith("#"))
 
 
+def test_api_requirements_are_cloud_safe():
+    requirements = (ROOT / "requirements-api.txt").read_text(encoding="utf-8").splitlines()
+    required = {
+        "anthropic",
+        "fastapi",
+        "PyJWT",
+        "uvicorn",
+        "psycopg[binary]",
+        "python-dotenv",
+        "requests",
+        "websocket-client",
+        "google-auth",
+        "google-auth-oauthlib",
+        "google-api-python-client",
+    }
+    local_only = {
+        "openwakeword",
+        "openai-whisper",
+        "faster-whisper",
+        "sounddevice",
+        "edge-tts",
+        "elevenlabs",
+        "pyttsx3",
+        "pyautogui",
+        "chromadb",
+        "sentence-transformers",
+        "scipy",
+        "plyer",
+        "pytest",
+        "pytest-mock",
+    }
+    seen = {line.split("==")[0] for line in requirements if line and not line.startswith("#")}
+    assert required <= seen
+    assert not (local_only & seen)
+    assert all("==" in line for line in requirements if line and not line.startswith("#"))
+
+
 def test_project_targets_python_314():
     assert (ROOT / ".python-version").read_text(encoding="utf-8").strip() == "3.14.5"
     assert 'requires-python = ">=3.14,<3.15"' in (ROOT / "pyproject.toml").read_text(encoding="utf-8")
