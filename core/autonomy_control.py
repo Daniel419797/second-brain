@@ -30,6 +30,7 @@ REMOTE_WRITE_KEYS = {
 }
 
 DEPLOYMENT_KEYS = {
+    "power_center.agency_deploy",
     "power_center.deployment_commander",
     "power_center.mission_deploy",
     "power_center.release_engine",
@@ -52,6 +53,8 @@ DEFAULT_HARD_STOP_KEYS = {
     "phone_bridge.file_transfer",
     "phone_bridge.register_device",
     "phone_bridge.sms_draft",
+    "power_center.agency_outreach_send",
+    "power_center.agency_payment",
     "power_center.agent_lifecycle",
     "power_center.android_companion",
     "power_center.automation_builder",

@@ -41,7 +41,7 @@ _load_runtime_env()
 
 
 _CORE_MODULES = [
-    "adaptive_attention", "agent_blackboard", "agent_memory", "agent_scheduler", "agent_thought_bus", "agents", "agent_office",
+    "adaptive_attention", "agency_mode", "agent_blackboard", "agent_memory", "agent_scheduler", "agent_thought_bus", "agents", "agent_office",
     "android_companion", "api_auth", "app_apprenticeship", "app_integrations", "app_operators", "app_operator_mastery",
     "app_state_memory", "approval_inbox", "audit_log", "autobiographical_memory", "automation_builder", "autonomous_coding",
     "autonomous_debugger", "autonomous_fix_loop", "autonomous_learning", "autonomous_qa_lab", "autonomous_release_engine",
@@ -481,6 +481,94 @@ class FinanceSubscriptionRequest(BaseModel):
     next_due_at: str = Field(default="", max_length=200)
     currency: str = Field(default="NGN", max_length=20)
     notes: str = Field(default="", max_length=1000)
+
+
+class AgencyLeadSearchRequest(BaseModel):
+    query: str = Field(default="", max_length=1000)
+    niche: str = Field(default="", max_length=200)
+    location: str = Field(default="", max_length=200)
+    limit: int = Field(default=5, ge=1, le=20)
+
+
+class AgencyLeadRequest(BaseModel):
+    name: str = Field(default="", max_length=300)
+    company: str = Field(default="", max_length=300)
+    email: str = Field(default="", max_length=300)
+    website: str = Field(default="", max_length=1000)
+    source_url: str = Field(default="", max_length=1000)
+    niche: str = Field(default="", max_length=200)
+    location: str = Field(default="", max_length=200)
+    need: str = Field(default="", max_length=4000)
+    status: str = Field(default="new", max_length=80)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class AgencyOutreachDraftRequest(BaseModel):
+    lead_id: int
+    channel: str = Field(default="email", max_length=80)
+    service_offer: str = Field(default="", max_length=1000)
+    tone: str = Field(default="professional", max_length=80)
+    portfolio_url: str = Field(default="", max_length=1000)
+    call_to_action: str = Field(default="", max_length=1000)
+
+
+class AgencyIdsRequest(BaseModel):
+    ids: list[int] = Field(default_factory=list)
+    id: int = 0
+    note: str = Field(default="", max_length=1000)
+
+
+class AgencyDocumentRequest(BaseModel):
+    lead_id: int
+    scope: str = Field(default="", max_length=6000)
+    price: float = 0.0
+    currency: str = Field(default="", max_length=20)
+    timeline: str = Field(default="", max_length=1000)
+
+
+class AgencyProjectRequest(BaseModel):
+    lead_id: int = 0
+    name: str = Field(default="", max_length=300)
+    brief: str = Field(default="", max_length=6000)
+    budget: float = 0.0
+    currency: str = Field(default="", max_length=20)
+
+
+class AgencyProjectWorkflowRequest(BaseModel):
+    commit: bool = False
+    push: bool = False
+    deploy: bool = False
+    deploy_command: str = Field(default="", max_length=1000)
+    target_url: str = Field(default="", max_length=1000)
+
+
+class AgencyInvoiceRequest(BaseModel):
+    project_id: int = 0
+    client_name: str = Field(default="", max_length=300)
+    client_email: str = Field(default="", max_length=300)
+    amount: float = 0.0
+    currency: str = Field(default="", max_length=20)
+    due_at: str = Field(default="", max_length=200)
+    line_items: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class AgencyLedgerRequest(BaseModel):
+    kind: str = Field(default="expense", max_length=80)
+    amount: float
+    currency: str = Field(default="", max_length=20)
+    category: str = Field(default="", max_length=160)
+    description: str = Field(default="", max_length=2000)
+    status: str = Field(default="recorded", max_length=80)
+    related_id: int | None = None
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class AgencyPaymentRequest(BaseModel):
+    provider: str = Field(default="", max_length=200)
+    amount: float = 0.0
+    reason: str = Field(default="", max_length=2000)
+    currency: str = Field(default="", max_length=20)
+    note: str = Field(default="", max_length=1000)
 
 
 class PrivateMemoryIndexRequest(BaseModel):
@@ -1791,6 +1879,102 @@ def create_app() -> FastAPI:
     @app.post("/finance/subscriptions")
     def finance_add_subscription(request: FinanceSubscriptionRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
         return personal_finance.add_subscription(request.name, request.amount, cadence=request.cadence, next_due_at=request.next_due_at, currency=request.currency, notes=request.notes)
+
+    @app.get("/agency/status")
+    def agency_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.status()
+
+    @app.get("/agency/leads")
+    def agency_leads(status: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return agency_mode.list_leads(status=status, limit=limit)
+
+    @app.post("/agency/leads/search")
+    def agency_search_leads(request: AgencyLeadSearchRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.search_leads(request.query, niche=request.niche, location=request.location, limit=request.limit)
+
+    @app.post("/agency/leads")
+    def agency_add_lead(request: AgencyLeadRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.add_lead(request.name, company=request.company, email=request.email, website=request.website, source_url=request.source_url, niche=request.niche, location=request.location, need=request.need, status=request.status, metadata=request.metadata)
+
+    @app.post("/agency/leads/score")
+    def agency_score_leads(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.score_all_leads()
+
+    @app.get("/agency/outreach")
+    def agency_outreach(status: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return agency_mode.list_outreach(status=status, limit=limit)
+
+    @app.post("/agency/outreach/draft")
+    def agency_draft_outreach(request: AgencyOutreachDraftRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.draft_outreach(request.lead_id, channel=request.channel, service_offer=request.service_offer, tone=request.tone, portfolio_url=request.portfolio_url, call_to_action=request.call_to_action)
+
+    @app.post("/agency/outreach/approve")
+    def agency_approve_outreach(request: AgencyIdsRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.approve_outreach(request.ids or request.id, note=request.note)
+
+    @app.post("/agency/outreach/send")
+    def agency_send_outreach(request: AgencyIdsRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.send_outreach(request.ids or request.id)
+
+    @app.post("/agency/documents/proposal")
+    def agency_draft_proposal(request: AgencyDocumentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.draft_proposal(request.lead_id, scope=request.scope, price=request.price, currency=request.currency)
+
+    @app.post("/agency/documents/contract")
+    def agency_draft_contract(request: AgencyDocumentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.draft_contract(request.lead_id, scope=request.scope, price=request.price, currency=request.currency)
+
+    @app.post("/agency/documents/project-plan")
+    def agency_draft_project_plan(request: AgencyDocumentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.draft_project_plan(request.lead_id, scope=request.scope, timeline=request.timeline)
+
+    @app.get("/agency/projects")
+    def agency_projects(status: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return agency_mode.list_projects(status=status, limit=limit)
+
+    @app.post("/agency/projects")
+    def agency_start_project(request: AgencyProjectRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.start_client_project(request.lead_id, name=request.name, brief=request.brief, budget=request.budget, currency=request.currency)
+
+    @app.post("/agency/projects/{project_id}/workflow")
+    def agency_project_workflow(project_id: int, request: AgencyProjectWorkflowRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.run_project_workflow(project_id, commit=request.commit, push=request.push, deploy=request.deploy, deploy_command=request.deploy_command, target_url=request.target_url)
+
+    @app.get("/agency/invoices")
+    def agency_invoices(status: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return agency_mode.list_invoices(status=status, limit=limit)
+
+    @app.post("/agency/invoices")
+    def agency_create_invoice(request: AgencyInvoiceRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.create_invoice(request.project_id, client_name=request.client_name, client_email=request.client_email, amount=request.amount, currency=request.currency, due_at=request.due_at, line_items=request.line_items)
+
+    @app.post("/agency/invoices/{invoice_id}/paid")
+    def agency_mark_invoice_paid(invoice_id: int, request: AgencyInvoiceRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.mark_invoice_paid(invoice_id, amount=request.amount)
+
+    @app.get("/agency/ledger")
+    def agency_ledger(kind: str = "", limit: int = 100, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return agency_mode.list_ledger(kind=kind, limit=limit)
+
+    @app.post("/agency/ledger")
+    def agency_record_ledger(request: AgencyLedgerRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.record_ledger(request.kind, request.amount, currency=request.currency, category=request.category, description=request.description, status=request.status, related_id=request.related_id, metadata=request.metadata)
+
+    @app.get("/agency/profit")
+    def agency_profit(currency: str = "", _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.profit_summary(currency=currency)
+
+    @app.post("/agency/payments/recommend")
+    def agency_recommend_payment(request: AgencyPaymentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.recommend_payment(request.provider, request.amount, reason=request.reason, currency=request.currency)
+
+    @app.post("/agency/payments/{recommendation_id}/approve")
+    def agency_approve_payment(recommendation_id: int, request: AgencyPaymentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.approve_payment(recommendation_id, note=request.note)
+
+    @app.post("/agency/payments/{recommendation_id}/trigger")
+    def agency_trigger_payment(recommendation_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.trigger_approved_payment(recommendation_id)
 
     @app.get("/private-memory/summary")
     def private_memory_summary(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -4402,6 +4586,7 @@ def create_app() -> FastAPI:
                 "barge_in_voice_signal",
                 "true_daily_companion_mode",
                 "friday_skill_marketplace",
+                "agency_mode",
                 "personal_finance_helper",
                 "private_embedding_memory",
                 "android_companion_layer",
@@ -5180,6 +5365,7 @@ def _dashboard_snapshot() -> dict[str, Any]:
         "projects": project_memory_status.get("projects", []) if isinstance(project_memory_status, dict) else [],
         "projectMemory": project_memory_status,
         "projectReferences": _snapshot_value(lambda: project_memory.list_reference_images(limit=12), []),
+        "agency": _snapshot_value(agency_mode.status, None),
         "approvals": _snapshot_value(lambda: approval_inbox.items(limit=10), []),
         "approvalSummary": _snapshot_value(lambda: approval_inbox.summary(limit=8), None),
         "thoughts": _snapshot_value(lambda: agent_thought_bus.summary(limit=8), None),
@@ -5306,6 +5492,7 @@ def _task_stream_payload() -> dict[str, Any]:
         "pc_timeline": pc_timeline.summary(),
         "events": event_nervous_system.summary(limit=8),
         "daily_companion": daily_companion.status(),
+        "agency": agency_mode.status(),
         "finance": personal_finance.summary(),
         "project_watchdog": project_watchdog.status(),
         "codebase_standards": codebase_standards.status(),

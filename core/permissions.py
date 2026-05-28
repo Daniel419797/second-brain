@@ -100,6 +100,10 @@ DEFAULT_RULES: list[dict[str, str]] = [
     {"key": "power_center.daily_companion", "label": "Daily companion", "category": "Power Center", "mode": "allow", "description": "Create daily briefings and low-noise check-ins."},
     {"key": "power_center.skill_marketplace", "label": "Skill marketplace", "category": "Power Center", "mode": "allow", "description": "Install, enable, disable, and inspect local skills."},
     {"key": "power_center.personal_finance", "label": "Personal finance helper", "category": "Power Center", "mode": "allow", "description": "Track local expenses, budgets, subscriptions, and affordability organization."},
+    {"key": "power_center.agency_mode", "label": "Friday Agency Mode", "category": "Business", "mode": "allow", "description": "Search leads, score prospects, draft proposals/contracts/project plans, track CRM, projects, invoices, revenue, expenses, and API usage."},
+    {"key": "power_center.agency_deploy", "label": "Agency deployment", "category": "Business", "mode": "ask", "description": "Run configured deploy commands for client projects after release checks."},
+    {"key": "power_center.agency_outreach_send", "label": "Send agency outreach", "category": "Business", "mode": "ask", "description": "Send user-approved cold outreach emails or client messages."},
+    {"key": "power_center.agency_payment", "label": "Agency payment actions", "category": "Business", "mode": "ask", "description": "Approve or trigger recommended API-key/subscription payments after user review."},
     {"key": "power_center.private_memory", "label": "Private embedding memory", "category": "Power Center", "mode": "allow", "description": "Index and search local private memories with local-only embeddings or lexical fallback."},
     {"key": "power_center.android_companion", "label": "Android companion", "category": "Power Center", "mode": "ask", "description": "Use Android companion features such as notification sync, phone voice commands, and ring/call handoffs."},
     {"key": "power_center.project_watchdog", "label": "Project watchdog", "category": "Power Center", "mode": "ask", "description": "Continuously inspect projects for failing tests, stale docs, TODOs, dependencies, and secrets."},
@@ -457,6 +461,28 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             return "power_center.skill_marketplace"
         if action in {"finance_summary", "add_expense", "can_afford"}:
             return "power_center.personal_finance"
+        if action == "agency_project_workflow" and bool(tool_input.get("deploy")):
+            return "power_center.agency_deploy"
+        if action in {
+            "agency_status",
+            "agency_lead_search",
+            "agency_add_lead",
+            "agency_score_leads",
+            "agency_draft_outreach",
+            "agency_draft_proposal",
+            "agency_draft_contract",
+            "agency_project_plan",
+            "agency_start_project",
+            "agency_project_workflow",
+            "agency_invoice",
+            "agency_profit",
+            "agency_approve_outreach",
+        }:
+            return "power_center.agency_mode"
+        if action in {"agency_send_outreach"}:
+            return "power_center.agency_outreach_send"
+        if action in {"agency_recommend_payment", "agency_approve_payment", "agency_trigger_payment"}:
+            return "power_center.agency_payment"
         if action in {"private_memory_summary", "private_memory_search"}:
             return "power_center.private_memory"
         if action in {"android_companion_status"}:
@@ -833,6 +859,8 @@ def set_named_policy(name: str, mode: str) -> list[dict[str, Any]]:
         "skill marketplace": ["power_center.skill_marketplace"],
         "finance": ["power_center.personal_finance"],
         "personal finance": ["power_center.personal_finance"],
+        "agency": ["power_center.agency_mode", "power_center.agency_outreach_send", "power_center.agency_deploy", "power_center.agency_payment"],
+        "agency mode": ["power_center.agency_mode", "power_center.agency_outreach_send", "power_center.agency_deploy", "power_center.agency_payment"],
         "private memory": ["power_center.private_memory"],
         "android companion": ["power_center.android_companion"],
         "project watchdog": ["power_center.project_watchdog"],

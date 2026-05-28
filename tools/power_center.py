@@ -11,6 +11,7 @@ from core import (
     agent_simulation_sandbox,
     agent_scheduler,
     academic_projects,
+    agency_mode,
     app_apprenticeship,
     app_operators,
     app_operator_mastery,
@@ -194,6 +195,51 @@ def execute(inputs: dict[str, Any]) -> str:
             return f"Recorded {item['amount']:.2f} {item['currency']} under {item['category']}."
         if action == "can_afford":
             return personal_finance.can_i_afford(_float(inputs.get("amount"), 0.0), category=str(inputs.get("category") or inputs.get("target") or "general")).get("summary", "Affordability check unavailable.")
+        if action == "agency_status":
+            return agency_mode.status().get("summary", "Agency Mode unavailable.")
+        if action == "agency_lead_search":
+            return agency_mode.search_leads(str(inputs.get("query") or inputs.get("target") or ""), niche=str(inputs.get("niche") or inputs.get("category") or ""), location=str(inputs.get("location") or ""), limit=_int(inputs.get("limit"), 5)).get("summary", "Lead search unavailable.")
+        if action == "agency_add_lead":
+            lead = agency_mode.add_lead(str(inputs.get("name") or inputs.get("company") or inputs.get("target") or ""), company=str(inputs.get("company") or ""), email=str(inputs.get("email") or ""), website=str(inputs.get("website") or ""), niche=str(inputs.get("niche") or ""), need=str(inputs.get("need") or inputs.get("description") or ""))
+            return f"Agency lead #{lead['id']} saved for {lead['company']}."
+        if action == "agency_score_leads":
+            return agency_mode.score_all_leads(limit=_int(inputs.get("limit"), 50)).get("summary", "Lead scoring unavailable.")
+        if action == "agency_draft_outreach":
+            draft = agency_mode.draft_outreach(_int(inputs.get("lead_id") or inputs.get("target"), 0), service_offer=str(inputs.get("service_offer") or inputs.get("description") or ""), tone=str(inputs.get("tone") or "professional"), portfolio_url=str(inputs.get("portfolio_url") or ""), call_to_action=str(inputs.get("call_to_action") or ""))
+            return draft.get("summary", "Outreach draft unavailable.")
+        if action == "agency_approve_outreach":
+            ids = inputs.get("ids") or inputs.get("outreach_ids") or inputs.get("outreach_id") or inputs.get("target") or 0
+            return agency_mode.approve_outreach(ids if isinstance(ids, list) else _int(ids, 0), note=str(inputs.get("note") or inputs.get("reason") or "")).get("summary", "Outreach approval unavailable.")
+        if action == "agency_send_outreach":
+            ids = inputs.get("ids") or inputs.get("outreach_ids") or inputs.get("outreach_id") or inputs.get("target") or 0
+            return agency_mode.send_outreach(ids if isinstance(ids, list) else _int(ids, 0)).get("summary", "Outreach send unavailable.")
+        if action == "agency_draft_proposal":
+            return agency_mode.draft_proposal(_int(inputs.get("lead_id") or inputs.get("target"), 0), scope=str(inputs.get("scope") or inputs.get("description") or ""), price=_float(inputs.get("amount") or inputs.get("price"), 0.0), currency=str(inputs.get("currency") or "")).get("summary", "Proposal draft unavailable.")
+        if action == "agency_draft_contract":
+            return agency_mode.draft_contract(_int(inputs.get("lead_id") or inputs.get("target"), 0), scope=str(inputs.get("scope") or inputs.get("description") or ""), price=_float(inputs.get("amount") or inputs.get("price"), 0.0), currency=str(inputs.get("currency") or "")).get("summary", "Contract draft unavailable.")
+        if action == "agency_project_plan":
+            return agency_mode.draft_project_plan(_int(inputs.get("lead_id") or inputs.get("target"), 0), scope=str(inputs.get("scope") or inputs.get("description") or ""), timeline=str(inputs.get("timeline") or "")).get("summary", "Project plan unavailable.")
+        if action == "agency_start_project":
+            return agency_mode.start_client_project(_int(inputs.get("lead_id"), 0), name=str(inputs.get("name") or inputs.get("title") or inputs.get("target") or ""), brief=str(inputs.get("brief") or inputs.get("description") or inputs.get("content") or ""), budget=_float(inputs.get("amount") or inputs.get("budget"), 0.0), currency=str(inputs.get("currency") or "")).get("summary", "Client project start unavailable.")
+        if action == "agency_project_workflow":
+            return agency_mode.run_project_workflow(
+                _int(inputs.get("project_id") or inputs.get("target"), 0),
+                commit=bool(inputs.get("commit", False)),
+                push=bool(inputs.get("push", False)),
+                deploy=bool(inputs.get("deploy", False)),
+                deploy_command=str(inputs.get("deploy_command") or inputs.get("command") or ""),
+                target_url=str(inputs.get("target_url") or inputs.get("url") or ""),
+            ).get("summary", "Client project workflow unavailable.")
+        if action == "agency_invoice":
+            return agency_mode.create_invoice(_int(inputs.get("project_id"), 0), client_name=str(inputs.get("client_name") or inputs.get("name") or ""), client_email=str(inputs.get("client_email") or inputs.get("email") or ""), amount=_float(inputs.get("amount"), 0.0), currency=str(inputs.get("currency") or "")).get("summary", "Invoice unavailable.")
+        if action == "agency_profit":
+            return agency_mode.profit_summary(currency=str(inputs.get("currency") or "")).get("summary", "Profit summary unavailable.")
+        if action == "agency_recommend_payment":
+            return agency_mode.recommend_payment(str(inputs.get("provider") or inputs.get("target") or ""), _float(inputs.get("amount"), 0.0), reason=str(inputs.get("reason") or inputs.get("description") or ""), currency=str(inputs.get("currency") or "")).get("summary", "Payment recommendation unavailable.")
+        if action == "agency_approve_payment":
+            return agency_mode.approve_payment(_int(inputs.get("recommendation_id") or inputs.get("ledger_id") or inputs.get("target"), 0), note=str(inputs.get("note") or inputs.get("reason") or "")).get("summary", "Payment approval unavailable.")
+        if action == "agency_trigger_payment":
+            return agency_mode.trigger_approved_payment(_int(inputs.get("recommendation_id") or inputs.get("ledger_id") or inputs.get("target"), 0)).get("summary", "Payment trigger unavailable.")
         if action == "private_memory_summary":
             return private_embedding_memory.summary().get("summary", "Private memory unavailable.")
         if action == "private_memory_search":

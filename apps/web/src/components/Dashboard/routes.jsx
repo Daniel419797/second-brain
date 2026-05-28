@@ -3,6 +3,7 @@
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { PageWithIntelligenceRail } from "@/components/Dashboard/PageScaffold";
 import { AgentsView } from "@/components/views/AgentsView";
+import { AgencyView } from "@/components/views/AgencyView";
 import { AndroidView } from "@/components/views/AndroidView";
 import { ApprovalsView } from "@/components/views/ApprovalsView";
 import { ChatView } from "@/components/views/ChatView";
@@ -42,6 +43,10 @@ export function VoiceModeRoute() {
 
 export function AgentsRoute() {
   return <AgentsView />;
+}
+
+export function AgencyRoute() {
+  return <AgencyView />;
 }
 
 export function TasksRoute() {

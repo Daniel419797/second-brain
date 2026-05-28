@@ -82,6 +82,7 @@ Power center layer:
 - `core/model_3d_studio.py` adds a Blender-backed studio pipeline for photorealistic/PBR targets: it generates a `.blend` scene script, uses Cycles/soft lighting/materials when Blender is configured, exports `.blend`/`.glb`/`.obj`/preview renders, and falls back honestly to procedural assets plus setup hints when Blender is not installed.
 - `core/text_to_3d.py` adds real text-to-3D provider backends for Meshy, Tripo, and a configurable local generator command. Studio-quality model requests can now submit provider jobs, poll progress, download generated meshes/textures/previews, then pass the result into Blender for cleanup/export.
 - `core/search_broker.py`, `/search/status`, and `/search/query` expose the dedicated search API layer for dashboard use, agent research, and direct web-search commands without relying on one brittle scraper.
+- `core/agency_mode.py` gives Friday a small-agency operating lane: search and score prospects, draft cold outreach, require single or bulk approval before sends, draft proposals/contracts/project plans, create Desktop client projects, run QA/release/Git workflows, run a configured deploy command when Agency deployment is enabled, generate invoices, track revenue/expenses/API usage/profit, and recommend API-key payments without bypassing human payment approval.
 - `tools/power_center.py`, protected API endpoints, direct commands, and the dashboard Power Center panel expose these features.
 
 Hardening sprint:
@@ -104,6 +105,7 @@ Command center expansion:
 - `core/os_autopilot.py` combines work rhythm, active tasks, goals, and PC timeline hints into a personal operating-system recommendation such as coding/admin/focus mode and what to do next.
 - `core/version_guardian.py` adds preflight risk checks, `.env`/secret protection, config snapshots, rollback notes, and mission-aware backup metadata before risky edits.
 - The dashboard Mission Control area now streams command-center state over `/ws/tasks` and exposes scheduler, build monitor, reliability, model benchmark, deployment, OS autopilot, and version-guardian actions.
+- The dashboard now includes an Agency page backed by `/agency/*` endpoints and `/ws/tasks` summaries for live lead, outreach, project, invoice, and profit state.
 
 Advanced power layer:
 

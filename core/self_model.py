@@ -11,7 +11,7 @@ from core.lazy_imports import lazy_module
 
 
 _MODULES = [
-    "adaptive_attention", "academic_projects", "agent_blackboard", "agent_memory", "agent_thought_bus",
+    "adaptive_attention", "academic_projects", "agency_mode", "agent_blackboard", "agent_memory", "agent_thought_bus",
     "app_state_memory", "autobiographical_memory", "autonomous_debugger", "autonomous_learning",
     "autonomous_qa_lab", "background_agents", "backup_recovery", "browser_extension_bridge",
     "browser_pc_copilot", "calendar_email_assistant", "capability_center", "codebase_standards",
@@ -109,6 +109,7 @@ def module_inventory() -> list[dict[str, Any]]:
         ("research_briefings", "Runs or queues background research briefings and stores reusable findings."),
         ("search_broker", "Dedicated web-search broker with API providers, normalized citations, dedupe, ranking, and short-lived cache."),
         ("academic_projects", "Prepares source-backed final year projects, proposals, research papers, and local Markdown/DOCX/PDF exports."),
+        ("agency_mode", "Runs a small agency pipeline for lead search, prospect scoring, approval-gated outreach, client projects, invoices, profit tracking, and API-cost recommendations."),
         ("git_integration", "Runs guarded Git and GitHub CLI workflows for status, diffs, branches, commits, pushes, pull requests, and issues."),
         ("model_3d", "Generates procedural mesh models and can hand photorealistic/PBR targets to a Blender-backed studio pipeline when Blender is configured."),
         ("text_to_3d", "Provider-backed text-to-3D generation through Meshy, Tripo, or a configured local generator command."),
@@ -251,6 +252,7 @@ def memory_stores(cfg: dict[str, Any] | None = None) -> list[dict[str, Any]]:
         ("event_nervous_system", "Event stream and local watcher state", "data/event_nervous_system.sqlite3"),
         ("barge_in", "Speech interrupt events", "data/barge_in.sqlite3"),
         ("daily_companion", "Daily brief and check-in history", "data/daily_companion.sqlite3"),
+        ("agency_mode", "Leads, outreach drafts, client projects, invoices, ledger, and payment recommendations", "data/agency_mode.sqlite3"),
         ("personal_finance", "Local expenses, budgets, and subscriptions", "data/personal_finance.sqlite3"),
         ("private_embedding_memory", "Private searchable memory chunks", "data/private_embedding_memory.sqlite3"),
         ("android_companion", "Android companion events", "data/android_companion.sqlite3"),
@@ -388,6 +390,7 @@ def access_report(cfg: dict[str, Any] | None = None, *, light: bool = False) -> 
         "event_nervous_system": _safe(lambda: event_nervous_system.summary(limit=3).get("voice_summary"), "Event nervous system unavailable"),
         "private_memory": _safe(lambda: private_embedding_memory.summary().get("summary"), "Private memory unavailable"),
         "privacy_vault": _safe(lambda: privacy_vault.summary().get("summary"), "Privacy vault unavailable"),
+        "agency_mode": _safe(lambda: agency_mode.status().get("summary"), "Agency Mode unavailable"),
         "finance": _safe(lambda: personal_finance.summary().get("summary"), "Finance helper unavailable"),
         "study_companion": _safe(lambda: f"{len(meeting_study_companion.list_sessions(limit=3))} recent study session(s)", "Study companion unavailable"),
         "image_generation": _safe(lambda: image_generation.status().get("setup_hint"), "Image generation unavailable"),

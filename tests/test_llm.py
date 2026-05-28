@@ -82,6 +82,8 @@ def test_power_center_tool_schema_includes_new_powers():
     assert "git_push" in actions
     assert "github_pr_create" in actions
     assert "model3d_create" in actions
+    assert "agency_status" in actions
+    assert "agency_send_outreach" in actions
 
 
 def test_self_update_tool_schema_includes_apply():

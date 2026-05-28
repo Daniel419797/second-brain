@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi.testclient import TestClient
 
 from api import server
-from core import adaptive_attention, agent_blackboard, agent_council, agent_lifecycle, agent_memory, agent_office, agent_quality_manager, agent_scheduler, agent_simulation_sandbox, agent_thought_bus, android_companion, api_auth, app_apprenticeship, app_integrations, app_operators, app_state_memory, autobiographical_memory, autonomous_debugger, autonomous_learning, autonomous_qa_lab, backup_recovery, barge_in, browser_extension_bridge, capability_center, code_change_simulator, command_graph, context_aware_silence, continuity_brain, contextual_workspace, conversation_continuity, daily_companion, decision_memory, deep_project_autopilot, deployment_brain, desktop_tasks, dev_server_copilot, do_not_forget, emotion_tone, emotional_timing, environment_awareness, error_radar, evaluation_lab, event_nervous_system, executive_capabilities, failure_autopsy, focus_protection, goal_regulation, google_workspace, learning_coach, live_workspace_coach, local_file_intelligence, local_voice_brain, long_term_learning, meeting_study_companion, memory_constitution, memory_debate, mission_control, model_benchmark_lab, model_router_brain, notification_center, offline_survival, operating_rhythm, os_autopilot, pc_awareness, pc_timeline, permissions, personal_command_memory, personal_crm, personal_data_timeline, personal_finance, personal_knowledge_vault, personal_life_os, personal_safety_guardian, personal_taste_engine, phone_bridge, phone_mesh, private_embedding_memory, privacy_vault, project_autopilot, project_cto, project_memory, project_watchdog, proactive_guardian, reality_check, refactor_planner, release_manager, reliability_score, research_briefings, sandbox_simulation, self_debugger, self_reflection, self_update, semantic_search, skill_evolution, skill_improvement, skill_library, skill_training_studio, task_contracts, task_queue, test_build_monitor, trust_proof, version_guardian, vision_skill_learning, visual_monitor, voice_reliability, workspace_brain, world_model
+from core import adaptive_attention, agency_mode, agent_blackboard, agent_council, agent_lifecycle, agent_memory, agent_office, agent_quality_manager, agent_scheduler, agent_simulation_sandbox, agent_thought_bus, android_companion, api_auth, app_apprenticeship, app_integrations, app_operators, app_state_memory, autobiographical_memory, autonomous_debugger, autonomous_learning, autonomous_qa_lab, backup_recovery, barge_in, browser_extension_bridge, capability_center, code_change_simulator, command_graph, context_aware_silence, continuity_brain, contextual_workspace, conversation_continuity, daily_companion, decision_memory, deep_project_autopilot, deployment_brain, desktop_tasks, dev_server_copilot, do_not_forget, emotion_tone, emotional_timing, environment_awareness, error_radar, evaluation_lab, event_nervous_system, executive_capabilities, failure_autopsy, focus_protection, goal_regulation, google_workspace, learning_coach, live_workspace_coach, local_file_intelligence, local_voice_brain, long_term_learning, meeting_study_companion, memory_constitution, memory_debate, mission_control, model_benchmark_lab, model_router_brain, notification_center, offline_survival, operating_rhythm, os_autopilot, pc_awareness, pc_timeline, permissions, personal_command_memory, personal_crm, personal_data_timeline, personal_finance, personal_knowledge_vault, personal_life_os, personal_safety_guardian, personal_taste_engine, phone_bridge, phone_mesh, private_embedding_memory, privacy_vault, project_autopilot, project_cto, project_memory, project_watchdog, proactive_guardian, reality_check, refactor_planner, release_manager, reliability_score, research_briefings, sandbox_simulation, self_debugger, self_reflection, self_update, semantic_search, skill_evolution, skill_improvement, skill_library, skill_training_studio, task_contracts, task_queue, test_build_monitor, trust_proof, version_guardian, vision_skill_learning, visual_monitor, voice_reliability, workspace_brain, world_model
 
 
 def _client(monkeypatch, tmp_path):
@@ -48,6 +48,8 @@ def _client(monkeypatch, tmp_path):
     monkeypatch.setattr(barge_in, "DB_PATH", tmp_path / "barge_in.sqlite3")
     monkeypatch.setattr(barge_in, "STOP_FLAG_PATH", tmp_path / "barge_in_stop.flag")
     monkeypatch.setattr(daily_companion, "DB_PATH", tmp_path / "daily_companion.sqlite3")
+    monkeypatch.setattr(agency_mode, "DB_PATH", tmp_path / "agency_mode.sqlite3")
+    monkeypatch.setattr(agency_mode, "config_value", lambda key, default=None: str(tmp_path / "Friday Agency") if key == "agency_workspace_dir" else default)
     monkeypatch.setattr(personal_finance, "DB_PATH", tmp_path / "personal_finance.sqlite3")
     monkeypatch.setattr(private_embedding_memory, "DB_PATH", tmp_path / "private_embedding_memory.sqlite3")
     monkeypatch.setattr(android_companion, "DB_PATH", tmp_path / "android_companion.sqlite3")
@@ -488,6 +490,27 @@ def test_api_exposes_awake_friday_layers(monkeypatch, tmp_path):
     assert route.status_code == 200
     assert simulation.json()["risk_level"] in {"low", "medium", "high"}
     assert route.json()["provider"]
+
+
+def test_api_exposes_agency_mode(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+
+    lead = client.post("/agency/leads", json={"name": "Ada Clinic", "email": "ada@example.test", "need": "Need booking automation."}, headers=headers)
+    score = client.post("/agency/leads/score", headers=headers)
+    draft = client.post("/agency/outreach/draft", json={"lead_id": lead.json()["id"], "service_offer": "booking automation"}, headers=headers)
+    approval = client.post("/agency/outreach/approve", json={"ids": [draft.json()["id"]]}, headers=headers)
+    invoice = client.post("/agency/invoices", json={"client_name": "Ada Clinic", "amount": 250, "currency": "USD"}, headers=headers)
+    profit = client.get("/agency/profit", headers=headers)
+    status = client.get("/agency/status", headers=headers)
+
+    assert lead.status_code == 200
+    assert score.json()["scored"] == 1
+    assert draft.json()["status"] == "draft"
+    assert approval.json()["approved"] == [draft.json()["id"]]
+    assert invoice.json()["amount"] == 250
+    assert profit.status_code == 200
+    assert status.json()["lead_count"] == 1
 
 
 def test_api_exposes_companion_growth_layers(monkeypatch, tmp_path):

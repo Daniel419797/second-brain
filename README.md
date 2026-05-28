@@ -211,6 +211,18 @@ Friday, show self update 3
 Friday, I authorize applying self update 3
 ```
 
+## Agency Mode
+
+Friday can run a guarded small-agency workflow from the dashboard Agency page or through chat/voice power actions:
+
+- Leads: search through configured search providers, add prospects manually, and score by fit.
+- Outreach: draft cold emails/messages, then wait for single or bulk approval before sending.
+- Delivery: create client project folders under the Desktop coding root, queue mission/task work, run QA/release checks, use Git when configured, and run a configured deploy command only when Agency deployment is enabled.
+- Business ops: draft proposals/contracts/project plans, generate invoice Markdown files, and track revenue, expenses, API usage, and profit.
+- Payments: recommend API-key/subscription payments, but payment approval and triggering remain ask-first.
+
+Configure search keys and Gmail credentials in `.env` before relying on live lead discovery or email sends.
+
 ## Brain-Inspired Cognition Layer
 
 Friday now has a local cognition layer that makes it more stateful and self-correcting without pretending to be conscious:

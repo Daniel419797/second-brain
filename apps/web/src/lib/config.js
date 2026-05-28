@@ -10,6 +10,7 @@ export const NAV_ITEMS = [
   ["voice-mode", "Voice Mode", "/voice-mode"],
   ["mission-control", "Mission Control", "/mission-control"],
   ["agents", "Agents", "/agents"],
+  ["agency", "Agency", "/agency"],
   ["governance", "Governance", "/governance"],
   ["tasks", "Tasks", "/tasks"],
   ["approvals", "Approvals", "/approvals"],

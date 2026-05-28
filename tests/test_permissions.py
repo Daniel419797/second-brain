@@ -58,10 +58,13 @@ def test_full_autonomy_preapproves_trusted_project_work(monkeypatch, tmp_path):
     monkeypatch.setattr(autonomy_control, "config_value", fake_config)
 
     decision = permissions.evaluate("power_center", {"action": "task_autopilot", "root": str(tmp_path)})
+    deploy = permissions.evaluate("power_center", {"action": "agency_project_workflow", "deploy": True, "root": str(tmp_path)})
 
     assert decision["allowed"] is True
     assert decision["requires_confirmation"] is False
     assert decision["autonomy_override"] is True
+    assert deploy["allowed"] is True
+    assert deploy["autonomy_override"] is True
 
 
 def test_full_autonomy_does_not_preapprove_untrusted_scope(monkeypatch, tmp_path):
@@ -106,3 +109,18 @@ def test_full_autonomy_keeps_hard_stop_actions_ask_first(monkeypatch, tmp_path):
     assert decision["allowed"] is False
     assert decision["requires_confirmation"] is True
     assert decision["autonomy_hard_stop"] is True
+
+
+def test_agency_outreach_approval_and_send_have_separate_permissions(monkeypatch, tmp_path):
+    isolate_permissions(monkeypatch, tmp_path)
+    monkeypatch.setattr(autonomy_control, "config_value", lambda key, default=None: False if key == "autonomy_control_enabled" else default)
+
+    approve = permissions.evaluate("power_center", {"action": "agency_approve_outreach"})
+    send = permissions.evaluate("power_center", {"action": "agency_send_outreach"})
+    deploy = permissions.evaluate("power_center", {"action": "agency_project_workflow", "deploy": True})
+    payment = permissions.evaluate("power_center", {"action": "agency_trigger_payment"})
+
+    assert approve["allowed"] is True
+    assert send["requires_confirmation"] is True
+    assert deploy["requires_confirmation"] is True
+    assert payment["requires_confirmation"] is True

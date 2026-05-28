@@ -7,6 +7,7 @@ const SNAPSHOT_ENDPOINTS = {
   offices: "/agents/offices",
   missions: "/missions?limit=8",
   missionStatus: "/missions/status",
+  agency: "/agency/status",
   projectMemory: "/project-memory/status",
   projectReferences: "/project-memory/reference-images?limit=12",
   approvals: "/approvals/inbox?limit=10",

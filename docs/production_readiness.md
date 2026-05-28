@@ -20,6 +20,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Photoreal 3D: install Blender and set `model_3d_blender_path` if it is not on PATH.
 - Image generation: run local Stable Diffusion at `STABLE_DIFFUSION_URL`, set Hugging Face image credentials, or explicitly use Pollinations.
 - Google Workspace: set OAuth client credentials and complete the consent flow.
+- Agency Mode: set at least one search provider before relying on lead discovery, configure Gmail app-password credentials before email sends, set `agency_deploy_enabled` plus a safe `agency_default_deploy_command` only after the target host is configured, and keep agency outbound messages, deploys, and API-key payments approval-gated unless full trusted-root autonomy is intentional.
 - Local/API status: verify `/providers/readiness`, `/search/status`, `/images/status`, `/models/3d/status`, and `/text-to-3d/status`.
 
 ## Cloud deployment
@@ -34,6 +35,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Configure `DATABASE_URL` and enable `cloud_sync_enabled` only after a real PostgreSQL database is ready.
 - Verify `/health` over HTTPS.
 - Verify login, refresh token behavior, `/dashboard/snapshot`, `/search/status`, and `/ws/tasks`.
+- Verify `/agency/status`, lead search, outreach approval, invoice generation, and profit reporting with test data before contacting real prospects.
 - Run `python scripts/verify_production.py --url https://your-api-host` with `JARVIS_API_PASSWORD` set locally.
 - Run a backup/restore drill for SQLite stores and cloud PostgreSQL sync data.
 
