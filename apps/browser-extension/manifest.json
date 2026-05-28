@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Friday Local Context Bridge",
+  "version": "0.1.0",
+  "description": "Sends redacted page context, console, network, and DOM action signals to the local Friday API.",
+  "permissions": ["storage", "activeTab", "scripting", "webRequest"],
+  "host_permissions": ["http://127.0.0.1:8000/*", "http://localhost:8000/*", "<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Friday Bridge",
+    "default_popup": "popup.html"
+  }
+}

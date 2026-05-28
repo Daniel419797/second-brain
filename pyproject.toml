@@ -1,0 +1,15 @@
+[project]
+name = "jarvis-personal-ai-agent"
+version = "0.1.0"
+description = "Windows-first personal AI agent modular monolith."
+requires-python = ">=3.14,<3.15"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+  "smoke: fast checks that should run in CI on every change",
+  "slow: long-running tests and broad API sweeps",
+  "integration: tests that exercise API/app integration surfaces",
+]

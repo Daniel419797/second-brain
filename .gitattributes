@@ -1,0 +1,14 @@
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.exe binary
+*.dll binary
+*.bin binary
+*.zip binary
+*.pak binary
+*.dat binary
+*.sqlite3 binary

@@ -1,0 +1,42 @@
+name: Friday CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Install web dependencies
+        run: npm ci
+
+      - name: Repository validation
+        run: python scripts/validate_repo.py
+
+      - name: Python compile smoke
+        run: python -m compileall -q core tools input output jarvis.py scripts
+
+      - name: Fast pytest smoke
+        run: python -m pytest -m "smoke or not slow" -q --maxfail=5
+
+      - name: Web production build
+        run: npm --workspace apps/web run build

@@ -1,0 +1,300 @@
+"use client";
+
+import { AlertTriangle, CheckSquare, Clock3, Filter, MoreHorizontal, Pause, Search, ShieldAlert, X } from "lucide-react";
+import { useState } from "react";
+import { useDashboard } from "@/components/Dashboard/DashboardContext";
+
+const LANES = [
+  { id: "pending", label: "Pending", statuses: ["pending", "scheduled", "blocked"] },
+  { id: "active", label: "Active", statuses: ["active", "running", "in_progress", "in progress"] },
+  { id: "completed", label: "Completed", statuses: ["done", "completed", "failed", "cancelled"] }
+];
+
+export function TasksView() {
+  const { api, data, post } = useDashboard();
+  const tasks = data.tasks || [];
+  const [selected, setSelected] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [detailBusy, setDetailBusy] = useState(false);
+
+  async function openTask(task) {
+    setSelected(task);
+    setDetail(task);
+    if (!api || !task?.id) return;
+    setDetailBusy(true);
+    try {
+      setDetail(await api(`/tasks/${task.id}`));
+    } catch {
+      setDetail(task);
+    } finally {
+      setDetailBusy(false);
+    }
+  }
+
+  async function cancelTask(task) {
+    if (!task?.id) return;
+    await post(`/tasks/${task.id}/cancel`);
+    setSelected(null);
+    setDetail(null);
+  }
+
+  return (
+    <section className="friday-scroll h-full overflow-y-auto overflow-x-hidden bg-friday-bg p-3 text-white" aria-label="Active Operations">
+      <div className="grid max-w-[1000px] gap-4">
+        <header className="flex min-h-10 items-center gap-2">
+          <h1 className="mr-3 text-[18px] font-extrabold">Active Operations</h1>
+          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#cfd9e6]" type="button">
+            <Filter size={12} />
+            Filter
+          </button>
+          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#cfd9e6]" type="button">
+            <ShieldAlert size={12} />
+            Priority
+          </button>
+          <span className="ml-auto font-mono text-[11px] text-friday-muted">{tasks.length} task(s)</span>
+        </header>
+
+        <div className="grid min-w-0 grid-cols-3 gap-4">
+          {LANES.map((lane) => (
+            <TaskLane lane={lane} tasks={tasksForLane(tasks, lane)} key={lane.id} onOpen={openTask} />
+          ))}
+        </div>
+      </div>
+
+      {selected ? (
+        <TaskDetailModal
+          task={detail || selected}
+          busy={detailBusy}
+          onClose={() => {
+            setSelected(null);
+            setDetail(null);
+          }}
+          onCancel={() => cancelTask(detail || selected)}
+        />
+      ) : null}
+    </section>
+  );
+}
+
+function TaskLane({ lane, tasks, onOpen }) {
+  return (
+    <section className="min-w-0">
+      <div className="mb-3 flex items-center gap-2 border-b border-friday-line pb-2">
+        <span className={`h-1.5 w-1.5 rounded-full ${lane.id === "active" ? "bg-friday-accent" : lane.id === "completed" ? "bg-friday-ok" : "bg-[#6b7480]"}`} />
+        <h2 className="font-mono text-[12px] font-bold uppercase tracking-[.08em] text-[#dce7f4]">{lane.label}</h2>
+        <span className="rounded bg-[#303946] px-2 py-0.5 font-mono text-[10px]">{tasks.length}</span>
+        <MoreHorizontal className="ml-auto text-friday-muted" size={15} />
+      </div>
+      <div className="grid gap-3">
+        {tasks.length ? tasks.slice(0, 8).map((task, index) => <TaskCard task={task} key={task.id || `${lane.id}-${index}-${task.title}`} onOpen={() => onOpen(task)} />) : (
+          <div className="grid min-h-[88px] place-items-center border border-friday-line bg-[#10161d] px-3 text-center text-[12px] text-friday-muted">
+            No {lane.label.toLowerCase()} tasks.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function TaskCard({ task, onOpen }) {
+  const contract = task.contract || {};
+  const priority = priorityLabel(task.priority);
+  const progress = Math.max(0, Math.min(100, Number(task.progress_percent || 0)));
+  return (
+    <button className="grid min-h-[116px] min-w-0 gap-3 border border-friday-line bg-gradient-to-b from-[#171d25] to-[#10161d] p-3 text-left transition-colors hover:border-friday-accent" type="button" onClick={onOpen}>
+      <div className="flex min-w-0 items-start gap-2">
+        <PriorityBadge label={priority} />
+        <span className="ml-auto shrink-0 font-mono text-[10px] text-friday-muted">#{task.id}</span>
+      </div>
+      <div className="min-w-0">
+        <h3 className="line-clamp-2 text-[13px] font-extrabold leading-snug">{task.title || "Untitled task"}</h3>
+        <p className="mt-1 truncate text-[11px] text-friday-muted">{contract.risk_level ? `${contract.risk_level} risk` : task.description || "No description"}</p>
+      </div>
+      <div>
+        <div className="mb-1 h-1.5 overflow-hidden bg-[#303946]">
+          <span className="block h-full bg-friday-accent" style={{ width: `${progress}%` }} />
+        </div>
+        <div className="flex items-center gap-2 font-mono text-[10px] text-[#cbd7e6]">
+          <span className="truncate">{task.agent_id || "unassigned"}</span>
+          <span className="ml-auto shrink-0">{task.status || "unknown"}</span>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function TaskDetailModal({ task, busy, onClose, onCancel }) {
+  const contract = task.contract || {};
+  const output = normalizeOutput(task.output);
+  const messages = task.messages || [];
+  const canCancel = !["done", "completed", "cancelled", "failed"].includes(lower(task.status));
+  return (
+    <div className="fixed inset-0 z-50 grid justify-end bg-black/45 p-3" role="dialog" aria-modal="true" aria-label="Task details">
+      <aside className="friday-scroll grid h-full w-[386px] max-w-[calc(100dvw-24px)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-y-auto border border-[#334154] bg-[#111821] shadow-2xl">
+        <header className="border-b border-friday-line p-4">
+          <div className="mb-3 flex items-start gap-2">
+            <PriorityBadge label={priorityLabel(task.priority)} />
+            <StatusBadge label={task.status || "unknown"} />
+            <button className="ml-auto text-[#d6e1ee]" type="button" onClick={onClose} aria-label="Close task details">
+              <X size={18} />
+            </button>
+          </div>
+          <h2 className="text-[18px] font-extrabold leading-tight">{task.title || "Untitled task"}</h2>
+          <p className="mt-2 font-mono text-[11px] text-friday-muted">ID: {task.id || "n/a"} · Updated: {formatTime(task.updated_at)}</p>
+        </header>
+
+        <div className="grid content-start gap-4 p-4">
+          <div className="grid grid-cols-2 gap-3">
+            <InfoBox label="Assigned Agent" value={task.agent_id || "unassigned"} />
+            <InfoBox label="Risk Level" value={contract.risk_level || "not assessed"} warn={["high", "medium"].includes(lower(contract.risk_level))} />
+          </div>
+
+          <DetailSection title="Goal Alignment">
+            <p>{contract.goal || task.description || "No goal/description loaded for this task."}</p>
+          </DetailSection>
+
+          <DetailSection title="Expected Output">
+            <CodeBlock value={contract.expected_output || "No expected output contract loaded."} />
+          </DetailSection>
+
+          <DetailSection title="Actual Output / Evidence">
+            <p>{output || "No task output recorded yet."}</p>
+          </DetailSection>
+
+          <DetailSection title="Success Criteria">
+            <Checklist items={contract.success_criteria || []} satisfied={contract.status === "verified" || contract.satisfied} />
+          </DetailSection>
+
+          <div className="grid grid-cols-2 gap-3">
+            <DetailSection title="Tools Provisioned">
+              <ChipList items={contract.tools_needed || []} empty="No tools listed" />
+            </DetailSection>
+            <DetailSection title="Verification">
+              <ChipList items={[contract.status || "no contract", contract.verification_method || "no method"]} />
+            </DetailSection>
+          </div>
+
+          <DetailSection title="Execution Log">
+            <div className="border border-friday-line bg-[#070c11]">
+              {busy ? <LogLine text="Loading task detail..." /> : null}
+              {messages.length ? messages.slice(-5).map((message) => <LogLine text={`${message.sender || "system"}: ${message.message || ""}`} key={message.id || message.timestamp} />) : (
+                <>
+                  <LogLine text={`Task created: ${formatTime(task.created_at)}`} />
+                  <LogLine text={`Current status: ${task.status || "unknown"}`} />
+                  <LogLine text={`Last update: ${formatTime(task.updated_at)}`} />
+                </>
+              )}
+            </div>
+          </DetailSection>
+        </div>
+
+        <footer className="grid grid-cols-2 gap-3 border-t border-friday-line p-4">
+          <button className="min-h-10 border border-[#c47a6d] bg-[#1b1114] font-mono text-[12px] text-[#ffaaa0] disabled:opacity-40" type="button" disabled={!canCancel} onClick={onCancel}>
+            Halt Execution
+          </button>
+          <a className="grid min-h-10 place-items-center border border-friday-blue bg-friday-blue font-mono text-[12px] text-[#061420]" href="/chat">
+            Intervene
+          </a>
+        </footer>
+      </aside>
+    </div>
+  );
+}
+
+function DetailSection({ title, children }) {
+  return (
+    <section>
+      <h3 className="mb-2 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[#cbd7e6]">{title}</h3>
+      <div className="text-[12px] leading-relaxed text-[#e6edf7]">{children}</div>
+    </section>
+  );
+}
+
+function InfoBox({ label, value, warn }) {
+  return (
+    <div className="min-w-0 border border-friday-line bg-[#151b22] p-3">
+      <span className="block font-mono text-[10px] uppercase tracking-[.08em] text-friday-muted">{label}</span>
+      <strong className={`mt-2 block truncate text-[12px] ${warn ? "text-[#ffb56d]" : "text-friday-accent"}`}>{value}</strong>
+    </div>
+  );
+}
+
+function CodeBlock({ value }) {
+  return <pre className="max-h-[108px] overflow-auto border border-friday-line bg-[#070c11] p-3 font-mono text-[11px] text-[#e6edf7]">{stringify(value)}</pre>;
+}
+
+function Checklist({ items, satisfied }) {
+  if (!items.length) return <p className="text-friday-muted">No success criteria listed.</p>;
+  return (
+    <div className="grid gap-2">
+      {items.map((item, index) => (
+        <label className="flex items-start gap-2 font-mono text-[11px]" key={`${index}-${item}`}>
+          <span className={`mt-0.5 grid h-3.5 w-3.5 shrink-0 place-items-center border ${satisfied ? "border-friday-accent bg-friday-accent text-[#061420]" : "border-friday-line bg-[#10161d]"}`}>
+            {satisfied ? <CheckSquare size={10} /> : null}
+          </span>
+          <span>{item}</span>
+        </label>
+      ))}
+    </div>
+  );
+}
+
+function ChipList({ items, empty }) {
+  const rows = items.filter(Boolean);
+  return (
+    <div className="flex flex-wrap gap-2">
+      {rows.length ? rows.map((item, index) => <span className="max-w-full truncate border border-friday-line bg-[#151b22] px-2 py-1 font-mono text-[10px]" key={`${index}-${item}`}>{item}</span>) : <span className="text-friday-muted">{empty}</span>}
+    </div>
+  );
+}
+
+function LogLine({ text }) {
+  return <p className="border-b border-friday-line px-3 py-2 font-mono text-[11px] text-[#dce6f2] last:border-b-0">[{new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}] {text}</p>;
+}
+
+function PriorityBadge({ label }) {
+  const high = lower(label).includes("high");
+  const medium = lower(label).includes("medium");
+  return <span className={`shrink-0 border px-2 py-1 font-mono text-[10px] uppercase ${high ? "border-[#59323c] bg-[#28171d] text-[#ff9fa7]" : medium ? "border-[#6a4215] bg-[#2a2115] text-[#ffb56d]" : "border-[#415169] bg-[#172235] text-friday-accent"}`}>{label}</span>;
+}
+
+function StatusBadge({ label }) {
+  return <span className="shrink-0 border border-[#31587f] bg-[#122033] px-2 py-1 font-mono text-[10px] uppercase text-friday-accent">{label}</span>;
+}
+
+function tasksForLane(tasks, lane) {
+  return tasks.filter((task) => lane.statuses.includes(lower(task.status)));
+}
+
+function priorityLabel(value) {
+  const number = Number(value || 5);
+  if (number <= 2) return "high priority";
+  if (number <= 5) return "medium";
+  return "low";
+}
+
+function normalizeOutput(output) {
+  if (!output) return "";
+  if (typeof output === "string") return output;
+  return output.summary || output.result || output.message || stringify(output);
+}
+
+function stringify(value) {
+  if (typeof value === "string") return value;
+  try {
+    return JSON.stringify(value, null, 2);
+  } catch {
+    return String(value || "");
+  }
+}
+
+function formatTime(value) {
+  if (!value) return "n/a";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return date.toLocaleString([], { month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+}
+
+function lower(value) {
+  return String(value || "").toLowerCase();
+}

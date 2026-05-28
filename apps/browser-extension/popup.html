@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Friday Bridge</title>
+    <style>
+      body {
+        width: 280px;
+        margin: 0;
+        padding: 12px;
+        font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+        background: #101418;
+        color: #f7fafc;
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        margin: 8px 0 4px;
+      }
+      input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #39434d;
+        background: #171d23;
+        color: #f7fafc;
+        padding: 7px;
+        border-radius: 6px;
+      }
+      button {
+        width: 100%;
+        margin-top: 10px;
+        border: 0;
+        border-radius: 6px;
+        padding: 8px;
+        background: #4f8cff;
+        color: white;
+        font-weight: 700;
+      }
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .hint {
+        color: #9fb0c2;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <input id="enabled" type="checkbox" />
+      <label for="enabled">Enable local Friday context bridge</label>
+    </div>
+    <label for="token">Friday API bearer token</label>
+    <input id="token" type="text" placeholder="Paste dashboard token" />
+    <button id="save">Save</button>
+    <p class="hint">Only redacted page structure is sent to http://127.0.0.1:8000. Passwords, hidden fields, tokens, and query strings are stripped.</p>
+    <script src="popup.js"></script>
+  </body>
+</html>

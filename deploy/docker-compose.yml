@@ -1,0 +1,32 @@
+services:
+  friday-api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.api
+    environment:
+      JARVIS_API_USERNAME: friday
+      JARVIS_API_PASSWORD: ${JARVIS_API_PASSWORD:?set JARVIS_API_PASSWORD}
+      JARVIS_API_SECRET: ${JARVIS_API_SECRET:?set JARVIS_API_SECRET}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - friday-data:/app/data
+    restart: unless-stopped
+
+  friday-web:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.web
+      args:
+        NEXT_PUBLIC_FRIDAY_API_URL: ${NEXT_PUBLIC_FRIDAY_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - friday-api
+    restart: unless-stopped
+
+volumes:
+  friday-data:

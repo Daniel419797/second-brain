@@ -1,0 +1,20 @@
+FROM python:3.14-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements.txt pyproject.toml .python-version ./
+RUN python -m pip install --upgrade pip && python -m pip install --no-cache-dir -r requirements.txt
+
+COPY api ./api
+COPY core ./core
+COPY input ./input
+COPY output ./output
+COPY tools ./tools
+COPY config.json jarvis.py ./
+
+EXPOSE 8000
+
+CMD ["uvicorn", "api.server:app", "--host", "0.0.0.0", "--port", "8000"]

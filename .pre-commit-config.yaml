@@ -1,0 +1,13 @@
+repos:
+  - repo: local
+    hooks:
+      - id: friday-repo-validation
+        name: Friday repo validation
+        entry: python scripts/validate_repo.py
+        language: system
+        pass_filenames: false
+      - id: friday-python-compile
+        name: Friday Python compile smoke
+        entry: python -m compileall -q core tools input output jarvis.py scripts
+        language: system
+        pass_filenames: false

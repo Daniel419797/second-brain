@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: friday-api
+    runtime: docker
+    dockerfilePath: deploy/Dockerfile.api
+    plan: starter
+    envVars:
+      - key: JARVIS_API_USERNAME
+        value: friday
+      - key: JARVIS_API_PASSWORD
+        sync: false
+      - key: JARVIS_API_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+    disk:
+      name: friday-data
+      mountPath: /app/data
+      sizeGB: 1
+
+  - type: web
+    name: friday-web
+    runtime: docker
+    dockerfilePath: deploy/Dockerfile.web
+    plan: starter
+    envVars:
+      - key: NEXT_PUBLIC_FRIDAY_API_URL
+        sync: false

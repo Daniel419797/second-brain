@@ -1,0 +1,22 @@
+{
+  "name": "friday-v2",
+  "private": true,
+  "version": "0.2.0",
+  "workspaces": [
+    "apps/web",
+    "apps/desktop"
+  ],
+  "scripts": {
+    "web:dev": "npm --workspace apps/web run dev",
+    "web:build": "npm --workspace apps/web run build",
+    "desktop:dev": "npm --workspace apps/desktop run dev",
+    "desktop:pack": "npm --workspace apps/desktop run pack",
+    "desktop:dist": "npm --workspace apps/desktop run dist",
+    "desktop:build": "npm --workspace apps/desktop run build"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.14"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "name": "@friday/desktop",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Friday Command Center desktop shell",
+  "author": "Friday",
+  "main": "main.js",
+  "scripts": {
+    "dev": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build": "electron-builder --win nsis"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "42.1.0",
+    "electron-builder": "26.8.1"
+  },
+  "build": {
+    "appId": "com.friday.commandcenter",
+    "productName": "Friday Command Center",
+    "asar": true,
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Friday Command Center"
+    }
+  }
+}
