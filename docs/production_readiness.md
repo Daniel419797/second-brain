@@ -11,6 +11,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Run `npm --workspace apps/web run build`.
 - Confirm `.env` is ignored and `.env.example` contains placeholders only.
 - Confirm `git status --short --ignored` does not show secrets, SQLite stores, model binaries, or build output as tracked candidates.
+- Confirm `FRIDAY_AUTONOMY_MODE` and `FRIDAY_AUTONOMY_TRUSTED_ROOTS` match the machine you want Friday to work on. Full autonomy only auto-approves trusted project scopes; hard-stop actions still ask.
 
 ## Provider readiness
 
@@ -27,6 +28,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Deploy the API with `deploy/Dockerfile.api`; it installs `requirements-api.txt` instead of the full local desktop/voice stack.
 - Set `JARVIS_API_PASSWORD` and a strong `JARVIS_API_SECRET` in the platform secret store.
 - Set `FRIDAY_API_CORS_ORIGINS` on the API service to the exact web dashboard origin, such as `https://your-app.vercel.app`.
+- Set `FRIDAY_AUTONOMY_MODE=full` only on deployments where background workers should act without babysitting inside configured trusted roots.
 - Set `NEXT_PUBLIC_FRIDAY_API_URL` on the web app before building it, because Next.js bakes public env vars into the browser bundle.
 - Set only provider keys needed by the deployment. Do not upload local `.env`.
 - Configure `DATABASE_URL` and enable `cloud_sync_enabled` only after a real PostgreSQL database is ready.

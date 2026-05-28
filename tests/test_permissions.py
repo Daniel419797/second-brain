@@ -1,4 +1,4 @@
-from core import permissions
+from core import autonomy_control, permissions
 
 
 def isolate_permissions(monkeypatch, tmp_path):
@@ -38,3 +38,71 @@ def test_permission_key_groups_mouse_and_desktop_actions(monkeypatch, tmp_path):
 
     assert permissions.key_for_tool("pc_control", {"action": "click"}) == "pc_control.mouse_keyboard"
     assert permissions.key_for_tool("pc_control", {"action": "desktop_task"}) == "pc_control.desktop_task"
+
+
+def test_full_autonomy_preapproves_trusted_project_work(monkeypatch, tmp_path):
+    isolate_permissions(monkeypatch, tmp_path)
+    monkeypatch.delenv("FRIDAY_AUTONOMY_MODE", raising=False)
+    monkeypatch.delenv("FRIDAY_AUTONOMY_TRUSTED_ROOTS", raising=False)
+
+    def fake_config(key, default=None):
+        values = {
+            "autonomy_control_enabled": True,
+            "autonomy_mode": "full",
+            "autonomy_trusted_roots": str(tmp_path),
+            "autonomy_preapprove_local_project_work": True,
+            "autonomy_hard_stop_keys": "",
+        }
+        return values.get(key, default)
+
+    monkeypatch.setattr(autonomy_control, "config_value", fake_config)
+
+    decision = permissions.evaluate("power_center", {"action": "task_autopilot", "root": str(tmp_path)})
+
+    assert decision["allowed"] is True
+    assert decision["requires_confirmation"] is False
+    assert decision["autonomy_override"] is True
+
+
+def test_full_autonomy_does_not_preapprove_untrusted_scope(monkeypatch, tmp_path):
+    isolate_permissions(monkeypatch, tmp_path)
+    outside = tmp_path.parent / "outside"
+
+    def fake_config(key, default=None):
+        values = {
+            "autonomy_control_enabled": True,
+            "autonomy_mode": "full",
+            "autonomy_trusted_roots": str(tmp_path),
+            "autonomy_preapprove_local_project_work": True,
+            "autonomy_hard_stop_keys": "",
+        }
+        return values.get(key, default)
+
+    monkeypatch.setattr(autonomy_control, "config_value", fake_config)
+
+    decision = permissions.evaluate("power_center", {"action": "task_autopilot", "root": str(outside)})
+
+    assert decision["requires_confirmation"] is True
+    assert "autonomy_override" not in decision
+
+
+def test_full_autonomy_keeps_hard_stop_actions_ask_first(monkeypatch, tmp_path):
+    isolate_permissions(monkeypatch, tmp_path)
+    permissions.set_rule("send_email.send_email", "allow")
+
+    def fake_config(key, default=None):
+        values = {
+            "autonomy_control_enabled": True,
+            "autonomy_mode": "full",
+            "autonomy_trusted_roots": str(tmp_path),
+            "autonomy_hard_stop_keys": "send_email.send_email",
+        }
+        return values.get(key, default)
+
+    monkeypatch.setattr(autonomy_control, "config_value", fake_config)
+
+    decision = permissions.evaluate("send_email", {})
+
+    assert decision["allowed"] is False
+    assert decision["requires_confirmation"] is True
+    assert decision["autonomy_hard_stop"] is True

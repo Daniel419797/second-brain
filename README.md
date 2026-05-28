@@ -457,10 +457,13 @@ $env:JARVIS_API_PASSWORD="choose-a-long-password"
 $env:JARVIS_API_SECRET="choose-a-long-random-secret"
 $env:FRIDAY_API_CORS_ORIGINS="https://your-web-domain.example"
 $env:NEXT_PUBLIC_FRIDAY_API_URL="https://your-api-domain.example"
+$env:FRIDAY_AUTONOMY_MODE="full"
 docker compose up -d --build
 ```
 
 For Vercel, set `NEXT_PUBLIC_FRIDAY_API_URL` in the web project's Environment Variables before building. For the API host, set `FRIDAY_API_CORS_ORIGINS` to the exact web origin, for example `https://your-app.vercel.app`, with no trailing slash.
+
+Full autonomy is controlled by `FRIDAY_AUTONOMY_MODE=full` plus `autonomy_trusted_roots` in `config.json` or `FRIDAY_AUTONOMY_TRUSTED_ROOTS`. In full mode, Friday auto-starts its background workers and autonomy supervisor for trusted Desktop/project scopes, while hard-stop actions such as shell commands, destructive file operations, phone calls, messages, secret/privacy access, and security scans still require explicit approval.
 
 Render is simpler because it handles HTTPS and deploys from Git, but an always-on Render Starter web service is more expensive than a tiny VPS. Render's free services are useful for testing, but free instances have limits and are not the best place for an always-on agent.
 

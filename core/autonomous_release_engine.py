@@ -55,20 +55,25 @@ def prepare(root: str | Path = "", *, build_command: str = "", target_url: str =
     build = _build_check(project_root, build_command)
     dependency = _dependency_audit(project_root)
     headers = _headers_check(target_url)
-    rollback = {"strategy": "Use git revert or redeploy previous build; deploy remains blocked until approval.", "root": str(project_root)}
+    deploy_preapproved = _deploy_preapproved(project_root)
+    rollback = {"strategy": "Use git revert or redeploy previous build; deploy is pre-approved by full autonomy policy." if deploy_preapproved else "Use git revert or redeploy previous build; deploy remains blocked until approval.", "root": str(project_root)}
     failed = []
     for label, payload in [("qa", qa), ("watchdog", watchdog), ("build", build), ("dependency", dependency), ("security_headers", headers)]:
         if str(payload.get("status") or "").lower() in {"failed", "error"}:
             failed.append(f"{label}: {payload.get('summary')}")
-    status = "ready_for_approval" if not failed else "needs_fixes"
-    summary = f"Release engineer prepared {project_root.name}: {status}. Deploy is still approval-gated."
+    status = ("ready_for_deploy" if deploy_preapproved else "ready_for_approval") if not failed else "needs_fixes"
+    summary = (
+        f"Release engineer prepared {project_root.name}: {status}. Deploy is pre-approved by full autonomy policy."
+        if deploy_preapproved
+        else f"Release engineer prepared {project_root.name}: {status}. Deploy is still approval-gated."
+    )
     proof = trust_proof.create_report(
         "Autonomous release engineer proof",
         changed=[release.get("summary", "release checklist prepared")],
         tested=[qa.get("summary", "QA check"), build.get("summary", "Build check"), dependency.get("summary", "Dependency audit"), headers.get("summary", "Header check")],
         failed=failed,
         evidence=[watchdog.get("summary", ""), release.get("summary", "")],
-        risks=["Deploy command is not run until explicit approval.", "Security header check needs a live target URL." if not target_url else ""],
+        risks=["Deploy command uses the configured autonomy/approval policy.", "Security header check needs a live target URL." if not target_url else ""],
         confidence=0.82 if not failed else 0.55,
         metadata={"source": "autonomous_release_engine", "release_id": release.get("id")},
     )
@@ -103,6 +108,15 @@ def wipe_all() -> None:
     init_db()
     with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.execute("DELETE FROM release_engine_runs")
+
+
+def _deploy_preapproved(root: Path) -> bool:
+    try:
+        from core import autonomy_control
+
+        return autonomy_control.preapprove_deployments({"root": str(root)})
+    except Exception:
+        return False
 
 
 def _build_check(root: Path, command: str) -> dict[str, Any]:

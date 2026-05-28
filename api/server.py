@@ -12,6 +12,7 @@ import re
 import sys
 import threading
 import time
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -44,7 +45,7 @@ _CORE_MODULES = [
     "android_companion", "api_auth", "app_apprenticeship", "app_integrations", "app_operators", "app_operator_mastery",
     "app_state_memory", "approval_inbox", "audit_log", "autobiographical_memory", "automation_builder", "autonomous_coding",
     "autonomous_debugger", "autonomous_fix_loop", "autonomous_learning", "autonomous_qa_lab", "autonomous_release_engine",
-    "autonomy_engine", "awareness_graph", "background_agents", "backup_recovery", "barge_in", "browser_extension_bridge",
+    "autonomy_control", "autonomy_engine", "awareness_graph", "background_agents", "backup_recovery", "barge_in", "browser_extension_bridge",
     "browser_extension_pro", "browser_pc_copilot", "browser_playwright", "calendar_email_assistant", "capability_center",
     "certainty_brain", "cloud_sync", "cloud_worker_mode", "cognitive_cycle", "competence", "context_aware_silence",
     "context_fusion", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
@@ -1320,8 +1321,17 @@ class FailureAutopsyRequest(BaseModel):
     metadata: dict[str, Any] = Field(default_factory=dict)
 
 
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    _start_api_runtime_services()
+    try:
+        yield
+    finally:
+        _stop_api_runtime_services()
+
+
 def create_app() -> FastAPI:
-    app = FastAPI(title="Friday v2 Local API", version="0.2.0")
+    app = FastAPI(title="Friday v2 Local API", version="0.2.0", lifespan=_lifespan)
     origins = _cors_origins()
     if origins:
         app.add_middleware(
@@ -1331,6 +1341,7 @@ def create_app() -> FastAPI:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+
     from api.routers import register_domain_routers
 
     register_domain_routers(app, sys.modules[__name__])
@@ -5501,6 +5512,54 @@ def _safe_visual_frame_path(source: str, filename: str) -> Path:
     if not str(target).lower().startswith(str(root).lower()):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Visual frame path denied.")
     return target
+
+
+def _start_api_runtime_services() -> None:
+    if _api_runtime_services_disabled():
+        return
+    if not _truthy_config("autonomy_auto_start_api_services", True):
+        return
+    worker_count = int(config_value("autonomy_worker_count", config_value("v2_api_background_worker_count", 3)) or 3)
+    try:
+        background_agents.start_workers(worker_count)
+    except Exception:
+        pass
+    try:
+        autonomy_engine.start_supervisor(worker_count=worker_count)
+    except Exception:
+        pass
+
+
+def _stop_api_runtime_services() -> None:
+    if _api_runtime_services_disabled():
+        return
+    try:
+        autonomy_engine.stop_supervisor()
+    except Exception:
+        pass
+    try:
+        background_agents.stop_workers()
+    except Exception:
+        pass
+
+
+def _api_runtime_services_disabled() -> bool:
+    if any("pytest" in str(arg).lower() for arg in sys.argv):
+        return True
+    raw = os.getenv("FRIDAY_API_RUNTIME_SERVICES", "1").strip().lower()
+    return raw in {"0", "false", "no", "off", "disabled"}
+
+
+def _truthy_config(key: str, default: bool) -> bool:
+    value = config_value(key, default)
+    if isinstance(value, bool):
+        return value
+    text = str(value).strip().lower()
+    if text in {"1", "true", "yes", "on", "enabled"}:
+        return True
+    if text in {"0", "false", "no", "off", "disabled"}:
+        return False
+    return default
 
 
 app = create_app()

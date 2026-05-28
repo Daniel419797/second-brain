@@ -413,7 +413,7 @@ def _handle_tool_block(block: Any, *, user_text: str = "") -> str:
             tool_input["_permission_confirmed"] = True
     else:
         permissions.record_decision(tool_name, tool_input, decision="allowed", mode=permission["mode"], key=permission["key"])
-    if _tool_requires_confirmation(tool_name, tool_input) and not tool_input.get("_permission_confirmed"):
+    if _tool_requires_confirmation(tool_name, tool_input, permission=permission) and not tool_input.get("_permission_confirmed"):
         return _queue_confirmation(
             tool_name,
             tool_input,
@@ -593,9 +593,11 @@ def _reply_failed(reply: str) -> bool:
     )
 
 
-def _tool_requires_confirmation(tool_name: str, tool_input: dict[str, Any]) -> bool:
+def _tool_requires_confirmation(tool_name: str, tool_input: dict[str, Any], permission: dict[str, Any] | None = None) -> bool:
     if tool_name in DESTRUCTIVE:
         return True
+    if permission and permission.get("autonomy_override") and permission.get("mode") == "allow":
+        return False
     if tool_name == "pc_control":
         action = str((tool_input or {}).get("action", "")).lower()
         return action in {"run_command"}
@@ -615,7 +617,7 @@ def _run_tool_with_permissions(tool_name: str, tool_input: dict[str, Any]) -> st
         permissions.record_decision(tool_name, tool_input, decision="approved", mode=permission["mode"], key=permission["key"])
     else:
         permissions.record_decision(tool_name, tool_input, decision="allowed", mode=permission["mode"], key=permission["key"])
-    if _tool_requires_confirmation(tool_name, tool_input) and not tool_input.get("_permission_confirmed"):
+    if _tool_requires_confirmation(tool_name, tool_input, permission=permission) and not tool_input.get("_permission_confirmed"):
         return _queue_confirmation(tool_name, tool_input, {"label": tool_name, "mode": "ask", "key": f"{tool_name}.confirmation"})
     if tool_name == "pc_control":
         tool_fn = pc_control.execute

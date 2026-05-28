@@ -35,6 +35,18 @@ def test_fast_voice_pauses_background_workers_by_default(monkeypatch):
     assert "paused for fast voice" in logs[0][1]
 
 
+def test_start_autonomy_supervisor_uses_runtime_policy(monkeypatch):
+    logs = []
+    calls = []
+    monkeypatch.setattr(jarvis.autonomy_engine, "start_supervisor", lambda: calls.append(True) or {"running": True})
+    monkeypatch.setattr(jarvis, "log", lambda level, message: logs.append((level, message)))
+
+    jarvis._start_autonomy_supervisor(SimpleNamespace(fast_voice=False))
+
+    assert calls == [True]
+    assert "[AUTONOMY]" in logs[0][1]
+
+
 def test_fast_voice_does_not_force_robotic_local_tts_by_default(monkeypatch):
     env = {}
     monkeypatch.setattr(jarvis.os, "environ", env)

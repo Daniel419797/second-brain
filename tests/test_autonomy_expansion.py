@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from core import app_state_memory, autonomous_qa_lab, backup_recovery, browser_extension_bridge, error_radar, mission_control, operating_rhythm, release_manager, semantic_search, task_contracts, task_queue
+from core import app_state_memory, autonomous_qa_lab, autonomy_control, backup_recovery, browser_extension_bridge, error_radar, mission_control, operating_rhythm, release_manager, semantic_search, task_contracts, task_queue
 
 
 def _patch_common(monkeypatch, tmp_path):
@@ -56,6 +56,55 @@ def test_mission_design_preview_gate_holds_implementation_until_approval(monkeyp
 
     assert approved["design_preview"]["approved"] is True
     assert implementation["scheduled_at"] == ""
+
+
+def test_full_autonomy_mission_skips_design_and_deploy_approvals(monkeypatch, tmp_path):
+    _patch_common(monkeypatch, tmp_path)
+    root = tmp_path / "repo"
+    root.mkdir()
+
+    def fake_config(key, default=None):
+        values = {
+            "autonomy_control_enabled": True,
+            "autonomy_mode": "full",
+            "autonomy_trusted_roots": str(tmp_path),
+            "autonomy_preapprove_deployments": True,
+            "autonomy_preapprove_design_preview": True,
+            "mission_default_authority_mode": "approval_gated",
+            "mission_default_deploy_policy": "approve_step",
+        }
+        return values.get(key, default)
+
+    monkeypatch.setattr(autonomy_control, "config_value", fake_config)
+
+    mission = mission_control.create_mission("Build a polished dashboard UI", root=root)
+
+    assert mission["authority_mode"] == "autonomous"
+    assert mission["deploy_policy"] == "autonomous"
+    assert mission["approvals"] == []
+    assert mission["metadata"]["design_preview_gate"] is False
+
+
+def test_full_autonomy_release_manager_marks_trusted_deploy_preapproved(monkeypatch, tmp_path):
+    _patch_common(monkeypatch, tmp_path)
+    root = tmp_path / "repo"
+    root.mkdir()
+
+    def fake_config(key, default=None):
+        values = {
+            "autonomy_control_enabled": True,
+            "autonomy_mode": "full",
+            "autonomy_trusted_roots": str(tmp_path),
+            "autonomy_preapprove_deployments": True,
+        }
+        return values.get(key, default)
+
+    monkeypatch.setattr(autonomy_control, "config_value", fake_config)
+
+    release = release_manager.prepare_release(root)
+
+    assert release["status"] == "deploy_approved"
+    assert any(item["status"] == "preapproved" for item in release["checklist"])
 
 
 def test_mission_final_proof_requires_qa_evidence(monkeypatch, tmp_path):

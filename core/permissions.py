@@ -325,7 +325,7 @@ def evaluate(tool_name: str, tool_input: dict[str, Any] | None = None) -> dict[s
     key = key_for_tool(tool_name, tool_input)
     rule = get_rule(key)
     mode = _normalize_mode(str(rule.get("mode") or "ask"))
-    return {
+    decision = {
         "key": key,
         "mode": mode,
         "label": rule.get("label") or key,
@@ -336,6 +336,16 @@ def evaluate(tool_name: str, tool_input: dict[str, Any] | None = None) -> dict[s
         "requires_confirmation": mode == "ask",
         "blocked": mode == "block",
     }
+    try:
+        from core import autonomy_control
+
+        override = autonomy_control.override_decision(tool_name, tool_input, key=key, mode=mode)
+    except Exception:
+        override = None
+    if override:
+        decision["original_mode"] = mode
+        decision.update(override)
+    return decision
 
 
 def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> str:

@@ -31,7 +31,7 @@ except Exception:  # pragma: no cover - optional in scaffold tests
             os.environ.setdefault(key.strip(), value.strip())
         return True
 
-from core import adaptive_attention, background_agents, barge_in, cloud_sync, cognitive_cycle, consolidation, daily_companion, event_nervous_system, learning_scheduler, memory, orchestrator, project_watchdog, proactive_guardian, proactive_speech
+from core import adaptive_attention, autonomy_engine, background_agents, barge_in, cloud_sync, cognitive_cycle, consolidation, daily_companion, event_nervous_system, learning_scheduler, memory, orchestrator, project_watchdog, proactive_guardian, proactive_speech
 from core.config import ensure_runtime_dirs, load_config
 from input import speech_to_text as stt
 from input.personal_wake import add_template, clear_templates, load_templates
@@ -137,6 +137,7 @@ def main() -> int:
     _start_cloud_sync_scheduler()
     _seed_learning_tasks()
     _start_background_agents(args)
+    _start_autonomy_supervisor(args)
     _start_awake_services(args)
     _start_proactive_guardian(args)
     if args.api:
@@ -1520,6 +1521,22 @@ def _start_background_agents(args: argparse.Namespace | None = None) -> None:
             log("INFO", f"[AGENTS] background_workers={count}")
     except Exception as exc:
         log("WARNING", f"[AGENTS] background workers unavailable ({exc})")
+
+
+def _start_autonomy_supervisor(args: argparse.Namespace | None = None) -> None:
+    try:
+        if (
+            args is not None
+            and getattr(args, "fast_voice", False)
+            and not bool(load_config().get("autonomy_supervisor_in_fast_voice", True))
+        ):
+            log("INFO", "[AUTONOMY] supervisor paused for fast voice.")
+            return
+        state = autonomy_engine.start_supervisor()
+        if state.get("running"):
+            log("INFO", "[AUTONOMY] supervisor started")
+    except Exception as exc:
+        log("WARNING", f"[AUTONOMY] supervisor unavailable ({exc})")
 
 
 def _start_proactive_speech(args: argparse.Namespace | None, *, voice_enabled: bool, speak_replies: bool) -> None:

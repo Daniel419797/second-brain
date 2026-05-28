@@ -10,7 +10,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-from core import backup_recovery, notification_center, task_contracts, task_queue
+from core import autonomy_control, backup_recovery, notification_center, task_contracts, task_queue
 from core.config import DATA_DIR, ROOT_DIR, config_value, ensure_runtime_dirs, resolve_coding_root
 
 DB_PATH = DATA_DIR / "mission_control.sqlite3"
@@ -181,24 +181,34 @@ def create_mission(
     priority: int = 2,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Create a deterministic, approval-gated long mission with phase tasks."""
+    """Create a deterministic long mission with phase tasks and configured autonomy gates."""
 
     init_db()
     clean_goal = _clean(goal) or "Untitled mission"
     mission_type = _normalize_type(mission_type or _infer_type(clean_goal))
+    explicit_authority_mode = bool(_clean(authority_mode))
+    explicit_deploy_policy = bool(_clean(deploy_policy))
     authority_mode = _clean(authority_mode or str(config_value("mission_default_authority_mode", "approval_gated"))) or "approval_gated"
     deploy_policy = _clean(deploy_policy or str(config_value("mission_default_deploy_policy", "approve_step"))) or "approve_step"
     mission_root = resolve_coding_root(root) if mission_type == "project_builder" else _safe_root(root)
+    autonomous_scope = autonomy_control.full_autonomy_for_scope({"root": str(mission_root)})
+    if autonomous_scope and not explicit_authority_mode:
+        authority_mode = "autonomous"
+    if autonomous_scope and not explicit_deploy_policy and autonomy_control.preapprove_deployments({"root": str(mission_root)}):
+        deploy_policy = "autonomous"
     now = _now()
     meta = dict(metadata or {})
-    design_preview_gate = _requires_design_preview_gate(clean_goal, mission_type, meta)
+    design_preview_gate = _requires_design_preview_gate(clean_goal, mission_type, meta) and not autonomy_control.preapprove_design_preview({"root": str(mission_root)})
+    deployments_require_approval = deploy_policy == "approve_step" and not autonomy_control.preapprove_deployments({"root": str(mission_root)})
     meta.update(
         {
             "channels": sorted(MISSION_CHANNELS),
             "non_interrupting_work_mode": True,
             "explicit_stop_required": True,
-            "deployments_require_approval": True,
+            "deployments_require_approval": deployments_require_approval,
             "design_preview_gate": design_preview_gate,
+            "autonomy_mode": autonomy_control.mode(),
+            "autonomous_scope": autonomous_scope,
         }
     )
     task_ids: dict[str, int] = {}
@@ -230,7 +240,7 @@ def create_mission(
                 mission_root,
                 mission_type,
                 priority + index,
-                hold_until_released=phase["name"] == "design_preview_approval" or (design_preview_gate and phase["name"] in DESIGN_GATED_PHASES),
+                hold_until_released=index > 1,
             )
             task_ids[phase["name"]] = task_id
             conn.execute(
@@ -256,7 +266,7 @@ def create_mission(
             "background_mission",
             "created",
             "Mission created",
-            "Friday created phase tasks, contracts, approval gates, and evidence tracking.",
+            "Friday created phase tasks, contracts, evidence tracking, and the configured autonomy gates.",
             {"task_ids": task_ids, "mission_type": mission_type},
         )
         _insert_evidence_conn(
@@ -265,10 +275,10 @@ def create_mission(
             "intake",
             "mission_control",
             "Mission contract",
-            "Mission uses fixed phases, approval-gated deployment, and final proof requirements.",
+            "Mission uses fixed phases, configured autonomy/approval policy, and final proof requirements.",
             {"goal": clean_goal, "authority_mode": authority_mode, "deploy_policy": deploy_policy},
         )
-        if deploy_policy == "approve_step":
+        if deployments_require_approval:
             _insert_approval_conn(
                 conn,
                 mission_id,

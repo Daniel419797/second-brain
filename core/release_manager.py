@@ -51,19 +51,26 @@ def prepare_release(root: str | Path = "", *, mission_id: int | None = None, ver
     init_db()
     project_root = _safe_root(root)
     version = _clean(version) or _detect_version(project_root)
-    checklist = _checklist(project_root)
-    risks = _risks(project_root, mission_id=mission_id)
+    deploy_preapproved = _deploy_preapproved(project_root)
+    checklist = _checklist(project_root, deploy_preapproved=deploy_preapproved)
+    risks = _risks(project_root, mission_id=mission_id, deploy_preapproved=deploy_preapproved)
     rollback = _rollback(project_root)
     changelog = _changelog(project_root, mission_id=mission_id)
-    summary = f"Release plan ready for {project_root.name} {version}. Deploy remains approval-gated."
+    status = "deploy_approved" if deploy_preapproved else "pending_approval"
+    approved_at = _now() if deploy_preapproved else ""
+    summary = (
+        f"Release plan ready for {project_root.name} {version}. Deploy is pre-approved by full autonomy policy."
+        if deploy_preapproved
+        else f"Release plan ready for {project_root.name} {version}. Deploy remains approval-gated."
+    )
     with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.execute(
             """
             INSERT INTO release_runs(timestamp, updated_at, root, mission_id, status, version, summary, changelog, checklist_json, risks_json, rollback_json, approved_at)
-            VALUES (?, ?, ?, ?, 'pending_approval', ?, ?, ?, ?, ?, ?, '')
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (_now(), _now(), str(project_root), int(mission_id) if mission_id else None, version, summary, changelog, _json_dumps(checklist), _json_dumps(risks), _json_dumps(rollback)),
+            (_now(), _now(), str(project_root), int(mission_id) if mission_id else None, status, version, summary, changelog, _json_dumps(checklist), _json_dumps(risks), _json_dumps(rollback), approved_at),
         )
         row = conn.execute("SELECT * FROM release_runs WHERE id=?", (int(cursor.lastrowid),)).fetchone()
     report = _row(row)
@@ -144,7 +151,7 @@ def _detect_version(root: Path) -> str:
     return "0.1.0"
 
 
-def _checklist(root: Path) -> list[dict[str, Any]]:
+def _checklist(root: Path, *, deploy_preapproved: bool = False) -> list[dict[str, Any]]:
     has_package = (root / "package.json").exists()
     has_tests = (root / "tests").exists() or any(root.glob("**/*.test.*")) or any(root.glob("**/*_test.py"))
     has_docs = (root / "README.md").exists() or (root / "docs").exists()
@@ -155,17 +162,31 @@ def _checklist(root: Path) -> list[dict[str, Any]]:
         {"item": "Docs updated", "status": "pending" if has_docs else "needs_docs"},
         {"item": "Secrets scan clean", "status": "pending"},
         {"item": "Rollback plan reviewed", "status": "pending"},
-        {"item": "Deploy approved by user", "status": "blocked_until_approval"},
+        {"item": "Deploy approval policy satisfied", "status": "preapproved" if deploy_preapproved else "blocked_until_approval"},
     ]
 
 
-def _risks(root: Path, mission_id: int | None) -> list[dict[str, str]]:
-    risks = [{"risk": "Deployment changes production state.", "mitigation": "Require explicit approve-deploy action before any deploy command."}]
+def _risks(root: Path, mission_id: int | None, *, deploy_preapproved: bool = False) -> list[dict[str, str]]:
+    risks = [
+        {
+            "risk": "Deployment changes production state.",
+            "mitigation": "Full autonomy pre-approval applies only to trusted scopes." if deploy_preapproved else "Require explicit approve-deploy action before any deploy command.",
+        }
+    ]
     if not (root / ".git").exists():
         risks.append({"risk": "No Git repository detected.", "mitigation": "Create a backup/snapshot before changing files."})
     if mission_id:
         risks.append({"risk": "Mission may still have blockers.", "mitigation": f"Check Mission #{mission_id} blockers before deploy."})
     return risks
+
+
+def _deploy_preapproved(root: Path) -> bool:
+    try:
+        from core import autonomy_control
+
+        return autonomy_control.preapprove_deployments({"root": str(root)})
+    except Exception:
+        return False
 
 
 def _rollback(root: Path) -> dict[str, Any]:

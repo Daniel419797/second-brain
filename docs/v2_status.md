@@ -120,7 +120,9 @@ Advanced power layer:
 
 Autonomy brain expansion:
 
+- `core/autonomy_control.py` centralizes autonomy policy. `autonomy_mode=full` pre-approves trusted Desktop/project coding, Git, release, deployment, and self-update workflows while keeping hard-stop actions approval-gated.
 - `core/autonomy_engine.py` adds a realtime choose-act-verify loop: detect the current goal, choose a tool/agent, run one safe step, verify evidence, retry if incomplete, and escalate to the approval inbox when blocked.
+- The autonomy engine now has an always-on supervisor that can start background workers, refresh task autopilot and missions, continue active autonomy runs, and start low-risk autonomy passes when trusted work is queued.
 - `core/certainty_brain.py` tracks what Friday knows, guesses, lacks evidence for, and should reconfirm later, so answers can expose confidence and missing proof instead of pretending.
 - `core/vision_skill_learning.py` stores learned UI patterns such as app toolbars, deploy buttons, expired-login modals, crash screens, DOM anchors, accessibility labels, and recovery hints.
 - `core/personal_automation_daemon.py` evaluates background automations from environment, battery, project, test, and phone signals while keeping action execution permission-gated.
@@ -214,9 +216,10 @@ Executive autonomy layer:
 - The Trust Meter and Privacy Firewall expose confidence, risk, evidence, fallback plan, private-data triggers, and approval requirements before Friday touches sensitive data, deployments, code edits, security scans, or money-adjacent workflows.
 - The dashboard includes an Executive Autonomy panel, and `/ws/tasks` streams its latest summary so memory-review counts, autopilot runs, recorded skills, personality profile, learning, and relationship prompts update live.
 
-Approval-gated mission autonomy layer:
+Mission autonomy layer:
 
-- `core/mission_control.py` adds SQLite-backed mission runs, deterministic phases, events, evidence, blockers, approvals, desktop locks, pause/resume/stop controls, deploy approval gates, and final-proof enforcement.
+- `core/mission_control.py` adds SQLite-backed mission runs, deterministic phases, events, evidence, blockers, approvals, desktop locks, pause/resume/stop controls, deploy approval gates when configured, and final-proof enforcement.
+- In full autonomy mode, trusted project missions skip design-preview and deploy approval gates by default, but still retain pause/resume/stop controls and final QA proof requirements.
 - Long missions use fixed phases: intake, research, architecture, design, implementation, autonomous QA, documentation, release prep, deployment approval, deployment/runbook, and final proof.
 - Non-interrupting work mode separates conversation, background missions, PC control, agent questions, and urgent alerts. Voice/chat status checks do not cancel missions; explicit pause/stop commands do.
 - `core/autonomous_qa_lab.py` records QA evidence for test discovery, optional test execution, docs, project health, dependency/security hints, performance smoke checks, accessibility checklist, and secret scans before a mission can claim completion.

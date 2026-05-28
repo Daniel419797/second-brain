@@ -9,16 +9,20 @@ from core import (
     app_apprenticeship,
     autonomous_qa_lab,
     autonomous_release_engine,
+    autonomy_control,
     autonomy_engine,
+    background_agents,
     browser_extension_bridge,
     certainty_brain,
     device_command_mesh,
     decision_memory,
     evaluation_lab,
+    executive_capabilities,
     learning_coach,
     learning_roadmap,
     live_workspace_coach,
     memory_debate,
+    mission_control,
     notification_center,
     notification_intelligence,
     focus_protection,
@@ -87,6 +91,7 @@ def _patch_common(monkeypatch, tmp_path):
     monkeypatch.setattr(android_companion, "FILE_DIR", tmp_path / "android_files")
     monkeypatch.setattr(project_memory.workspace_brain, "analyze_project", lambda root: {"summary": "Repo has a Python app.", "architecture": "simple"})
     monkeypatch.setattr(project_watchdog, "run_once", lambda root="", notify=True: {"summary": "Project watchdog checked repo.", "status": "ok"})
+    monkeypatch.setattr(autonomous_release_engine.test_build_monitor, "run_check", lambda root, command, kind="", create_proof=False: {"status": "passed", "summary": f"{kind or 'build'} skipped in test."})
 
 
 def _headers(monkeypatch, tmp_path):
@@ -166,3 +171,32 @@ def test_autonomy_brain_api_endpoints(monkeypatch, tmp_path):
     assert "autonomy_engine" in stream
     assert "certainty_brain" in stream
     assert "release_engine" in stream
+
+
+def test_autonomy_supervisor_starts_workers_and_refreshes(monkeypatch, tmp_path):
+    _patch_common(monkeypatch, tmp_path)
+    started = []
+
+    def fake_config(key, default=None):
+        values = {
+            "autonomy_control_enabled": True,
+            "autonomy_mode": "full",
+            "autonomy_trusted_roots": str(tmp_path),
+            "autonomy_start_background_workers": True,
+            "autonomy_worker_count": 2,
+            "autonomy_supervisor_start_runs": False,
+            "autonomy_supervisor_tick_max_steps": 1,
+        }
+        return values.get(key, default)
+
+    monkeypatch.setattr(autonomy_control, "config_value", fake_config)
+    monkeypatch.setattr(autonomy_engine, "config_value", fake_config)
+    monkeypatch.setattr(background_agents, "start_workers", lambda count=None: started.append(count) or 2)
+    monkeypatch.setattr(mission_control, "refresh_mission", lambda mission_id=None: {"missions": [], "summary": "No missions."})
+    monkeypatch.setattr(executive_capabilities, "refresh_task_autopilot", lambda: {"summary": "Autopilot refreshed."})
+
+    state = autonomy_engine.supervisor_tick(worker_count=2)
+
+    assert started == [2]
+    assert state["workers"] == 2
+    assert "supervisor" in autonomy_engine.status()

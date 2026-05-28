@@ -13,6 +13,12 @@ services:
         generateValue: true
       - key: FRIDAY_API_CORS_ORIGINS
         sync: false
+      - key: FRIDAY_AUTONOMY_MODE
+        value: full
+      - key: FRIDAY_AUTONOMY_TRUSTED_ROOTS
+        value: Desktop
+      - key: FRIDAY_API_RUNTIME_SERVICES
+        value: "1"
       - key: FRIDAY_PRODUCTION_URL
         sync: false
       - key: DATABASE_URL
