@@ -20,7 +20,16 @@ from core.config import DATA_DIR, config_value, ensure_runtime_dirs
 
 DB_PATH = DATA_DIR / "cloud_worker_mode.sqlite3"
 _LOCK = threading.Lock()
-SAFE_JOB_TYPES = {"research", "long_tests", "deployment_check", "document_indexing", "scheduled_mission"}
+SAFE_JOB_TYPES = {
+    "browser_task",
+    "deployment_check",
+    "document_generation",
+    "document_indexing",
+    "long_tests",
+    "model_3d_generation",
+    "research",
+    "scheduled_mission",
+}
 
 
 def init_db(path: Path | None = None) -> None:
@@ -136,10 +145,13 @@ def _provider() -> str:
 
 def _agent_for(job_type: str) -> str:
     return {
+        "browser_task": "project_manager",
         "research": "research_analyst",
         "long_tests": "qa_engineer",
         "deployment_check": "senior_developer",
+        "document_generation": "proposal_writer",
         "document_indexing": "research_analyst",
+        "model_3d_generation": "ui_ux_designer",
         "scheduled_mission": "project_manager",
     }.get(job_type, "research_analyst")
 

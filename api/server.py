@@ -51,7 +51,7 @@ _CORE_MODULES = [
     "context_fusion", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
     "decision_memory", "deep_project_autopilot", "deployment_brain", "desktop_tasks", "desktop_vision", "device_command_mesh",
     "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
-    "executive_capabilities", "focus_protection", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
+    "executive_capabilities", "focus_protection", "friday_gateway", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
     "identity", "image_generation", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
     "live_workspace_coach", "local_ai_search", "local_file_intelligence", "local_voice_brain", "llm", "long_term_learning",
     "meeting_study_companion", "memory_debate", "mission_control", "model_3d", "model_3d_studio",
@@ -256,6 +256,45 @@ class SkillInstallRequest(BaseModel):
 
 class SkillToggleRequest(BaseModel):
     enabled: bool = True
+
+
+class SkillPolicyRequest(BaseModel):
+    permissions: list[str] | None = None
+    secret_envs: list[str] | None = None
+    trust_level: str = Field(default="", max_length=80)
+    agent_allowlist: list[str] | None = None
+    verified: bool | None = None
+    sandboxed: bool | None = None
+
+
+class GatewayConnectorRequest(BaseModel):
+    enabled: bool | None = None
+    mode: str = Field(default="", max_length=80)
+    trust_level: str = Field(default="", max_length=80)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class GatewayEventRequest(BaseModel):
+    connector: str = Field(default="web", max_length=120)
+    event_type: str = Field(default="message", max_length=120)
+    title: str = Field(default="", max_length=300)
+    content: str = Field(default="", max_length=10000)
+    actor: str = Field(default="", max_length=200)
+    source: str = Field(default="api", max_length=120)
+    payload: dict[str, Any] = Field(default_factory=dict)
+    route: bool = True
+
+
+class GatewayMemoryRequest(BaseModel):
+    kind: str = Field(default="reusable_decision", max_length=120)
+    title: str = Field(min_length=1, max_length=300)
+    content: str = Field(default="", max_length=10000)
+    confidence: float = Field(default=0.8, ge=0.0, le=1.0)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class GatewayEmergencyStopRequest(BaseModel):
+    reason: str = Field(default="", max_length=1000)
 
 
 class WorkspaceQuestionRequest(BaseModel):
@@ -569,6 +608,12 @@ class AgencyPaymentRequest(BaseModel):
     reason: str = Field(default="", max_length=2000)
     currency: str = Field(default="", max_length=20)
     note: str = Field(default="", max_length=1000)
+
+
+class AgencyBusinessLayerRequest(BaseModel):
+    business_name: str = Field(default="Friday Agency", max_length=200)
+    tagline: str = Field(default="", max_length=500)
+    owner_email: str = Field(default="", max_length=300)
 
 
 class PrivateMemoryIndexRequest(BaseModel):
@@ -1975,6 +2020,69 @@ def create_app() -> FastAPI:
     @app.post("/agency/payments/{recommendation_id}/trigger")
     def agency_trigger_payment(recommendation_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
         return agency_mode.trigger_approved_payment(recommendation_id)
+
+    @app.get("/agency/pipeline")
+    def agency_pipeline(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.pipeline_summary()
+
+    @app.get("/agency/api-budget")
+    def agency_api_budget(currency: str = "", _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.api_budget_status(currency=currency)
+
+    @app.post("/agency/business-layer/generate")
+    def agency_generate_business_layer(request: AgencyBusinessLayerRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return agency_mode.generate_business_layer(business_name=request.business_name, tagline=request.tagline, owner_email=request.owner_email)
+
+    @app.get("/gateway/status")
+    def gateway_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_gateway.status()
+
+    @app.get("/gateway/connectors")
+    def gateway_connectors(_user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return friday_gateway.connector_status()
+
+    @app.post("/gateway/connectors/{connector}/configure")
+    def gateway_configure_connector(connector: str, request: GatewayConnectorRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return friday_gateway.configure_connector(connector, enabled=request.enabled, mode=request.mode, trust_level=request.trust_level, metadata=request.metadata)
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    @app.get("/gateway/events")
+    def gateway_events(connector: str = "", event_type: str = "", status: str = "", status_filter: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return friday_gateway.list_events(connector=connector, event_type=event_type, status=status or status_filter, limit=limit)
+
+    @app.post("/gateway/events")
+    def gateway_ingest_event(request: GatewayEventRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return friday_gateway.ingest_event(
+                request.connector,
+                request.event_type,
+                request.title,
+                request.content,
+                actor=request.actor,
+                source=request.source,
+                payload=request.payload,
+                route=request.route,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    @app.get("/gateway/business-memory")
+    def gateway_business_memory(limit: int = 30, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_gateway.business_memory(limit=limit)
+
+    @app.post("/gateway/business-memory")
+    def gateway_remember_business(request: GatewayMemoryRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_gateway.remember_business_context(request.kind, request.title, request.content, confidence=request.confidence, metadata=request.metadata)
+
+    @app.get("/control-room/status")
+    def control_room_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_gateway.control_room()
+
+    @app.post("/gateway/emergency-stop")
+    def gateway_emergency_stop(request: GatewayEmergencyStopRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_gateway.emergency_stop(request.reason)
 
     @app.get("/private-memory/summary")
     def private_memory_summary(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -3982,6 +4090,21 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Skill not found.")
         return skill
 
+    @app.post("/memory/skills/{skill_id}/policy")
+    def skills_policy(skill_id: str, request: SkillPolicyRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        skill = skill_library.set_skill_policy(
+            skill_id,
+            permissions=request.permissions,
+            secret_envs=request.secret_envs,
+            trust_level=request.trust_level,
+            agent_allowlist=request.agent_allowlist,
+            verified=request.verified,
+            sandboxed=request.sandboxed,
+        )
+        if not skill:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Skill not found.")
+        return skill
+
     @app.get("/workspace-brain/repos")
     def workspace_brain_repos(root: str = "", _user: str = Depends(require_user)) -> dict[str, Any]:
         return workspace_brain.map_repos(root)
@@ -4305,6 +4428,16 @@ def create_app() -> FastAPI:
             _reliability_dashboard,
             "reliability_stream_interval_seconds",
             10.0,
+        )
+
+    @app.websocket("/ws/control-room")
+    async def control_room_stream(websocket: WebSocket, token: str = "") -> None:
+        await _stream_snapshot_payload(
+            websocket,
+            token,
+            friday_gateway.control_room,
+            "control_room_stream_interval_seconds",
+            2.0,
         )
 
     @app.websocket("/ws/notifications")
@@ -5366,6 +5499,8 @@ def _dashboard_snapshot() -> dict[str, Any]:
         "projectMemory": project_memory_status,
         "projectReferences": _snapshot_value(lambda: project_memory.list_reference_images(limit=12), []),
         "agency": _snapshot_value(agency_mode.status, None),
+        "gateway": _snapshot_value(friday_gateway.status, None),
+        "controlRoom": _snapshot_value(friday_gateway.control_room, None),
         "approvals": _snapshot_value(lambda: approval_inbox.items(limit=10), []),
         "approvalSummary": _snapshot_value(lambda: approval_inbox.summary(limit=8), None),
         "thoughts": _snapshot_value(lambda: agent_thought_bus.summary(limit=8), None),
@@ -5493,6 +5628,8 @@ def _task_stream_payload() -> dict[str, Any]:
         "events": event_nervous_system.summary(limit=8),
         "daily_companion": daily_companion.status(),
         "agency": agency_mode.status(),
+        "gateway": friday_gateway.status(),
+        "control_room": friday_gateway.control_room(),
         "finance": personal_finance.summary(),
         "project_watchdog": project_watchdog.status(),
         "codebase_standards": codebase_standards.status(),

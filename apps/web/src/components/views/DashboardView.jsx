@@ -246,6 +246,7 @@ function Telemetry({ data }) {
   const providers = status.runtime?.provider_limits || {};
   const providerCount = Object.values(providers).filter((item) => item?.configured).length;
   const unsupported = data.evaluation?.counts?.unsupported_claim || 0;
+  const gateway = data.gateway || {};
   return (
     <article className="rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14] p-4">
       <div className="flex items-center gap-2 text-[12px] font-extrabold uppercase tracking-[.11em] text-white">
@@ -255,6 +256,7 @@ function Telemetry({ data }) {
       <div className="mt-4 grid grid-cols-2 gap-1.5">
         <MetricBox label="Workers" value={String(status.workers || 0)} detail={status.mode || "agent mode"} />
         <MetricBox label="Tasks" value={String(counts.total || data.tasks?.length || 0)} detail={`${counts.active || 0} active`} />
+        <MetricBox label="Gateway" value={String(gateway.enabled_count || 0)} detail={`${gateway.pending_high_risk || 0} high-risk`} />
         <div className="col-span-2 grid min-h-[47px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden border border-friday-line bg-[#171d24] px-3">
           <div className="min-w-0">
             <span className="block font-mono text-[10px] uppercase text-[#cbd7e6]">Reliability</span>

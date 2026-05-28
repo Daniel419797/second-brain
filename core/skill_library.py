@@ -70,6 +70,12 @@ def add_skill(
     agent_id: str = "jarvis",
     tags: list[str] | None = None,
     source: str = "manual",
+    permissions: list[str] | None = None,
+    secret_envs: list[str] | None = None,
+    trust_level: str = "unverified",
+    agent_allowlist: list[str] | None = None,
+    verified: bool = False,
+    sandboxed: bool = True,
 ) -> str:
     """Store or update a reusable procedure."""
     cleaned_name = _clean(name) or "Unnamed skill"
@@ -88,6 +94,12 @@ def add_skill(
                         "agent_id": _clean(agent_id) or "jarvis",
                         "tags": sorted(set(tags or [])),
                         "source": _clean(source) or "manual",
+                        "permissions": _normalized_list(permissions if permissions is not None else skill.get("permissions", [])),
+                        "secret_envs": _env_names(secret_envs if secret_envs is not None else skill.get("secret_envs", [])),
+                        "trust_level": _trust_level(trust_level or str(skill.get("trust_level") or "")),
+                        "agent_allowlist": _normalized_list(agent_allowlist if agent_allowlist is not None else skill.get("agent_allowlist", [])),
+                        "verified": bool(verified or skill.get("verified", False)),
+                        "sandboxed": bool(sandboxed if sandboxed is not None else skill.get("sandboxed", True)),
                         "enabled": bool(skill.get("enabled", True)),
                         "updated_at": now,
                     }
@@ -103,6 +115,12 @@ def add_skill(
                 "agent_id": _clean(agent_id) or "jarvis",
                 "tags": sorted(set(tags or [])),
                 "source": _clean(source) or "manual",
+                "permissions": _normalized_list(permissions),
+                "secret_envs": _env_names(secret_envs),
+                "trust_level": _trust_level(trust_level or ("verified" if verified else "unverified")),
+                "agent_allowlist": _normalized_list(agent_allowlist),
+                "verified": bool(verified),
+                "sandboxed": bool(sandboxed),
                 "enabled": True,
                 "usage_count": 0,
                 "created_at": now,
@@ -238,6 +256,12 @@ def install_builtin(skill_key: str = "all") -> list[dict[str, Any]]:
             agent_id=spec.get("agent_id", "jarvis"),
             tags=list(spec.get("tags") or []),
             source="builtin",
+            permissions=list(spec.get("permissions") or ["local_context"]),
+            secret_envs=list(spec.get("secret_envs") or []),
+            trust_level=str(spec.get("trust_level") or "verified"),
+            agent_allowlist=list(spec.get("agent_allowlist") or [spec.get("agent_id", "jarvis")]),
+            verified=True,
+            sandboxed=bool(spec.get("sandboxed", True)),
         )
         installed_skill = get_skill(skill_id)
         if installed_skill:
@@ -261,12 +285,53 @@ def disable_skill(skill_id: str) -> dict[str, Any] | None:
     return enable_skill(skill_id, False)
 
 
+def set_skill_policy(
+    skill_id: str,
+    *,
+    permissions: list[str] | None = None,
+    secret_envs: list[str] | None = None,
+    trust_level: str = "",
+    agent_allowlist: list[str] | None = None,
+    verified: bool | None = None,
+    sandboxed: bool | None = None,
+) -> dict[str, Any] | None:
+    """Update trust, permissions, and secret-injection policy for a reusable skill."""
+
+    with _LOCK:
+        skills = [_normalize_skill(skill) for skill in _load_json(SKILLS_PATH, [])]
+        for skill in skills:
+            if skill.get("id") == skill_id or _clean(skill.get("name", "")).lower() == _clean(skill_id).lower():
+                if permissions is not None:
+                    skill["permissions"] = _normalized_list(permissions)
+                if secret_envs is not None:
+                    skill["secret_envs"] = _env_names(secret_envs)
+                if trust_level:
+                    skill["trust_level"] = _trust_level(trust_level)
+                if agent_allowlist is not None:
+                    skill["agent_allowlist"] = _normalized_list(agent_allowlist)
+                if verified is not None:
+                    skill["verified"] = bool(verified)
+                if sandboxed is not None:
+                    skill["sandboxed"] = bool(sandboxed)
+                skill["updated_at"] = _now()
+                _save_json(SKILLS_PATH, skills)
+                return skill
+    return None
+
+
 def skill_summary() -> dict[str, Any]:
     skills = all_skills()
+    trust_counts: dict[str, int] = {}
+    for skill in skills:
+        trust = str(skill.get("trust_level") or "unverified")
+        trust_counts[trust] = trust_counts.get(trust, 0) + 1
     return {
         "total": len(skills),
         "enabled": len([skill for skill in skills if skill.get("enabled", True)]),
         "disabled": len([skill for skill in skills if skill.get("enabled") is False]),
+        "verified": len([skill for skill in skills if skill.get("verified")]),
+        "sandboxed": len([skill for skill in skills if skill.get("sandboxed")]),
+        "trust_counts": trust_counts,
         "builtins_available": list(BUILTIN_SKILLS),
         "skills": skills[:50],
     }
@@ -284,6 +349,12 @@ def _normalize_skill(skill: dict[str, Any]) -> dict[str, Any]:
     item.setdefault("enabled", True)
     item.setdefault("usage_count", 0)
     item.setdefault("tags", [])
+    item["permissions"] = _normalized_list(item.get("permissions") or [])
+    item["secret_envs"] = _env_names(item.get("secret_envs") or [])
+    item["trust_level"] = _trust_level(str(item.get("trust_level") or "unverified"))
+    item["agent_allowlist"] = _normalized_list(item.get("agent_allowlist") or ([item.get("agent_id")] if item.get("agent_id") else []))
+    item["verified"] = bool(item.get("verified", False))
+    item["sandboxed"] = bool(item.get("sandboxed", True))
     return item
 
 
@@ -313,6 +384,31 @@ def _signature(text: str) -> str:
 
 def _terms(text: str) -> set[str]:
     return {part for part in re.split(r"[^a-z0-9_+.-]+", str(text).lower()) if len(part) > 2}
+
+
+def _normalized_list(values: list[str] | Any) -> list[str]:
+    if values is None:
+        return []
+    raw = values if isinstance(values, list) else [values]
+    cleaned = [_clean(item).lower().replace(" ", "_") for item in raw]
+    return sorted({item for item in cleaned if item})
+
+
+def _env_names(values: list[str] | Any) -> list[str]:
+    if values is None:
+        return []
+    raw = values if isinstance(values, list) else [values]
+    names = []
+    for item in raw:
+        name = re.sub(r"[^A-Z0-9_]+", "_", str(item or "").strip().upper()).strip("_")
+        if name and len(name) <= 80:
+            names.append(name)
+    return sorted(set(names))
+
+
+def _trust_level(value: str) -> str:
+    normalized = _clean(value).lower().replace(" ", "_")
+    return normalized if normalized in {"verified", "unverified", "sandboxed", "blocked"} else "unverified"
 
 
 def _load_json(path: Path, default: Any) -> Any:

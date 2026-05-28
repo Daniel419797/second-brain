@@ -124,3 +124,18 @@ def test_agency_outreach_approval_and_send_have_separate_permissions(monkeypatch
     assert send["requires_confirmation"] is True
     assert deploy["requires_confirmation"] is True
     assert payment["requires_confirmation"] is True
+
+
+def test_gateway_permissions_split_read_intake_config_and_stop(monkeypatch, tmp_path):
+    isolate_permissions(monkeypatch, tmp_path)
+    monkeypatch.setattr(autonomy_control, "config_value", lambda key, default=None: False if key == "autonomy_control_enabled" else default)
+
+    read = permissions.evaluate("power_center", {"action": "gateway_status"})
+    ingest = permissions.evaluate("power_center", {"action": "gateway_ingest_event"})
+    config = permissions.evaluate("power_center", {"action": "gateway_configure_connector"})
+    stop = permissions.evaluate("power_center", {"action": "gateway_emergency_stop"})
+
+    assert read["allowed"] is True
+    assert ingest["allowed"] is True
+    assert config["requires_confirmation"] is True
+    assert stop["allowed"] is True

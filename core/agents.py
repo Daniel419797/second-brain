@@ -21,9 +21,14 @@ class AgentProfile:
 
 ROSTER: tuple[AgentProfile, ...] = (
     AgentProfile("ceo", "CEO / Friday Core", "Goal decomposition and coordination.", ("goal", "plan", "coordinate", "strategy")),
+    AgentProfile("strategist", "Strategist", "Market positioning, offers, risk framing, and decision memos.", ("strategy", "positioning", "offer", "market", "memo")),
+    AgentProfile("sales_agent", "Sales Agent", "Lead qualification, outreach preparation, and pipeline follow-up.", ("lead", "prospect", "sales", "outreach", "client")),
+    AgentProfile("lead_researcher", "Lead Researcher", "Prospect research, source checking, and opportunity discovery.", ("lead", "research", "prospect", "source", "company")),
+    AgentProfile("proposal_writer", "Proposal Writer", "Proposals, scopes, contracts, project plans, and client-facing drafts.", ("proposal", "contract", "scope", "brief", "project plan")),
     AgentProfile("product_manager", "Product Manager", "Requirements, roadmap, and prioritization.", ("requirements", "roadmap", "feature", "product")),
     AgentProfile("project_manager", "Project Manager", "Task tracking, blockers, schedules, and progress reports.", ("schedule", "deadline", "status", "blocker", "sprint")),
     AgentProfile("senior_developer", "Senior Developer", "Architecture, implementation plans, and code quality.", ("code", "build", "implement", "refactor", "architecture")),
+    AgentProfile("frontend_developer", "Frontend Developer", "Responsive app interfaces, UI state, and frontend build verification.", ("react", "frontend", "component", "css", "ui")),
     AgentProfile("junior_developer", "Junior Developer", "Small implementation tasks, tests, and documentation.", ("test", "docs", "small fix", "unit")),
     AgentProfile("devops", "DevOps / Infrastructure", "Local automation, scripts, CI, and deployment plans.", ("deploy", "docker", "ci", "server", "infrastructure")),
     AgentProfile("cybersecurity_analyst", "Cybersecurity Analyst", "Defensive security reviews and safe hardening.", ("security", "vulnerability", "audit", "threat")),
@@ -34,6 +39,8 @@ ROSTER: tuple[AgentProfile, ...] = (
     AgentProfile("data_scientist", "Data Scientist / ML", "Data analysis, metrics, and ML plans.", ("data", "analysis", "chart", "model", "dataset")),
     AgentProfile("qa_engineer", "QA Engineer", "Test plans, regression checks, and acceptance criteria.", ("qa", "quality", "bug", "regression", "test")),
     AgentProfile("code_reviewer", "Code Reviewer", "Code review, risks, and maintainability feedback.", ("review", "style", "bug", "quality")),
+    AgentProfile("finance_admin", "Finance / Admin Agent", "Invoices, expenses, API-cost budgets, and payment approval preparation.", ("invoice", "payment", "budget", "revenue", "expense", "profit")),
+    AgentProfile("customer_support", "Customer Support Agent", "Client replies, support triage, status updates, and escalation notes.", ("support", "customer", "reply", "ticket", "client message")),
 )
 
 
@@ -53,8 +60,19 @@ def normalize_agent_id(value: str) -> str:
     text = " ".join(str(value or "").lower().replace("-", " ").split())
     aliases = {
         "pm": "product_manager",
+        "strategy": "strategist",
+        "business strategist": "strategist",
+        "sales": "sales_agent",
+        "salesperson": "sales_agent",
+        "lead research": "lead_researcher",
+        "lead researcher": "lead_researcher",
+        "proposal": "proposal_writer",
+        "proposal writer": "proposal_writer",
         "product": "product_manager",
         "project": "project_manager",
+        "frontend": "frontend_developer",
+        "frontend dev": "frontend_developer",
+        "react": "frontend_developer",
         "senior dev": "senior_developer",
         "senior developer": "senior_developer",
         "junior dev": "junior_developer",
@@ -70,6 +88,10 @@ def normalize_agent_id(value: str) -> str:
         "qa": "qa_engineer",
         "reviewer": "code_reviewer",
         "code reviewer": "code_reviewer",
+        "finance": "finance_admin",
+        "admin": "finance_admin",
+        "customer support": "customer_support",
+        "support": "customer_support",
         "friday": "ceo",
         "ceo": "ceo",
     }

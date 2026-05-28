@@ -7,6 +7,7 @@ import { AgencyView } from "@/components/views/AgencyView";
 import { AndroidView } from "@/components/views/AndroidView";
 import { ApprovalsView } from "@/components/views/ApprovalsView";
 import { ChatView } from "@/components/views/ChatView";
+import { ControlRoomView } from "@/components/views/ControlRoomView";
 import { DashboardView } from "@/components/views/DashboardView";
 import { GovernanceView } from "@/components/views/GovernanceView";
 import { IntegrationsView } from "@/components/views/IntegrationsView";
@@ -47,6 +48,10 @@ export function AgentsRoute() {
 
 export function AgencyRoute() {
   return <AgencyView />;
+}
+
+export function ControlRoomRoute() {
+  return <ControlRoomView />;
 }
 
 export function TasksRoute() {

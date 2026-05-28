@@ -6,6 +6,7 @@ from fastapi.testclient import TestClient
 
 from api import server
 from core import adaptive_attention, agency_mode, agent_blackboard, agent_council, agent_lifecycle, agent_memory, agent_office, agent_quality_manager, agent_scheduler, agent_simulation_sandbox, agent_thought_bus, android_companion, api_auth, app_apprenticeship, app_integrations, app_operators, app_state_memory, autobiographical_memory, autonomous_debugger, autonomous_learning, autonomous_qa_lab, backup_recovery, barge_in, browser_extension_bridge, capability_center, code_change_simulator, command_graph, context_aware_silence, continuity_brain, contextual_workspace, conversation_continuity, daily_companion, decision_memory, deep_project_autopilot, deployment_brain, desktop_tasks, dev_server_copilot, do_not_forget, emotion_tone, emotional_timing, environment_awareness, error_radar, evaluation_lab, event_nervous_system, executive_capabilities, failure_autopsy, focus_protection, goal_regulation, google_workspace, learning_coach, live_workspace_coach, local_file_intelligence, local_voice_brain, long_term_learning, meeting_study_companion, memory_constitution, memory_debate, mission_control, model_benchmark_lab, model_router_brain, notification_center, offline_survival, operating_rhythm, os_autopilot, pc_awareness, pc_timeline, permissions, personal_command_memory, personal_crm, personal_data_timeline, personal_finance, personal_knowledge_vault, personal_life_os, personal_safety_guardian, personal_taste_engine, phone_bridge, phone_mesh, private_embedding_memory, privacy_vault, project_autopilot, project_cto, project_memory, project_watchdog, proactive_guardian, reality_check, refactor_planner, release_manager, reliability_score, research_briefings, sandbox_simulation, self_debugger, self_reflection, self_update, semantic_search, skill_evolution, skill_improvement, skill_library, skill_training_studio, task_contracts, task_queue, test_build_monitor, trust_proof, version_guardian, vision_skill_learning, visual_monitor, voice_reliability, workspace_brain, world_model
+from core import approval_inbox, audit_log, cloud_worker_mode, friday_gateway
 
 
 def _client(monkeypatch, tmp_path):
@@ -43,6 +44,8 @@ def _client(monkeypatch, tmp_path):
     monkeypatch.setattr(task_contracts, "DB_PATH", tmp_path / "task_contracts.sqlite3")
     monkeypatch.setattr(voice_reliability, "DB_PATH", tmp_path / "voice_reliability.sqlite3")
     monkeypatch.setattr(notification_center, "DB_PATH", tmp_path / "notification_center.sqlite3")
+    monkeypatch.setattr(approval_inbox, "DB_PATH", tmp_path / "approval_inbox.sqlite3")
+    monkeypatch.setattr(audit_log, "DB_PATH", tmp_path / "audit_log.sqlite3")
     monkeypatch.setattr(proactive_guardian, "DB_PATH", tmp_path / "proactive_guardian.sqlite3")
     monkeypatch.setattr(event_nervous_system, "DB_PATH", tmp_path / "event_nervous_system.sqlite3")
     monkeypatch.setattr(barge_in, "DB_PATH", tmp_path / "barge_in.sqlite3")
@@ -50,6 +53,8 @@ def _client(monkeypatch, tmp_path):
     monkeypatch.setattr(daily_companion, "DB_PATH", tmp_path / "daily_companion.sqlite3")
     monkeypatch.setattr(agency_mode, "DB_PATH", tmp_path / "agency_mode.sqlite3")
     monkeypatch.setattr(agency_mode, "config_value", lambda key, default=None: str(tmp_path / "Friday Agency") if key == "agency_workspace_dir" else default)
+    monkeypatch.setattr(friday_gateway, "DB_PATH", tmp_path / "friday_gateway.sqlite3")
+    monkeypatch.setattr(cloud_worker_mode, "DB_PATH", tmp_path / "cloud_worker_mode.sqlite3")
     monkeypatch.setattr(personal_finance, "DB_PATH", tmp_path / "personal_finance.sqlite3")
     monkeypatch.setattr(private_embedding_memory, "DB_PATH", tmp_path / "private_embedding_memory.sqlite3")
     monkeypatch.setattr(android_companion, "DB_PATH", tmp_path / "android_companion.sqlite3")
@@ -198,10 +203,13 @@ def test_api_decorates_task_progress_and_streams_tasks(monkeypatch, tmp_path):
     assert snapshot.json()["tasks"][0]["progress_percent"] == 55
     assert "pcAwareness" in snapshot.json()
     assert "logs" in snapshot.json()
+    assert "gateway" in snapshot.json()
+    assert "controlRoom" in snapshot.json()
     assert payload["tasks"][0]["progress_percent"] == 55
     assert "offices" in payload
     assert "notifications" in payload
     assert "guardian" in payload
+    assert "gateway" in payload
     assert dashboard["tasks"][0]["progress_percent"] == 55
     assert "agentQuality" in dashboard
     assert "skillsSummary" in dashboard
@@ -232,6 +240,28 @@ def test_api_streams_chat_and_notifications(monkeypatch, tmp_path):
     assert reply["reply"] == "Echo: hello friday"
     assert notifications["unread_count"] == 1
     assert notifications["items"][0]["title"] == "Realtime notice"
+
+
+def test_api_gateway_and_control_room_endpoints(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+
+    status_response = client.get("/gateway/status", headers=headers)
+    event_response = client.post(
+        "/gateway/events",
+        headers=headers,
+        json={"connector": "web", "event_type": "task_request", "title": "Plan support queue", "content": "Create a triage task."},
+    )
+    events_response = client.get("/gateway/events", headers=headers)
+    room_response = client.get("/control-room/status", headers=headers)
+
+    assert status_response.status_code == 200
+    assert event_response.status_code == 200
+    assert event_response.json()["task_id"] > 0
+    assert events_response.status_code == 200
+    assert events_response.json()[0]["title"] == "Plan support queue"
+    assert room_response.status_code == 200
+    assert "gateway" in room_response.json()
 
 
 def test_api_stores_and_serves_project_reference_images(monkeypatch, tmp_path):

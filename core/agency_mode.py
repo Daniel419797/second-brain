@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import html
 import json
 import os
 import re
@@ -657,6 +658,65 @@ def trigger_approved_payment(recommendation_id: int) -> dict[str, Any]:
     return triggered | {"ok": True, "summary": "Approved payment was recorded as triggered. Friday does not enter card/bank details or bypass payment-provider approval."}
 
 
+def api_budget_status(*, currency: str = "") -> dict[str, Any]:
+    target_currency = (_clean(currency).upper() or _currency())
+    monthly_budget = float(config_value("agency_api_monthly_budget", 0) or 0)
+    ledger = list_ledger(limit=500)
+    api_spend = sum(float(item["amount"]) for item in ledger if item["currency"] == target_currency and item["kind"] in {"api_usage", "payment_triggered"})
+    remaining = max(0.0, monthly_budget - api_spend) if monthly_budget else 0.0
+    return {
+        "currency": target_currency,
+        "monthly_budget": round(monthly_budget, 2),
+        "api_spend": round(api_spend, 2),
+        "remaining": round(remaining, 2),
+        "over_budget": bool(monthly_budget and api_spend > monthly_budget),
+        "summary": "No API budget is configured." if not monthly_budget else f"API spend is {api_spend:.2f}/{monthly_budget:.2f} {target_currency}.",
+    }
+
+
+def pipeline_summary() -> dict[str, Any]:
+    leads = list_leads(limit=500)
+    outreach = list_outreach(limit=500)
+    invoices = list_invoices(limit=200)
+    stages = {stage: len([lead for lead in leads if lead["status"] == stage]) for stage in ["new", "qualified", "contacted", "replied", "won", "lost", "paused"]}
+    outreach_counts = {stage: len([item for item in outreach if item["status"] == stage]) for stage in ["draft", "approved", "sent", "failed"]}
+    invoice_counts = {stage: len([item for item in invoices if item["status"] == stage]) for stage in ["draft", "sent", "paid", "overdue"]}
+    return {
+        "lead_stages": stages,
+        "outreach": outreach_counts,
+        "invoices": invoice_counts,
+        "api_budget": api_budget_status(),
+        "summary": f"Pipeline: {stages.get('new', 0)} new, {stages.get('contacted', 0)} contacted, {stages.get('won', 0)} won lead(s).",
+    }
+
+
+def generate_business_layer(*, business_name: str = "Friday Agency", tagline: str = "", owner_email: str = "") -> dict[str, Any]:
+    """Create a static public-facing agency site/portal starter under the Desktop agency workspace."""
+
+    root = _agency_workspace() / "public-business"
+    root.mkdir(parents=True, exist_ok=True)
+    name = _clean(business_name) or "Friday Agency"
+    email = _clean(owner_email) or str(config_value("agency_public_contact_email", "") or "")
+    tagline = _clean(tagline) or "AI automation, web apps, research, and proof-driven delivery."
+    leads = list_leads(limit=6)
+    projects = list_projects(limit=6)
+    invoices = list_invoices(limit=6)
+    files = {
+        "index.html": _public_index(name, tagline, email),
+        "portfolio.html": _public_portfolio(name, projects),
+        "intake.html": _public_intake(name, email),
+        "client-portal.html": _public_client_portal(name, projects, invoices),
+        "support.html": _public_support(name, email),
+        "pipeline.json": _json_dumps({"leads": leads, "projects": projects, "invoices": invoices, "pipeline": pipeline_summary()}),
+    }
+    written = []
+    for filename, content in files.items():
+        path = root / filename
+        path.write_text(content, encoding="utf-8")
+        written.append(str(path))
+    return {"root": str(root), "files": written, "summary": f"Public business layer generated at {root}."}
+
+
 def wipe_all() -> None:
     init_db()
     with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
@@ -924,6 +984,151 @@ def _write_document(folder: str, filename: str, content: str) -> Path:
     target = root / Path(filename).name
     target.write_text(content, encoding="utf-8")
     return target
+
+
+def _public_index(name: str, tagline: str, email: str) -> str:
+    return _public_page(
+        name,
+        "Agency Website",
+        f"""
+        <section class="hero">
+          <p class="eyebrow">AI software, automation, research, and content delivery</p>
+          <h1>{_h(name)}</h1>
+          <p>{_h(tagline)}</p>
+          <div class="actions">
+            <a href="intake.html">Start Intake</a>
+            <a href="portfolio.html">View Portfolio</a>
+          </div>
+        </section>
+        <section class="grid">
+          <article><strong>Build</strong><span>Web apps, dashboards, automations, and deployment-ready code.</span></article>
+          <article><strong>Research</strong><span>Evidence-backed reports, briefs, academic support, and synthesis.</span></article>
+          <article><strong>Operate</strong><span>CRM, proposals, QA, invoices, and proof reports in one workflow.</span></article>
+        </section>
+        <section class="notice">Contact: {_h(email or "configure agency_public_contact_email")}</section>
+        """,
+    )
+
+
+def _public_portfolio(name: str, projects: list[dict[str, Any]]) -> str:
+    rows = "\n".join(
+        f"<article><strong>{_h(project.get('name') or 'Client project')}</strong><span>{_h(project.get('status') or 'active')} - {_h(project.get('brief') or 'No brief recorded')[:240]}</span></article>"
+        for project in projects
+    ) or "<article><strong>No portfolio records yet</strong><span>Completed work will appear here after projects are tracked in Agency Mode.</span></article>"
+    return _public_page(name, "Portfolio", f"<section><h1>Portfolio</h1><div class=\"grid\">{rows}</div></section>")
+
+
+def _public_intake(name: str, email: str) -> str:
+    return _public_page(
+        name,
+        "Client Intake",
+        f"""
+        <section>
+          <h1>Client Intake</h1>
+          <p>Use this page as the public intake template. Replace the form action with your deployed backend or form provider.</p>
+          <form>
+            <label>Company<input name="company" /></label>
+            <label>Email<input name="email" type="email" /></label>
+            <label>Project Need<textarea name="need"></textarea></label>
+            <button type="button">Submit for Review</button>
+          </form>
+          <p class="notice">Fallback contact: {_h(email or "configure agency_public_contact_email")}</p>
+        </section>
+        """,
+    )
+
+
+def _public_client_portal(name: str, projects: list[dict[str, Any]], invoices: list[dict[str, Any]]) -> str:
+    project_rows = "\n".join(
+        f"<tr><td>{_h(project.get('name'))}</td><td>{_h(project.get('status'))}</td><td>{_h(project.get('currency'))} {_h(project.get('budget'))}</td></tr>"
+        for project in projects
+    ) or "<tr><td colspan=\"3\">No active project records.</td></tr>"
+    invoice_rows = "\n".join(
+        f"<tr><td>#{int(invoice.get('id') or 0)}</td><td>{_h(invoice.get('client_name'))}</td><td>{_h(invoice.get('status'))}</td><td>{_h(invoice.get('currency'))} {_h(invoice.get('amount'))}</td></tr>"
+        for invoice in invoices
+    ) or "<tr><td colspan=\"4\">No invoice records.</td></tr>"
+    return _public_page(
+        name,
+        "Client Portal",
+        f"""
+        <section>
+          <h1>Client Portal</h1>
+          <h2>Projects</h2>
+          <table><tbody>{project_rows}</tbody></table>
+          <h2>Invoices</h2>
+          <table><tbody>{invoice_rows}</tbody></table>
+        </section>
+        """,
+    )
+
+
+def _public_support(name: str, email: str) -> str:
+    return _public_page(
+        name,
+        "Support Inbox",
+        f"""
+        <section>
+          <h1>Support Inbox</h1>
+          <p>This static page is a support front door. Connect it to Gmail, Slack, Discord, or your deployed backend when those connectors are configured.</p>
+          <form>
+            <label>Email<input name="email" type="email" /></label>
+            <label>Issue<textarea name="issue"></textarea></label>
+            <button type="button">Create Support Request</button>
+          </form>
+          <p class="notice">Manual support email: {_h(email or "configure agency_public_contact_email")}</p>
+        </section>
+        """,
+    )
+
+
+def _public_page(name: str, title: str, body: str) -> str:
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{_h(name)} - {_h(title)}</title>
+  <style>
+    :root {{ color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; }}
+    body {{ margin: 0; background: #0b1016; color: #eef5ff; }}
+    nav {{ display: flex; gap: 14px; padding: 18px 24px; border-bottom: 1px solid #293443; background: #111820; }}
+    nav a, .actions a {{ color: #97c8f8; text-decoration: none; font-weight: 700; }}
+    main {{ max-width: 1040px; margin: 0 auto; padding: 34px 20px 56px; }}
+    h1 {{ font-size: clamp(32px, 5vw, 58px); line-height: 1; margin: 0 0 16px; }}
+    h2 {{ margin-top: 30px; }}
+    p {{ color: #cbd7e6; line-height: 1.65; }}
+    .hero {{ min-height: 54vh; display: grid; align-content: center; gap: 18px; }}
+    .eyebrow {{ margin: 0; color: #79e8af; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; font-weight: 800; }}
+    .actions {{ display: flex; flex-wrap: wrap; gap: 12px; }}
+    .actions a, button {{ border: 1px solid #97c8f8; background: #162232; color: #eef5ff; padding: 12px 16px; border-radius: 4px; }}
+    .grid {{ display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }}
+    article, .notice, form, table {{ border: 1px solid #293443; background: #151b22; border-radius: 5px; padding: 16px; }}
+    article strong, article span, label {{ display: block; }}
+    article span {{ color: #cbd7e6; margin-top: 8px; line-height: 1.5; }}
+    form {{ display: grid; gap: 12px; max-width: 620px; }}
+    input, textarea {{ width: 100%; min-height: 38px; margin-top: 6px; box-sizing: border-box; border: 1px solid #405063; background: #0e151d; color: #eef5ff; border-radius: 4px; padding: 10px; }}
+    textarea {{ min-height: 120px; }}
+    table {{ width: 100%; border-collapse: collapse; padding: 0; overflow: hidden; }}
+    td {{ border-bottom: 1px solid #293443; padding: 12px; color: #dce6f2; }}
+  </style>
+</head>
+<body>
+  <nav>
+    <strong>{_h(name)}</strong>
+    <a href="index.html">Home</a>
+    <a href="portfolio.html">Portfolio</a>
+    <a href="intake.html">Intake</a>
+    <a href="client-portal.html">Portal</a>
+    <a href="support.html">Support</a>
+  </nav>
+  <main>{body}</main>
+</body>
+</html>
+"""
+
+
+def _h(value: Any) -> str:
+    return html.escape(str(value or ""), quote=True)
 
 
 def _agency_workspace() -> Path:

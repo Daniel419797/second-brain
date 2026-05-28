@@ -83,6 +83,9 @@ def test_agency_documents_project_workflow_invoices_and_profit(monkeypatch, tmp_
     recommendation = agency_mode.recommend_payment("NVIDIA", 10, reason="API credits")
     approved = agency_mode.approve_payment(int(recommendation["id"]))
     triggered = agency_mode.trigger_approved_payment(int(recommendation["id"]))
+    pipeline = agency_mode.pipeline_summary()
+    budget = agency_mode.api_budget_status()
+    public = agency_mode.generate_business_layer(business_name="Demo Agency", owner_email="owner@example.test")
 
     assert Path(proposal["path"]).exists()
     assert Path(contract["path"]).exists()
@@ -100,6 +103,11 @@ def test_agency_documents_project_workflow_invoices_and_profit(monkeypatch, tmp_
     assert profit["profit"] == 480
     assert approved["kind"] == "payment_approved"
     assert triggered["ok"] is True
+    assert pipeline["lead_stages"]["new"] >= 1
+    assert budget["currency"] == "USD"
+    assert Path(public["root"]).exists()
+    assert (Path(public["root"]) / "index.html").exists()
+    assert (Path(public["root"]) / "client-portal.html").exists()
 
 
 def test_power_center_agency_status_action(monkeypatch, tmp_path):
@@ -107,5 +115,7 @@ def test_power_center_agency_status_action(monkeypatch, tmp_path):
     monkeypatch.setattr(power_center, "_permission_reply", lambda inputs: "")
 
     reply = power_center.execute({"action": "agency_status"})
+    pipeline = power_center.execute({"action": "agency_pipeline"})
 
     assert "Agency has" in reply
+    assert "Pipeline" in pipeline

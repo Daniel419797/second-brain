@@ -46,6 +46,15 @@ GOOGLE_SEARCH_API_KEY=your_google_search_key_here
 GOOGLE_SEARCH_CX=your_google_search_engine_id_here
 TAVILY_API_KEY=your_tavily_key_here
 SERPAPI_API_KEY=your_serpapi_key_here
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+DISCORD_BOT_TOKEN=your_discord_bot_token_here
+SLACK_BOT_TOKEN=your_slack_bot_token_here
+SLACK_SIGNING_SECRET=your_slack_signing_secret_here
+WHATSAPP_ACCESS_TOKEN=your_whatsapp_access_token_here
+WHATSAPP_PHONE_NUMBER_ID=your_whatsapp_phone_number_id_here
+GITHUB_TOKEN=your_github_token_here
+RENDER_API_KEY=your_render_api_key_here
+VERCEL_TOKEN=your_vercel_token_here
 JARVIS_API_USERNAME=friday
 JARVIS_API_PASSWORD=your_api_password_here
 JARVIS_API_SECRET=your_api_secret_here
@@ -64,6 +73,7 @@ Service URLs:
 - NVIDIA Build/NIM API: https://build.nvidia.com/
 - Meshy and Tripo: optional text-to-3D providers
 - Brave Search, Google Programmable Search, Tavily, or SerpAPI: optional dedicated web-search providers
+- Telegram, Discord, Slack, WhatsApp, GitHub, Render, and Vercel keys are optional Friday Gateway connector credentials. Inbound events and status work locally without all of them; real outbound provider actions require the matching provider credentials and approval policies.
 
 ## Local Brain With Ollama
 

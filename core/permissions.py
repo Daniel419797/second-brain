@@ -104,6 +104,9 @@ DEFAULT_RULES: list[dict[str, str]] = [
     {"key": "power_center.agency_deploy", "label": "Agency deployment", "category": "Business", "mode": "ask", "description": "Run configured deploy commands for client projects after release checks."},
     {"key": "power_center.agency_outreach_send", "label": "Send agency outreach", "category": "Business", "mode": "ask", "description": "Send user-approved cold outreach emails or client messages."},
     {"key": "power_center.agency_payment", "label": "Agency payment actions", "category": "Business", "mode": "ask", "description": "Approve or trigger recommended API-key/subscription payments after user review."},
+    {"key": "power_center.friday_gateway", "label": "Friday Gateway and connector intake", "category": "Business", "mode": "allow", "description": "Read connector status, receive events, route low-risk tasks, and manage business memory."},
+    {"key": "power_center.gateway_connector_config", "label": "Configure external connectors", "category": "Business", "mode": "ask", "description": "Enable, disable, or change trust levels for external connectors such as Gmail, Slack, Vercel, or Render."},
+    {"key": "power_center.gateway_emergency_stop", "label": "Friday emergency stop", "category": "Safety", "mode": "allow", "description": "Immediately request live workers/speech to stop and record an audit event."},
     {"key": "power_center.private_memory", "label": "Private embedding memory", "category": "Power Center", "mode": "allow", "description": "Index and search local private memories with local-only embeddings or lexical fallback."},
     {"key": "power_center.android_companion", "label": "Android companion", "category": "Power Center", "mode": "ask", "description": "Use Android companion features such as notification sync, phone voice commands, and ring/call handoffs."},
     {"key": "power_center.project_watchdog", "label": "Project watchdog", "category": "Power Center", "mode": "ask", "description": "Continuously inspect projects for failing tests, stale docs, TODOs, dependencies, and secrets."},
@@ -459,6 +462,12 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             return "power_center.daily_companion"
         if action in {"skill_marketplace", "skill_marketplace_install"}:
             return "power_center.skill_marketplace"
+        if action in {"gateway_configure_connector"}:
+            return "power_center.gateway_connector_config"
+        if action in {"gateway_emergency_stop"}:
+            return "power_center.gateway_emergency_stop"
+        if action in {"gateway_status", "gateway_connectors", "gateway_ingest_event", "control_room", "gateway_business_memory", "gateway_remember_business"}:
+            return "power_center.friday_gateway"
         if action in {"finance_summary", "add_expense", "can_afford"}:
             return "power_center.personal_finance"
         if action == "agency_project_workflow" and bool(tool_input.get("deploy")):
@@ -477,6 +486,9 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             "agency_invoice",
             "agency_profit",
             "agency_approve_outreach",
+            "agency_pipeline",
+            "agency_api_budget",
+            "agency_business_layer",
         }:
             return "power_center.agency_mode"
         if action in {"agency_send_outreach"}:
@@ -857,6 +869,9 @@ def set_named_policy(name: str, mode: str) -> list[dict[str, Any]]:
         "event system": ["power_center.event_nervous_system"],
         "daily companion": ["power_center.daily_companion"],
         "skill marketplace": ["power_center.skill_marketplace"],
+        "friday gateway": ["power_center.friday_gateway", "power_center.gateway_connector_config", "power_center.gateway_emergency_stop"],
+        "gateway": ["power_center.friday_gateway", "power_center.gateway_connector_config", "power_center.gateway_emergency_stop"],
+        "control room": ["power_center.friday_gateway"],
         "finance": ["power_center.personal_finance"],
         "personal finance": ["power_center.personal_finance"],
         "agency": ["power_center.agency_mode", "power_center.agency_outreach_send", "power_center.agency_deploy", "power_center.agency_payment"],

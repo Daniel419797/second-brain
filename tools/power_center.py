@@ -56,6 +56,7 @@ from core import (
     executive_capabilities,
     focus_protection,
     failure_autopsy,
+    friday_gateway,
     git_integration,
     goal_manager,
     home_assistant,
@@ -188,6 +189,46 @@ def execute(inputs: dict[str, Any]) -> str:
             return skill_marketplace.summary().get("summary", "Skill marketplace unavailable.")
         if action == "skill_marketplace_install":
             return skill_marketplace.install(str(inputs.get("key") or "all")).get("summary", "Skill install unavailable.")
+        if action == "gateway_status":
+            return friday_gateway.status().get("summary", "Friday Gateway unavailable.")
+        if action == "gateway_connectors":
+            connectors = friday_gateway.connector_status()
+            configured = len([item for item in connectors if item.get("configured")])
+            enabled = len([item for item in connectors if item.get("enabled")])
+            return f"Friday Gateway has {enabled} enabled connector(s) and {configured} configured connector(s)."
+        if action == "gateway_configure_connector":
+            return friday_gateway.configure_connector(
+                str(inputs.get("connector") or inputs.get("target") or ""),
+                enabled=inputs.get("enabled") if "enabled" in inputs else None,
+                mode=str(inputs.get("mode") or ""),
+                trust_level=str(inputs.get("trust_level") or ""),
+                metadata=inputs.get("metadata") if isinstance(inputs.get("metadata"), dict) else {},
+            ).get("summary", "Connector updated.")
+        if action == "gateway_ingest_event":
+            return friday_gateway.ingest_event(
+                str(inputs.get("connector") or "web"),
+                str(inputs.get("event_type") or inputs.get("kind") or "message"),
+                str(inputs.get("title") or inputs.get("target") or "Gateway event"),
+                str(inputs.get("content") or inputs.get("description") or inputs.get("message") or ""),
+                actor=str(inputs.get("actor") or ""),
+                source="power_center",
+                payload=inputs.get("payload") if isinstance(inputs.get("payload"), dict) else {},
+                route=bool(inputs.get("route", True)),
+            ).get("summary", "Gateway event received.")
+        if action == "control_room":
+            return friday_gateway.control_room().get("summary", "Control room unavailable.")
+        if action == "gateway_business_memory":
+            return friday_gateway.business_memory(limit=_int(inputs.get("limit"), 30)).get("summary", "Business memory unavailable.")
+        if action == "gateway_remember_business":
+            return friday_gateway.remember_business_context(
+                str(inputs.get("kind") or "reusable_decision"),
+                str(inputs.get("title") or inputs.get("target") or "Business memory"),
+                str(inputs.get("content") or inputs.get("description") or ""),
+                confidence=_float(inputs.get("confidence"), 0.8),
+                metadata=inputs.get("metadata") if isinstance(inputs.get("metadata"), dict) else {},
+            ).get("summary", "Business memory saved.")
+        if action == "gateway_emergency_stop":
+            return friday_gateway.emergency_stop(str(inputs.get("reason") or inputs.get("description") or "Power Center emergency stop")).get("summary", "Emergency stop requested.")
         if action == "finance_summary":
             return personal_finance.summary().get("summary", "Finance summary unavailable.")
         if action == "add_expense":
@@ -240,6 +281,16 @@ def execute(inputs: dict[str, Any]) -> str:
             return agency_mode.approve_payment(_int(inputs.get("recommendation_id") or inputs.get("ledger_id") or inputs.get("target"), 0), note=str(inputs.get("note") or inputs.get("reason") or "")).get("summary", "Payment approval unavailable.")
         if action == "agency_trigger_payment":
             return agency_mode.trigger_approved_payment(_int(inputs.get("recommendation_id") or inputs.get("ledger_id") or inputs.get("target"), 0)).get("summary", "Payment trigger unavailable.")
+        if action == "agency_pipeline":
+            return agency_mode.pipeline_summary().get("summary", "Agency pipeline unavailable.")
+        if action == "agency_api_budget":
+            return agency_mode.api_budget_status(currency=str(inputs.get("currency") or "")).get("summary", "Agency API budget unavailable.")
+        if action == "agency_business_layer":
+            return agency_mode.generate_business_layer(
+                business_name=str(inputs.get("business_name") or inputs.get("name") or "Friday Agency"),
+                tagline=str(inputs.get("tagline") or inputs.get("description") or ""),
+                owner_email=str(inputs.get("owner_email") or inputs.get("email") or ""),
+            ).get("summary", "Business layer generation unavailable.")
         if action == "private_memory_summary":
             return private_embedding_memory.summary().get("summary", "Private memory unavailable.")
         if action == "private_memory_search":

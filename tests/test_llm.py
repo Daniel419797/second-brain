@@ -84,6 +84,9 @@ def test_power_center_tool_schema_includes_new_powers():
     assert "model3d_create" in actions
     assert "agency_status" in actions
     assert "agency_send_outreach" in actions
+    assert "gateway_status" in actions
+    assert "control_room" in actions
+    assert "agency_business_layer" in actions
 
 
 def test_self_update_tool_schema_includes_apply():

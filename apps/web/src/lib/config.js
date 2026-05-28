@@ -11,6 +11,7 @@ export const NAV_ITEMS = [
   ["mission-control", "Mission Control", "/mission-control"],
   ["agents", "Agents", "/agents"],
   ["agency", "Agency", "/agency"],
+  ["control-room", "Control Room", "/control-room"],
   ["governance", "Governance", "/governance"],
   ["tasks", "Tasks", "/tasks"],
   ["approvals", "Approvals", "/approvals"],

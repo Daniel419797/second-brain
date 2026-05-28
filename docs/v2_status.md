@@ -83,6 +83,9 @@ Power center layer:
 - `core/text_to_3d.py` adds real text-to-3D provider backends for Meshy, Tripo, and a configurable local generator command. Studio-quality model requests can now submit provider jobs, poll progress, download generated meshes/textures/previews, then pass the result into Blender for cleanup/export.
 - `core/search_broker.py`, `/search/status`, and `/search/query` expose the dedicated search API layer for dashboard use, agent research, and direct web-search commands without relying on one brittle scraper.
 - `core/agency_mode.py` gives Friday a small-agency operating lane: search and score prospects, draft cold outreach, require single or bulk approval before sends, draft proposals/contracts/project plans, create Desktop client projects, run QA/release/Git workflows, run a configured deploy command when Agency deployment is enabled, generate invoices, track revenue/expenses/API usage/profit, and recommend API-key payments without bypassing human payment approval.
+- `core/friday_gateway.py` adds the central Friday Gateway: connector registry, inbound event intake, low-risk task routing, high-risk approval routing, business memory, emergency stop, and a control-room aggregate for agents, tasks, approvals, skills, costs, proofs, errors, and agency state.
+- The connector registry now tracks WhatsApp, Telegram, Discord, Slack, Gmail, Google Calendar, GitHub, Render, Vercel, Stripe/Paystack placeholders, Notion/Trello/Sheets, browser extension, Android app, desktop, web, and local app channels with configured/enabled/trust status.
+- The skill library now carries marketplace safety metadata: skill permissions, secret env allowlists, agent allowlists, verified/unverified/sandboxed trust levels, and per-skill policy updates.
 - `tools/power_center.py`, protected API endpoints, direct commands, and the dashboard Power Center panel expose these features.
 
 Hardening sprint:
@@ -106,6 +109,7 @@ Command center expansion:
 - `core/version_guardian.py` adds preflight risk checks, `.env`/secret protection, config snapshots, rollback notes, and mission-aware backup metadata before risky edits.
 - The dashboard Mission Control area now streams command-center state over `/ws/tasks` and exposes scheduler, build monitor, reliability, model benchmark, deployment, OS autopilot, and version-guardian actions.
 - The dashboard now includes an Agency page backed by `/agency/*` endpoints and `/ws/tasks` summaries for live lead, outreach, project, invoice, and profit state.
+- The dashboard now includes a Control Room backed by `/control-room/status` and `/ws/control-room` for live connector status, high-risk gateway events, approvals, tasks, cloud-worker mode, model routing, proof, costs, and recent errors.
 
 Advanced power layer:
 
