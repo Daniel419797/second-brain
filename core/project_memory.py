@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import hashlib
+import importlib
 import json
 import re
 import sqlite3
@@ -11,7 +12,6 @@ import threading
 from pathlib import Path
 from typing import Any
 
-from core import workspace_brain
 from core.config import DATA_DIR, ensure_runtime_dirs, resolve_coding_root
 
 DB_PATH = DATA_DIR / "project_memory.sqlite3"
@@ -19,6 +19,14 @@ REFERENCE_IMAGE_DIR = DATA_DIR / "project_reference_images"
 MAX_REFERENCE_IMAGE_BYTES = 12 * 1024 * 1024
 VALID_REFERENCE_SUFFIXES = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
 _LOCK = threading.Lock()
+
+
+class _WorkspaceBrainAdapter:
+    def analyze_project(self, root: str | Path = "") -> dict[str, Any]:
+        return importlib.import_module("core.workspace_brain").analyze_project(root)
+
+
+workspace_brain = _WorkspaceBrainAdapter()
 
 
 def init_db(path: Path | None = None) -> None:

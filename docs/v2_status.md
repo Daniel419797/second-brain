@@ -90,6 +90,9 @@ Hardening sprint:
 - `core/command_runner.py` centralizes managed command execution with argument-array parsing, `shell=False`, executable allowlisting, and shell metacharacter rejection. The previous `shell=True` test/build/debugger callsites now use this runner.
 - `.env.example`, `.gitignore`, `.dockerignore`, `.pre-commit-config.yaml`, `scripts/validate_repo.py`, pytest markers, performance smoke tests, and `.github/workflows/ci.yml` add safer secrets hygiene, CI smoke coverage, and import-time performance budgets.
 - `docs/production_readiness.md` captures the remaining provider, deployment, HTTPS, database sync, and GitHub readiness checks that require real credentials or external infrastructure.
+- `api/routers/` now contains extracted domain routers for `core`, `media`, `ops`, and `realtime`, beginning the split away from the large `api/server.py` route registry.
+- `/providers/readiness`, `/production/readiness`, `/github/status`, `/models/3d/status`, and `/text-to-3d/status` expose live setup checks for cloud, GitHub, search, image, and 3D provider readiness.
+- `scripts/run_tests.py` adds smoke/fast/integration/slow/full pytest profiles, and `scripts/verify_production.py` verifies HTTPS API deployment plus `/ws/tasks`.
 
 Command center expansion:
 

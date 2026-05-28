@@ -11,11 +11,37 @@ services:
         sync: false
       - key: JARVIS_API_SECRET
         generateValue: true
+      - key: FRIDAY_PRODUCTION_URL
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
       - key: GROQ_API_KEY
         sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: OPENROUTER_API_KEY
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: BRAVE_SEARCH_API_KEY
+        sync: false
+      - key: GOOGLE_SEARCH_API_KEY
+        sync: false
+      - key: GOOGLE_SEARCH_CX
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: SERPAPI_API_KEY
+        sync: false
+      - key: IMAGE_GENERATION_PROVIDER
+        value: pollinations
+      - key: HF_TOKEN
+        sync: false
+      - key: MESHY_API_KEY
+        sync: false
+      - key: TRIPO_API_KEY
         sync: false
     disk:
       name: friday-data

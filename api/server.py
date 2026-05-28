@@ -7,7 +7,9 @@ import base64
 import binascii
 import datetime as dt
 import json
+import os
 import re
+import sys
 import threading
 import time
 from pathlib import Path
@@ -17,9 +19,24 @@ from fastapi import Body, Cookie, Depends, FastAPI, Header, HTTPException, Respo
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - optional in stripped runtime images
+    def load_dotenv(*_args: Any, **_kwargs: Any) -> bool:
+        return False
 
 from core.config import DATA_DIR, LOG_DIR, config_value
 from core.lazy_imports import lazy_module
+
+def _load_runtime_env() -> None:
+    if str(os.getenv("FRIDAY_LOAD_DOTENV", "1")).strip().lower() in {"0", "false", "no", "off"}:
+        return
+    if any("pytest" in str(arg).lower() for arg in sys.argv):
+        return
+    load_dotenv()
+
+
+_load_runtime_env()
 
 
 _CORE_MODULES = [
@@ -36,7 +53,8 @@ _CORE_MODULES = [
     "executive_capabilities", "focus_protection", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
     "identity", "image_generation", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
     "live_workspace_coach", "local_ai_search", "local_file_intelligence", "local_voice_brain", "llm", "long_term_learning",
-    "meeting_study_companion", "memory_debate", "mission_control", "model_benchmark_lab", "model_router_brain",
+    "meeting_study_companion", "memory_debate", "mission_control", "model_3d", "model_3d_studio",
+    "model_benchmark_lab", "model_router_brain",
     "neo4j_migration", "notification_center", "notification_intelligence", "offline_survival", "operating_rhythm",
     "operator_skills", "orchestrator", "os_autopilot", "pc_awareness", "pc_timeline", "performance", "permissions",
     "personal_automation_daemon", "personal_command_memory", "personal_crm", "personal_data_timeline", "personal_finance",
@@ -45,7 +63,7 @@ _CORE_MODULES = [
     "project_memory", "project_watchdog", "proactive_guardian", "release_manager", "reliability_score", "research_briefings",
     "sandbox_simulation", "search_broker", "security_guardian_pro", "self_debugger", "self_model", "self_reflection",
     "self_testing_personality", "self_update", "semantic_search", "skill_evolution", "skill_improvement", "skill_library",
-    "skill_marketplace", "skill_training_studio", "task_contracts", "task_queue", "test_build_monitor", "trust_dashboard",
+    "skill_marketplace", "skill_training_studio", "task_contracts", "task_queue", "test_build_monitor", "text_to_3d", "trust_dashboard",
     "trust_proof", "version_guardian", "vision_skill_learning", "visual_monitor", "voice_command_repair", "voice_reliability",
     "workspace_brain", "world_model", "agent_council", "agent_lifecycle", "agent_quality_manager", "agent_simulation_sandbox",
     "code_change_simulator", "codebase_standards", "command_graph", "dev_server_copilot", "do_not_forget", "emotional_timing",
@@ -1313,121 +1331,9 @@ def create_app() -> FastAPI:
             allow_methods=["*"],
             allow_headers=["*"],
         )
+    from api.routers import register_domain_routers
 
-    @app.post("/auth/login")
-    def login(request: LoginRequest, response: Response) -> dict[str, Any]:
-        if not api_auth.authenticate(request.username, request.password):
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API credentials.")
-        access_token = api_auth.create_token(request.username, token_type="access")
-        refresh_token = api_auth.create_token(
-            request.username,
-            token_type="refresh",
-            hours=float(config_value("api_refresh_exp_hours", 24 * 7)),
-        )
-        response.set_cookie(
-            "friday_refresh_token",
-            refresh_token,
-            httponly=True,
-            secure=bool(config_value("api_secure_cookies", False)),
-            samesite="lax",
-            max_age=int(float(config_value("api_refresh_exp_hours", 24 * 7)) * 3600),
-        )
-        return {"access_token": access_token, "token_type": "bearer", "expires_at": api_auth.token_expiry()}
-
-    @app.post("/auth/refresh")
-    def refresh(response: Response, friday_refresh_token: str | None = Cookie(default=None)) -> dict[str, Any]:
-        if not friday_refresh_token:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing refresh token.")
-        payload = _decode_or_401(friday_refresh_token, token_type="refresh")
-        access_token = api_auth.create_token(str(payload["sub"]), token_type="access")
-        return {"access_token": access_token, "token_type": "bearer", "expires_at": api_auth.token_expiry()}
-
-    @app.get("/health")
-    def health(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return {"ok": True, "name": "Friday", "api": "v2"}
-
-    @app.get("/dashboard/snapshot")
-    def dashboard_snapshot(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return _dashboard_snapshot()
-
-    @app.post("/chat")
-    def chat(request: ChatRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        message = " ".join(str(request.message or "").split())
-        if not message:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Message is empty.")
-        reply = orchestrator.handle_command(message)
-        return {
-            "message": message,
-            "reply": reply,
-            "timestamp": dt.datetime.now(dt.timezone.utc).astimezone().isoformat(timespec="seconds"),
-        }
-
-    @app.post("/voice/chat")
-    def voice_chat(request: ChatRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        message = " ".join(str(request.message or "").split())
-        if not message:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Message is empty.")
-        with llm.voice_route():
-            reply = orchestrator.handle_command(message)
-        return {
-            "message": message,
-            "reply": reply,
-            "mode": "voice-fast",
-            "model": str(config_value("voice_nvidia_model", "meta/llama-3.1-8b-instruct")),
-            "timestamp": dt.datetime.now(dt.timezone.utc).astimezone().isoformat(timespec="seconds"),
-        }
-
-    @app.post("/chat/attachments")
-    def chat_attachment(request: ChatAttachmentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return _store_chat_attachment(request)
-
-    @app.get("/search/status")
-    def web_search_status(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return search_broker.status()
-
-    @app.post("/search/query")
-    def web_search_query(request: WebSearchRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return search_broker.search(
-            request.query,
-            limit=request.limit,
-            providers=request.providers or None,
-            use_cache=request.use_cache,
-            mode=request.mode or None,
-        )
-
-    @app.get("/images/status")
-    def images_status(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return image_generation.status()
-
-    @app.get("/images")
-    def images_list(limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
-        return image_generation.list_images(limit=max(1, min(int(limit), 100)))
-
-    @app.post("/images/generate")
-    def images_generate(request: ImageGenerateRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return image_generation.generate_image(
-            request.prompt,
-            negative_prompt=request.negative_prompt,
-            provider=request.provider,
-            width=request.width,
-            height=request.height,
-            steps=request.steps,
-        )
-
-    @app.get("/images/{filename}")
-    def generated_image(
-        filename: str,
-        token: str = "",
-        authorization: str = Header(default=""),
-    ) -> FileResponse:
-        _require_user_from_header_or_token(authorization, token)
-        try:
-            path = image_generation.image_path(filename)
-        except ValueError:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Generated image not found.")
-        if not path.exists() or not path.is_file():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Generated image not found.")
-        return FileResponse(str(path))
+    register_domain_routers(app, sys.modules[__name__])
 
     @app.get("/desktop/tasks")
     def list_desktop_tasks(limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
@@ -1790,26 +1696,6 @@ def create_app() -> FastAPI:
     @app.get("/capabilities/events")
     def capability_events(limit: int = 30, area: str = "", _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return capability_center.recent_events(limit=limit, area=area)
-
-    @app.post("/backup/config")
-    def backup_config(request: BackupFileRequest | None = Body(default=None), _user: str = Depends(require_user)) -> dict[str, Any]:
-        return backup_recovery.snapshot_config(label=(request.label if request else "config snapshot"))
-
-    @app.post("/backup/file")
-    def backup_file(request: BackupFileRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return backup_recovery.backup_file(request.path, label=request.label)
-
-    @app.get("/backup/list")
-    def backup_list(limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
-        return backup_recovery.list_backups(limit=limit)
-
-    @app.post("/backup/{backup_id}/restore")
-    def backup_restore(backup_id: int, request: RestoreBackupRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return backup_recovery.restore_backup(backup_id, confirm=request.confirm)
-
-    @app.post("/backup/delete-guard")
-    def backup_delete_guard(request: BackupFileRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return backup_recovery.risky_delete_guard(request.path)
 
     @app.get("/guardian/status")
     def guardian_status(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -2853,18 +2739,6 @@ def create_app() -> FastAPI:
     @app.post("/security-guardian-pro/scan")
     def security_guardian_pro_scan(request: CapabilityRootRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
         return security_guardian_pro.scan(request.root, light=True)
-
-    @app.get("/cloud-worker/status")
-    def cloud_worker_status(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return cloud_worker_mode.status()
-
-    @app.get("/cloud-worker/jobs")
-    def cloud_worker_jobs(limit: int = 20, status: str = "", _user: str = Depends(require_user)) -> list[dict[str, Any]]:
-        return cloud_worker_mode.list_jobs(limit=limit, status=status)
-
-    @app.post("/cloud-worker/submit")
-    def cloud_worker_submit(request: CloudWorkerSubmitRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
-        return cloud_worker_mode.submit(request.job_type, request.title, request.payload, prefer_cloud=request.prefer_cloud)
 
     @app.get("/autonomy-engine/status")
     def autonomy_engine_status(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -4174,14 +4048,6 @@ def create_app() -> FastAPI:
     def permission_events(limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return permissions.recent_events(limit=limit)
 
-    @app.get("/metrics/api-benchmark")
-    def api_benchmark(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return performance.benchmark_api_core()
-
-    @app.post("/sync/run")
-    def run_sync(_user: str = Depends(require_user)) -> dict[str, Any]:
-        return cloud_sync.sync_once()
-
     @app.post("/graph/neo4j/export")
     def export_neo4j(_user: str = Depends(require_user)) -> dict[str, Any]:
         return neo4j_migration.export_cypher()
@@ -4440,26 +4306,6 @@ def create_app() -> FastAPI:
                         "timestamp": dt.datetime.now(dt.timezone.utc).astimezone().isoformat(timespec="seconds"),
                     }
                 )
-        except WebSocketDisconnect:
-            return
-
-    @app.websocket("/ws/tasks")
-    async def task_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            api_auth.decode_token(token, token_type="access")
-        except api_auth.AuthError:
-            await websocket.close(code=1008)
-            return
-        await websocket.accept()
-        last_payload = ""
-        try:
-            while True:
-                payload = await asyncio.to_thread(_task_stream_payload)
-                text = _stream_payload_signature(payload)
-                if text != last_payload:
-                    last_payload = text
-                    await websocket.send_json(payload)
-                await asyncio.sleep(1.0)
         except WebSocketDisconnect:
             return
 

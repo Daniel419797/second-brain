@@ -6,7 +6,8 @@ Use this checklist before treating Friday as production-ready on a real machine 
 
 - Run `python scripts/validate_repo.py`.
 - Run `python -m compileall -q core tools input output jarvis.py scripts`.
-- Run `python -m pytest -m "smoke or not slow" -q --maxfail=5`.
+- Run `python scripts/run_tests.py smoke`.
+- Run `python scripts/run_tests.py fast`.
 - Run `npm --workspace apps/web run build`.
 - Confirm `.env` is ignored and `.env.example` contains placeholders only.
 - Confirm `git status --short --ignored` does not show secrets, SQLite stores, model binaries, or build output as tracked candidates.
@@ -18,6 +19,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Photoreal 3D: install Blender and set `model_3d_blender_path` if it is not on PATH.
 - Image generation: run local Stable Diffusion at `STABLE_DIFFUSION_URL`, set Hugging Face image credentials, or explicitly use Pollinations.
 - Google Workspace: set OAuth client credentials and complete the consent flow.
+- Local/API status: verify `/providers/readiness`, `/search/status`, `/images/status`, `/models/3d/status`, and `/text-to-3d/status`.
 
 ## Cloud deployment
 
@@ -27,6 +29,7 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Configure `DATABASE_URL` and enable `cloud_sync_enabled` only after a real PostgreSQL database is ready.
 - Verify `/health` over HTTPS.
 - Verify login, refresh token behavior, `/dashboard/snapshot`, `/search/status`, and `/ws/tasks`.
+- Run `python scripts/verify_production.py --url https://your-api-host` with `JARVIS_API_PASSWORD` set locally.
 - Run a backup/restore drill for SQLite stores and cloud PostgreSQL sync data.
 
 ## GitHub baseline
