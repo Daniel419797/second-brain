@@ -26,6 +26,8 @@ Use this checklist before treating Friday as production-ready on a real machine 
 - Choose Render, Railway, or another host.
 - Deploy the API with `deploy/Dockerfile.api`; it installs `requirements-api.txt` instead of the full local desktop/voice stack.
 - Set `JARVIS_API_PASSWORD` and a strong `JARVIS_API_SECRET` in the platform secret store.
+- Set `FRIDAY_API_CORS_ORIGINS` on the API service to the exact web dashboard origin, such as `https://your-app.vercel.app`.
+- Set `NEXT_PUBLIC_FRIDAY_API_URL` on the web app before building it, because Next.js bakes public env vars into the browser bundle.
 - Set only provider keys needed by the deployment. Do not upload local `.env`.
 - Configure `DATABASE_URL` and enable `cloud_sync_enabled` only after a real PostgreSQL database is ready.
 - Verify `/health` over HTTPS.

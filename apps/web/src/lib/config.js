@@ -1,4 +1,6 @@
-export const API_URL = process.env.NEXT_PUBLIC_FRIDAY_API_URL || "http://127.0.0.1:8000";
+const rawApiUrl = process.env.NEXT_PUBLIC_FRIDAY_API_URL || "http://127.0.0.1:8000";
+
+export const API_URL = rawApiUrl.replace(/\/+$/, "");
 
 export const STATUSES = ["active", "pending", "blocked", "done", "failed", "cancelled"];
 

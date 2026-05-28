@@ -11,6 +11,8 @@ services:
         sync: false
       - key: JARVIS_API_SECRET
         generateValue: true
+      - key: FRIDAY_API_CORS_ORIGINS
+        sync: false
       - key: FRIDAY_PRODUCTION_URL
         sync: false
       - key: DATABASE_URL

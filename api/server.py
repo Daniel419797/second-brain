@@ -4628,7 +4628,11 @@ def _clean_content_type(value: str) -> str:
 
 
 def _cors_origins() -> list[str]:
-    raw = str(config_value("api_cors_origins", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173"))
+    raw = str(
+        os.getenv("FRIDAY_API_CORS_ORIGINS")
+        or os.getenv("API_CORS_ORIGINS")
+        or config_value("api_cors_origins", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173")
+    )
     origins = {origin.strip() for origin in raw.split(",") if origin.strip()}
     for port in range(3000, 3006):
         origins.add(f"http://localhost:{port}")

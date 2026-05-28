@@ -38,3 +38,12 @@ def test_extracted_media_and_ops_routes(monkeypatch, tmp_path):
     assert client.get("/providers/readiness", headers=headers).json()["ok"] is False
     assert client.get("/production/readiness", headers=headers).json()["ok"] is False
     assert client.get("/github/status", headers=headers).json()["github_authenticated"] is False
+
+
+def test_cors_origins_can_come_from_environment(monkeypatch):
+    monkeypatch.setenv("FRIDAY_API_CORS_ORIGINS", "https://friday-web.example.com, http://localhost:3000")
+
+    origins = server._cors_origins()
+
+    assert "https://friday-web.example.com" in origins
+    assert "http://localhost:3000" in origins
