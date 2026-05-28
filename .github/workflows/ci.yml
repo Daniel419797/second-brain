@@ -1,6 +1,6 @@
 name: Friday CI
 
-on:
+"on":
   push:
   pull_request:
   workflow_dispatch:
@@ -12,6 +12,8 @@ on:
 
 jobs:
   smoke:
+    permissions:
+      contents: read
     runs-on: windows-latest
     timeout-minutes: 20
     steps:
