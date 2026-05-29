@@ -74,6 +74,8 @@ def test_power_center_tool_schema_includes_new_powers():
     assert "workspace_analyze" in actions
     assert "operate_app" in actions
     assert "autonomous_coding" in actions
+    assert "ad_campaign_draft" in actions
+    assert "ad_campaign_post" in actions
     assert "backup_config" in actions
     assert "guardian_scan" in actions
     assert "voice_repair" in actions

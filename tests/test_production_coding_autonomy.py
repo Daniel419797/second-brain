@@ -36,3 +36,14 @@ def test_discover_tests_handles_python_projects(tmp_path):
 
     assert "python -m pytest" in commands
     assert "python -m ruff check ." in commands
+
+
+def test_discover_tests_handles_flutter_projects(tmp_path):
+    root = tmp_path / "mobile-app"
+    root.mkdir()
+    (root / "pubspec.yaml").write_text("name: mobile_app\n", encoding="utf-8")
+
+    commands = production_coding_autonomy.discover_tests(root)
+
+    assert "flutter test" in commands
+    assert "flutter analyze" in commands

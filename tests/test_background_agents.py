@@ -18,6 +18,31 @@ def test_run_one_task_completes_pending_task(monkeypatch, tmp_path):
     assert result["status"] == "done"
 
 
+def test_run_one_task_routes_autonomous_coding_task(monkeypatch, tmp_path):
+    monkeypatch.setattr(task_queue, "DB_PATH", tmp_path / "tasks.sqlite3")
+    calls = []
+    monkeypatch.setattr(background_agents.autonomous_coding, "should_handle_task", lambda task: True)
+    monkeypatch.setattr(
+        background_agents.autonomous_coding,
+        "run_task",
+        lambda task: calls.append(task["id"])
+        or {
+            "agent_id": "senior_developer",
+            "agent_name": "Senior Developer",
+            "summary": "Summary: coded. Next step: review. Risks: tests not run.",
+        },
+    )
+    monkeypatch.setattr(background_agents.agents, "run_task", lambda task: (_ for _ in ()).throw(AssertionError("generic agent should not run")))
+    monkeypatch.setattr(background_agents.knowledge_graph, "add_edge", lambda *args, **kwargs: None)
+    monkeypatch.setattr(background_agents.episodic_store, "insert_event", lambda *args, **kwargs: 1)
+    task_id = task_queue.create_task("Autonomous coding: build app", agent_id="senior_developer", input_data={"source": "autonomous_coding"})
+
+    result = background_agents.run_one_task()
+
+    assert calls == [task_id]
+    assert result["status"] == "done"
+
+
 def test_start_and_stop_workers(monkeypatch, tmp_path):
     monkeypatch.setattr(task_queue, "DB_PATH", tmp_path / "tasks.sqlite3")
     monkeypatch.setattr(background_agents, "config_value", lambda key, default=None: True if key == "v2_background_agents_enabled" else 0.01 if key.endswith("_seconds") else default)

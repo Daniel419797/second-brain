@@ -20,7 +20,8 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { API_URL } from "@/lib/config";
 
 export function AndroidView() {
-  const { api, token, data, refresh } = useDashboard();
+  const { api, token, data, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("android") || {};
   const [mesh, setMesh] = useState(data.android || null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState("");
@@ -156,9 +157,9 @@ export function AndroidView() {
       <main className="grid min-w-0 content-start gap-4">
         <header className="flex min-h-[54px] min-w-0 flex-wrap items-start gap-3">
           <div className="min-w-0 max-w-[520px]">
-            <h2 className="m-0 text-[25px] font-extrabold tracking-normal text-white">Android Device Mesh</h2>
+            <h2 className="m-0 text-[25px] font-extrabold tracking-normal text-white">{copy?.title || "Android Device Mesh"}</h2>
             <p className="mt-1 text-[17px] leading-snug text-[#c5d0de]">
-              Synchronizing high-stakes intelligence across {nodeCount} active terminal node{nodeCount === 1 ? "" : "s"}.
+              {copy?.subtitle || `Synchronizing high-stakes intelligence across ${nodeCount} active terminal node${nodeCount === 1 ? "" : "s"}.`}
             </p>
           </div>
           <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-2">
@@ -182,8 +183,8 @@ export function AndroidView() {
         />
 
         <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,2fr)_270px]">
-          <RecentCaptures captures={captures} token={token} />
-          <TelemetryPanel lines={telemetry} loading={loading} />
+          <RecentCaptures captures={captures} copy={copy} token={token} />
+          <TelemetryPanel lines={telemetry} copy={copy} loading={loading} />
         </div>
 
         {status ? (
@@ -316,7 +317,7 @@ function ActionDeck({ busy, onRing, onNotify, onUpload, onClipboard, onHandoff }
   );
 }
 
-function RecentCaptures({ captures, token }) {
+function RecentCaptures({ captures, copy, token }) {
   return (
     <Panel className="min-h-[228px] p-4">
       <div className="flex items-center gap-3">
@@ -329,7 +330,7 @@ function RecentCaptures({ captures, token }) {
           <Plus size={25} />
         </div>
       </div>
-      {!captures.length ? <p className="mt-3 text-[12px] text-friday-muted">No device captures have been uploaded by the Android companion yet.</p> : null}
+      {!captures.length ? <p className="mt-3 text-[12px] text-friday-muted">{copy?.empty?.handoffs || "Friday has no Android capture in this read yet."}</p> : null}
     </Panel>
   );
 }
@@ -345,7 +346,7 @@ function CaptureTile({ item, token }) {
   );
 }
 
-function TelemetryPanel({ lines, loading }) {
+function TelemetryPanel({ lines, copy, loading }) {
   return (
     <Panel className="min-h-[228px] p-4">
       <PanelTitle title="Real-time Telemetry" />
@@ -360,7 +361,7 @@ function TelemetryPanel({ lines, loading }) {
             </div>
           ))
         ) : (
-          <span className="text-[#9aa8ba]">No Android telemetry events recorded yet.</span>
+          <span className="text-[#9aa8ba]">{copy?.empty?.handoffs || "Friday has no Android telemetry event in this read yet."}</span>
         )}
       </div>
     </Panel>

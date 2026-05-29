@@ -26,22 +26,30 @@ def list_operators() -> list[dict[str, Any]]:
 
 def operator_context(app: str) -> dict[str, Any]:
     key = _key(app)
-    spec = OPERATORS.get(key)
+    spec = _operator_spec(app)
     if not spec:
-        return {"available": False, "summary": f"No specialist operator registered for {app}."}
+        return {"available": False, "summary": f"No app name provided."}
     awareness = pc_awareness.snapshot()
     open_windows = [
         item for item in awareness.get("running_apps", [])
         if key in str(item.get("name") or item.get("exe") or "").lower() or spec["open_target"] in str(item).lower()
     ][:8]
-    return {"available": True, "id": key, "operator": spec, "open_windows": open_windows, "summary": f"{spec['name']} ready with {len(open_windows)} related running windows."}
+    source = "specialist" if key in OPERATORS else "dynamic"
+    return {
+        "available": True,
+        "id": key,
+        "operator": spec,
+        "source": source,
+        "open_windows": open_windows,
+        "summary": f"{spec['name']} ready with {len(open_windows)} related running windows.",
+    }
 
 
 def open_app(app: str) -> dict[str, Any]:
     key = _key(app)
-    spec = OPERATORS.get(key)
+    spec = _operator_spec(app)
     if not spec:
-        return {"ok": False, "summary": f"No operator registered for {app}."}
+        return {"ok": False, "summary": "Tell me which app to open."}
     target = spec["open_target"]
     link = app_integrations.app_link(target)
     if link:
@@ -57,9 +65,9 @@ def open_app(app: str) -> dict[str, Any]:
 
 def operate(app: str, instruction: str, *, max_steps: int = 0) -> dict[str, Any]:
     key = _key(app)
-    spec = OPERATORS.get(key)
+    spec = _operator_spec(app)
     if not spec:
-        return {"ok": False, "summary": f"No operator registered for {app}."}
+        return {"ok": False, "summary": "Tell me which app to operate."}
     context = operator_context(key)
     task_instruction = (
         f"Use the {spec['name']} for {app}. Goal: {instruction}. "
@@ -89,3 +97,26 @@ def _key(value: str) -> str:
     lowered = str(value or "").strip().lower().replace(" ", "_").replace("-", "_")
     aliases = {"vs_code": "vscode", "visual_studio_code": "vscode", "explorer": "file_explorer", "files": "file_explorer"}
     return aliases.get(lowered, lowered)
+
+
+def _operator_spec(app: str) -> dict[str, Any] | None:
+    key = _key(app)
+    if not key:
+        return None
+    if key in OPERATORS:
+        return dict(OPERATORS[key])
+    found = pc_awareness.find_app(app)
+    launch_target = str(found.get("launch_target") or app).strip()
+    name = str(found.get("name") or app).strip()
+    mode = "desktop"
+    if name.lower() in {"gmail", "figma", "discord", "whatsapp", "chrome", "browser"}:
+        mode = "browser"
+    return {
+        "name": f"{name} dynamic operator",
+        "open_target": launch_target or app,
+        "mode": mode,
+        "strengths": ["dynamic app discovery", "screen control", "accessibility", "workflow learning"],
+        "dynamic": True,
+        "found": bool(found.get("found")),
+        "source": found.get("source") or "manual",
+    }

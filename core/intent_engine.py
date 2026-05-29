@@ -108,6 +108,24 @@ INTENT_SPECS: dict[str, IntentSpec] = {
         min_confidence=0.82,
         required_slots=("prompt",),
     ),
+    "draft_ad_campaign": IntentSpec(
+        name="draft_ad_campaign",
+        description="Draft ad campaign copy, variants, CTAs, hashtags, and creative prompts.",
+        tool_name="power_center",
+        tool_action="ad_campaign_draft",
+        risk="creates_marketing_copy",
+        min_confidence=0.82,
+        required_slots=("product",),
+    ),
+    "post_ad_campaign": IntentSpec(
+        name="post_ad_campaign",
+        description="Queue an ad campaign post through an approval-gated connector outbox.",
+        tool_name="power_center",
+        tool_action="ad_campaign_post",
+        risk="network_write",
+        min_confidence=0.84,
+        required_slots=("product", "connector", "target"),
+    ),
     "web_search": IntentSpec(
         name="web_search",
         description="Search the web for current or external information.",
@@ -302,6 +320,7 @@ ACTIONABLE_HINTS = {
     "delegate",
     "generate",
     "draft",
+    "advertise",
     "get",
     "have",
     "index",
@@ -309,6 +328,8 @@ ACTIONABLE_HINTS = {
     "make",
     "queue",
     "prepare",
+    "post",
+    "publish",
     "remind",
     "schedule",
     "search",
@@ -440,6 +461,22 @@ def _tool_input(spec: IntentSpec, slots: dict[str, Any]) -> dict[str, Any]:
     if spec.name == "generate_image":
         prompt = _slot_text(slots, "prompt", "description", "target")
         return {"action": action, "prompt": prompt} if prompt else {}
+    if spec.name in {"draft_ad_campaign", "post_ad_campaign"}:
+        product = _slot_text(slots, "product", "name", "target", "request")
+        if not product:
+            return {}
+        payload: dict[str, Any] = {"action": action, "product": product}
+        for key in ("audience", "offer", "platform", "objective", "tone", "connector", "target"):
+            value = _slot_text(slots, key)
+            if value:
+                payload[key] = value
+        campaign_id = _slot_int(slots, "campaign_id", 0)
+        if campaign_id:
+            payload["campaign_id"] = campaign_id
+        variant_index = _slot_int(slots, "variant_index", 0)
+        if variant_index:
+            payload["variant_index"] = variant_index
+        return payload
     if spec.name == "web_search":
         query = _slot_text(slots, "query", "target")
         return {"action": action, "query": query} if query else {}
@@ -683,6 +720,42 @@ def _classify_git(text: str) -> IntentResult | None:
     return None
 
 
+def _classify_ad_campaign(text: str) -> IntentResult | None:
+    lowered = text.lower()
+    has_ad_word = re.search(r"\b(?:ad|ads|advert|advertisement|advertising|promo|promotion)\b", lowered)
+    has_marketing_campaign = re.search(r"\bmarketing\s+campaign\b|\bcampaign\s+(?:ad|ads|copy|post|creative)\b", lowered)
+    if not has_ad_word and not has_marketing_campaign:
+        return None
+    if not re.search(r"\b(?:make|create|draft|write|generate|prepare|post|publish|send|queue|run|launch|advertise)\b", lowered):
+        return None
+
+    post_requested = bool(re.search(r"\b(?:post|publish|send|queue|run|launch)\b", lowered))
+    product = _extract_ad_product(text)
+    if not product:
+        return None
+
+    slots: dict[str, Any] = {"product": product}
+    connector, target = _extract_ad_destination(text)
+    if connector:
+        slots["connector"] = connector
+        slots["platform"] = connector
+    if target:
+        slots["target"] = target
+    campaign_match = re.search(r"\bcampaign\s+#?(?P<id>\d+)\b", lowered)
+    if campaign_match:
+        slots["campaign_id"] = int(campaign_match.group("id"))
+    audience = _extract_after_marker(text, ("for audience", "for users", "targeting"))
+    if audience and audience.lower() != product.lower():
+        slots["audience"] = audience
+    return IntentResult(
+        "post_ad_campaign" if post_requested else "draft_ad_campaign",
+        0.9 if post_requested else 0.88,
+        slots,
+        "rules",
+        "marketing ad request",
+    )
+
+
 def _classify_visual_asset(text: str) -> IntentResult | None:
     lowered = text.lower()
     if "illustrator" in lowered:
@@ -838,6 +911,7 @@ def _classify_web_search(text: str) -> IntentResult | None:
 _RULE_CLASSIFIERS: tuple[RuleClassifier, ...] = (
     _classify_3d_model,
     _classify_git,
+    _classify_ad_campaign,
     _classify_visual_asset,
     _classify_academic_project,
     _classify_coding_project,
@@ -907,6 +981,53 @@ def _looks_like_software_request(text: str) -> bool:
     return any(hint in lowered for hint in SOFTWARE_HINTS)
 
 
+def _extract_ad_product(text: str) -> str:
+    patterns = (
+        r"(?:for|about|promoting|promote|advertise)\s+(?P<product>.+?)(?:\s+(?:to|on|via|through|in)\s+(?:discord|slack|telegram|whatsapp|gmail|email|notion|web)\b.*)?$",
+        r"(?:ad|ads|advertisement|advertising|promo|promotion|marketing\s+campaign)\s+(?:for|about)\s+(?P<product>.+?)(?:\s+(?:to|on|via|through|in)\s+.+)?$",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            product = _clean_slot(match.group("product"))
+            product = re.sub(r"\s+(?:campaign\s+)?#?\d+$", "", product, flags=re.IGNORECASE).strip()
+            if product:
+                return product
+    product = re.sub(
+        r"^(?:make|create|draft|write|generate|prepare|post|publish|send|queue|run|launch|advertise)\s+(?:an?\s+|some\s+)?(?:ad|ads|advertisement|advertising|promo|promotion|marketing\s+campaign|campaign)\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    product = re.sub(r"\s+(?:to|on|via|through|in)\s+(?:discord|slack|telegram|whatsapp|gmail|email|notion|web)\b.*$", "", product, flags=re.IGNORECASE)
+    return _clean_slot(product)
+
+
+def _extract_ad_destination(text: str) -> tuple[str, str]:
+    lowered = text.lower()
+    connector_match = re.search(r"\b(discord|slack|telegram|whatsapp|gmail|email|notion|web)\b", lowered)
+    connector = connector_match.group(1) if connector_match else ""
+    if connector == "email":
+        connector = "gmail"
+    target = ""
+    if connector_match:
+        after = text[connector_match.end() :].strip(" ,.!?:;")
+        target = _clean_slot(re.sub(r"^(?:channel|room|chat|to|at|in)\s+", "", after, flags=re.IGNORECASE))
+    explicit = re.search(r"\b(?:to|on|via|through|in)\s+(?P<target>#[A-Za-z0-9_\-]+|[A-Za-z0-9_.@+\-/]+)$", text, flags=re.IGNORECASE)
+    if explicit and not connector:
+        target = _clean_slot(explicit.group("target"))
+    return connector, target
+
+
+def _extract_after_marker(text: str, markers: tuple[str, ...]) -> str:
+    lowered = text.lower()
+    for marker in markers:
+        index = lowered.find(marker)
+        if index >= 0:
+            return _clean_slot(text[index + len(marker) :])
+    return ""
+
+
 def _normalize_slots(intent: str, slots: dict[str, Any]) -> dict[str, Any]:
     normalized = {str(key).strip(): value for key, value in (slots or {}).items() if str(key).strip()}
     if intent == "start_coding_project":
@@ -925,6 +1046,10 @@ def _normalize_slots(intent: str, slots: dict[str, Any]) -> dict[str, Any]:
         prompt = _slot_text(normalized, "prompt", "description", "target")
         if prompt:
             normalized["prompt"] = prompt
+    if intent in {"draft_ad_campaign", "post_ad_campaign"}:
+        product = _slot_text(normalized, "product", "name", "target", "request")
+        if product:
+            normalized["product"] = product
     if intent == "academic_project":
         topic = _slot_text(normalized, "topic", "title", "target", "request")
         if topic:
@@ -1138,6 +1263,14 @@ def _clarifying_question(intent: str, missing: list[str]) -> str:
         return "Tell me what to remind you about."
     if intent == "generate_image":
         return "Tell me what image to generate."
+    if intent == "draft_ad_campaign":
+        return "Tell me what product or offer to advertise."
+    if intent == "post_ad_campaign":
+        if "connector" in missing:
+            return "Tell me where to post the ad, like Discord, Slack, Gmail, WhatsApp, or Telegram."
+        if "target" in missing:
+            return "Tell me the channel, address, or destination for the ad."
+        return "Tell me what product or offer to advertise."
     if intent == "create_3d_model":
         return "Tell me what 3D model to generate."
     if intent == "git_clone":

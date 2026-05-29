@@ -1,6 +1,12 @@
 import { Bell, Brain, Crosshair, FileText, Power, ShieldCheck, X } from "lucide-react";
+import Link from "next/link";
+import { interfaceFor } from "@/lib/dynamicInterface";
 
 export function IntelligenceRail({ activeView, data, activeMission, approvalCount, liveTimestamp, onClose }) {
+  const copy = interfaceFor(data, activeView);
+  const rail = copy.rail || {};
+  const labels = copy.labels || {};
+  const primary = copy.primaryAction || copy.actions?.[0] || {};
   if (activeView === "chat") {
     const activeWindow = data.pcAwareness?.active_window || "No active window captured";
     const workerText = data.status?.running ? `${data.status.workers || 0} workers online` : "workers stopped";
@@ -9,7 +15,7 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
     const unsupported = data.evaluation?.counts?.unsupported_claim || 0;
     return (
       <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] gap-[18px] overflow-hidden bg-[#151b22] px-5 py-[18px]">
-        <RailHeader title="SESSION TELEMETRY" subtitle="" onClose={onClose} />
+        <RailHeader title={rail.title || "SESSION TELEMETRY"} subtitle={rail.subtitle || ""} onClose={onClose} />
         <div className="grid min-h-0 content-start gap-7 overflow-hidden">
           <TelemetryBlock title="CURRENT CONTEXT">
             <ContextRow label="Active Window" value={activeWindow} />
@@ -17,7 +23,7 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
             <ContextRow label="Approvals" value={`${approvalCount || 0} waiting`} />
           </TelemetryBlock>
 
-          <TelemetryBlock title="ACTIVE MEMORY" action="manage">
+          <TelemetryBlock title="ACTIVE MEMORY" action="manage" actionHref="/memory">
             <MemoryItem icon={<FileText size={14} />} title="Conversation Continuity" detail={continuity} />
             {thoughts.slice(0, 2).map((thought) => (
               <MemoryItem key={thought.id} title={thought.packet_type || "thought"} detail={thought.summary} />
@@ -36,35 +42,36 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
   }
 
   if (activeView === "safety") {
+    const safetyPaths = (copy.actions || []).map((item) => item.label).filter(Boolean).slice(0, 3);
     return (
       <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] gap-[18px] overflow-hidden bg-[#151b22] px-4 py-[18px]">
-        <RailHeader title="SYSTEM INTELLIGENCE" subtitle="Friday's Thought Summary" onClose={onClose} />
-        <p className="m-0 text-[14px] leading-relaxed text-[#b7c1cf]">Security posture is currently optimal.</p>
+        <RailHeader title={rail.title || "SYSTEM INTELLIGENCE"} subtitle={rail.subtitle || "Friday's Thought Summary"} onClose={onClose} />
+        <p className="m-0 text-[14px] leading-relaxed text-[#b7c1cf]">{copy.subtitle || "Friday is reading current safety state."}</p>
         <div className="grid min-h-0 content-start gap-7 overflow-hidden">
           <div className="grid gap-5">
-            <RailMenuItem icon={<Brain size={17} />} label="Thoughts" active />
-            <RailMenuItem icon={<Bell size={17} />} label="Notifications" />
-            <RailMenuItem icon={<ShieldCheck size={17} />} label="Decisions" badge={approvalCount || null} />
-            <RailMenuItem icon={<Crosshair size={17} />} label="Missions" />
+            <RailMenuItem icon={<Brain size={17} />} label="Thoughts" href="/agents" active />
+            <RailMenuItem icon={<Bell size={17} />} label="Notifications" href="/notifications" />
+            <RailMenuItem icon={<ShieldCheck size={17} />} label="Decisions" href="/approvals" badge={approvalCount || null} />
+            <RailMenuItem icon={<Crosshair size={17} />} label="Missions" href="/mission-control" />
           </div>
           <TelemetryBlock title="LIVE REASONING">
             <article className="rounded-[4px] border border-friday-line bg-[#111820] p-4">
               <p className="m-0 font-mono text-[13px] italic leading-relaxed text-white">
-                "I am currently monitoring outbound traffic for anomalies. The NET_OUTBOUND rule remains the highest priority for the next 4 hours."
+                "{rail.focus || copy.summary || "Friday is watching risky actions and will hold anything external for approval."}"
               </p>
             </article>
           </TelemetryBlock>
-          <TelemetryBlock title="ACTIVE PROTOCOLS">
+          <TelemetryBlock title="SAFETY PATHS">
             <div className="flex flex-wrap gap-2">
-              {["P7-SHIELD", "WATCHDOG-B", "SENTINEL_V4"].map((item) => (
+              {safetyPaths.length ? safetyPaths.map((item) => (
                 <span className="rounded-[3px] border border-friday-line bg-[#303743] px-3 py-2 font-mono text-[11px] font-bold text-white" key={item}>{item}</span>
-              ))}
+              )) : <span className="rounded-[3px] border border-dashed border-friday-line bg-[#111820] px-3 py-2 text-[12px] text-friday-muted">{copy.empty?.highRisk || "No safety path labels came back in this snapshot."}</span>}
             </div>
           </TelemetryBlock>
         </div>
         <article className="rounded-[4px] border border-friday-line bg-[#303743] p-4">
           <h3 className="mb-2 font-semibold text-white">Audit Integrity</h3>
-          <p className="m-0 text-[12px] leading-relaxed text-[#d8e2ee]">Immutable ledger verification in progress. All records cryptographically signed.</p>
+          <p className="m-0 text-[12px] leading-relaxed text-[#d8e2ee]">{copy.empty?.errors || "Friday will attach the next failed audit event here with evidence."}</p>
         </article>
       </aside>
     );
@@ -79,8 +86,8 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
       <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-[#151b22] px-4 py-[18px]">
         <header className="flex items-start gap-3">
           <div className="min-w-0">
-            <strong className="block font-mono text-[11px] font-bold uppercase tracking-[.2em] text-[#ffbf7b]">System Intelligence</strong>
-            <span className="mt-1.5 block text-[13px] text-white">Friday's Thought Summary</span>
+            <strong className="block font-mono text-[11px] font-bold uppercase tracking-[.2em] text-[#ffbf7b]">{rail.title || "System Intelligence"}</strong>
+            <span className="mt-1.5 block text-[13px] text-white">{rail.subtitle || "Friday's Thought Summary"}</span>
           </div>
           <button className="ml-auto grid h-7 w-7 place-items-center rounded-[3px] text-[#c9d3df] transition-colors hover:bg-[#202832] hover:text-white" type="button" title="Close System Intelligence" onClick={onClose}>
             <X size={17} />
@@ -125,8 +132,8 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
         </div>
 
         <div className="grid grid-cols-2 gap-2 border-t border-friday-line pt-4">
-          <button className="min-h-10 rounded-[2px] border border-[#303743] bg-[#303743] text-[13px] text-white transition-colors hover:border-friday-line" type="button" onClick={onClose}>Dismiss</button>
-          <a className="grid min-h-10 place-items-center rounded-[2px] border border-[#ffb277] bg-[#ffb277] text-[13px] font-bold text-[#130a03] transition-colors hover:bg-[#ffc491]" href="/android">Execute</a>
+          <button className="min-h-10 rounded-[2px] border border-[#303743] bg-[#303743] text-[13px] text-white transition-colors hover:border-friday-line" type="button" onClick={onClose}>{labels.dismiss || "Dismiss"}</button>
+          <a className="grid min-h-10 place-items-center rounded-[2px] border border-[#ffb277] bg-[#ffb277] text-[13px] font-bold text-[#130a03] transition-colors hover:bg-[#ffc491]" href={primary.href || "/android"}>{labels.execute || primary.label || "Execute"}</a>
         </div>
       </aside>
     );
@@ -134,13 +141,13 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
 
   if (activeView === "vision") {
     const analysis = visionAnalysisText(data);
-    const missionTitle = activeMission?.title || activeMission?.goal || "Mission Delta Progress";
+    const missionTitle = activeMission?.title || activeMission?.goal || rail.focus || copy.subtitle || "No active vision mission";
     return (
       <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-[#151b22] px-4 py-[18px]">
         <header className="flex items-start gap-3">
           <div className="min-w-0">
-            <strong className="block font-mono text-[11px] font-bold uppercase tracking-[.2em] text-[#ffbf7b]">System Intelligence</strong>
-            <span className="mt-1.5 block text-[13px] text-white">Friday's Thought Summary</span>
+            <strong className="block font-mono text-[11px] font-bold uppercase tracking-[.2em] text-[#ffbf7b]">{rail.title || "System Intelligence"}</strong>
+            <span className="mt-1.5 block text-[13px] text-white">{rail.subtitle || "Friday's Thought Summary"}</span>
           </div>
             <button className="ml-auto grid h-7 w-7 place-items-center rounded-[3px] text-[#c9d3df] transition-colors hover:bg-[#202832] hover:text-white" type="button" title="Close System Intelligence" onClick={onClose}>
               <X size={17} />
@@ -169,8 +176,8 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2 border-t border-friday-line pt-4">
-          <button className="min-h-10 rounded-[2px] border border-[#303743] bg-[#303743] text-[13px] text-white transition-colors hover:border-friday-line" type="button" onClick={onClose}>Dismiss</button>
-          <a className="grid min-h-10 place-items-center rounded-[2px] border border-[#ffb277] bg-[#ffb277] text-[13px] font-bold text-[#130a03] transition-colors hover:bg-[#ffc491]" href="/chat">Execute</a>
+          <button className="min-h-10 rounded-[2px] border border-[#303743] bg-[#303743] text-[13px] text-white transition-colors hover:border-friday-line" type="button" onClick={onClose}>{labels.dismiss || "Dismiss"}</button>
+          <a className="grid min-h-10 place-items-center rounded-[2px] border border-[#ffb277] bg-[#ffb277] text-[13px] font-bold text-[#130a03] transition-colors hover:bg-[#ffc491]" href={primary.href || "/chat"}>{labels.execute || primary.label || "Execute"}</a>
         </div>
       </aside>
     );
@@ -182,13 +189,13 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
     const load = memoryLoadPercent(data, thoughts, approvalCount);
     return (
       <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] gap-[18px] overflow-hidden bg-[#151b22] px-4 py-[18px]">
-        <RailHeader title="SYSTEM INTELLIGENCE" subtitle="Friday's Thought Summary" onClose={onClose} />
+        <RailHeader title={rail.title || "SYSTEM INTELLIGENCE"} subtitle={rail.subtitle || "Friday's Thought Summary"} onClose={onClose} />
         <div className="grid min-h-0 content-start gap-6 overflow-hidden pt-1">
           <div className="grid grid-cols-2 gap-3">
-            <RailMenuItem icon={<Brain size={17} />} label="Thoughts" active />
-            <RailMenuItem icon={<Bell size={17} />} label="Alerts" />
-            <RailMenuItem icon={<ShieldCheck size={17} />} label="Decisions" badge={approvalCount || null} />
-            <RailMenuItem icon={<Crosshair size={17} />} label="Missions" />
+            <RailMenuItem icon={<Brain size={17} />} label="Thoughts" href="/agents" active />
+            <RailMenuItem icon={<Bell size={17} />} label="Alerts" href="/notifications" />
+            <RailMenuItem icon={<ShieldCheck size={17} />} label="Decisions" href="/approvals" badge={approvalCount || null} />
+            <RailMenuItem icon={<Crosshair size={17} />} label="Missions" href="/mission-control" />
           </div>
 
           <TelemetryBlock title="Recent Reasoning">
@@ -224,7 +231,7 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
 
     return (
       <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] gap-[18px] overflow-hidden bg-[#151b22] px-4 py-[18px]">
-        <RailHeader title="SYSTEM INTELLIGENCE" subtitle="Friday's Thought Summary" onClose={onClose} />
+        <RailHeader title={rail.title || "SYSTEM INTELLIGENCE"} subtitle={rail.subtitle || "Friday's Thought Summary"} onClose={onClose} />
         <div className="friday-scroll grid min-h-0 content-start gap-5 overflow-y-auto pr-1">
           <section>
             <div className="mb-3 flex items-center gap-2 font-mono text-[11px] font-bold text-friday-accent">
@@ -265,23 +272,23 @@ export function IntelligenceRail({ activeView, data, activeMission, approvalCoun
           </TelemetryBlock>
         </div>
         <div className="grid grid-cols-2 gap-2 border-t border-friday-line pt-4">
-          <button className="min-h-10 rounded-[2px] border border-[#303743] bg-[#303743] text-[13px] text-white transition-colors hover:border-friday-line" type="button" onClick={onClose}>Dismiss</button>
-          <a className="grid min-h-10 place-items-center rounded-[2px] border border-[#ffb277] bg-[#ffb277] text-[13px] font-bold text-[#130a03] transition-colors hover:bg-[#ffc491]" href="/integrations">Execute</a>
+          <button className="min-h-10 rounded-[2px] border border-[#303743] bg-[#303743] text-[13px] text-white transition-colors hover:border-friday-line" type="button" onClick={onClose}>{labels.dismiss || "Dismiss"}</button>
+          <a className="grid min-h-10 place-items-center rounded-[2px] border border-[#ffb277] bg-[#ffb277] text-[13px] font-bold text-[#130a03] transition-colors hover:bg-[#ffc491]" href={primary.href || "/integrations"}>{labels.execute || primary.label || "Execute"}</a>
         </div>
       </aside>
     );
   }
 
-  const currentFocus = activeMission?.title || data.thoughts?.recent?.[0]?.summary || "Monitoring governance, approvals, and agent performance.";
+  const currentFocus = rail.focus || activeMission?.title || data.thoughts?.recent?.[0]?.summary || "Monitoring governance, approvals, and agent performance.";
 
   return (
     <aside className="grid h-full animate-friday-slide-left grid-rows-[auto_minmax(0,1fr)_auto] gap-[18px] overflow-hidden bg-[#151b22] px-4 py-[18px]">
-      <RailHeader title="SYSTEM INTELLIGENCE" subtitle="Friday's Thought Summary" onClose={onClose} />
+      <RailHeader title={rail.title || "SYSTEM INTELLIGENCE"} subtitle={rail.subtitle || "Friday's Thought Summary"} onClose={onClose} />
       <div className="grid min-h-0 content-start gap-5 overflow-hidden pt-1">
-        <RailMenuItem icon={<Brain size={17} />} label="Thoughts" active />
-        <RailMenuItem icon={<Bell size={17} />} label="Notifications" />
-        <RailMenuItem icon={<ShieldCheck size={17} />} label="Decisions" badge={approvalCount || null} />
-        <RailMenuItem icon={<Crosshair size={17} />} label="Missions" />
+        <RailMenuItem icon={<Brain size={17} />} label="Thoughts" href="/agents" active />
+        <RailMenuItem icon={<Bell size={17} />} label="Notifications" href="/notifications" />
+        <RailMenuItem icon={<ShieldCheck size={17} />} label="Decisions" href="/approvals" badge={approvalCount || null} />
+        <RailMenuItem icon={<Crosshair size={17} />} label="Missions" href="/mission-control" />
       </div>
       <RailFocus focus={currentFocus} live={Boolean(liveTimestamp)} />
     </aside>
@@ -304,12 +311,12 @@ function RailHeader({ title, subtitle, onClose }) {
   );
 }
 
-function TelemetryBlock({ title, action, children }) {
+function TelemetryBlock({ title, action, actionHref, children }) {
   return (
     <section>
       <div className="mb-3 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[.08em] text-[#cbd7e6]">
         <span>{title}</span>
-        {action ? <button className="ml-auto border-0 bg-transparent text-[11px] text-friday-accent" type="button">{action}</button> : null}
+        {action && actionHref ? <Link className="ml-auto border-0 bg-transparent text-[11px] text-friday-accent" href={actionHref}>{action}</Link> : null}
       </div>
       <div className="grid gap-0">{children}</div>
     </section>
@@ -346,18 +353,18 @@ function PermissionBadge({ allowed, label }) {
   );
 }
 
-function RailMenuItem({ icon, label, active, badge }) {
+function RailMenuItem({ icon, label, href = "/dashboard", active, badge }) {
   return (
-    <button
+    <Link
       className={`flex min-h-[48px] w-full items-center gap-3 rounded-lg px-4 text-left text-[14px] transition-[background-color,color,transform] duration-150 ease-out hover:translate-x-0.5 active:scale-[.99] motion-reduce:transition-none ${
         active ? "bg-[#e68100] text-[#160b00]" : "bg-transparent text-[#e5edf8] hover:bg-[#202832]"
       }`}
-      type="button"
+      href={href}
     >
       {icon}
       <span>{label}</span>
       {badge ? <span className="ml-auto rounded bg-[#303946] px-2 py-0.5 text-xs text-white">{badge}</span> : null}
-    </button>
+    </Link>
   );
 }
 

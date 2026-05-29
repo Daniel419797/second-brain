@@ -24,44 +24,9 @@ import { API_URL } from "@/lib/config";
 
 const MAX_REFERENCE_BYTES = 12 * 1024 * 1024;
 
-const FALLBACK_PROJECTS = [
-  {
-    root_hash: "friday-core-engine",
-    root: "/src/backend/core",
-    name: "friday-core-engine",
-    architecture: { summary: "Core orchestration service for Friday's local command center." },
-    commands: ["make test-all", "docker-compose up -d", "poetry install"],
-    env_names: ["FRIDAY_DB_URL", "OPENAI_API_KEY", "REDIS_HOST", "LOG_LEVEL"],
-    common_bugs: ["Fix memory leak in websocket connections", "Update Redis client dependency"],
-    past_fixes: ["Merged PR #490: Analytics Pipeline", "Deploy to Staging successful"],
-    metadata: { has_pyproject: true, has_tests: true }
-  },
-  {
-    root_hash: "friday-ui-dashboard",
-    root: "/src/frontend/ui",
-    name: "friday-ui-dashboard",
-    architecture: { summary: "React command surface for Friday's operations dashboard." },
-    commands: ["npm run build", "npm run dev", "npm run test"],
-    env_names: ["NEXT_PUBLIC_API_URL", "NODE_ENV"],
-    common_bugs: ["Tighten mobile layout spacing"],
-    past_fixes: ["Refined governance command page"],
-    metadata: { has_package_json: true, has_tests: true }
-  },
-  {
-    root_hash: "agent-orchestrator",
-    root: "/services/orchestrator",
-    name: "agent-orchestrator",
-    architecture: { summary: "Task routing and background worker coordination layer." },
-    commands: ["go test ./...", "go run ./cmd/server"],
-    env_names: ["QUEUE_URL", "WORKER_COUNT"],
-    common_bugs: ["Dependency update required"],
-    past_fixes: ["Worker heartbeat tuned"],
-    metadata: { has_tests: true }
-  }
-];
-
 export function ProjectsView() {
-  const { api, token, data, refresh } = useDashboard();
+  const { api, token, data, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("projects") || {};
   const sourceProjects = data.projectMemory?.projects || data.projects || [];
   const [selectedRoot, setSelectedRoot] = useState("");
   const [localReferences, setLocalReferences] = useState([]);
@@ -127,36 +92,75 @@ export function ProjectsView() {
     }
   }
 
+  async function runProjectAction(label, action) {
+    if (!selected || busy) return;
+    setBusy(label);
+    setStatus("");
+    try {
+      const result = await action(selected);
+      setStatus(result?.summary || result?.message || `${labelize(label)} completed.`);
+      void refresh();
+    } catch (err) {
+      setStatus(err.message || `${labelize(label)} failed.`);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function openProject() {
+    runProjectAction("open project", () => api("/integrations/open", { method: "POST", body: JSON.stringify({ target: "vscode" }) }));
+  }
+
+  function connectProject() {
+    runProjectAction("connect", (project) => api("/workspace-brain/analyze", { method: "POST", body: JSON.stringify({ root: project.root }) }));
+  }
+
+  function runCommand(command) {
+    runProjectAction("command", (project) =>
+      api("/desktop/tasks", {
+        method: "POST",
+        body: JSON.stringify({ instruction: `Open ${project.root} and run: ${command}`, max_steps: 8 })
+      })
+    );
+  }
+
+  function reviewFix() {
+    const issue = window.prompt("Issue or bug to prepare a fix for", activeIssueRows(selected, data)[0]?.title || "");
+    if (issue == null) return;
+    runProjectAction("prepare fix", (project) => api("/project-autopilot/prepare-fixes", { method: "POST", body: JSON.stringify({ root: project.root, issue_query: issue }) }));
+  }
+
   return (
     <section className="friday-scroll h-full overflow-y-auto overflow-x-hidden bg-friday-bg px-2 py-2 text-white" aria-label="Projects operations board">
       <div className="min-w-0 max-w-[980px]">
         <div className="grid min-w-0 gap-3 lg:grid-cols-[340px_minmax(0,1fr)]">
           <aside className="grid min-w-0 content-start gap-3 overflow-hidden">
-            <GlobalActions />
+            <GlobalActions project={selected} busy={busy} onRun={runProjectAction} />
             <ActiveProjects projects={projects} selected={selected} references={references} onSelect={setSelectedRoot} />
           </aside>
 
           <main className="grid min-w-0 content-start gap-3 overflow-hidden">
-          <ProjectHero project={selected} data={data} />
+          <ProjectHero project={selected} copy={copy} data={data} busy={busy} onOpen={openProject} onConnect={connectProject} />
           <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
             <div className="grid min-w-0 content-start gap-3 overflow-hidden">
-              <CliActions project={selected} />
+              <CliActions project={selected} copy={copy} busy={busy} onCommand={runCommand} />
               <EnvironmentVars project={selected} />
             </div>
             <div className="grid min-w-0 content-start gap-3 overflow-hidden">
-              <InsightCard project={selected} data={data} />
-              <ImportantFiles project={selected} />
+              <InsightCard project={selected} copy={copy} onReviewFix={reviewFix} busy={busy} />
+              <ImportantFiles project={selected} copy={copy} />
             </div>
           </div>
           <div className="grid min-w-0 gap-3 lg:grid-cols-2">
-            <ActiveIssues project={selected} data={data} />
-            <RecentChanges project={selected} references={selectedReferences} />
+            <ActiveIssues project={selected} data={data} copy={copy} />
+            <RecentChanges project={selected} references={selectedReferences} copy={copy} />
           </div>
           </main>
         </div>
 
         <div className="mt-3 max-w-[340px]">
-          <ReferenceDock
+            <ReferenceDock
+            copy={copy}
             selected={selected}
             references={selectedReferences}
             token={token}
@@ -172,18 +176,28 @@ export function ProjectsView() {
             onSubmit={submitReference}
           />
         </div>
+        {status ? <div className="fixed bottom-5 right-5 z-20 max-w-[380px] rounded-[4px] border border-[#45678c] bg-[#9fcaff] px-4 py-3 text-[13px] font-semibold text-[#07111d] shadow-[0_16px_40px_rgba(0,0,0,.32)]">{status}</div> : null}
       </div>
     </section>
   );
 }
 
-function GlobalActions() {
+function GlobalActions({ project, busy, onRun }) {
   const actions = [
-    { label: "Run Health Check", icon: <ShieldCheck size={13} />, active: true },
-    { label: "Search Codebase", icon: <Search size={13} /> },
-    { label: "Generate Docs", icon: <FileText size={13} /> },
-    { label: "Prepare Fix", icon: <Wrench size={13} /> }
+    { key: "health", label: "Run Health Check", icon: <ShieldCheck size={13} />, active: true, run: (api, item) => api("/project-autopilot/inspect", { method: "POST", body: JSON.stringify({ root: item.root, run_tests: false }) }) },
+    { key: "search", label: "Search Codebase", icon: <Search size={13} />, run: (api, item) => {
+      const query = window.prompt("Search project memory for", "recent failures");
+      if (query == null) return Promise.resolve({ summary: "Search cancelled." });
+      return api("/project-memory/search", { method: "POST", body: JSON.stringify({ root: item.root, query, limit: 8 }) });
+    } },
+    { key: "docs", label: "Generate Docs", icon: <FileText size={13} />, run: (api, item) => api("/workspace-brain/docs", { method: "POST", body: JSON.stringify({ root: item.root }) }) },
+    { key: "fix", label: "Prepare Fix", icon: <Wrench size={13} />, run: (api, item) => {
+      const issue = window.prompt("Issue or bug to prepare a fix for", "");
+      if (issue == null) return Promise.resolve({ summary: "Prepare fix cancelled." });
+      return api("/project-autopilot/prepare-fixes", { method: "POST", body: JSON.stringify({ root: item.root, issue_query: issue }) });
+    } }
   ];
+  const { api } = useDashboard();
   return (
     <Panel>
       <h2 className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[.16em] text-[#cbd5e2]">Global Actions</h2>
@@ -195,6 +209,8 @@ function GlobalActions() {
             }`}
             type="button"
             key={action.label}
+            onClick={() => onRun(action.key, () => action.run(api, project))}
+            disabled={!project || Boolean(busy)}
           >
             <span className="shrink-0">{action.icon}</span>
             <span className="min-w-0 max-w-[92px] leading-snug">{action.label}</span>
@@ -213,7 +229,7 @@ function ActiveProjects({ projects, selected, references, onSelect }) {
         <span className="ml-auto rounded-full border border-[#3d4857] bg-[#303743] px-2 py-0.5 font-mono text-[9px] text-[#dce6f2]">{projects.length} Total</span>
       </header>
       <div className="grid gap-2 p-2">
-        {projects.map((project) => (
+        {projects.length ? projects.map((project) => (
           <button
             className={`grid min-h-[90px] min-w-0 gap-2 rounded-[5px] border p-3 text-left transition-colors ${
               selected?.root === project.root ? "border-friday-accent bg-[#202832] shadow-[inset_4px_0_0_#9fcaff]" : "border-transparent bg-transparent hover:bg-[#202832]"
@@ -231,13 +247,17 @@ function ActiveProjects({ projects, selected, references, onSelect }) {
               {projectTags(project, references).map((tag) => <Tag tag={tag} key={tag.label} />)}
             </div>
           </button>
-        ))}
+        )) : (
+          <p className="m-0 rounded-[4px] border border-dashed border-friday-line bg-[#10161d] px-3 py-4 text-[12px] leading-relaxed text-friday-muted">
+            No project profile is loaded yet. Ask Friday to inspect the workspace and backend project memory will fill this list.
+          </p>
+        )}
       </div>
     </Panel>
   );
 }
 
-function ProjectHero({ project, data }) {
+function ProjectHero({ project, copy, data, busy, onOpen, onConnect }) {
   return (
     <section
       className="relative grid min-h-[190px] overflow-hidden rounded-[6px] border border-friday-line bg-[#1a2028] p-5"
@@ -249,13 +269,13 @@ function ProjectHero({ project, data }) {
       </div>
       <div className="mt-auto flex min-w-0 flex-wrap items-end gap-3">
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-[26px] font-extrabold leading-none text-white">{project?.name || "No Project"}</h1>
+          <h1 className="truncate text-[26px] font-extrabold leading-none text-white">{project?.name || copy?.title || "Friday has no project selected"}</h1>
           <p className="mt-2 truncate font-mono text-[12px] text-friday-accent">{prettyRoot(project?.root)} - {projectStack(project)}</p>
         </div>
-        <button className="grid h-11 w-11 place-items-center rounded-[4px] border border-friday-line bg-[#303743] text-white" type="button" aria-label="Open project">
+        <button className="grid h-11 w-11 place-items-center rounded-[4px] border border-friday-line bg-[#303743] text-white hover:border-friday-accent disabled:opacity-50" type="button" aria-label="Open project" onClick={onOpen} disabled={!project || Boolean(busy)}>
           <ExternalLink size={17} />
         </button>
-        <button className="inline-flex min-h-11 items-center gap-2 rounded-[5px] border border-[#8bbcff] bg-[#8bbcff] px-5 text-[13px] font-semibold text-[#061420]" type="button">
+        <button className="inline-flex min-h-11 items-center gap-2 rounded-[5px] border border-[#8bbcff] bg-[#8bbcff] px-5 text-[13px] font-semibold text-[#061420] disabled:opacity-50" type="button" onClick={onConnect} disabled={!project || Boolean(busy)}>
           <TerminalSquare size={15} />
           Connect
         </button>
@@ -264,34 +284,39 @@ function ProjectHero({ project, data }) {
   );
 }
 
-function CliActions({ project }) {
+function CliActions({ project, copy, busy, onCommand }) {
   const commands = commandRows(project);
   return (
     <Panel className="min-h-[238px]">
       <PanelTitle icon={<TerminalSquare size={13} />} title="CLI Actions" />
       <div className="mt-3 grid gap-2">
-        {commands.map((command) => (
-          <button className="block min-h-[36px] min-w-0 overflow-hidden rounded-[4px] border border-friday-line bg-[#0b1117] px-3 text-left font-mono text-[12px] text-white hover:border-friday-accent" type="button" key={command}>
+        {commands.length ? commands.map((command) => (
+          <button className="block min-h-[36px] min-w-0 overflow-hidden rounded-[4px] border border-friday-line bg-[#0b1117] px-3 text-left font-mono text-[12px] text-white hover:border-friday-accent disabled:opacity-50" type="button" key={command} onClick={() => onCommand(command)} disabled={Boolean(busy)}>
             <span className="mr-2 text-friday-accent">&gt;</span>
             <span className="inline-block max-w-[calc(100%-24px)] truncate align-middle">{shortCommand(command)}</span>
           </button>
-        ))}
+        )) : <EmptyLine>{copy?.empty?.projects || "Friday has no project command hints from backend memory yet."}</EmptyLine>}
       </div>
     </Panel>
   );
 }
 
-function InsightCard({ project, data }) {
-  const issue = activeIssueRows(project, data)[0]?.title || "the current project health scan";
-  const file = importantFileRows(project)[2]?.name || "the active module";
+function InsightCard({ copy, onReviewFix, busy }) {
+  const insight = copy?.insight || {};
+  const action = copy?.actions?.find?.((item) => item.id === "review-project-insight");
   return (
     <Panel className="min-h-[238px] border-[#58708a] bg-[#202832]">
-      <PanelTitle icon={<HeartPulse size={13} />} title="Friday's Insight" accent />
+      <PanelTitle icon={<HeartPulse size={13} />} title={insight.title || "Friday's Project Read"} accent />
       <p className="mt-4 min-w-0 break-words text-[13px] leading-relaxed text-[#eaf2fb]">
-        The recent signal around <Code>{issue}</Code> appears connected to <Code>{file}</Code>. I have enough project memory to prepare a targeted fix path without touching unrelated files.
+        {insight.summary || copy?.empty?.insight || "Friday has not produced a project insight for this snapshot yet."}
       </p>
-      <button className="mt-4 min-h-10 w-full rounded-[4px] border border-friday-accent bg-[#405063] text-[13px] text-friday-accent" type="button">
-        Review Proposed Fix
+      {insight.evidence?.length ? (
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {insight.evidence.slice(0, 4).map((item) => <Code key={item}>{item}</Code>)}
+        </div>
+      ) : null}
+      <button className="mt-4 min-h-10 w-full rounded-[4px] border border-friday-accent bg-[#405063] text-[13px] text-friday-accent disabled:opacity-50" type="button" onClick={onReviewFix} disabled={Boolean(busy)}>
+        {action?.label || insight.action_label || "Review Project Read"}
       </button>
     </Panel>
   );
@@ -310,29 +335,31 @@ function EnvironmentVars({ project }) {
   );
 }
 
-function ImportantFiles({ project }) {
+function ImportantFiles({ project, copy }) {
+  const files = importantFileRows(project);
   return (
     <Panel className="min-h-[148px]">
       <PanelTitle icon={<Folder size={13} />} title="Important Files" />
       <div className="mt-3 grid">
-        {importantFileRows(project).map((file) => (
+        {files.length ? files.map((file) => (
           <div className="grid min-h-[31px] min-w-0 grid-cols-[16px_minmax(0,1fr)_minmax(46px,auto)] items-center gap-2 border-b border-friday-line last:border-b-0" key={file.name}>
             {file.warning ? <AlertTriangle size={12} className="text-[#ffaaa6]" /> : <FileText size={12} className="text-[#aeb9c7]" />}
             <span className={`truncate font-mono text-[11px] ${file.warning ? "text-[#ffb5b8]" : "text-white"}`}>{file.name}</span>
             <span className="truncate text-right text-[9px] text-friday-muted">{file.meta}</span>
           </div>
-        ))}
+        )) : <EmptyLine>{copy?.empty?.projects || "Friday has no important files indexed for this project yet."}</EmptyLine>}
       </div>
     </Panel>
   );
 }
 
-function ActiveIssues({ project, data }) {
+function ActiveIssues({ project, data, copy }) {
+  const issues = activeIssueRows(project, data);
   return (
     <Panel className="min-h-[218px]">
       <PanelTitle icon={<Bug size={13} />} title="Active Issues (Todos)" />
       <div className="mt-4 grid gap-3">
-        {activeIssueRows(project, data).map((issue) => (
+        {issues.length ? issues.map((issue) => (
           <div className="grid grid-cols-[12px_minmax(0,1fr)] gap-2" key={issue.title}>
             <span className={`mt-1 h-2 w-2 rounded-full ${issue.tone === "warn" ? "bg-[#f7c42f]" : "bg-[#ffaaa6]"}`} />
             <div className="min-w-0">
@@ -340,30 +367,31 @@ function ActiveIssues({ project, data }) {
               <span className="mt-1 block truncate font-mono text-[10px] text-friday-muted">{issue.meta}</span>
             </div>
           </div>
-        ))}
+        )) : <EmptyLine>{copy?.empty?.projects || "Friday has no active project issue from backend memory yet."}</EmptyLine>}
       </div>
     </Panel>
   );
 }
 
-function RecentChanges({ project, references }) {
+function RecentChanges({ project, references, copy }) {
+  const changes = recentChangeRows(project, references);
   return (
     <Panel className="min-h-[218px]">
       <PanelTitle icon={<Clock size={13} />} title="Recent Changes" />
       <div className="mt-4 grid gap-4 border-l border-friday-line pl-4">
-        {recentChangeRows(project, references).map((change, index) => (
+        {changes.length ? changes.map((change, index) => (
           <div className="relative min-w-0" key={`${index}-${change.title}`}>
             <span className={`absolute -left-[21px] top-1 h-3 w-3 rounded-full border-2 ${index === 0 ? "border-friday-accent bg-[#1a2028]" : "border-[#8a97a8] bg-[#1a2028]"}`} />
             <strong className="block truncate text-[12px] font-medium text-white">{change.title}</strong>
             <span className="mt-1 block truncate text-[11px] text-friday-muted">{change.meta}</span>
           </div>
-        ))}
+        )) : <EmptyLine>{copy?.empty?.projects || "Friday has no recent project change from backend memory yet."}</EmptyLine>}
       </div>
     </Panel>
   );
 }
 
-function ReferenceDock({ selected, references, token, file, preview, title, note, status, busy, onFile, onTitle, onNote, onSubmit }) {
+function ReferenceDock({ selected, copy, references, token, file, preview, title, note, status, busy, onFile, onTitle, onNote, onSubmit }) {
   return (
     <Panel>
       <PanelTitle icon={<ImagePlus size={13} />} title="Visual References" />
@@ -386,7 +414,7 @@ function ReferenceDock({ selected, references, token, file, preview, title, note
       </form>
       <div className="mt-4 grid grid-cols-3 gap-2">
         {references.slice(0, 3).map((item) => <ReferenceThumb item={item} token={token} key={item.id || item.url} />)}
-        {!references.length ? <p className="col-span-3 m-0 text-[12px] text-friday-muted">No visual references attached to this project yet.</p> : null}
+        {!references.length ? <p className="col-span-3 m-0 text-[12px] text-friday-muted">{copy?.empty?.projects || "Friday has no visual reference attached to this project yet."}</p> : null}
       </div>
     </Panel>
   );
@@ -432,8 +460,12 @@ function Code({ children }) {
   return <code className="inline break-all rounded-[2px] bg-[#152233] px-1.5 py-0.5 font-mono text-friday-accent">{children}</code>;
 }
 
+function EmptyLine({ children }) {
+  return <p className="m-0 rounded-[3px] border border-dashed border-friday-line bg-[#10161d] px-3 py-3 text-[12px] leading-relaxed text-friday-muted">{children}</p>;
+}
+
 function normalizeProjects(projects) {
-  const rows = projects?.length ? projects : FALLBACK_PROJECTS;
+  const rows = Array.isArray(projects) ? projects : [];
   return rows.map((project, index) => ({
     ...project,
     root_hash: project.root_hash || project.root || `project-${index}`,
@@ -461,14 +493,14 @@ function dedupeReferences(items) {
 function projectTags(project, references) {
   const refs = references.filter((item) => item.root === project.root).length;
   const tags = [{ label: projectStack(project).split(" ")[0] || "Project", tone: "neutral" }];
-  tags.push({ label: project.metadata?.has_tests ? "Tests: Passing" : "Tests: Unknown", tone: project.metadata?.has_tests ? "ok" : "warn" });
-  tags.push({ label: refs ? `Refs: ${refs}` : "Docs: Stale", tone: refs ? "blue" : "warn" });
+  tags.push({ label: project.metadata?.has_tests ? "Tests indexed" : "Tests unknown", tone: project.metadata?.has_tests ? "ok" : "neutral" });
+  tags.push({ label: `Refs: ${refs}`, tone: refs ? "blue" : "neutral" });
   return tags;
 }
 
 function projectStack(project) {
-  if (project?.metadata?.has_package_json) return "React / Next.js";
-  if (project?.metadata?.has_pyproject) return "Python 3.11 / Fast API";
+  if (project?.metadata?.has_package_json) return "Node / web project";
+  if (project?.metadata?.has_pyproject) return "Python project";
   if ((project?.commands || []).some((command) => command.includes("go "))) return "Go service";
   return "Project";
 }
@@ -480,40 +512,41 @@ function shortCommand(command) {
 function commandRows(project) {
   const commands = project?.commands || [];
   if (commands.length) return commands.slice(0, 4);
-  if (project?.metadata?.has_package_json) return ["npm run build", "npm run dev", "npm run test"];
-  if (project?.metadata?.has_pyproject) return ["python -m pytest", "python -m pip install -e .", "python -m compileall ."];
-  return ["make test-all", "docker-compose up -d", "poetry install"];
+  return [];
 }
 
 function importantFileRows(project) {
-  const rows = [];
-  if (project?.metadata?.has_package_json) rows.push({ name: "package.json", meta: "Updated 2h ago" });
-  if (project?.metadata?.has_pyproject) rows.push({ name: "pyproject.toml", meta: "Updated 1d ago" });
-  rows.push({ name: "README.md", meta: "Docs" });
-  rows.push({ name: project?.metadata?.has_package_json ? "src/app/page.tsx" : "core/engine.py", meta: "Core" });
-  rows.push({ name: "session_manager.py", meta: "High Churn", warning: true });
+  const explicit = [
+    ...(Array.isArray(project?.important_files) ? project.important_files : []),
+    ...(Array.isArray(project?.key_files) ? project.key_files : []),
+    ...(Array.isArray(project?.files) ? project.files : [])
+  ];
+  const rows = explicit.map((file) => {
+    if (typeof file === "string") return { name: file, meta: "Indexed" };
+    return {
+      name: file?.name || file?.path || file?.filename || "Indexed file",
+      meta: file?.meta || file?.role || file?.reason || "Indexed",
+      warning: Boolean(file?.warning || file?.risk)
+    };
+  });
+  if (!rows.length && project?.metadata?.has_package_json) rows.push({ name: "package.json", meta: "Detected" });
+  if (!rows.length && project?.metadata?.has_pyproject) rows.push({ name: "pyproject.toml", meta: "Detected" });
   return rows.slice(0, 4);
 }
 
 function activeIssueRows(project, data) {
   const bugs = project?.common_bugs || [];
   const logIssue = (data.logs?.lines || []).find((line) => /error|fail|todo/i.test(line));
-  const rows = bugs.map((bug, index) => ({ title: bug, meta: `#${492 - index} - Assigned to AI`, tone: index ? "warn" : "danger" }));
+  const rows = bugs.map((bug, index) => ({ title: bug, meta: index ? "Project memory" : "Project memory priority", tone: index ? "warn" : "danger" }));
   if (logIssue && rows.length < 2) rows.push({ title: String(logIssue).slice(0, 90), meta: "Recent reliability log", tone: "warn" });
-  return rows.length ? rows.slice(0, 3) : [
-    { title: "Fix memory leak in websocket connections", meta: "#492 - Assigned to AI", tone: "danger" },
-    { title: "Update Redis client dependency", meta: "#488 - Security patch", tone: "warn" }
-  ];
+  return rows.slice(0, 3);
 }
 
 function recentChangeRows(project, references) {
   const fixes = (project?.past_fixes || []).map((item) => ({ title: item, meta: "Project memory" }));
   const refs = references.slice(0, 2).map((item) => ({ title: `Added reference: ${item.title || item.filename}`, meta: timeAgo(item.timestamp) }));
   const rows = [...fixes, ...refs];
-  return rows.length ? rows.slice(0, 4) : [
-    { title: "Merged PR #490: Analytics Pipeline", meta: "by J. Doe - 2 hours ago" },
-    { title: "Deploy to Staging successful", meta: "System - Yesterday" }
-  ];
+  return rows.slice(0, 4);
 }
 
 function prettyRoot(root) {
@@ -525,6 +558,10 @@ function prettyRoot(root) {
 function lastPathSegment(root) {
   const parts = String(root || "").replace(/\\/g, "/").split("/").filter(Boolean);
   return parts[parts.length - 1] || "";
+}
+
+function labelize(value) {
+  return String(value || "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
 function referenceImageSrc(item, token) {
@@ -545,7 +582,7 @@ function readFileAsDataUrl(file) {
 
 function timeAgo(value) {
   const date = value ? new Date(value) : null;
-  if (!date || Number.isNaN(date.getTime())) return "Recently";
+  if (!date || Number.isNaN(date.getTime())) return "Time not captured";
   const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
   if (seconds < 60) return "Just now";
   const minutes = Math.floor(seconds / 60);

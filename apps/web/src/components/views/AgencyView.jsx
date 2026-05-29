@@ -23,7 +23,8 @@ const EMPTY_OUTREACH = { lead_id: "", service_offer: "", portfolio_url: "", call
 const EMPTY_INVOICE = { project_id: "", client_name: "", client_email: "", amount: "", currency: "USD" };
 
 export function AgencyView() {
-  const { api, data, refresh } = useDashboard();
+  const { api, data, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("agency") || {};
   const [status, setStatus] = useState(data.agency || null);
   const [leads, setLeads] = useState([]);
   const [outreach, setOutreach] = useState([]);
@@ -71,7 +72,7 @@ export function AgencyView() {
       setProfit(nextProfit);
       setSelectedOutreach((ids) => ids.filter((id) => (nextOutreach || []).some((item) => Number(item.id) === Number(id))));
     } catch (err) {
-      setMessage(err.message || "Agency data failed to load.");
+      setMessage(err.message || copy?.subtitle || "Agency data failed to load.");
     } finally {
       setBusy("");
     }
@@ -82,11 +83,11 @@ export function AgencyView() {
     setMessage("");
     try {
       const result = await action();
-      setMessage(result?.summary || "Done.");
+      setMessage(result?.summary || "Friday updated the agency lane.");
       await after();
       void refresh();
     } catch (err) {
-      setMessage(err.message || "Action failed.");
+      setMessage(err.message || "Friday could not complete that agency action.");
     } finally {
       setBusy("");
     }
@@ -174,12 +175,12 @@ export function AgencyView() {
       <div className="mx-auto grid max-w-[1240px] gap-4">
         <header className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <div className="min-w-0">
-            <h1 className="text-[26px] font-extrabold leading-tight text-white">Agency Mode</h1>
-            <p className="mt-2 max-w-[720px] text-[13px] leading-relaxed text-friday-muted">{status?.summary || "Agency status is loading."}</p>
+            <h1 className="text-[26px] font-extrabold leading-tight text-white">{copy?.title || "Agency Mode"}</h1>
+            <p className="mt-2 max-w-[720px] text-[13px] leading-relaxed text-friday-muted">{status?.summary || copy?.subtitle || "Agency status is loading."}</p>
           </div>
           <button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[5px] border border-friday-line bg-[#151b22] px-4 text-[13px] font-bold text-white" type="button" onClick={loadAgency} disabled={Boolean(busy)}>
             {busy === "refresh" ? <Loader2 className="animate-spin" size={15} /> : <RefreshCcw size={15} />}
-            Refresh
+            {copy?.labels?.refresh || "Refresh"}
           </button>
         </header>
 
@@ -194,9 +195,9 @@ export function AgencyView() {
           </aside>
 
           <main className="grid content-start gap-4">
-            <LeadBoard leads={leads} busy={busy} onSelect={(id) => setOutreachForm((form) => ({ ...form, lead_id: String(id) }))} onProposal={draftProposal} onProject={startProject} />
+            <LeadBoard leads={leads} copy={copy} busy={busy} onSelect={(id) => setOutreachForm((form) => ({ ...form, lead_id: String(id) }))} onProposal={draftProposal} onProject={startProject} />
             <OutreachComposer form={outreachForm} setForm={setOutreachForm} selectedLead={selectedLead} leads={leads} busy={busy} onSubmit={draftOutreach} />
-            <OutreachQueue outreach={outreach} selected={selectedOutreach} busy={busy} onToggle={toggleOutreach} onApprove={approveSelected} onSend={sendSelected} />
+            <OutreachQueue outreach={outreach} copy={copy} selected={selectedOutreach} busy={busy} onToggle={toggleOutreach} onApprove={approveSelected} onSend={sendSelected} />
             <ProjectInvoiceBoard projects={projects} invoices={invoices} />
           </main>
         </div>
@@ -289,7 +290,7 @@ function InvoiceForm({ form, setForm, projects, busy, onSubmit }) {
   );
 }
 
-function LeadBoard({ leads, busy, onSelect, onProposal, onProject }) {
+function LeadBoard({ leads, copy, busy, onSelect, onProposal, onProject }) {
   return (
     <Panel title="Prospects" icon={<Search size={15} />} count={leads.length}>
       <div className="grid gap-2 lg:grid-cols-2">
@@ -300,7 +301,7 @@ function LeadBoard({ leads, busy, onSelect, onProposal, onProject }) {
                 <strong className="truncate text-[14px] text-white">{lead.company || lead.name}</strong>
                 <span className="ml-auto shrink-0 rounded-[4px] border border-[#405063] bg-[#1c2632] px-2 py-0.5 font-mono text-[10px] text-friday-accent">{Math.round(Number(lead.fit_score || 0))}</span>
               </div>
-              <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#cbd8e6]">{lead.need || lead.score_reason || lead.website || "No note yet."}</p>
+              <p className="mt-2 line-clamp-2 text-[12px] leading-relaxed text-[#cbd8e6]">{lead.need || lead.score_reason || lead.website || "Friday has no note for this lead yet."}</p>
             </div>
             <div className="grid grid-cols-3 gap-2">
               <SmallButton label="Select" icon={<MailCheck size={13} />} disabled={Boolean(busy)} onClick={() => onSelect(lead.id)} />
@@ -308,7 +309,7 @@ function LeadBoard({ leads, busy, onSelect, onProposal, onProject }) {
               <SmallButton label="Project" icon={<FolderPlus size={13} />} disabled={Boolean(busy)} onClick={() => onProject(lead.id)} />
             </div>
           </article>
-        )) : <Empty text="No leads stored." />}
+        )) : <Empty text={copy?.empty?.outreach || "Friday has no lead record in this agency lane yet."} />}
       </div>
     </Panel>
   );
@@ -331,7 +332,7 @@ function OutreachComposer({ form, setForm, selectedLead, leads, busy, onSubmit }
   );
 }
 
-function OutreachQueue({ outreach, selected, busy, onToggle, onApprove, onSend }) {
+function OutreachQueue({ outreach, copy, selected, busy, onToggle, onApprove, onSend }) {
   const rows = outreach.filter((item) => ["draft", "approved", "failed"].includes(item.status)).slice(0, 16);
   return (
     <Panel title="Outreach Queue" icon={<Send size={15} />} count={rows.length}>
@@ -363,7 +364,7 @@ function OutreachQueue({ outreach, selected, busy, onToggle, onApprove, onSend }
               <StatusPill value={item.status} />
             </div>
           </article>
-        )) : <Empty text="No outreach drafts waiting." />}
+        )) : <Empty text={copy?.empty?.outreach || "Friday has no outreach draft waiting."} />}
       </div>
     </Panel>
   );

@@ -6,7 +6,8 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { wsUrl } from "@/services/fridayApi";
 
 export function ControlRoomView() {
-  const { api, data, token, refresh } = useDashboard();
+  const { api, data, token, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("control-room") || {};
   const [room, setRoom] = useState(data.controlRoom || null);
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState("");
@@ -92,16 +93,16 @@ export function ControlRoomView() {
       <div className="mx-auto grid max-w-[1240px] gap-4">
         <header className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-end">
           <div className="min-w-0">
-            <h1 className="text-[26px] font-extrabold leading-tight text-white">Control Room</h1>
-            <p className="mt-2 max-w-[820px] text-[13px] leading-relaxed text-friday-muted">{room?.summary || gateway.summary || "Friday control room is loading."}</p>
+            <h1 className="text-[26px] font-extrabold leading-tight text-white">{copy?.title || "Control Room"}</h1>
+            <p className="mt-2 max-w-[820px] text-[13px] leading-relaxed text-friday-muted">{room?.summary || gateway.summary || copy?.subtitle || "Friday control room is loading."}</p>
           </div>
           <button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[5px] border border-friday-line bg-[#151b22] px-4 text-[13px] font-bold text-white" type="button" onClick={() => loadRoom()} disabled={Boolean(busy)}>
             {busy === "refresh" ? <Loader2 className="animate-spin" size={15} /> : <RefreshCcw size={15} />}
-            Refresh
+            {copy?.labels?.refresh || "Refresh"}
           </button>
           <button className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[5px] border border-[#7a3135] bg-[#2a161a] px-4 text-[13px] font-bold text-[#ffb5b8]" type="button" onClick={emergencyStop} disabled={Boolean(busy)}>
             {busy === "stop" ? <Loader2 className="animate-spin" size={15} /> : <PauseOctagon size={15} />}
-            Stop
+            {copy?.actions?.find?.((action) => action.id === "emergency-stop")?.label || "Stop"}
           </button>
         </header>
 
@@ -124,15 +125,15 @@ export function ControlRoomView() {
 
           <Panel title="High-Risk Queue" icon={<AlertTriangle size={15} />}>
             <div className="grid gap-2">
-              {highRisk.length ? highRisk.slice(0, 6).map((event) => <EventRow event={event} key={event.id} />) : <Empty text="No high-risk gateway event is waiting." />}
+              {highRisk.length ? highRisk.slice(0, 6).map((event) => <EventRow event={event} key={event.id} />) : <Empty text={copy?.empty?.highRisk || "Friday has no gated gateway event in this control window."} />}
             </div>
           </Panel>
         </div>
 
         <div className="grid gap-4 xl:grid-cols-3">
-          <ListPanel title="Agents" icon={<Bot size={15} />} rows={agentRows(room)} />
-          <ListPanel title="Costs And Proof" icon={<Database size={15} />} rows={proofRows(room)} />
-          <ListPanel title="Recent Errors" icon={<AlertTriangle size={15} />} rows={(room?.errors || []).map((item) => item.summary || item.action || item.category)} empty="No recent failed audit events." />
+          <ListPanel title="Agents" icon={<Bot size={15} />} rows={agentRows(room, copy)} />
+          <ListPanel title="Costs And Proof" icon={<Database size={15} />} rows={proofRows(room, copy)} />
+          <ListPanel title="Recent Errors" icon={<AlertTriangle size={15} />} rows={(room?.errors || []).map((item) => item.summary || item.action || item.category)} empty={copy?.empty?.errors || "No recent failed audit events."} />
         </div>
       </div>
     </section>
@@ -193,7 +194,7 @@ function ListPanel({ title, icon, rows, empty }) {
   return (
     <Panel title={title} icon={icon}>
       <div className="grid gap-2">
-        {rows.length ? rows.slice(0, 6).map((row, index) => <div className="truncate rounded-[4px] border border-[#303b48] bg-[#101820] px-3 py-2 text-[12px] text-[#dce6f2]" key={`${title}-${index}`}>{row}</div>) : <Empty text={empty || "Nothing to show."} />}
+        {rows.length ? rows.slice(0, 6).map((row, index) => <div className="truncate rounded-[4px] border border-[#303b48] bg-[#101820] px-3 py-2 text-[12px] text-[#dce6f2]" key={`${title}-${index}`}>{row}</div>) : <Empty text={empty || "Friday has no row for this control panel yet."} />}
       </div>
     </Panel>
   );
@@ -203,21 +204,23 @@ function Empty({ text }) {
   return <div className="grid min-h-[62px] place-items-center rounded-[4px] border border-[#303b48] bg-[#101820] px-3 text-center text-[12px] text-friday-muted">{text}</div>;
 }
 
-function agentRows(room) {
+function agentRows(room, copy) {
   const workers = room?.workers || {};
   const tasks = room?.tasks || {};
+  const pending = copy?.empty?.evidence || "Friday has not received this subsystem read yet";
   return [
     `Workers: ${workers.running ? "running" : "stopped"} (${workers.workers || 0})`,
     `Tasks: ${tasks.active || 0} active, ${tasks.pending || 0} pending`,
-    `Cloud worker: ${room?.cloud_worker?.summary || "not loaded"}`,
-    `Model router: ${room?.model_router?.summary || "not loaded"}`
+    `Cloud worker: ${room?.cloud_worker?.summary || pending}`,
+    `Model router: ${room?.model_router?.summary || pending}`
   ];
 }
 
-function proofRows(room) {
+function proofRows(room, copy) {
+  const pending = copy?.empty?.evidence || "Friday has not received this proof read yet.";
   return [
-    room?.proof?.summary || "No proof summary loaded.",
-    room?.agency?.finance?.summary || "No agency finance summary loaded.",
+    room?.proof?.summary || pending,
+    room?.agency?.finance?.summary || pending,
     room?.skills?.summary || `${room?.skills?.enabled || 0} skill(s) enabled.`
   ];
 }

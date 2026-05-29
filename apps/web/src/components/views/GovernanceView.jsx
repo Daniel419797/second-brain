@@ -13,20 +13,16 @@ import {
   UserPlus,
   UsersRound
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 
-const FALLBACK_LEADERS = [
-  { agent_id: "optimus", agent_name: "Optimus", task_type: "Data Synthesis", accuracy: 0.992 },
-  { agent_id: "lexicon", agent_name: "Lexicon", task_type: "Sentiment Analysis", accuracy: 0.874 },
-  { agent_id: "nova", agent_name: "Nova", task_type: "Predictive Model", accuracy: 0.641 },
-  { agent_id: "chronos", agent_name: "Chronos", task_type: "Log Parsing", accuracy: 0.95 }
-];
-
 export function GovernanceView() {
-  const { data } = useDashboard();
-  const leaders = useMemo(() => governanceLeaders(data), [data]);
-  const council = useMemo(() => councilSession(data, leaders), [data, leaders]);
+  const { data, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("governance") || {};
+  const [leaderFilter, setLeaderFilter] = useState("all");
+  const leadersRaw = useMemo(() => governanceLeaders(data), [data]);
+  const leaders = useMemo(() => filterLeaders(leadersRaw, leaderFilter), [leadersRaw, leaderFilter]);
+  const council = useMemo(() => councilSession(data, leaders, copy), [data, leaders, copy]);
   const rosterCount = (data.offices?.length || data.agents?.length || leaders.length || 0);
   const pendingDecisions = data.approvalSummary?.count || data.approvals?.length || 0;
 
@@ -34,27 +30,27 @@ export function GovernanceView() {
     <section className="min-h-full bg-friday-bg text-[#eaf2fb]" aria-label="Governance command surface">
       <div className="mx-auto grid w-full max-w-[980px] gap-4">
         <div className="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(260px,1fr)]">
-          <AgentLeaderboard leaders={leaders} />
-          <DynamicRoster rosterCount={rosterCount} pendingDecisions={pendingDecisions} />
+          <AgentLeaderboard leaders={leaders} copy={copy} filter={leaderFilter} onFilter={() => setLeaderFilter((value) => value === "all" ? "strong" : value === "strong" ? "needs_review" : "all")} />
+          <DynamicRoster rosterCount={rosterCount} pendingDecisions={pendingDecisions} copy={copy} />
         </div>
 
         <CouncilSession council={council} />
-        <GovernanceStream data={data} />
+        <GovernanceStream data={data} copy={copy} />
       </div>
     </section>
   );
 }
 
-function AgentLeaderboard({ leaders }) {
+function AgentLeaderboard({ leaders, copy, filter, onFilter }) {
   return (
-    <Panel className="min-h-[430px]" title="Agent Leaderboard" icon={<BarChart3 size={24} />} action={<InlineAction icon={<Filter size={14} />} label="Filter" />}>
+    <Panel className="min-h-[430px]" title={copy?.title || "Agent Leaderboard"} icon={<BarChart3 size={24} />} action={<InlineAction icon={<Filter size={14} />} label={filter === "all" ? "All" : filter === "strong" ? "Strong" : "Review"} onClick={onFilter} />}>
       <div className="grid min-h-12 grid-cols-[minmax(120px,1fr)_minmax(150px,1fr)_90px] items-center border-b border-friday-line px-4 text-[12px] text-[#d8e2ee]">
         <span>Agent</span>
         <span>Best Task Type</span>
         <span className="text-right">Accuracy</span>
       </div>
       <div>
-        {leaders.slice(0, 6).map((agent, index) => (
+        {leaders.length ? leaders.slice(0, 6).map((agent, index) => (
           <div className="grid min-h-[64px] grid-cols-[minmax(120px,1fr)_minmax(150px,1fr)_90px] items-center border-b border-friday-line px-4 last:border-b-0" key={`${agent.agent_id || "agent"}-${index}`}>
             <div className="flex min-w-0 items-center gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[6px] border border-[#465363] bg-[#303846] font-mono text-[14px] text-friday-accent">{initials(agent.agent_name || agent.agent_id)}</span>
@@ -63,13 +59,17 @@ function AgentLeaderboard({ leaders }) {
             <span className="min-w-0 truncate text-[13px] text-[#d9e2ee]">{taskLabel(agent)}</span>
             <span className={`font-mono text-[14px] text-right ${accuracyTone(agent.accuracy)}`}>{formatPercent(agent.accuracy)}</span>
           </div>
-        ))}
+        )) : (
+          <div className="grid min-h-[150px] place-items-center px-4 text-center text-[13px] text-friday-muted">
+            {copy?.empty?.agents || "No agent quality rows came back from the backend yet."}
+          </div>
+        )}
       </div>
     </Panel>
   );
 }
 
-function DynamicRoster({ rosterCount, pendingDecisions }) {
+function DynamicRoster({ rosterCount, pendingDecisions, copy }) {
   const actions = [
     { title: "Hire Specialist", detail: "Spin up a new targeted agent", icon: <UserPlus size={18} />, tone: "blue", href: "/agents" },
     { title: "Promote Agent", detail: "Increase autonomy level", icon: <TrendingUp size={18} />, tone: "amber", href: "/agents" },
@@ -79,7 +79,7 @@ function DynamicRoster({ rosterCount, pendingDecisions }) {
   return (
     <Panel title="Dynamic Roster" icon={<UsersRound size={24} />} iconTone="pink">
       <div className="grid gap-5 p-4">
-        <p className="m-0 max-w-[260px] text-[14px] leading-relaxed text-[#d9e2ee]">Manage autonomous agent lifecycle and operational scope.</p>
+        <p className="m-0 max-w-[260px] text-[14px] leading-relaxed text-[#d9e2ee]">{copy?.subtitle || "Manage autonomous agent lifecycle and operational scope."}</p>
         <div className="grid grid-cols-2 gap-2 text-[12px]">
           <MetricTile label="Roster" value={rosterCount} />
           <MetricTile label="Pending" value={pendingDecisions} />
@@ -109,9 +109,13 @@ function CouncilSession({ council }) {
         </div>
 
         <div className="grid gap-3 lg:grid-cols-3">
-          {council.positions.map((position, index) => (
+          {council.positions.length ? council.positions.map((position, index) => (
             <CouncilPosition position={position} highlighted={index === 1} key={`${position.agent}-${index}`} />
-          ))}
+          )) : (
+            <div className="grid min-h-[110px] place-items-center rounded-[4px] border border-dashed border-friday-line bg-[#10161d] px-4 text-center text-[13px] text-friday-muted lg:col-span-3">
+              No council positions were returned in this governance read.
+            </div>
+          )}
         </div>
 
         <div className="grid gap-4 rounded-[4px] border border-[#466178] bg-[#19212b] p-4 md:grid-cols-[minmax(0,1fr)_180px]">
@@ -134,7 +138,7 @@ function CouncilSession({ council }) {
   );
 }
 
-function GovernanceStream({ data }) {
+function GovernanceStream({ data, copy }) {
   const rows = governanceRows(data);
   return (
     <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]">
@@ -149,7 +153,7 @@ function GovernanceStream({ data }) {
               <StatusBadge label={row.status} />
             </div>
           )) : (
-            <div className="grid min-h-[110px] place-items-center px-4 text-center text-[13px] text-friday-muted">No governance events loaded yet.</div>
+            <div className="grid min-h-[110px] place-items-center px-4 text-center text-[13px] text-friday-muted">{copy?.empty?.activity || "Friday has no governance event in this read yet."}</div>
           )}
         </div>
       </Panel>
@@ -182,9 +186,9 @@ function Panel({ title, icon, iconTone = "blue", action, children, className = "
   );
 }
 
-function InlineAction({ icon, label }) {
+function InlineAction({ icon, label, onClick }) {
   return (
-    <button className="inline-flex min-h-8 items-center gap-1.5 rounded-[4px] border border-transparent px-2 text-[12px] text-[#d8e2ee] hover:border-friday-line hover:bg-[#10161d]" type="button">
+    <button className="inline-flex min-h-8 items-center gap-1.5 rounded-[4px] border border-transparent px-2 text-[12px] text-[#d8e2ee] hover:border-friday-line hover:bg-[#10161d]" type="button" onClick={onClick}>
       {icon}
       {label}
     </button>
@@ -252,7 +256,8 @@ function governanceLeaders(data) {
       agent_id: item.agent_id,
       agent_name: titleize(item.agent_id),
       task_type: item.task_type || "General",
-      accuracy: Number(item.accuracy ?? item.avg_score ?? 0)
+      accuracy: numberOrNull(item.accuracy ?? item.avg_score ?? item.score),
+      summary: item.summary || item.note
     }));
   }
   const offices = data.offices || [];
@@ -261,16 +266,23 @@ function governanceLeaders(data) {
       agent_id: office.agent_id,
       agent_name: office.agent_name || office.room_name || titleize(office.agent_id),
       task_type: office.purpose || office.current_focus || "Agent Operations",
-      accuracy: Math.max(0.56, 0.96 - index * 0.07)
+      accuracy: numberOrNull(office.accuracy ?? office.avg_score ?? office.score),
+      summary: office.summary || office.current_focus || office.purpose
     }));
   }
-  return FALLBACK_LEADERS;
+  return [];
 }
 
-function councilSession(data, leaders) {
+function filterLeaders(leaders, filter) {
+  if (filter === "strong") return leaders.filter((agent) => clamp01(agent.accuracy) >= 0.85);
+  if (filter === "needs_review") return leaders.filter((agent) => clamp01(agent.accuracy) < 0.85);
+  return leaders;
+}
+
+function councilSession(data, leaders, copy) {
   const thought = data.thoughts?.recent?.[0];
   const approval = data.approvals?.[0];
-  const query = approval?.title || thought?.summary || "Evaluate the risk of deploying payload X-99 to production cluster B given current system load.";
+  const query = approval?.title || thought?.summary || copy?.subtitle || "No council query is active in this snapshot.";
   const named = leaders.slice(0, 3);
   const positions = named.length ? named.map((agent, index) => ({
     agent: `${agent.agent_name || titleize(agent.agent_id)} (${taskLabel(agent)})`,
@@ -280,16 +292,16 @@ function councilSession(data, leaders) {
   return {
     query,
     positions,
-    recommendation: approval?.summary || "Proceed with caution. Keep approval gates enabled, route high-risk work through the strongest specialist, and defer irreversible actions until current telemetry stabilizes.",
-    confidence: clamp01(named[0]?.accuracy || 0.82)
+    recommendation: approval?.summary || copy?.summary || copy?.subtitle || "Friday has no council recommendation from backend evidence yet.",
+    confidence: clamp01(named[0]?.accuracy)
   };
 }
 
 function councilDetail(agent, index) {
+  if (agent.summary) return agent.summary;
   const accuracy = formatPercent(agent.accuracy);
-  if (index === 0) return `Current model confidence is ${accuracy}. Recommendation: defer irreversible action until risk signals are below threshold.`;
-  if (index === 1) return `Predictive variance remains elevated. A narrow asynchronous rollout is safer than a direct promotion to full autonomy.`;
-  return `Synthesizing inputs. Historical performance is useful, but this decision should stay approval-gated until fresh evidence arrives.`;
+  if (accuracy !== "--") return `Backend quality score for this agent is ${accuracy}.`;
+  return index === 0 ? "This agent is in the governance roster, but no scored council note came back." : "No detailed council note was returned for this agent.";
 }
 
 function governanceRows(data) {
@@ -324,10 +336,14 @@ function titleize(value) {
 }
 
 function formatPercent(value) {
+  if (value == null || value === "") return "--";
+  const number = Number(value);
+  if (!Number.isFinite(number)) return "--";
   return `${(clamp01(value) * 100).toFixed(1)}%`;
 }
 
 function accuracyTone(value) {
+  if (value == null || value === "" || !Number.isFinite(Number(value))) return "text-friday-muted";
   const number = clamp01(value);
   if (number >= 0.9) return "text-friday-accent";
   if (number >= 0.75) return "text-[#ffbf7b]";
@@ -336,4 +352,9 @@ function accuracyTone(value) {
 
 function clamp01(value) {
   return Math.max(0, Math.min(1, Number(value) || 0));
+}
+
+function numberOrNull(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
 }

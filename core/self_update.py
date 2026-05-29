@@ -18,7 +18,55 @@ DB_PATH = DATA_DIR / "self_updates.sqlite3"
 BACKUP_DIR = DATA_DIR / "self_updates" / "backups"
 VALID_SESSION_STATUSES = {"proposed", "approved", "applied", "cancelled", "failed"}
 VALID_CHANGE_STATUSES = {"staged", "applied", "rolled_back"}
-ALLOWED_EXTENSIONS = {".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".md", ".txt", ".css", ".html", ".yml", ".yaml", ".toml", ".ini", ".csv", ".sql", ".ps1", ".bat", ".sh"}
+ALLOWED_EXTENSIONS = {
+    ".bat",
+    ".c",
+    ".clj",
+    ".cljs",
+    ".cpp",
+    ".cs",
+    ".css",
+    ".csv",
+    ".dart",
+    ".erl",
+    ".ex",
+    ".exs",
+    ".fs",
+    ".go",
+    ".graphql",
+    ".h",
+    ".hpp",
+    ".html",
+    ".ini",
+    ".java",
+    ".js",
+    ".json",
+    ".jsx",
+    ".kt",
+    ".kts",
+    ".lua",
+    ".m",
+    ".md",
+    ".mm",
+    ".php",
+    ".proto",
+    ".ps1",
+    ".py",
+    ".r",
+    ".rb",
+    ".rs",
+    ".scala",
+    ".sh",
+    ".sql",
+    ".swift",
+    ".toml",
+    ".ts",
+    ".tsx",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+ALLOWED_NAMES = {"Dockerfile", "Makefile", "Procfile", "Gemfile", "Rakefile"}
 BLOCKED_PARTS = {".git", ".venv", "node_modules", "__pycache__", ".pytest_cache", ".next", "data"}
 BLOCKED_NAMES = {".env"}
 _LOCK = threading.Lock()
@@ -422,7 +470,7 @@ def _iter_repo_files(limit: int) -> list[Path]:
             continue
         if path.name in BLOCKED_NAMES:
             continue
-        if path.suffix.lower() not in ALLOWED_EXTENSIONS:
+        if path.suffix.lower() not in ALLOWED_EXTENSIONS and path.name not in ALLOWED_NAMES:
             continue
         files.append(path)
     return files
@@ -440,7 +488,7 @@ def _safe_target(path: str) -> Path:
     rel_parts = set(resolved.relative_to(root).parts)
     if rel_parts & BLOCKED_PARTS or resolved.name in BLOCKED_NAMES:
         raise PermissionError("Self-update cannot modify secrets, runtime data, dependencies, or hidden build folders.")
-    if resolved.suffix.lower() not in ALLOWED_EXTENSIONS:
+    if resolved.suffix.lower() not in ALLOWED_EXTENSIONS and resolved.name not in ALLOWED_NAMES:
         raise PermissionError(f"Self-update cannot modify {resolved.suffix or 'extensionless'} files.")
     if resolved.exists() and resolved.stat().st_size > int(config_value("self_update_max_file_bytes", 240000)):
         raise PermissionError("Target file is too large for guarded self-update.")

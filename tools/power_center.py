@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from core import (
+    ad_campaigns,
     agent_council,
     agent_lifecycle,
     agent_quality_manager,
@@ -155,7 +156,11 @@ def execute(inputs: dict[str, Any]) -> str:
             result = app_operators.operate(str(inputs.get("app") or inputs.get("target") or ""), str(inputs.get("instruction") or inputs.get("goal") or ""), max_steps=_int(inputs.get("max_steps"), 0))
             return result.get("summary", "Operator unavailable.")
         if action == "autonomous_coding":
-            return autonomous_coding.start(str(inputs.get("request") or inputs.get("instruction") or inputs.get("target") or ""), root=str(inputs.get("root") or "")).get("summary", "Autonomous coding unavailable.")
+            return autonomous_coding.start(
+                str(inputs.get("request") or inputs.get("instruction") or inputs.get("target") or ""),
+                root=str(inputs.get("root") or ""),
+                risk_level=str(inputs.get("risk_level") or "medium"),
+            ).get("summary", "Autonomous coding unavailable.")
         if action == "daily_plan":
             return personal_life_os.daily_plan().get("summary", "No plan.")
         if action == "next_action":
@@ -190,6 +195,28 @@ def execute(inputs: dict[str, Any]) -> str:
             return daily_companion.check_in().get("summary", "Check-in unavailable.")
         if action == "notifications":
             return notification_center.summary().get("voice_summary", "No notifications.")
+        if action == "ad_campaign_draft":
+            return ad_campaigns.draft(
+                str(inputs.get("product") or inputs.get("name") or inputs.get("target") or inputs.get("title") or ""),
+                audience=str(inputs.get("audience") or ""),
+                offer=str(inputs.get("offer") or inputs.get("body") or inputs.get("content") or ""),
+                objective=str(inputs.get("objective") or "conversions"),
+                platform=str(inputs.get("platform") or inputs.get("connector") or "social"),
+                tone=str(inputs.get("tone") or "direct"),
+                metadata=inputs.get("metadata") if isinstance(inputs.get("metadata"), dict) else {},
+            ).get("summary", "Ad campaign draft unavailable.")
+        if action == "ad_campaign_post":
+            return ad_campaigns.queue_post(
+                _int(inputs.get("campaign_id") or inputs.get("target_id"), 0),
+                connector=str(inputs.get("connector") or inputs.get("platform") or ""),
+                target=str(inputs.get("target") or inputs.get("to") or inputs.get("channel") or ""),
+                variant_index=_int(inputs.get("variant_index"), 0),
+                product=str(inputs.get("product") or inputs.get("name") or inputs.get("title") or ""),
+                audience=str(inputs.get("audience") or ""),
+                offer=str(inputs.get("offer") or inputs.get("body") or inputs.get("content") or ""),
+                platform=str(inputs.get("platform") or inputs.get("connector") or ""),
+                tone=str(inputs.get("tone") or "direct"),
+            ).get("summary", "Ad campaign post unavailable.")
         if action == "skill_marketplace":
             return skill_marketplace.summary().get("summary", "Skill marketplace unavailable.")
         if action == "skill_marketplace_install":

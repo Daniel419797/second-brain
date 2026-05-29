@@ -13,9 +13,12 @@ import { GovernanceView } from "@/components/views/GovernanceView";
 import { IntegrationsView } from "@/components/views/IntegrationsView";
 import { MemoryView } from "@/components/views/MemoryView";
 import { MissionControlView } from "@/components/views/MissionControlView";
+import { NotificationsView } from "@/components/views/NotificationsView";
+import { OperatorsView } from "@/components/views/OperatorsView";
 import { ProjectsView } from "@/components/views/ProjectsView";
 import { ReliabilityView } from "@/components/views/ReliabilityView";
 import { SafetyView } from "@/components/views/SafetyView";
+import { SettingsView } from "@/components/views/SettingsView";
 import { GenericView } from "@/components/views/SimpleListView";
 import { TasksView } from "@/components/views/TasksView";
 import { VisionView } from "@/components/views/VisionView";
@@ -61,6 +64,14 @@ export function TasksRoute() {
 export function ApprovalsRoute() {
   const { data } = useDashboard();
   return <ApprovalsView approvals={data.approvals} summary={data.approvalSummary} />;
+}
+
+export function NotificationsRoute() {
+  return (
+    <PageWithIntelligenceRail>
+      <NotificationsView />
+    </PageWithIntelligenceRail>
+  );
 }
 
 export function GenericDashboardRoute({ title, rows, empty }) {
@@ -129,12 +140,18 @@ export function IntegrationsRoute() {
   );
 }
 
+export function OperatorsRoute() {
+  return (
+    <PageWithIntelligenceRail>
+      <OperatorsView />
+    </PageWithIntelligenceRail>
+  );
+}
+
 export function SettingsRoute() {
   return (
-    <GenericDashboardRoute
-      title="Settings"
-      rows={(data) => data.settings || []}
-      empty="Settings are available through the local API and environment configuration."
-    />
+    <PageWithIntelligenceRail>
+      <SettingsView />
+    </PageWithIntelligenceRail>
   );
 }

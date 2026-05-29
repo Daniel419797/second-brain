@@ -739,6 +739,28 @@ def test_api_desktop_task_controls(monkeypatch, tmp_path):
     assert client.post(f"/desktop/tasks/{session_id}/cancel", headers=headers).json()["reply"] == f"cancelled {session_id}"
 
 
+def test_api_exposes_dynamic_ui_control(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+    started = []
+    monkeypatch.setattr(server.ui_control, "status", lambda app="", limit=12: {"summary": "ui ready", "app": app, "actions": [{"id": "click"}], "desktop_sessions": []})
+    monkeypatch.setattr(server.ui_control, "context", lambda app="", instruction="": {"summary": f"{app} context", "instruction": instruction})
+    monkeypatch.setattr(server.ui_control, "execute", lambda action, **kwargs: {"summary": f"{action} ok", "action": action, "input": kwargs})
+    monkeypatch.setattr(server.ui_control, "task_instruction", lambda app, instruction: f"{app}: {instruction}")
+    monkeypatch.setattr(server, "_start_desktop_task_thread", lambda task_id, instruction, max_steps: started.append((task_id, instruction, max_steps)))
+
+    status_response = client.get("/ui-control/status?app=chrome", headers=headers)
+    context_response = client.post("/ui-control/context", json={"app": "chrome", "instruction": "inspect"}, headers=headers)
+    action_response = client.post("/ui-control/action", json={"action": "click", "x": 10, "y": 20}, headers=headers)
+    task_response = client.post("/ui-control/task", json={"action": "desktop_task", "app": "chrome", "instruction": "open settings", "max_steps": 6}, headers=headers)
+
+    assert status_response.json()["summary"] == "ui ready"
+    assert context_response.json()["summary"] == "chrome context"
+    assert action_response.json()["summary"] == "click ok"
+    assert task_response.json()["status"] == "active"
+    assert started == [(task_response.json()["id"], "chrome: open settings", 6)]
+
+
 def test_api_exposes_visual_monitor(monkeypatch, tmp_path):
     client = _client(monkeypatch, tmp_path)
     headers = {"Authorization": f"Bearer {_token(client)}"}

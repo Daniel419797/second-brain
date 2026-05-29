@@ -25,9 +25,11 @@ const ATTACHMENT_ACCEPT = [
 ].join(",");
 
 export function ChatView({ messages, onSend, onClear, busy }) {
-  const { api, data } = useDashboard();
+  const { api, data, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("chat") || {};
   const [text, setText] = useState("");
   const [attachments, setAttachments] = useState([]);
+  const [mode, setMode] = useState("Normal");
   const [attachmentStatus, setAttachmentStatus] = useState("");
   const [uploading, setUploading] = useState(false);
   const attachmentsRef = useRef([]);
@@ -60,7 +62,7 @@ export function ChatView({ messages, onSend, onClear, busy }) {
       const uploaded = attachments.length ? await uploadAttachments(api, attachments) : [];
       setText("");
       clearAttachments();
-      await onSend(composeMessageWithAttachments(value, uploaded));
+      await onSend(applyChatMode(composeMessageWithAttachments(value, uploaded), mode));
     } catch (err) {
       setAttachmentStatus(err.message || "Could not upload attachment.");
     } finally {
@@ -137,9 +139,9 @@ export function ChatView({ messages, onSend, onClear, busy }) {
     <section className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-friday-bg text-white">
       <header className="flex min-h-[54px] items-center justify-between gap-3 border-b border-friday-line bg-[#0f141a] px-5">
         <div className="min-w-0">
-          <h1 className="truncate text-[16px] font-extrabold leading-none">Friday Chat</h1>
+          <h1 className="truncate text-[16px] font-extrabold leading-none">{copy?.title || "Friday Chat"}</h1>
           <p className="mt-1 truncate font-mono text-[11px] text-friday-muted">
-            Real orchestrator conversation · {messageCount} message{messageCount === 1 ? "" : "s"} saved locally
+            {copy?.subtitle || `Real orchestrator conversation / ${messageCount} message${messageCount === 1 ? "" : "s"} saved locally`}
           </p>
         </div>
         <button
@@ -149,7 +151,7 @@ export function ChatView({ messages, onSend, onClear, busy }) {
           disabled={!messageCount || busy}
         >
           <Trash2 size={14} />
-          New Chat
+          {copy?.empty?.messages ? "New Thread" : "New Chat"}
         </button>
       </header>
 
@@ -175,13 +177,15 @@ export function ChatView({ messages, onSend, onClear, busy }) {
         <div className="mx-auto max-w-[860px]">
           <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2 text-[12px]">
             <span className="font-mono uppercase tracking-[.12em] text-white">Mode:</span>
-            {["Normal", "Focused", "Teacher", "Debugger", "Silent Operator"].map((mode, index) => (
+            {["Normal", "Focused", "Teacher", "Debugger", "Silent Operator"].map((item, index) => (
               <button
-                className={`min-h-7 border px-3 text-[12px] ${index === 0 ? "border-[#45678c] bg-[#1a2a3d] text-friday-accent" : "border-transparent bg-transparent text-[#d8e2ee] hover:border-friday-line"}`}
-                key={mode}
+                className={`min-h-7 border px-3 text-[12px] ${mode === item ? "border-[#45678c] bg-[#1a2a3d] text-friday-accent" : "border-transparent bg-transparent text-[#d8e2ee] hover:border-friday-line"}`}
+                key={item}
                 type="button"
+                onClick={() => setMode(item)}
+                aria-pressed={mode === item}
               >
-                {mode}
+                {item}
               </button>
             ))}
           </div>
@@ -219,7 +223,7 @@ export function ChatView({ messages, onSend, onClear, busy }) {
               onKeyDown={handleKeyDown}
               maxLength={4000}
               rows={2}
-              placeholder="Message Friday..."
+              placeholder={copy?.labels?.ask || "Message Friday..."}
             />
             <Link
               className="grid h-10 w-10 place-items-center border border-transparent text-[#d8e4f2] transition-colors hover:border-friday-line hover:text-friday-accent"
@@ -234,7 +238,7 @@ export function ChatView({ messages, onSend, onClear, busy }) {
             </button>
           </div>
           {attachmentStatus ? <p className="mt-2 text-[11px] text-[#ffbf7b]">{attachmentStatus}</p> : null}
-          <p className="mt-2 text-[11px] text-friday-muted">Enter to send · Shift + Enter for newline</p>
+          <p className="mt-2 text-[11px] text-friday-muted">Enter to send / Shift + Enter for newline</p>
         </div>
       </form>
     </section>
@@ -297,6 +301,11 @@ function composeMessageWithAttachments(text, uploaded) {
   const intro = text || "Please review the attached file(s).";
   const maxIntroLength = Math.max(0, 3900 - attachmentBlock.length);
   return `${intro.slice(0, maxIntroLength)}${attachmentBlock}`;
+}
+
+function applyChatMode(text, mode) {
+  if (!mode || mode === "Normal") return text;
+  return `[Friday mode: ${mode}]\n${text || "Continue."}`;
 }
 
 function readFileAsDataUrl(file) {

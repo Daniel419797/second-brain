@@ -46,6 +46,32 @@ def test_rule_classifier_extracts_academic_project_slots():
     }
 
 
+def test_rule_classifier_drafts_ad_campaign():
+    result = intent_engine.classify("make an ad for my invoice app")
+
+    assert result.actionable
+    assert result.intent == "draft_ad_campaign"
+    assert result.tool_name == "power_center"
+    assert result.tool_input == {
+        "action": "ad_campaign_draft",
+        "product": "my invoice app",
+    }
+
+
+def test_rule_classifier_queues_ad_campaign_post():
+    result = intent_engine.classify("post an ad for my invoice app to discord channel 123")
+
+    assert result.actionable
+    assert result.intent == "post_ad_campaign"
+    assert result.tool_input == {
+        "action": "ad_campaign_post",
+        "product": "my invoice app",
+        "platform": "discord",
+        "connector": "discord",
+        "target": "123",
+    }
+
+
 def test_rule_classifier_extracts_git_status():
     result = intent_engine.classify("git status")
 
