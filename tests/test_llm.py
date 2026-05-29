@@ -86,6 +86,11 @@ def test_power_center_tool_schema_includes_new_powers():
     assert "agency_send_outreach" in actions
     assert "gateway_status" in actions
     assert "control_room" in actions
+    assert "connector_send" in actions
+    assert "benchmark_run" in actions
+    assert "company_handoff" in actions
+    assert "production_coding_prepare" in actions
+    assert "memory_governance_remember" in actions
     assert "agency_business_layer" in actions
 
 

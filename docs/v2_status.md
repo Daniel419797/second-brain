@@ -317,6 +317,15 @@ Operational reliability layer:
 - `core/voice_reliability.py` stores transcript mistakes, expected text, backend, audio duration, confidence, and learned wake-name aliases such as Friady/Freddie/Fryday.
 - The dashboard exposes Approval Inbox, Agent Blackboard, Evaluation Lab, Agent Memory, task contract details, Playwright status, and voice reliability summaries.
 
+Autonomous agency operating-system layer:
+
+- `core/connector_runtime.py` adds an approval-gated connector outbox and webhook intake runtime for Telegram, Discord, Slack, WhatsApp, Gmail, Google Calendar, GitHub, Render, Vercel deploy hooks, Notion, Trello, and Sheets, with dedupe, retries, audit logs, redacted payloads, and provider signature checks where available.
+- `core/company_runtime.py` gives Friday durable specialist-worker runbooks, state machines, blocker escalation, and agent handoffs for CEO, sales, research, proposal writing, PM, design, development, QA, DevOps, finance/admin, and support roles.
+- `core/production_coding_autonomy.py` prepares Desktop project sandboxes with discovered test commands, CI plan, rollback plan, deploy-preview checklist, security preflight, performance budgets, project memory, and proof reports.
+- `core/memory_governance.py` stores governed memory for people, leads, clients, projects, deployment steps, coding style, previous failures, successful workflows, and reusable decisions with confidence scores, stale-memory review, and contradiction handling.
+- `core/competitive_benchmark.py` provides a Friday-vs-OpenClaw benchmark harness measuring completion rate, retries, latency, cost estimate, safety blocks, false success claims, recovery, and user intervention count.
+- Protected API endpoints now expose `/connectors/*`, `/company/*`, `/coding/production/*`, `/memory/governance/*`, and `/benchmark/*`; public provider webhooks use `/webhooks/{connector}`.
+
 ## Functional Requirements
 
 | ID | Requirement | Status | Local evidence |

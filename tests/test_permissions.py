@@ -139,3 +139,22 @@ def test_gateway_permissions_split_read_intake_config_and_stop(monkeypatch, tmp_
     assert ingest["allowed"] is True
     assert config["requires_confirmation"] is True
     assert stop["allowed"] is True
+
+
+def test_autonomous_agency_runtime_permissions(monkeypatch, tmp_path):
+    isolate_permissions(monkeypatch, tmp_path)
+    monkeypatch.setattr(autonomy_control, "config_value", lambda key, default=None: False if key == "autonomy_control_enabled" else default)
+
+    benchmark = permissions.evaluate("power_center", {"action": "benchmark_run"})
+    queue = permissions.evaluate("power_center", {"action": "connector_send"})
+    dispatch = permissions.evaluate("power_center", {"action": "connector_dispatch"})
+    company = permissions.evaluate("power_center", {"action": "company_handoff"})
+    coding = permissions.evaluate("power_center", {"action": "production_coding_prepare"})
+    memory = permissions.evaluate("power_center", {"action": "memory_governance_remember"})
+
+    assert benchmark["allowed"] is True
+    assert queue["allowed"] is True
+    assert dispatch["requires_confirmation"] is True
+    assert company["allowed"] is True
+    assert coding["requires_confirmation"] is True
+    assert memory["allowed"] is True

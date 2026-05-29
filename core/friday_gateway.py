@@ -351,15 +351,25 @@ def control_room() -> dict[str, Any]:
     proof = trust_proof.summary()
     audit = audit_log.recent(limit=10)
     recent_errors = [item for item in audit if not item.get("success")]
+    connector_runtime = _safe(lambda: __import__("core.connector_runtime", fromlist=["status"]).status(), {})
+    benchmark = _safe(lambda: __import__("core.competitive_benchmark", fromlist=["status"]).status(), {})
+    company = _safe(lambda: __import__("core.company_runtime", fromlist=["status"]).status(), {})
+    governed_memory = _safe(lambda: __import__("core.memory_governance", fromlist=["status"]).status(), {})
+    production_coding = _safe(lambda: __import__("core.production_coding_autonomy", fromlist=["status"]).status(), {})
     return {
         "gateway": gateway,
+        "connector_runtime": connector_runtime,
         "workers": background_agents.worker_status(),
+        "company_runtime": company,
         "tasks": tasks,
         "approvals": approvals,
         "agency": agency,
         "skills": skills,
         "model_router": router,
         "cloud_worker": cloud,
+        "benchmark": benchmark,
+        "memory_governance": governed_memory,
+        "production_coding": production_coding,
         "reliability": reliability,
         "proof": proof,
         "audit": audit,

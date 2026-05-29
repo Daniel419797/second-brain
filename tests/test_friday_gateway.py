@@ -1,4 +1,4 @@
-from core import agency_mode, approval_inbox, audit_log, cloud_worker_mode, friday_gateway, notification_center, personal_knowledge_vault, skill_library, task_queue
+from core import agency_mode, approval_inbox, audit_log, cloud_worker_mode, company_runtime, competitive_benchmark, connector_runtime, friday_gateway, memory_governance, notification_center, personal_knowledge_vault, production_coding_autonomy, project_memory, skill_library, task_queue, trust_proof
 
 
 def _isolate(monkeypatch, tmp_path):
@@ -12,6 +12,12 @@ def _isolate(monkeypatch, tmp_path):
     monkeypatch.setattr(skill_library, "EXAMPLES_PATH", tmp_path / "examples.json")
     monkeypatch.setattr(agency_mode, "DB_PATH", tmp_path / "agency.sqlite3")
     monkeypatch.setattr(cloud_worker_mode, "DB_PATH", tmp_path / "cloud_worker.sqlite3")
+    monkeypatch.setattr(connector_runtime, "DB_PATH", tmp_path / "connector_runtime.sqlite3")
+    monkeypatch.setattr(competitive_benchmark, "DB_PATH", tmp_path / "benchmark.sqlite3")
+    monkeypatch.setattr(company_runtime, "DB_PATH", tmp_path / "company.sqlite3")
+    monkeypatch.setattr(memory_governance, "DB_PATH", tmp_path / "memory_governance.sqlite3")
+    monkeypatch.setattr(project_memory, "DB_PATH", tmp_path / "project_memory.sqlite3")
+    monkeypatch.setattr(trust_proof, "DB_PATH", tmp_path / "trust_proof.sqlite3")
 
     def fake_config(key, default=None):
         values = {
@@ -21,12 +27,14 @@ def _isolate(monkeypatch, tmp_path):
             "agency_workspace_dir": str(tmp_path / "Friday Agency"),
             "agency_default_currency": "USD",
             "cloud_worker_url": "",
+            "connector_runtime_default_approval_required": True,
         }
         return values.get(key, default)
 
     monkeypatch.setattr(friday_gateway, "config_value", fake_config)
     monkeypatch.setattr(agency_mode, "config_value", fake_config)
     monkeypatch.setattr(cloud_worker_mode, "config_value", fake_config)
+    monkeypatch.setattr(connector_runtime, "config_value", fake_config)
 
 
 def test_gateway_routes_low_risk_events_to_tasks(monkeypatch, tmp_path):

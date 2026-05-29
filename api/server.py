@@ -16,7 +16,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import Body, Cookie, Depends, FastAPI, Header, HTTPException, Response, WebSocket, WebSocketDisconnect, status
+from fastapi import Body, Cookie, Depends, FastAPI, Header, HTTPException, Request, Response, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
@@ -47,20 +47,21 @@ _CORE_MODULES = [
     "autonomous_debugger", "autonomous_fix_loop", "autonomous_learning", "autonomous_qa_lab", "autonomous_release_engine",
     "autonomy_control", "autonomy_engine", "awareness_graph", "background_agents", "backup_recovery", "barge_in", "browser_extension_bridge",
     "browser_extension_pro", "browser_pc_copilot", "browser_playwright", "calendar_email_assistant", "capability_center",
-    "certainty_brain", "cloud_sync", "cloud_worker_mode", "cognitive_cycle", "competence", "context_aware_silence",
+    "certainty_brain", "cloud_sync", "cloud_worker_mode", "cognitive_cycle", "company_runtime", "competence",
+    "competitive_benchmark", "connector_runtime", "context_aware_silence",
     "context_fusion", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
     "decision_memory", "deep_project_autopilot", "deployment_brain", "desktop_tasks", "desktop_vision", "device_command_mesh",
     "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
     "executive_capabilities", "focus_protection", "friday_gateway", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
     "identity", "image_generation", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
     "live_workspace_coach", "local_ai_search", "local_file_intelligence", "local_voice_brain", "llm", "long_term_learning",
-    "meeting_study_companion", "memory_debate", "mission_control", "model_3d", "model_3d_studio",
+    "meeting_study_companion", "memory_debate", "memory_governance", "mission_control", "model_3d", "model_3d_studio",
     "model_benchmark_lab", "model_router_brain",
     "neo4j_migration", "notification_center", "notification_intelligence", "offline_survival", "operating_rhythm",
     "operator_skills", "orchestrator", "os_autopilot", "pc_awareness", "pc_timeline", "performance", "permissions",
     "personal_automation_daemon", "personal_command_memory", "personal_crm", "personal_data_timeline", "personal_finance",
     "personal_knowledge_vault", "personal_life_os", "personal_memory_review", "personal_safety_guardian", "phone_bridge",
-    "phone_mesh", "private_embedding_memory", "privacy_firewall_pro", "privacy_vault", "project_autopilot", "project_cto",
+    "phone_mesh", "private_embedding_memory", "privacy_firewall_pro", "privacy_vault", "production_coding_autonomy", "project_autopilot", "project_cto",
     "project_memory", "project_watchdog", "proactive_guardian", "release_manager", "reliability_score", "research_briefings",
     "sandbox_simulation", "search_broker", "security_guardian_pro", "self_debugger", "self_model", "self_reflection",
     "self_testing_personality", "self_update", "semantic_search", "skill_evolution", "skill_improvement", "skill_library",
@@ -295,6 +296,66 @@ class GatewayMemoryRequest(BaseModel):
 
 class GatewayEmergencyStopRequest(BaseModel):
     reason: str = Field(default="", max_length=1000)
+
+
+class ConnectorSendRequest(BaseModel):
+    connector: str = Field(min_length=1, max_length=120)
+    target: str = Field(min_length=1, max_length=1000)
+    body: str = Field(default="", max_length=12000)
+    subject: str = Field(default="", max_length=500)
+    action: str = Field(default="message", max_length=80)
+    payload: dict[str, Any] = Field(default_factory=dict)
+    require_approval: bool | None = None
+
+
+class ConnectorApproveRequest(BaseModel):
+    note: str = Field(default="", max_length=1000)
+    dispatch: bool = False
+
+
+class BenchmarkRunRequest(BaseModel):
+    candidate: str = Field(default="friday", max_length=120)
+    baseline: str = Field(default="openclaw", max_length=120)
+    run_live: bool = False
+
+
+class CompanyStateRequest(BaseModel):
+    agent_id: str = Field(min_length=1, max_length=120)
+    state: str = Field(default="working", max_length=80)
+    task_id: int = 0
+    blocker: str = Field(default="", max_length=2000)
+    progress: float = Field(default=0.0, ge=0.0, le=1.0)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class CompanyHandoffRequest(BaseModel):
+    from_agent: str = Field(min_length=1, max_length=120)
+    to_agent: str = Field(min_length=1, max_length=120)
+    title: str = Field(default="", max_length=300)
+    summary: str = Field(default="", max_length=4000)
+    task_id: int = 0
+    evidence: list[str] | str = Field(default_factory=list)
+
+
+class ProductionCodingPrepRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    request: str = Field(default="", max_length=4000)
+    create_files: bool = True
+    run_scans: bool = True
+
+
+class GovernedMemoryRequest(BaseModel):
+    kind: str = Field(default="reusable_decision", max_length=120)
+    title: str = Field(min_length=1, max_length=300)
+    content: str = Field(default="", max_length=6000)
+    confidence: float = Field(default=0.75, ge=0.0, le=1.0)
+    review_after_days: int = Field(default=30, ge=1, le=3650)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class GovernedMemoryResolveRequest(BaseModel):
+    decision: str = Field(default="approve", max_length=80)
+    note: str = Field(default="", max_length=1000)
 
 
 class WorkspaceQuestionRequest(BaseModel):
@@ -2083,6 +2144,152 @@ def create_app() -> FastAPI:
     @app.post("/gateway/emergency-stop")
     def gateway_emergency_stop(request: GatewayEmergencyStopRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
         return friday_gateway.emergency_stop(request.reason)
+
+    @app.get("/benchmark/status")
+    def benchmark_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return competitive_benchmark.status()
+
+    @app.get("/benchmark/suite")
+    def benchmark_suite(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return competitive_benchmark.suite()
+
+    @app.post("/benchmark/run")
+    def benchmark_run(request: BenchmarkRunRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return competitive_benchmark.run_suite(request.candidate, request.baseline, run_live=request.run_live)
+
+    @app.get("/benchmark/history")
+    def benchmark_history(limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return competitive_benchmark.history(limit=limit)
+
+    @app.get("/connectors/runtime/status")
+    def connector_runtime_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return connector_runtime.status()
+
+    @app.get("/connectors/outbox")
+    def connector_outbox(status_filter: str = "", connector: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return connector_runtime.list_outbox(status=status_filter, connector=connector, limit=limit)
+
+    @app.post("/connectors/send")
+    def connector_send(request: ConnectorSendRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return connector_runtime.queue_message(
+                request.connector,
+                request.target,
+                request.body,
+                subject=request.subject,
+                action=request.action,
+                payload=request.payload,
+                require_approval=request.require_approval,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    @app.post("/connectors/outbox/{outbox_id}/approve")
+    def connector_approve(outbox_id: int, request: ConnectorApproveRequest | None = Body(default=None), _user: str = Depends(require_user)) -> dict[str, Any]:
+        payload = request or ConnectorApproveRequest()
+        try:
+            return connector_runtime.approve_outbox(outbox_id, note=payload.note, dispatch=payload.dispatch)
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    @app.post("/connectors/outbox/{outbox_id}/dispatch")
+    def connector_dispatch(outbox_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return connector_runtime.dispatch_outbox(outbox_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    @app.post("/connectors/retry-due")
+    def connector_retry_due(limit: int = 10, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return connector_runtime.retry_due(limit=limit)
+
+    @app.get("/webhooks/{connector}", response_model=None)
+    async def connector_webhook_verify(connector: str, request: Request) -> Any:
+        try:
+            result = connector_runtime.receive_webhook(connector, headers=dict(request.headers), body=b"", query=dict(request.query_params))
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+        if "challenge" in result:
+            return Response(str(result.get("challenge") or ""), media_type="text/plain")
+        return result
+
+    @app.post("/webhooks/{connector}")
+    async def connector_webhook(connector: str, request: Request) -> dict[str, Any]:
+        body = await request.body()
+        try:
+            return connector_runtime.receive_webhook(connector, headers=dict(request.headers), body=body, query=dict(request.query_params))
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+    @app.get("/company/runtime/status")
+    def company_runtime_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return company_runtime.status()
+
+    @app.get("/company/runbooks")
+    def company_runbooks(_user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return company_runtime.runbooks()
+
+    @app.post("/company/worker-state")
+    def company_worker_state(request: CompanyStateRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return company_runtime.set_worker_state(
+                request.agent_id,
+                request.state,
+                task_id=request.task_id,
+                blocker=request.blocker,
+                progress=request.progress,
+                metadata=request.metadata,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    @app.post("/company/handoff")
+    def company_handoff(request: CompanyHandoffRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return company_runtime.handoff(
+                request.from_agent,
+                request.to_agent,
+                request.title,
+                request.summary,
+                task_id=request.task_id,
+                evidence=request.evidence,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+    @app.post("/coding/production/prepare")
+    def production_coding_prepare(request: ProductionCodingPrepRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return production_coding_autonomy.prepare_project(request.root, request=request.request, create_files=request.create_files, run_scans=request.run_scans)
+
+    @app.get("/coding/production/status")
+    def production_coding_status(root: str = "", _user: str = Depends(require_user)) -> dict[str, Any]:
+        return production_coding_autonomy.status(root)
+
+    @app.get("/memory/governance/status")
+    def memory_governance_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return memory_governance.status()
+
+    @app.get("/memory/governance/reviews")
+    def memory_governance_reviews(status_filter: str = "", limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return memory_governance.reviews(status=status_filter, limit=limit)
+
+    @app.post("/memory/governance/remember")
+    def memory_governance_remember(request: GovernedMemoryRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return memory_governance.remember(
+            request.kind,
+            request.title,
+            request.content,
+            confidence=request.confidence,
+            review_after_days=request.review_after_days,
+            metadata=request.metadata,
+        )
+
+    @app.post("/memory/governance/reviews/{review_id}/resolve")
+    def memory_governance_resolve(review_id: int, request: GovernedMemoryResolveRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        try:
+            return memory_governance.resolve(review_id, request.decision, note=request.note)
+        except ValueError as exc:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
 
     @app.get("/private-memory/summary")
     def private_memory_summary(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -4833,6 +5040,11 @@ def create_app() -> FastAPI:
                 "conversation_continuity",
                 "local_voice_brain",
                 "trust_dashboard",
+                "friday_vs_openclaw_benchmark_harness",
+                "approval_gated_connector_runtime",
+                "specialist_company_worker_runtime",
+                "production_coding_autonomy_prep",
+                "governed_memory_review_queue",
             ],
         }
 
@@ -5500,7 +5712,12 @@ def _dashboard_snapshot() -> dict[str, Any]:
         "projectReferences": _snapshot_value(lambda: project_memory.list_reference_images(limit=12), []),
         "agency": _snapshot_value(agency_mode.status, None),
         "gateway": _snapshot_value(friday_gateway.status, None),
+        "connectorRuntime": _snapshot_value(connector_runtime.status, None),
         "controlRoom": _snapshot_value(friday_gateway.control_room, None),
+        "benchmark": _snapshot_value(competitive_benchmark.status, None),
+        "companyRuntime": _snapshot_value(company_runtime.status, None),
+        "memoryGovernance": _snapshot_value(memory_governance.status, None),
+        "productionCoding": _snapshot_value(production_coding_autonomy.status, None),
         "approvals": _snapshot_value(lambda: approval_inbox.items(limit=10), []),
         "approvalSummary": _snapshot_value(lambda: approval_inbox.summary(limit=8), None),
         "thoughts": _snapshot_value(lambda: agent_thought_bus.summary(limit=8), None),
@@ -5629,7 +5846,12 @@ def _task_stream_payload() -> dict[str, Any]:
         "daily_companion": daily_companion.status(),
         "agency": agency_mode.status(),
         "gateway": friday_gateway.status(),
+        "connector_runtime": connector_runtime.status(),
         "control_room": friday_gateway.control_room(),
+        "benchmark": competitive_benchmark.status(),
+        "company_runtime": company_runtime.status(),
+        "memory_governance": memory_governance.status(),
+        "production_coding": production_coding_autonomy.status(),
         "finance": personal_finance.summary(),
         "project_watchdog": project_watchdog.status(),
         "codebase_standards": codebase_standards.status(),

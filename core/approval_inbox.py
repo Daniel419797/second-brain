@@ -118,7 +118,7 @@ def resolve(kind: str, item_id: int, note: str = "") -> dict[str, Any]:
             task_queue.update_status(item_id, "pending")
             task_queue.post_message(item_id, "approval", note or "User released blocked task.")
             return {"resolved": True, "item": task_queue.get_task(item_id)}
-    if normalized in {"privacy", "autonomy_blocker", "approval", "generic", "gateway_event"}:
+    if normalized in {"privacy", "autonomy_blocker", "approval", "generic", "gateway_event", "connector_outbound"}:
         init_db()
         with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
             conn.row_factory = sqlite3.Row

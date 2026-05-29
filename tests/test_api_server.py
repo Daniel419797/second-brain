@@ -6,7 +6,7 @@ from fastapi.testclient import TestClient
 
 from api import server
 from core import adaptive_attention, agency_mode, agent_blackboard, agent_council, agent_lifecycle, agent_memory, agent_office, agent_quality_manager, agent_scheduler, agent_simulation_sandbox, agent_thought_bus, android_companion, api_auth, app_apprenticeship, app_integrations, app_operators, app_state_memory, autobiographical_memory, autonomous_debugger, autonomous_learning, autonomous_qa_lab, backup_recovery, barge_in, browser_extension_bridge, capability_center, code_change_simulator, command_graph, context_aware_silence, continuity_brain, contextual_workspace, conversation_continuity, daily_companion, decision_memory, deep_project_autopilot, deployment_brain, desktop_tasks, dev_server_copilot, do_not_forget, emotion_tone, emotional_timing, environment_awareness, error_radar, evaluation_lab, event_nervous_system, executive_capabilities, failure_autopsy, focus_protection, goal_regulation, google_workspace, learning_coach, live_workspace_coach, local_file_intelligence, local_voice_brain, long_term_learning, meeting_study_companion, memory_constitution, memory_debate, mission_control, model_benchmark_lab, model_router_brain, notification_center, offline_survival, operating_rhythm, os_autopilot, pc_awareness, pc_timeline, permissions, personal_command_memory, personal_crm, personal_data_timeline, personal_finance, personal_knowledge_vault, personal_life_os, personal_safety_guardian, personal_taste_engine, phone_bridge, phone_mesh, private_embedding_memory, privacy_vault, project_autopilot, project_cto, project_memory, project_watchdog, proactive_guardian, reality_check, refactor_planner, release_manager, reliability_score, research_briefings, sandbox_simulation, self_debugger, self_reflection, self_update, semantic_search, skill_evolution, skill_improvement, skill_library, skill_training_studio, task_contracts, task_queue, test_build_monitor, trust_proof, version_guardian, vision_skill_learning, visual_monitor, voice_reliability, workspace_brain, world_model
-from core import approval_inbox, audit_log, cloud_worker_mode, friday_gateway
+from core import approval_inbox, audit_log, cloud_worker_mode, codebase_standards, company_runtime, competitive_benchmark, connector_runtime, friday_gateway, memory_governance, production_coding_autonomy
 
 
 def _client(monkeypatch, tmp_path):
@@ -54,6 +54,12 @@ def _client(monkeypatch, tmp_path):
     monkeypatch.setattr(agency_mode, "DB_PATH", tmp_path / "agency_mode.sqlite3")
     monkeypatch.setattr(agency_mode, "config_value", lambda key, default=None: str(tmp_path / "Friday Agency") if key == "agency_workspace_dir" else default)
     monkeypatch.setattr(friday_gateway, "DB_PATH", tmp_path / "friday_gateway.sqlite3")
+    monkeypatch.setattr(connector_runtime, "DB_PATH", tmp_path / "connector_runtime.sqlite3")
+    monkeypatch.setattr(competitive_benchmark, "DB_PATH", tmp_path / "competitive_benchmark.sqlite3")
+    monkeypatch.setattr(company_runtime, "DB_PATH", tmp_path / "company_runtime.sqlite3")
+    monkeypatch.setattr(memory_governance, "DB_PATH", tmp_path / "memory_governance.sqlite3")
+    monkeypatch.setattr(production_coding_autonomy, "FRIDAY_DIR", ".friday")
+    monkeypatch.setattr(codebase_standards, "DB_PATH", tmp_path / "codebase_standards.sqlite3")
     monkeypatch.setattr(cloud_worker_mode, "DB_PATH", tmp_path / "cloud_worker_mode.sqlite3")
     monkeypatch.setattr(personal_finance, "DB_PATH", tmp_path / "personal_finance.sqlite3")
     monkeypatch.setattr(private_embedding_memory, "DB_PATH", tmp_path / "private_embedding_memory.sqlite3")
@@ -262,6 +268,65 @@ def test_api_gateway_and_control_room_endpoints(monkeypatch, tmp_path):
     assert events_response.json()[0]["title"] == "Plan support queue"
     assert room_response.status_code == 200
     assert "gateway" in room_response.json()
+
+
+def test_api_connector_company_memory_benchmark_and_production_coding(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "token")
+    monkeypatch.setattr(connector_runtime, "_post_json", lambda *args, **kwargs: {"ok": True, "status": 200, "summary": "sent"})
+    monkeypatch.setattr(
+        competitive_benchmark,
+        "_readiness",
+        lambda: {key: True for key in {
+            "connector_runtime",
+            "approval",
+            "gateway",
+            "signature",
+            "approval_inbox",
+            "audit",
+            "desktop_sandbox",
+            "ci",
+            "proof",
+            "company_runtime",
+            "state_machine",
+            "memory_governance",
+            "control_room",
+            "agency_mode",
+            "playwright",
+            "operator_skills",
+            "skill_library",
+            "model_router",
+            "cloud_worker",
+            "android_companion",
+            "phone_mesh",
+            "agency_business_layer",
+            "evidence_required",
+        }},
+    )
+    project = tmp_path / "client-app"
+    project.mkdir()
+    (project / "package.json").write_text('{"scripts":{"test":"vitest","build":"vite build"}}', encoding="utf-8")
+
+    queued = client.post("/connectors/send", headers=headers, json={"connector": "telegram", "target": "123", "body": "Draft only"})
+    approved = client.post(f"/connectors/outbox/{queued.json()['id']}/approve", headers=headers, json={"note": "ok", "dispatch": True})
+    company = client.post("/company/worker-state", headers=headers, json={"agent_id": "sales_agent", "state": "working", "progress": 0.2})
+    memory = client.post("/memory/governance/remember", headers=headers, json={"kind": "client", "title": "Ada tone", "content": "Likes short updates.", "confidence": 0.8})
+    benchmark = client.post("/benchmark/run", headers=headers, json={"candidate": "friday", "baseline": "openclaw"})
+    coding = client.post("/coding/production/prepare", headers=headers, json={"root": str(project), "request": "ship safely", "run_scans": False})
+
+    assert queued.status_code == 200
+    assert queued.json()["status"] == "pending_approval"
+    assert approved.status_code == 200
+    assert approved.json()["status"] == "sent"
+    assert company.status_code == 200
+    assert company.json()["agent_id"] == "sales_agent"
+    assert memory.status_code == 200
+    assert memory.json()["kind"] == "client"
+    assert benchmark.status_code == 200
+    assert benchmark.json()["metrics"]["completion_rate"] == 1.0
+    assert coding.status_code == 200
+    assert (project / ".friday" / "ci-plan.yml").exists()
 
 
 def test_api_stores_and_serves_project_reference_images(monkeypatch, tmp_path):

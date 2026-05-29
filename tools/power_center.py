@@ -36,6 +36,9 @@ from core import (
     codebase_standards,
     code_change_simulator,
     command_graph,
+    company_runtime,
+    competitive_benchmark,
+    connector_runtime,
     contextual_workspace,
     context_aware_silence,
     context_fusion,
@@ -70,6 +73,7 @@ from core import (
     meeting_study_companion,
     memory_debate,
     memory_constitution,
+    memory_governance,
     mission_control,
     model_3d,
     model_benchmark_lab,
@@ -95,6 +99,7 @@ from core import (
     private_embedding_memory,
     privacy_firewall_pro,
     privacy_vault,
+    production_coding_autonomy,
     project_cto,
     project_memory,
     project_autopilot,
@@ -217,6 +222,72 @@ def execute(inputs: dict[str, Any]) -> str:
             ).get("summary", "Gateway event received.")
         if action == "control_room":
             return friday_gateway.control_room().get("summary", "Control room unavailable.")
+        if action == "benchmark_status":
+            return competitive_benchmark.status().get("summary", "Benchmark unavailable.")
+        if action == "benchmark_run":
+            return competitive_benchmark.run_suite(
+                str(inputs.get("candidate") or "friday"),
+                str(inputs.get("baseline") or "openclaw"),
+                run_live=bool(inputs.get("run_live", False)),
+            ).get("summary", "Benchmark run unavailable.")
+        if action == "connector_runtime_status":
+            return connector_runtime.status().get("summary", "Connector runtime unavailable.")
+        if action == "connector_send":
+            return connector_runtime.queue_message(
+                str(inputs.get("connector") or inputs.get("channel") or "gmail"),
+                str(inputs.get("target") or inputs.get("to") or ""),
+                str(inputs.get("body") or inputs.get("message") or inputs.get("content") or ""),
+                subject=str(inputs.get("subject") or inputs.get("title") or ""),
+                action=str(inputs.get("connector_action") or inputs.get("kind") or "message"),
+                payload=inputs.get("payload") if isinstance(inputs.get("payload"), dict) else {},
+                require_approval=inputs.get("require_approval") if "require_approval" in inputs else None,
+            ).get("summary", "Connector send queued.")
+        if action == "connector_approve":
+            return connector_runtime.approve_outbox(
+                _int(inputs.get("outbox_id") or inputs.get("target"), 0),
+                note=str(inputs.get("note") or inputs.get("reason") or ""),
+                dispatch=bool(inputs.get("dispatch", False)),
+            ).get("summary", "Connector outbox approved.")
+        if action == "connector_dispatch":
+            return connector_runtime.dispatch_outbox(_int(inputs.get("outbox_id") or inputs.get("target"), 0)).get("summary", "Connector dispatch unavailable.")
+        if action == "company_runtime_status":
+            return company_runtime.status().get("summary", "Company runtime unavailable.")
+        if action == "company_worker_state":
+            return company_runtime.set_worker_state(
+                str(inputs.get("agent_id") or inputs.get("target") or ""),
+                str(inputs.get("state") or "working"),
+                task_id=_int(inputs.get("task_id"), 0),
+                blocker=str(inputs.get("blocker") or ""),
+                progress=_float(inputs.get("progress"), 0.0),
+                metadata=inputs.get("metadata") if isinstance(inputs.get("metadata"), dict) else {},
+            ).get("summary", "Worker state unavailable.")
+        if action == "company_handoff":
+            return company_runtime.handoff(
+                str(inputs.get("from_agent") or inputs.get("agent_id") or "ceo"),
+                str(inputs.get("to_agent") or inputs.get("target") or ""),
+                str(inputs.get("title") or "Agent handoff"),
+                str(inputs.get("summary") or inputs.get("content") or inputs.get("description") or ""),
+                task_id=_int(inputs.get("task_id"), 0),
+                evidence=inputs.get("evidence") or [],
+            ).get("summary", "Company handoff unavailable.")
+        if action == "production_coding_prepare":
+            return production_coding_autonomy.prepare_project(
+                str(inputs.get("root") or ""),
+                request=str(inputs.get("request") or inputs.get("instruction") or inputs.get("target") or ""),
+                create_files=bool(inputs.get("create_files", True)),
+                run_scans=bool(inputs.get("run_scans", True)),
+            ).get("summary", "Production coding prep unavailable.")
+        if action == "memory_governance_status":
+            return memory_governance.status().get("summary", "Memory governance unavailable.")
+        if action == "memory_governance_remember":
+            return memory_governance.remember(
+                str(inputs.get("kind") or "reusable_decision"),
+                str(inputs.get("title") or inputs.get("target") or "Governed memory"),
+                str(inputs.get("content") or inputs.get("description") or ""),
+                confidence=_float(inputs.get("confidence"), 0.75),
+                review_after_days=_int(inputs.get("review_after_days"), 30),
+                metadata=inputs.get("metadata") if isinstance(inputs.get("metadata"), dict) else {},
+            ).get("summary", "Governed memory unavailable.")
         if action == "gateway_business_memory":
             return friday_gateway.business_memory(limit=_int(inputs.get("limit"), 30)).get("summary", "Business memory unavailable.")
         if action == "gateway_remember_business":

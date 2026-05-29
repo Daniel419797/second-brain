@@ -107,6 +107,12 @@ DEFAULT_RULES: list[dict[str, str]] = [
     {"key": "power_center.friday_gateway", "label": "Friday Gateway and connector intake", "category": "Business", "mode": "allow", "description": "Read connector status, receive events, route low-risk tasks, and manage business memory."},
     {"key": "power_center.gateway_connector_config", "label": "Configure external connectors", "category": "Business", "mode": "ask", "description": "Enable, disable, or change trust levels for external connectors such as Gmail, Slack, Vercel, or Render."},
     {"key": "power_center.gateway_emergency_stop", "label": "Friday emergency stop", "category": "Safety", "mode": "allow", "description": "Immediately request live workers/speech to stop and record an audit event."},
+    {"key": "power_center.benchmark", "label": "Competitive benchmark harness", "category": "Reliability", "mode": "allow", "description": "Run dry-run Friday vs OpenClaw readiness benchmarks and proof reports."},
+    {"key": "power_center.connector_runtime", "label": "Connector runtime reads and queues", "category": "Business", "mode": "allow", "description": "Inspect connector outbox/webhooks and draft approval-gated outbound messages."},
+    {"key": "power_center.connector_outbound_send", "label": "Send connector outbox", "category": "Business", "mode": "ask", "description": "Dispatch approved outbound messages or provider actions through Slack, Gmail, WhatsApp, GitHub, Render, Vercel, and other connectors."},
+    {"key": "power_center.company_runtime", "label": "Company worker runtime", "category": "Business", "mode": "allow", "description": "Track specialist worker states, blockers, runbooks, and handoffs."},
+    {"key": "power_center.production_coding", "label": "Production coding autonomy prep", "category": "Developer Tools", "mode": "ask", "description": "Create CI, rollback, deploy-preview, security, and performance artifacts in Desktop project sandboxes."},
+    {"key": "power_center.memory_governance", "label": "Governed memory", "category": "Power Center", "mode": "allow", "description": "Store reviewed memory with confidence, contradiction detection, and stale-memory queues."},
     {"key": "power_center.private_memory", "label": "Private embedding memory", "category": "Power Center", "mode": "allow", "description": "Index and search local private memories with local-only embeddings or lexical fallback."},
     {"key": "power_center.android_companion", "label": "Android companion", "category": "Power Center", "mode": "ask", "description": "Use Android companion features such as notification sync, phone voice commands, and ring/call handoffs."},
     {"key": "power_center.project_watchdog", "label": "Project watchdog", "category": "Power Center", "mode": "ask", "description": "Continuously inspect projects for failing tests, stale docs, TODOs, dependencies, and secrets."},
@@ -468,6 +474,18 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             return "power_center.gateway_emergency_stop"
         if action in {"gateway_status", "gateway_connectors", "gateway_ingest_event", "control_room", "gateway_business_memory", "gateway_remember_business"}:
             return "power_center.friday_gateway"
+        if action in {"benchmark_status", "benchmark_run"}:
+            return "power_center.benchmark"
+        if action in {"connector_dispatch"}:
+            return "power_center.connector_outbound_send"
+        if action in {"connector_runtime_status", "connector_send", "connector_approve"}:
+            return "power_center.connector_runtime"
+        if action in {"company_runtime_status", "company_worker_state", "company_handoff"}:
+            return "power_center.company_runtime"
+        if action in {"production_coding_prepare"}:
+            return "power_center.production_coding"
+        if action in {"memory_governance_status", "memory_governance_remember"}:
+            return "power_center.memory_governance"
         if action in {"finance_summary", "add_expense", "can_afford"}:
             return "power_center.personal_finance"
         if action == "agency_project_workflow" and bool(tool_input.get("deploy")):
@@ -872,6 +890,13 @@ def set_named_policy(name: str, mode: str) -> list[dict[str, Any]]:
         "friday gateway": ["power_center.friday_gateway", "power_center.gateway_connector_config", "power_center.gateway_emergency_stop"],
         "gateway": ["power_center.friday_gateway", "power_center.gateway_connector_config", "power_center.gateway_emergency_stop"],
         "control room": ["power_center.friday_gateway"],
+        "benchmark": ["power_center.benchmark"],
+        "connector runtime": ["power_center.connector_runtime", "power_center.connector_outbound_send"],
+        "connectors": ["power_center.friday_gateway", "power_center.connector_runtime", "power_center.connector_outbound_send"],
+        "company runtime": ["power_center.company_runtime"],
+        "worker runtime": ["power_center.company_runtime"],
+        "production coding": ["power_center.production_coding"],
+        "memory governance": ["power_center.memory_governance"],
         "finance": ["power_center.personal_finance"],
         "personal finance": ["power_center.personal_finance"],
         "agency": ["power_center.agency_mode", "power_center.agency_outreach_send", "power_center.agency_deploy", "power_center.agency_payment"],
