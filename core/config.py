@@ -40,7 +40,10 @@ def default_coding_root() -> Path:
     raw = str(config_value("coding_projects_root", "Desktop") or "Desktop").strip()
     candidate = Path(raw).expanduser()
     if not candidate.is_absolute():
-        candidate = Path.home() / candidate
+        if _is_desktop_alias(raw):
+            candidate = Path.home() / candidate
+        else:
+            candidate = ROOT_DIR.parent / candidate
     if _should_use_shared_project_root(raw, candidate):
         candidate = ROOT_DIR.parent / "friday-projects"
     try:
@@ -52,19 +55,23 @@ def default_coding_root() -> Path:
 def _should_use_shared_project_root(raw: str, candidate: Path) -> bool:
     """Avoid reporting container-only /root/Desktop paths as user-visible output."""
 
-    normalized = str(raw or "").strip().replace("\\", "/").lower()
-    if normalized not in {"desktop", "~/desktop"}:
-        return False
-    if candidate.exists():
+    if not _is_desktop_alias(raw):
         return False
     home = Path.home()
-    if home.name.lower() not in {"root", "runner"}:
+    if home.name.lower() in {"root", "runner"}:
+        return True
+    if candidate.exists():
         return False
     try:
         ROOT_DIR.relative_to(home)
         return False
     except ValueError:
         return True
+
+
+def _is_desktop_alias(raw: str) -> bool:
+    normalized = str(raw or "").strip().replace("\\", "/").lower()
+    return normalized in {"desktop", "~/desktop"}
 
 
 def resolve_coding_root(root: str | Path = "") -> Path:

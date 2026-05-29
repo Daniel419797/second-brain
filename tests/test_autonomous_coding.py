@@ -69,6 +69,32 @@ def test_autonomous_coding_contract_rejects_missing_project_root(monkeypatch, tm
     assert verified["status"] == "unsatisfied"
 
 
+def test_autonomous_coding_remaps_stale_root_desktop_task(monkeypatch, tmp_path):
+    _isolate_common(monkeypatch, tmp_path)
+    repo = tmp_path / "workspace" / "second-brain"
+    repo.mkdir(parents=True)
+    monkeypatch.setattr(autonomous_coding, "ROOT_DIR", repo)
+
+    task_id = task_queue.create_task(
+        "Autonomous coding: build web-app",
+        agent_id="senior_developer",
+        input_data={
+            "source": "autonomous_coding",
+            "request": "Build a web-app HackOnVibe AI-assisted everyday tool",
+            "root": "/root/Desktop",
+            "risk_level": "low",
+        },
+    )
+    task = task_queue.get_task(task_id)
+
+    result = autonomous_coding.run_task(task)
+    project_root = Path(result["metadata"]["project_root"])
+
+    assert result["task_status"] == "done"
+    assert project_root.is_relative_to(repo.parent / "friday-projects")
+    assert (project_root / "package.json").exists()
+
+
 def test_approved_self_update_task_stages_llm_change(monkeypatch, tmp_path):
     _isolate_common(monkeypatch, tmp_path)
     root = tmp_path / "repo"

@@ -76,14 +76,14 @@ def _nextjs_files(name: str, request: str) -> dict[str, str]:
                 "private": True,
                 "version": "0.1.0",
                 "scripts": {"dev": "next dev", "build": "next build", "start": "next start", "lint": "next lint"},
-                "dependencies": {"next": "latest", "react": "latest", "react-dom": "latest", "lucide-react": "latest"},
+                "dependencies": {"next": "16.3.0-canary.21", "react": "latest", "react-dom": "latest", "lucide-react": "latest"},
                 "devDependencies": {"typescript": "latest", "@types/node": "latest", "@types/react": "latest", "@types/react-dom": "latest"},
             }
         ),
         "tsconfig.json": _json(
             {
                 "compilerOptions": {
-                    "target": "es5",
+                    "target": "ES2017",
                     "lib": ["dom", "dom.iterable", "esnext"],
                     "allowJs": True,
                     "skipLibCheck": True,
