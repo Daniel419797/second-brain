@@ -607,6 +607,21 @@ def test_default_coding_root_avoids_missing_container_desktop(monkeypatch, tmp_p
     assert core_config.default_coding_root() == (repo.parent / "friday-projects").resolve()
 
 
+def test_configured_relative_coding_root_is_repo_adjacent(monkeypatch, tmp_path):
+    from core import config as core_config
+
+    repo = tmp_path / "workspace" / "second-brain"
+    repo.mkdir(parents=True)
+    monkeypatch.setattr(core_config, "ROOT_DIR", repo)
+    monkeypatch.setattr(
+        core_config,
+        "config_value",
+        lambda key, default=None: "friday-projects" if key == "coding_projects_root" else default,
+    )
+
+    assert core_config.default_coding_root() == (repo.parent / "friday-projects").resolve()
+
+
 def test_voice_default_uses_free_neural_edge_voice():
     config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 

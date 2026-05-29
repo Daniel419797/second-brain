@@ -519,7 +519,7 @@
   "workspace_index_snippet_chars": 4000,
   "workspace_index_extensions": ".py,.js,.jsx,.ts,.tsx,.json,.md,.txt,.css,.html,.yml,.yaml,.toml,.ini,.csv,.sql,.ps1,.bat,.sh,.env.example",
   "workspace_index_skip_dirs": ".git,.venv,node_modules,__pycache__,.next,dist,build,data/chroma_db,tools/whisper.cpp",
-  "coding_projects_root": "Desktop",
+  "coding_projects_root": "friday-projects",
   "intent_router_enabled": true,
   "intent_llm_enabled": true,
   "academic_projects_dir": "data\\academic_projects",

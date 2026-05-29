@@ -28,7 +28,7 @@ def start(request: str, *, root: str = "", risk_level: str = "medium") -> dict[s
     replacements before any patch is applied.
     """
 
-    project_root = resolve_coding_root(root)
+    project_root = _task_project_root(root)
     standards = codebase_standards.scan(project_root, max_files=120)
     cleaned_request = _clean(request) or "project improvement"
     execution_kind = _execution_kind(cleaned_request, project_root)
@@ -91,7 +91,7 @@ def run_task(task: dict[str, Any]) -> dict[str, Any]:
         return prepare_self_update_task(task)
 
     request = _clean(input_data.get("request") or task.get("description") or task.get("title") or "")
-    project_root = resolve_coding_root(input_data.get("root") or "")
+    project_root = _task_project_root(input_data.get("root") or "")
     risk_level = str(input_data.get("risk_level") or "medium")
     task_id = int(task.get("id") or 0)
     _post(task_id, "autonomous_coding", "Progress 35%: project inspected and coding executor selected.")
@@ -815,6 +815,17 @@ def _target_project_root(base_root: Path, request: str, *, stack: dict[str, str]
         if not candidate.exists():
             return candidate
     return base_root / f"{slug}-{int(dt.datetime.now().timestamp())}"
+
+
+def _task_project_root(raw_root: Any = "") -> Path:
+    raw_text = str(raw_root or "").replace("\\", "/").lower().rstrip("/")
+    if raw_text in {"/root", "/root/desktop"} or raw_text.startswith("/root/desktop/"):
+        return (ROOT_DIR.parent / "friday-projects").resolve()
+    root = resolve_coding_root(raw_root or "")
+    normalized = root.as_posix().lower()
+    if normalized.startswith("/root/desktop") or normalized == "/root":
+        return (ROOT_DIR.parent / "friday-projects").resolve()
+    return root
 
 
 def _verify_scaffold(target: Path, stack: dict[str, str], written: list[str]) -> dict[str, Any]:
