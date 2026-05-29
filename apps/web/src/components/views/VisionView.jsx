@@ -19,7 +19,8 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { API_URL } from "@/lib/config";
 
 export function VisionView() {
-  const { api, token, data, refresh } = useDashboard();
+  const { api, token, data, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("vision") || {};
   const [monitor, setMonitor] = useState(null);
   const [events, setEvents] = useState([]);
   const [pc, setPc] = useState(null);
@@ -30,6 +31,7 @@ export function VisionView() {
   const [busy, setBusy] = useState("");
   const [status, setStatus] = useState("");
   const [streamKey, setStreamKey] = useState(0);
+  const [inspecting, setInspecting] = useState("");
 
   const loadVision = useCallback(async () => {
     setLoading(true);
@@ -120,14 +122,42 @@ export function VisionView() {
     }
   }
 
+  async function addVisualPattern() {
+    const label = window.prompt("Pattern label", activeWindow.title || "Useful screen pattern");
+    if (!label) return;
+    const meaning = window.prompt("What should Friday remember about it?", "Recognize this screen and suggest the next action.") || "";
+    setBusy("pattern");
+    setStatus("");
+    try {
+      await api("/visual-skill-memory/screen", {
+        method: "POST",
+        body: JSON.stringify({
+          app: activeWindow.title,
+          screen_label: label,
+          cues: [activeWindow.title, latestEvent?.summary || ""].filter(Boolean),
+          meaning,
+          action_hint: meaning,
+          source: "dashboard_vision"
+        })
+      });
+      setStatus("Visual pattern saved.");
+      await loadVision();
+      void refresh();
+    } catch (err) {
+      setStatus(err.message || "Visual pattern could not be saved.");
+    } finally {
+      setBusy("");
+    }
+  }
+
   return (
     <section className="min-h-full bg-[#0a0f14] text-[#eaf2fb]" aria-label="PC and Live Vision">
       <main className="grid min-w-0 content-start gap-3">
           <header className="flex min-h-[58px] min-w-0 flex-wrap items-start gap-3">
             <div className="min-w-0">
-              <h2 className="m-0 text-[24px] font-extrabold tracking-normal text-white">PC & Live Vision</h2>
+              <h2 className="m-0 text-[24px] font-extrabold tracking-normal text-white">{copy?.title || "PC & Live Vision"}</h2>
               <p className="mt-1 text-[13px] leading-snug text-[#c5d0de]">
-                Monitoring {displays} display{displays === 1 ? "" : "s"} - {monitor?.running ? "Active pattern recognition" : "Screen monitor idle"}
+                {copy?.subtitle || `Monitoring ${displays} display${displays === 1 ? "" : "s"} - ${monitor?.running ? "Active pattern recognition" : "Screen monitor idle"}`}
               </p>
             </div>
             <div className="ml-auto flex shrink-0 flex-wrap items-center justify-end gap-2">
@@ -156,16 +186,18 @@ export function VisionView() {
                 latestEvent={latestEvent}
                 activeWindow={activeWindow}
                 onCapture={captureFrame}
+                onInspect={() => setInspecting(displaySrc)}
                 busy={busy}
+                copy={copy}
               />
               <div className="grid min-w-0 gap-3 md:grid-cols-[minmax(0,1fr)_322px]">
-                <RunningApps apps={runningApps} activeWindow={activeWindow} total={awareness.stats?.running_apps || awareness.running_apps?.length || 0} />
+                <RunningApps apps={runningApps} copy={copy} activeWindow={activeWindow} total={awareness.stats?.running_apps || awareness.running_apps?.length || 0} />
                 <MonitorStatus monitor={monitor} onCapture={captureFrame} busy={busy} />
               </div>
-              <CaptureTimeline events={events} token={token} />
+              <CaptureTimeline events={events} copy={copy} token={token} />
             </div>
 
-            <PatternPanel patterns={patterns} />
+            <PatternPanel patterns={patterns} copy={copy} onAdd={addVisualPattern} busy={busy} />
           </div>
 
           {status ? (
@@ -173,12 +205,13 @@ export function VisionView() {
               {status}
             </div>
           ) : null}
+          {inspecting ? <FrameInspector src={inspecting} onClose={() => setInspecting("")} /> : null}
         </main>
     </section>
   );
 }
 
-function LiveDisplay({ loading, displaySrc, monitor, latestEvent, activeWindow, onCapture, busy }) {
+function LiveDisplay({ loading, displaySrc, monitor, latestEvent, activeWindow, onCapture, onInspect, busy, copy }) {
   return (
     <section className="min-w-0 overflow-hidden rounded-[6px] border border-[#0f7fab] bg-[#05080b] p-3 shadow-[0_0_28px_rgba(36,152,238,.12)]">
       <div className="relative h-[344px] overflow-hidden rounded-[4px] border border-[#13202c] bg-[#080d11]">
@@ -190,9 +223,9 @@ function LiveDisplay({ loading, displaySrc, monitor, latestEvent, activeWindow, 
               {loading ? <Loader2 className="animate-spin text-friday-accent" size={28} /> : <Monitor className="text-friday-accent" size={32} />}
               <div>
                 <strong className="block font-mono text-[12px] uppercase tracking-[.16em] text-friday-accent">
-                  {loading ? "Loading vision feed" : "No captured frame"}
+                  {loading ? "Loading vision feed" : copy?.empty?.frames || "Friday has no captured frame in this read"}
                 </strong>
-                <span className="mt-2 block max-w-[320px] text-[12px] leading-relaxed text-[#c2cedd]">Start the screen monitor or capture a frame to populate the live vision surface.</span>
+                <span className="mt-2 block max-w-[320px] text-[12px] leading-relaxed text-[#c2cedd]">{copy?.subtitle || "Start the screen monitor or capture a frame to populate the live vision surface."}</span>
               </div>
             </div>
           </div>
@@ -213,7 +246,7 @@ function LiveDisplay({ loading, displaySrc, monitor, latestEvent, activeWindow, 
           <button className="grid h-10 w-10 place-items-center rounded-[3px] border border-friday-line bg-[#202733]/90 text-white transition-colors hover:border-friday-accent" type="button" onClick={onCapture} disabled={Boolean(busy)} title="Capture frame">
             {busy === "capture" ? <Loader2 className="animate-spin" size={17} /> : <Maximize2 size={17} />}
           </button>
-          <button className="grid h-10 w-10 place-items-center rounded-[3px] border border-friday-line bg-[#202733]/90 text-white transition-colors hover:border-friday-accent" type="button" title="Inspect frame">
+          <button className="grid h-10 w-10 place-items-center rounded-[3px] border border-friday-line bg-[#202733]/90 text-white transition-colors hover:border-friday-accent disabled:opacity-50" type="button" title="Inspect frame" onClick={onInspect} disabled={!displaySrc}>
             <ZoomIn size={17} />
           </button>
         </div>
@@ -222,7 +255,7 @@ function LiveDisplay({ loading, displaySrc, monitor, latestEvent, activeWindow, 
   );
 }
 
-function RunningApps({ apps, activeWindow, total }) {
+function RunningApps({ apps, copy, activeWindow, total }) {
   return (
     <Panel className="h-[192px] p-3">
       <div className="mb-3 flex items-center gap-3">
@@ -240,7 +273,7 @@ function RunningApps({ apps, activeWindow, total }) {
             </div>
           );
         }) : (
-          <p className="m-0 border border-friday-line bg-[#10161d] p-3 text-[12px] text-friday-muted">No running app inventory loaded.</p>
+          <p className="m-0 border border-friday-line bg-[#10161d] p-3 text-[12px] text-friday-muted">{copy?.empty?.evidence || "Friday has no running app inventory in this read."}</p>
         )}
       </div>
     </Panel>
@@ -278,7 +311,7 @@ function MonitorStatus({ monitor, onCapture, busy }) {
   );
 }
 
-function PatternPanel({ patterns }) {
+function PatternPanel({ patterns, copy, onAdd, busy }) {
   return (
     <Panel className="min-h-[760px] p-0">
       <header className="flex min-h-[76px] items-center gap-3 border-b border-friday-line px-4">
@@ -286,8 +319,8 @@ function PatternPanel({ patterns }) {
           <h3 className="m-0 text-[16px] font-extrabold text-white">Learned Visual Patterns</h3>
           <p className="mt-1 text-[13px] text-[#c2cedd]">Active recognition profiles</p>
         </div>
-        <button className="ml-auto grid h-8 w-8 place-items-center rounded-full border border-friday-accent text-friday-accent transition-colors hover:bg-[#172334]" type="button" title="Add visual pattern">
-          <Plus size={16} />
+        <button className="ml-auto grid h-8 w-8 place-items-center rounded-full border border-friday-accent text-friday-accent transition-colors hover:bg-[#172334] disabled:opacity-50" type="button" title="Add visual pattern" onClick={onAdd} disabled={Boolean(busy)}>
+          {busy === "pattern" ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
         </button>
       </header>
       <div className="friday-scroll grid max-h-[680px] gap-3 overflow-y-auto p-4">
@@ -295,13 +328,29 @@ function PatternPanel({ patterns }) {
           <div className="grid min-h-[220px] place-items-center rounded-[4px] border border-friday-line bg-[#10161d] p-4 text-center">
             <div>
               <Eye className="mx-auto text-friday-accent" size={24} />
-              <strong className="mt-3 block text-[13px] text-white">No learned visual patterns yet</strong>
-              <p className="mt-2 text-[12px] leading-relaxed text-[#c2cedd]">Friday will list UI patterns here after visual-skill learning records screens or reusable interface cues.</p>
+              <strong className="mt-3 block text-[13px] text-white">{copy?.empty?.patterns || "Friday has no learned visual pattern in this view yet"}</strong>
+              <p className="mt-2 text-[12px] leading-relaxed text-[#c2cedd]">{copy?.subtitle || "Friday will list UI patterns here after visual-skill learning records screens or reusable interface cues."}</p>
             </div>
           </div>
         )}
       </div>
     </Panel>
+  );
+}
+
+function FrameInspector({ src, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-label="Inspect captured frame">
+      <section className="grid max-h-[92dvh] w-[920px] max-w-[calc(100dvw-32px)] grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-[6px] border border-[#334154] bg-[#111821]">
+        <header className="flex items-center gap-3 border-b border-friday-line px-4 py-3">
+          <h2 className="text-[16px] font-extrabold text-white">Frame Inspector</h2>
+          <button className="ml-auto min-h-8 border border-friday-line bg-[#151b22] px-3 text-[12px] text-white hover:border-friday-accent" type="button" onClick={onClose}>Close</button>
+        </header>
+        <div className="min-h-0 overflow-auto bg-[#05080b] p-3">
+          <img className="mx-auto max-h-[76dvh] max-w-full object-contain" src={src} alt="Inspected vision frame" />
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -315,14 +364,14 @@ function PatternCard({ pattern }) {
       <div className="min-w-0">
         <strong className="block truncate text-[13px] text-white">{pattern.label || pattern.screen_label || "Visual pattern"}</strong>
         <span className="mt-1 block truncate text-[11px] text-[#c2cedd]">{pattern.app || pattern.pattern_type || "screen"}</span>
-        <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-[#c2cedd]">{pattern.meaning || pattern.action_hint || "No pattern note stored yet."}</p>
+        <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-[#c2cedd]">{pattern.meaning || pattern.action_hint || "Friday has no note stored for this pattern yet."}</p>
       </div>
       <span className={`h-fit rounded-[3px] border px-2 py-1 font-mono text-[10px] ${confidence.tone}`}>{confidence.label}</span>
     </article>
   );
 }
 
-function CaptureTimeline({ events, token }) {
+function CaptureTimeline({ events, copy, token }) {
   return (
     <Panel className="h-[170px] p-3">
       <PanelTitle title="Chronological Captures" />
@@ -335,7 +384,7 @@ function CaptureTimeline({ events, token }) {
             <span className="truncate text-center font-mono text-[10px] text-[#cbd7e6]">{formatTime(event.timestamp)}</span>
           </div>
         )) : (
-          <div className="grid min-h-[92px] min-w-full place-items-center text-center text-[12px] text-friday-muted">No visual captures yet. Use Capture frame to create the first timeline entry.</div>
+          <div className="grid min-h-[92px] min-w-full place-items-center text-center text-[12px] text-friday-muted">{copy?.empty?.frames || "Friday has no visual capture yet. Capture one frame to create the first timeline entry."}</div>
         )}
       </div>
     </Panel>

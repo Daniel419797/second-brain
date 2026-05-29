@@ -15,11 +15,13 @@ export const NAV_ITEMS = [
   ["governance", "Governance", "/governance"],
   ["tasks", "Tasks", "/tasks"],
   ["approvals", "Approvals", "/approvals"],
+  ["notifications", "Notifications", "/notifications"],
   ["projects", "Projects", "/projects"],
   ["vision", "Vision", "/vision"],
   ["android", "Android", "/android"],
   ["memory", "Memory", "/memory"],
   ["safety", "Safety", "/safety"],
   ["reliability", "Reliability", "/reliability"],
-  ["integrations", "Integrations", "/integrations"]
+  ["integrations", "Integrations", "/integrations"],
+  ["operators", "Operators", "/operators"]
 ].map(([id, label, href]) => ({ id, label, href }));

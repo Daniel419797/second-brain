@@ -25,10 +25,12 @@ const FILTERS = [
 ];
 
 export function ApprovalsView({ approvals, summary }) {
-  const { api, busy, refresh } = useDashboard();
+  const { api, busy, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("approvals") || {};
   const [filter, setFilter] = useState("all");
   const [pendingKey, setPendingKey] = useState("");
   const [actionStatus, setActionStatus] = useState("");
+  const [evidenceItem, setEvidenceItem] = useState(null);
   const rows = useMemo(() => normalizeApprovals(approvals, summary), [approvals, summary]);
   const filtered = useMemo(() => rows.filter((item) => filter === "all" || item.category === filter), [filter, rows]);
   const urgentCount = rows.filter((item) => item.risk === "high").length;
@@ -70,16 +72,16 @@ export function ApprovalsView({ approvals, summary }) {
       <div className="mx-auto grid w-full max-w-[1240px] gap-6">
         <header className="flex min-w-0 flex-wrap items-end justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-[28px] font-extrabold leading-none text-white">Decision Inbox</h1>
-            <p className="mt-2 text-[13px] text-friday-muted">Human authorization queue for risky actions, private data, deploys, and agent questions.</p>
+            <h1 className="text-[28px] font-extrabold leading-none text-white">{copy?.title || "Decision Inbox"}</h1>
+            <p className="mt-2 text-[13px] text-friday-muted">{copy?.subtitle || "Human authorization queue for risky actions, private data, deploys, and agent questions."}</p>
           </div>
-          <button className="inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-friday-line bg-[#151b22] px-4 text-[13px] font-semibold text-[#dce8f7]" type="button">
+          <a className="inline-flex min-h-9 items-center gap-2 rounded-[6px] border border-friday-line bg-[#151b22] px-4 text-[13px] font-semibold text-[#dce8f7] hover:border-friday-accent" href="/safety">
             <Filter size={15} />
             Review Policy
-          </button>
+          </a>
         </header>
 
-        <DecisionSummary count={rows.length} urgentCount={urgentCount} standardCount={standardCount} />
+        <DecisionSummary count={rows.length} urgentCount={urgentCount} standardCount={standardCount} copy={copy} />
 
         <div className="flex min-w-0 flex-wrap gap-2">
           {FILTERS.map((item) => {
@@ -109,18 +111,20 @@ export function ApprovalsView({ approvals, summary }) {
               busy={busy || Boolean(pendingKey)}
               pendingKey={pendingKey}
               onDecision={decide}
+              onEvidence={setEvidenceItem}
               key={`${item.kind}-${item.id}`}
             />
           )) : (
-            <EmptyApprovals rows={rows} filter={filter} />
+            <EmptyApprovals rows={rows} filter={filter} copy={copy} />
           )}
         </div>
+        {evidenceItem ? <EvidenceModal item={evidenceItem} onClose={() => setEvidenceItem(null)} /> : null}
       </div>
     </section>
   );
 }
 
-function DecisionSummary({ count, urgentCount, standardCount }) {
+function DecisionSummary({ count, urgentCount, standardCount, copy }) {
   return (
     <section className="grid min-h-[92px] grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-4 rounded-[8px] border border-friday-line bg-[#1a2028] px-5 py-4">
       <span className={`grid h-12 w-12 place-items-center rounded-[8px] border ${count ? "border-[#79434b] bg-[#3a1f27] text-[#ffb5b8]" : "border-[#315c48] bg-[#163126] text-[#90efc9]"}`}>
@@ -128,10 +132,10 @@ function DecisionSummary({ count, urgentCount, standardCount }) {
       </span>
       <div className="min-w-0">
         <h2 className="truncate text-[22px] font-extrabold leading-tight text-white">
-          {count ? `You have ${count} decision${count === 1 ? "" : "s"} waiting` : "No decisions waiting"}
+          {count ? `Friday has ${count} decision${count === 1 ? "" : "s"} waiting` : copy?.empty?.approvals || "Friday has no decision gate waiting"}
         </h2>
         <p className="mt-1 truncate text-[14px] text-[#d8e2ee]">
-          {count ? "Friday execution is paused pending human authorization." : "Friday has no approval-gated work paused right now."}
+          {count ? "Friday execution is paused pending human authorization." : copy?.empty?.approvals || "Friday has no approval-gated work paused right now."}
         </p>
       </div>
       <div className="hidden items-center gap-4 font-mono text-[12px] uppercase md:flex">
@@ -152,7 +156,7 @@ function SummaryCount({ value, label, tone }) {
   );
 }
 
-function ApprovalCard({ item, busy, pendingKey, onDecision }) {
+function ApprovalCard({ item, busy, pendingKey, onDecision, onEvidence }) {
   const risk = riskStyle(item.risk);
   const compact = item.risk === "info";
   return (
@@ -182,12 +186,12 @@ function ApprovalCard({ item, busy, pendingKey, onDecision }) {
             <InfoCell title={item.category === "private_data" ? "Data/Tool Involved" : "Involved Infrastructure"}>
               <InvolvedList item={item} />
             </InfoCell>
-            <InfoCell title="Evidence Snippet" action="Full Diff">
+            <InfoCell title="Evidence Snippet" action="Full Evidence" onAction={() => onEvidence(item)}>
               <EvidenceSnippet item={item} />
             </InfoCell>
           </div>
           <footer className="flex min-h-[68px] flex-wrap items-center justify-end gap-2 px-4 py-3">
-            <button className="min-h-9 rounded-[4px] border border-transparent px-4 text-[13px] font-bold text-white hover:border-friday-line" type="button">
+            <button className="min-h-9 rounded-[4px] border border-transparent px-4 text-[13px] font-bold text-white hover:border-friday-line" type="button" onClick={() => onEvidence(item)}>
               View Evidence
             </button>
             <button className="min-h-9 rounded-[4px] border border-[#3d4857] bg-[#151b22] px-5 text-[13px] font-bold text-white disabled:opacity-45" type="button" disabled={busy} onClick={() => onDecision(item, "allow")}>
@@ -219,15 +223,38 @@ function RiskBadge({ item }) {
   );
 }
 
-function InfoCell({ title, action, children }) {
+function InfoCell({ title, action, onAction, children }) {
   return (
     <section className="min-w-0 rounded-[4px] border border-[#283441] bg-[#080d11] p-4">
       <header className="mb-3 flex min-w-0 items-center justify-between gap-3">
         <h3 className="truncate text-[12px] font-semibold uppercase tracking-[.04em] text-[#cbd5e2]">{title}</h3>
-        {action ? <button className="shrink-0 text-[12px] text-friday-accent" type="button">{action}</button> : null}
+        {action ? <button className="shrink-0 text-[12px] text-friday-accent" type="button" onClick={onAction}>{action}</button> : null}
       </header>
       {children}
     </section>
+  );
+}
+
+function EvidenceModal({ item, onClose }) {
+  const payload = item.metadata || {};
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-4" role="dialog" aria-modal="true" aria-label="Approval evidence">
+      <section className="grid max-h-[88dvh] w-[720px] max-w-[calc(100dvw-32px)] grid-rows-[auto_minmax(0,1fr)] overflow-hidden rounded-[8px] border border-[#334154] bg-[#111821] shadow-2xl">
+        <header className="flex items-start gap-3 border-b border-friday-line p-4">
+          <div className="min-w-0">
+            <h2 className="truncate text-[18px] font-extrabold text-white">{item.title}</h2>
+            <p className="mt-1 truncate font-mono text-[11px] text-friday-muted">{item.kind} / #{item.id}</p>
+          </div>
+          <button className="ml-auto text-[#d6e1ee]" type="button" onClick={onClose} aria-label="Close evidence">
+            <X size={18} />
+          </button>
+        </header>
+        <div className="friday-scroll min-h-0 overflow-y-auto p-4">
+          <p className="mb-4 text-[13px] leading-relaxed text-[#dce6f2]">{item.summary || item.action_hint || "No summary was attached to this approval."}</p>
+          <pre className="max-h-[56dvh] overflow-auto rounded-[4px] border border-friday-line bg-[#070c11] p-4 font-mono text-[11px] leading-relaxed text-[#dce6f2]">{stringify(payload)}</pre>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -270,14 +297,14 @@ function IconDecision({ icon, label, disabled, onClick }) {
   );
 }
 
-function EmptyApprovals({ rows, filter }) {
+function EmptyApprovals({ rows, filter, copy }) {
   return (
     <section className="grid min-h-[220px] place-items-center rounded-[8px] border border-friday-line bg-[#151b22] px-6 text-center">
       <div>
         <CheckCircle2 className="mx-auto mb-3 text-[#90efc9]" size={30} />
-        <h2 className="text-[20px] font-extrabold text-white">{rows.length ? "No decisions match this filter" : "No decisions waiting"}</h2>
+        <h2 className="text-[20px] font-extrabold text-white">{rows.length ? "No decisions match this filter" : copy?.empty?.approvals || "Friday has no decision gate waiting"}</h2>
         <p className="mt-2 max-w-[520px] text-[13px] leading-relaxed text-friday-muted">
-          {rows.length ? `The ${FILTERS.find((item) => item.id === filter)?.label || "selected"} queue is clear.` : "Friday has no approval-gated work paused right now."}
+          {rows.length ? `The ${FILTERS.find((item) => item.id === filter)?.label || "selected"} queue is clear.` : copy?.empty?.approvals || "Friday has no approval-gated work paused right now."}
         </p>
       </div>
     </section>
@@ -361,13 +388,19 @@ function evidenceLines(item) {
   const payload = metadata.payload || metadata.self_update || metadata.mission_approval || metadata.desktop_session || metadata.task || {};
   const entries = Object.entries(payload).filter(([, value]) => ["string", "number", "boolean"].includes(typeof value)).slice(0, 5);
   if (entries.length) return entries.map(([key, value], index) => `${index ? "+" : "-"} ${key}: ${String(value).slice(0, 80)}`);
-  if (item.category === "deploy_approval") return ['- routing_policy = "latency"', '+ routing_policy = "weighted"', '+ weight = 100', "ttl = 60"];
-  if (item.category === "self_update") return ["- docs: stale internal answer", "+ docs: updated Friday decision notes", "+ proof: pending review"];
   return [];
 }
 
 function searchable(item) {
   return `${item.kind || ""} ${item.title || ""} ${item.summary || ""} ${item.action_hint || ""}`.toLowerCase();
+}
+
+function stringify(value) {
+  try {
+    return JSON.stringify(value || {}, null, 2);
+  } catch {
+    return String(value || "");
+  }
 }
 
 function titleForKind(kind) {

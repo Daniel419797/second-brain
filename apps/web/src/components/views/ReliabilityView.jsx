@@ -6,7 +6,8 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { wsUrl } from "@/services/fridayApi";
 
 export function ReliabilityView() {
-  const { api, data, refresh, token } = useDashboard();
+  const { api, data, refresh, token, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("reliability") || {};
   const [lab, setLab] = useState(data.reliability || null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -73,9 +74,9 @@ export function ReliabilityView() {
   const voiceSamples = lab?.voice?.samples || [];
   const events = lab?.evaluation?.events || [];
   const benchmarkRows = lab?.benchmark?.rows || [];
-  const activeBackend = lab?.voice?.backend_active || "voice";
+  const activeBackend = lab?.voice?.backend_active || "";
   const monitors = lab?.active_monitors || { count: 0, sources: [] };
-  const thought = lab?.thought_summary || "Reliability telemetry is warming up.";
+  const thought = lab?.thought_summary || copy?.subtitle || "Reliability telemetry is warming up.";
 
   return (
     <section className="friday-scroll h-full min-h-0 overflow-y-auto bg-[#080d11] px-4 py-4 text-[#eaf2fb]" aria-label="Reliability lab">
@@ -86,12 +87,12 @@ export function ReliabilityView() {
 
         <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(0,1fr)_360px]">
           <div className="grid min-w-0 content-start gap-3">
-            <VoiceReliabilityLab samples={voiceSamples} activeBackend={activeBackend} loading={loading && !lab} />
-            <EvaluationLog events={events} loading={loading && !lab} />
+            <VoiceReliabilityLab samples={voiceSamples} copy={copy} activeBackend={activeBackend} loading={loading && !lab} />
+            <EvaluationLog events={events} copy={copy} loading={loading && !lab} />
           </div>
 
           <aside className="grid min-w-0 content-start gap-3">
-            <BenchmarkPanel rows={benchmarkRows} summary={lab?.benchmark?.summary} />
+            <BenchmarkPanel rows={benchmarkRows} summary={lab?.benchmark?.summary} copy={copy} />
             <ThoughtPanel thought={thought} monitors={monitors} />
             <ReliabilityArt onRefresh={refreshLab} busy={busy} />
           </aside>
@@ -124,13 +125,13 @@ function MetricTile({ metric, loading }) {
   );
 }
 
-function VoiceReliabilityLab({ samples, activeBackend, loading }) {
+function VoiceReliabilityLab({ samples, copy, activeBackend, loading }) {
   return (
     <Panel>
       <header className="flex min-h-[56px] items-center gap-3 border-b border-friday-line px-4">
         <h2 className="text-[18px] font-extrabold text-white">Voice Reliability Lab</h2>
         <span className="ml-auto rounded-[3px] border border-[#4f6680] bg-[#263347] px-2.5 py-1 font-mono text-[10px] font-bold uppercase text-friday-accent">
-          {backendBadge(activeBackend)} active
+          {activeBackend ? `${backendBadge(activeBackend)} active` : "backend not reported"}
         </span>
       </header>
       <div className="friday-scroll overflow-x-auto">
@@ -148,7 +149,7 @@ function VoiceReliabilityLab({ samples, activeBackend, loading }) {
             ) : samples.length ? (
               samples.slice(0, 3).map((sample) => <VoiceSampleRow sample={sample} key={sample.id} />)
             ) : (
-              <LabEmpty label="No voice samples recorded yet." />
+              <LabEmpty label={copy?.empty?.evidence || "Friday has no voice reliability sample in this read yet."} />
             )}
           </div>
         </div>
@@ -176,7 +177,7 @@ function VoiceSampleRow({ sample }) {
   );
 }
 
-function EvaluationLog({ events, loading }) {
+function EvaluationLog({ events, copy, loading }) {
   return (
     <Panel className="p-4">
       <h2 className="mb-4 text-[18px] font-extrabold text-white">Evaluation Events Log</h2>
@@ -186,7 +187,7 @@ function EvaluationLog({ events, loading }) {
         ) : events.length ? (
           events.slice(0, 3).map((event) => <EventRow event={event} key={event.id} />)
         ) : (
-          <LabEmpty label="No reliability events logged yet." />
+          <LabEmpty label={copy?.empty?.activity || "Friday has no reliability event in this read yet."} />
         )}
       </div>
     </Panel>
@@ -215,17 +216,17 @@ function EventRow({ event }) {
   );
 }
 
-function BenchmarkPanel({ rows, summary }) {
+function BenchmarkPanel({ rows, summary, copy }) {
   return (
     <Panel className="p-4">
       <div className="mb-4 flex items-center gap-3">
         <h2 className="text-[18px] font-extrabold text-white">Capabilities Benchmark</h2>
       </div>
       <div className="grid gap-4">
-        {(rows.length ? rows : skeletonBenchmarks()).map((row) => <BenchmarkRow row={row} key={row.id} />)}
+        {rows.length ? rows.map((row) => <BenchmarkRow row={row} key={row.id} />) : <LabEmpty label={copy?.empty?.evidence || "No benchmark rows came back from the backend yet."} />}
       </div>
       <p className="mt-5 border-t border-friday-line pt-4 text-[12px] leading-relaxed text-[#d6e0ed]">
-        {summary || "Model performance is evaluated from saved reliability snapshots, agent quality records, and benchmark samples."} Reliability score is currently <b className="text-friday-accent">Stable</b>.
+        {summary || "Friday has no benchmark summary from the backend yet."}
       </p>
     </Panel>
   );
@@ -257,11 +258,11 @@ function ThoughtPanel({ thought, monitors }) {
       <blockquote className="m-0 rounded-[2px] bg-[#303743] p-3 text-[13px] leading-relaxed text-[#e4edf8]">"{thought}"</blockquote>
       <div className="mt-4 flex min-w-0 items-center gap-3">
         <span className="flex shrink-0 -space-x-2">
-          {(sources.length ? sources : ["reliability", "voice"]).slice(0, 3).map((source, index) => (
+          {sources.length ? sources.slice(0, 3).map((source, index) => (
             <span className={`grid h-7 w-7 place-items-center rounded-full text-[10px] font-bold text-white ${index % 2 ? "bg-[#f28b24]" : "bg-friday-blue"}`} key={source}>
               {initials(source)}
             </span>
-          ))}
+          )) : <span className="grid h-7 w-7 place-items-center rounded-full border border-dashed border-friday-line text-[10px] text-friday-muted">--</span>}
         </span>
         <span className="truncate text-[12px] text-[#d8e2ee]">Active monitoring by {monitors.count || sources.length || 0} system agent{(monitors.count || sources.length) === 1 ? "" : "s"}.</span>
       </div>
@@ -312,8 +313,7 @@ function eventMeta(category) {
 function confidencePercent(value, accepted) {
   const num = Number(value);
   if (Number.isFinite(num)) return { value: Math.round(Math.max(0, Math.min(1, num)) * 100), label: `${Math.round(Math.max(0, Math.min(1, num)) * 100)}%` };
-  const fallback = accepted ? 92 : 72;
-  return { value: fallback, label: accepted ? "OK" : "Fix" };
+  return { value: 0, label: accepted ? "OK" : "Fix" };
 }
 
 function durationLabel(seconds) {
@@ -330,7 +330,8 @@ function formatMetricValue(value) {
 }
 
 function formatClock(value) {
-  const date = value ? new Date(value) : new Date();
+  if (!value) return "--:--";
+  const date = new Date(value);
   if (!Number.isFinite(date.getTime())) return "--:--";
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
 }
@@ -340,7 +341,7 @@ function shortBackend(value) {
 }
 
 function backendBadge(value) {
-  return String(value || "voice").replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "").toUpperCase() || "VOICE";
+  return String(value || "").replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "").toUpperCase() || "NOT_REPORTED";
 }
 
 function initials(value) {
@@ -356,15 +357,5 @@ function skeletonMetrics() {
     { id: "failed_commands", label: "Failed Cmds", value: null, unit: "", tone: "danger" },
     { id: "slow_responses", label: "Slow Resp", value: null, unit: "", tone: "warn" },
     { id: "agent_stuck", label: "Agent Stuck", value: null, unit: "", tone: "danger" }
-  ];
-}
-
-function skeletonBenchmarks() {
-  return [
-    { id: "coding", label: "Coding Proficiency", score: 0 },
-    { id: "writing", label: "Writing & Synthesis", score: 0 },
-    { id: "math", label: "Mathematical Reasoning", score: 0 },
-    { id: "fast_reply", label: "Latency Optimization", score: 0 },
-    { id: "tool_planning", label: "Tool Use Planning", score: 0 }
   ];
 }

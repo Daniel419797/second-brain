@@ -77,12 +77,14 @@ DEFAULT_RULES: list[dict[str, str]] = [
     {"key": "power_center.skills", "label": "Skill/plugin library", "category": "Power Center", "mode": "allow", "description": "Install, enable, disable, and read local reusable skills."},
     {"key": "power_center.workspace", "label": "Workspace brain", "category": "Power Center", "mode": "allow", "description": "Analyze local code/project structure, TODOs, tests, dependencies, and docs."},
     {"key": "power_center.app_operator", "label": "App-specific operators", "category": "Power Center", "mode": "allow", "description": "Start specialist app operation sessions for VS Code, Chrome, Figma, Gmail, WhatsApp, Discord, and File Explorer."},
-    {"key": "power_center.autonomous_coding", "label": "Autonomous coding mode", "category": "Power Center", "mode": "ask", "description": "Create guarded coding tasks with contracts, tests, approval, and rollback requirements."},
+    {"key": "power_center.autonomous_coding", "label": "Autonomous coding mode", "category": "Power Center", "mode": "ask", "description": "Create and kick off guarded coding tasks with contracts, tests, approval, and rollback requirements."},
     {"key": "power_center.git_read", "label": "Git repository reads", "category": "Developer Tools", "mode": "allow", "description": "Read Git status, branches, logs, diffs, and GitHub CLI status."},
     {"key": "power_center.git_write", "label": "Git repository changes", "category": "Developer Tools", "mode": "ask", "description": "Clone repositories, pull changes, checkout branches, stage files, and create commits."},
     {"key": "power_center.git_push", "label": "Git push", "category": "Developer Tools", "mode": "ask", "description": "Push local commits to a configured remote repository."},
     {"key": "power_center.github", "label": "GitHub writes", "category": "Developer Tools", "mode": "ask", "description": "Create GitHub pull requests and issues through the GitHub CLI."},
     {"key": "power_center.model_3d", "label": "3D model generation", "category": "Creative", "mode": "allow", "description": "Generate local OBJ, STL, glTF, and GLB mesh files."},
+    {"key": "power_center.ad_campaign", "label": "Ad campaign drafting", "category": "Marketing", "mode": "allow", "description": "Draft local ad copy, variants, calls to action, hashtags, and creative prompts."},
+    {"key": "power_center.ad_post", "label": "Post ads through connectors", "category": "Marketing", "mode": "ask", "description": "Queue ad posts through configured connectors; outbound provider dispatch remains approval-gated."},
     {"key": "power_center.personal_os", "label": "Personal Life OS", "category": "Power Center", "mode": "allow", "description": "Read/create routines, plans, follow-ups, mood/energy notes, and summaries."},
     {"key": "power_center.home_assistant", "label": "Home Assistant control", "category": "Power Center", "mode": "ask", "description": "Call Home Assistant services for smart-home control."},
     {"key": "power_center.backup", "label": "Backup and recovery", "category": "Power Center", "mode": "ask", "description": "Create backups, restore files, and guard risky deletes."},
@@ -446,6 +448,10 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             return "power_center.guardian"
         if action in {"notifications"}:
             return "power_center.notifications"
+        if action in {"ad_campaign_draft"}:
+            return "power_center.ad_campaign"
+        if action in {"ad_campaign_post"}:
+            return "power_center.ad_post"
         if action in {"remember_vault", "vault_search", "weekly_priorities"}:
             return "power_center.knowledge_vault"
         if action in {"voice_repair"}:
@@ -862,6 +868,9 @@ def set_named_policy(name: str, mode: str) -> list[dict[str, Any]]:
         "github pr": ["power_center.github"],
         "3d model": ["power_center.model_3d"],
         "model generation": ["power_center.model_3d"],
+        "ad campaign": ["power_center.ad_campaign", "power_center.ad_post"],
+        "ads": ["power_center.ad_campaign", "power_center.ad_post"],
+        "marketing": ["power_center.ad_campaign", "power_center.ad_post"],
         "personal life os": ["power_center.personal_os"],
         "home assistant": ["power_center.home_assistant"],
         "backup": ["power_center.backup"],

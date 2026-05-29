@@ -1,5 +1,6 @@
 import {
   Activity,
+  Bell,
   Brain,
   CheckCircle,
   ClipboardList,
@@ -8,6 +9,7 @@ import {
   Fingerprint,
   MessageSquare,
   Mic,
+  Monitor,
   Phone,
   Play,
   Puzzle,
@@ -25,13 +27,15 @@ const ICONS = {
   Governance: ShieldCheck,
   Tasks: ClipboardList,
   Approvals: CheckCircle,
+  Notifications: Bell,
   Projects: FileText,
   Vision: Eye,
   Android: Phone,
   Memory: Brain,
   Safety: ShieldCheck,
   Reliability: ShieldCheck,
-  Integrations: Puzzle
+  Integrations: Puzzle,
+  Operators: Monitor
 };
 
 export function Sidebar({ items, activeView, collapsed, online, onToggle }) {
@@ -94,7 +98,7 @@ export function Sidebar({ items, activeView, collapsed, online, onToggle }) {
             <span className={`h-2 w-2 rounded-full transition-[background-color,box-shadow] duration-300 ${online ? "animate-friday-pulse bg-friday-accent" : "bg-slate-500"}`} />
             <span className={collapsed ? "sr-only" : "font-bold text-[#eaf2fb]"}>{online ? "System Online" : "System Standby"}</span>
           </div>
-          <span className={collapsed ? "sr-only" : "text-[10px] text-friday-muted"}>Latency: live</span>
+          <span className={collapsed ? "sr-only" : "text-[10px] text-friday-muted"}>Latency: not measured</span>
         </div>
       </div>
     </aside>

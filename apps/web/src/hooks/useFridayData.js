@@ -31,7 +31,8 @@ const INITIAL_DATA = {
   blackboard: null,
   contractsSummary: null,
   skillsSummary: null,
-  missionStatus: null
+  missionStatus: null,
+  interface: null
 };
 
 export function useFridayData(token, setGlobalError, onAuthExpired) {
@@ -362,7 +363,8 @@ function mergeDashboardPayload(current, payload) {
     evaluation: payload.evaluation ?? current.evaluation,
     blackboard: payload.blackboard ?? current.blackboard,
     contractsSummary: payload.contractsSummary ?? current.contractsSummary,
-    skillsSummary: payload.skillsSummary ?? current.skillsSummary
+    skillsSummary: payload.skillsSummary ?? current.skillsSummary,
+    interface: payload.interface ?? current.interface
   };
 }
 

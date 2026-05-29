@@ -85,3 +85,21 @@ def test_self_update_blocks_secret_and_outside_paths(monkeypatch, tmp_path):
 
     with pytest.raises(PermissionError):
         self_update.stage_change(proposal["id"], str(tmp_path.parent / "outside.py"), "", "print('bad')\n")
+
+
+def test_self_update_allows_non_python_source_files(monkeypatch, tmp_path):
+    root = _isolated(monkeypatch, tmp_path)
+    target = root / "lib" / "main.dart"
+    target.parent.mkdir()
+    target.write_text("const value = 'old';\n", encoding="utf-8")
+    proposal = self_update.create_proposal("update flutter source")
+
+    change = self_update.stage_change(
+        proposal["id"],
+        "lib/main.dart",
+        "const value = 'old';\n",
+        "const value = 'new';\n",
+        "Update Dart source.",
+    )
+
+    assert change["status"] == "staged"

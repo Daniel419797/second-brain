@@ -25,7 +25,8 @@ const SNAPSHOT_ENDPOINTS = {
   evaluation: "/evaluation/summary",
   blackboard: "/blackboard/summary",
   contractsSummary: "/contracts/summary",
-  skillsSummary: "/memory/skills/summary"
+  skillsSummary: "/memory/skills/summary",
+  interface: "/interface/snapshot"
 };
 
 export async function loginToFriday({ username, password }) {

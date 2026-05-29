@@ -27,7 +27,8 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { wsUrl } from "@/services/fridayApi";
 
 export function IntegrationsView() {
-  const { api, data, token } = useDashboard();
+  const { api, data, token, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("integrations") || {};
   const [dashboard, setDashboard] = useState(data.integrations || null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState("");
@@ -41,11 +42,11 @@ export function IntegrationsView() {
       setDashboard(payload);
       liveRef.current = true;
     } catch (err) {
-      setStatus(err.message || "Integrations dashboard could not be loaded.");
+      setStatus(err.message || copy?.empty?.connectors || "Integrations dashboard could not be loaded.");
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [api]);
+  }, [api, copy?.empty?.connectors]);
 
   useEffect(() => {
     if (data.integrations) {
@@ -146,8 +147,8 @@ export function IntegrationsView() {
   return (
     <section className="grid w-full max-w-[1180px] min-w-0 content-start gap-4 text-[#eaf2fb]" aria-label="Integrations">
       <header className="grid min-w-0 gap-1">
-        <h2 className="m-0 text-[26px] font-extrabold leading-tight text-white">Integrations</h2>
-        <p className="m-0 text-[15px] text-[#d8e2ee]">Connect and manage external data streams and system controllers.</p>
+        <h2 className="m-0 text-[26px] font-extrabold leading-tight text-white">{copy?.title || "Integrations"}</h2>
+        <p className="m-0 text-[15px] text-[#d8e2ee]">{copy?.subtitle || "Connect and manage external data streams and system controllers."}</p>
       </header>
 
       <div className="grid min-w-0 gap-3 2xl:grid-cols-[minmax(0,1fr)_320px]">
@@ -156,11 +157,11 @@ export function IntegrationsView() {
       </div>
 
       <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(0,508px)_minmax(0,1fr)]">
-        <AppLaunchGrid apps={appLaunch.items || []} total={appLaunch.total || 0} busy={busy} onLaunch={launchApp} />
+        <AppLaunchGrid apps={appLaunch.items || []} total={appLaunch.total || 0} busy={busy} copy={copy} onLaunch={launchApp} />
         <HomeAssistantPanel homeAssistant={homeAssistant} />
       </div>
 
-      <OperationsLog rows={operations} />
+      <OperationsLog rows={operations} copy={copy} />
 
       {status ? (
         <div className="fixed bottom-5 right-5 z-20 max-w-[380px] rounded-[4px] border border-[#45678c] bg-[#9fcaff] px-4 py-3 text-[13px] font-semibold text-[#07111d] shadow-[0_16px_40px_rgba(0,0,0,.32)]">
@@ -175,7 +176,8 @@ function GoogleWorkspaceCard({ google, loading, busy, onConnect }) {
   const connected = Boolean(google.connected);
   const configured = Boolean(google.configured);
   const depsInstalled = google.status?.dependencies?.installed !== false;
-  const modules = google.modules?.length ? google.modules : skeletonGoogleModules();
+  const modules = google.modules || [];
+  const visibleModules = modules.length ? modules : loading ? skeletonGoogleModules() : [];
   const actionLabel = busy ? "WORKING" : connected ? "CONNECTED" : !configured ? "CONFIGURE" : !depsInstalled ? "INSTALL DEPS" : "CONNECT";
   return (
     <Panel className="min-h-[360px] p-5">
@@ -198,9 +200,9 @@ function GoogleWorkspaceCard({ google, loading, busy, onConnect }) {
       </header>
 
       <div className="mt-10 grid min-w-0 gap-3 md:grid-cols-2 xl:grid-cols-4">
-        {modules.map((module) => (
+        {visibleModules.length ? visibleModules.map((module) => (
           <GoogleModule module={module} key={module.id} />
-        ))}
+        )) : <div className="rounded-[4px] border border-dashed border-friday-line bg-[#111820] p-4 text-[13px] text-friday-muted md:col-span-2 xl:col-span-4">Google module status has not been returned by the backend yet.</div>}
       </div>
     </Panel>
   );
@@ -280,7 +282,7 @@ function BrowserBridgeCard({ browser }) {
   );
 }
 
-function AppLaunchGrid({ apps, total, busy, onLaunch }) {
+function AppLaunchGrid({ apps, total, busy, copy, onLaunch }) {
   return (
     <Panel className="min-h-[310px] p-5">
       <header className="mb-5 flex items-center gap-3">
@@ -288,7 +290,7 @@ function AppLaunchGrid({ apps, total, busy, onLaunch }) {
         <span className="ml-auto font-mono text-[11px] uppercase text-friday-accent">{total || apps.length} total</span>
       </header>
       <div className="grid min-w-0 grid-cols-3 gap-x-3 gap-y-4 sm:grid-cols-4 xl:grid-cols-6">
-        {(apps.length ? apps : skeletonApps()).slice(0, 12).map((app) => {
+        {apps.length ? apps.slice(0, 12).map((app) => {
           const Icon = appIcon(app.id);
           const opening = busy === `open-${app.id}`;
           return (
@@ -306,7 +308,7 @@ function AppLaunchGrid({ apps, total, busy, onLaunch }) {
               <span className="max-w-full truncate text-[11px] font-bold text-white">{app.label}</span>
             </button>
           );
-        })}
+        }) : <div className="col-span-full grid min-h-[150px] place-items-center rounded-[4px] border border-dashed border-friday-line bg-[#111820] px-4 text-center text-[13px] text-friday-muted">{copy?.empty?.connectors || "No app launch targets came back from the backend yet."}</div>}
       </div>
     </Panel>
   );
@@ -357,7 +359,7 @@ function HomeCard({ card }) {
   );
 }
 
-function OperationsLog({ rows }) {
+function OperationsLog({ rows, copy }) {
   return (
     <Panel>
       <header className="border-b border-friday-line px-5 py-4">
@@ -372,7 +374,7 @@ function OperationsLog({ rows }) {
             <span>Status</span>
             <span>Payload</span>
           </div>
-          {(rows.length ? rows : skeletonOperations()).slice(0, 3).map((row) => (
+          {rows.length ? rows.slice(0, 3).map((row) => (
             <div className="grid min-h-[58px] grid-cols-[160px_210px_minmax(0,1fr)_110px_220px] items-center gap-3 border-b border-friday-line px-4 last:border-b-0" key={row.id}>
               <span className="font-mono text-[12px] text-white">{formatTime(row.timestamp)}</span>
               <strong className="truncate text-[13px] text-white">{row.system}</strong>
@@ -380,7 +382,7 @@ function OperationsLog({ rows }) {
               <span className={`font-mono text-[11px] font-bold uppercase ${statusTone(row.status)}`}>{row.status}</span>
               <code className="truncate rounded-[2px] bg-[#111820] px-2 py-1 font-mono text-[10px] text-[#b8c4d2]">{payloadText(row.payload)}</code>
             </div>
-          ))}
+          )) : <div className="grid min-h-[90px] place-items-center px-4 text-center text-[13px] text-friday-muted">{copy?.empty?.connectors || "Friday has no integration operation in this read yet."}</div>}
         </div>
       </div>
     </Panel>
@@ -466,16 +468,4 @@ function skeletonGoogleModules() {
     { id: "docs", label: "Docs", detail: "Loading", active: false, status: "CHECKING" },
     { id: "sheets", label: "Sheets", detail: "Loading", active: false, status: "CHECKING" }
   ];
-}
-
-function skeletonApps() {
-  return ["figma", "vscode", "discord", "whatsapp", "notion", "slack", "calendar", "spotify", "postman", "linear", "zoom", "github"].map((id) => ({
-    id,
-    label: id === "vscode" ? "VS Code" : id.charAt(0).toUpperCase() + id.slice(1),
-    available: false
-  }));
-}
-
-function skeletonOperations() {
-  return [{ id: "empty", timestamp: "", system: "Integrations", event: "No operation events recorded yet.", status: "INFO", payload: {} }];
 }

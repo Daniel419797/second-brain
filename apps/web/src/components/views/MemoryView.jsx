@@ -293,7 +293,7 @@ function ReviewCard({ review, selected, busy, onSelect, onResolve }) {
         <div className="min-w-0">
           <strong className="block truncate text-[13px] text-white">{review.title || "Memory review item"}</strong>
           <span className="mt-0.5 block truncate text-[12px] text-[#c4cfdd]">
-            {source.label} · {timeAgo(review.created_at)}
+            {source.label} / {timeAgo(review.created_at)}
           </span>
         </div>
         <span className={`shrink-0 rounded-[3px] border px-2 py-1 font-mono text-[11px] uppercase ${confidence.tone}`}>{confidence.label}</span>

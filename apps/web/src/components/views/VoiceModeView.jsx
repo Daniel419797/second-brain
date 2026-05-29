@@ -7,15 +7,6 @@ import { wsUrl } from "@/services/fridayApi";
 
 const WAVEFORM = [24, 34, 48, 56, 54, 48, 38, 32, 30, 36, 44, 52, 56, 54, 46, 36, 31, 34, 42, 50, 57, 55, 47, 38, 33, 35, 43, 51, 55, 50, 42, 34, 30, 32, 40, 48, 54, 58, 52, 42, 36, 45];
 
-const FALLBACK_TRANSCRIPT = [
-  {
-    id: "voice-ready",
-    role: "friday",
-    text: "Voice link ready. Listening for a command.",
-    timestamp: "live"
-  }
-];
-
 const CONTROL_ROWS = [
   { key: "bargeIn", label: "Barge-in", detail: "Allow user to interrupt Friday mid-speech", icon: Zap },
   { key: "silentMode", label: "Silent Operator Mode", detail: "Friday responds via text only", icon: Volume2 },
@@ -170,7 +161,9 @@ export function VoiceModeView() {
             <span className="ml-auto font-mono text-[9px] text-friday-accent">{formatClock()}</span>
           </div>
           <div className="friday-scroll mt-3 grid max-h-[242px] gap-3 overflow-y-auto pr-1">
-            {transcript.map((item) => <TranscriptItem item={item} key={item.id} />)}
+            {transcript.length ? transcript.map((item) => <TranscriptItem item={item} key={item.id} />) : (
+              <EmptyLine>No voice transcript is attached to this session yet.</EmptyLine>
+            )}
             <div className="flex min-w-0 items-start gap-2 font-mono text-[10px] italic text-[#b7c4d5]">
               <span className="mt-1 h-3 w-px shrink-0 bg-friday-accent" />
               <span className="min-w-0 truncate">{speechStatusText(speech, busy)}</span>
@@ -222,12 +215,12 @@ export function VoiceModeView() {
             <div className="mt-3">
               <span className="font-mono text-[8px] font-bold uppercase text-[#9aa8ba]">Referenced Documents</span>
               <div className="mt-2 grid gap-1.5">
-                {activeContext.documents.map((document) => (
+                {activeContext.documents.length ? activeContext.documents.map((document) => (
                   <div className="flex min-w-0 items-center gap-2 font-mono text-[10px] text-[#cbd7e6]" key={document}>
                     <FileText className="shrink-0 text-friday-accent" size={11} />
                     <span className="min-w-0 truncate">{document}</span>
                   </div>
-                ))}
+                )) : <EmptyLine compact>No referenced document is attached.</EmptyLine>}
               </div>
             </div>
           </Panel>
@@ -671,6 +664,10 @@ function TranscriptItem({ item }) {
   );
 }
 
+function EmptyLine({ children, compact }) {
+  return <div className={`rounded-[3px] border border-dashed border-friday-line bg-[#10161d] px-3 py-2 text-[10px] leading-relaxed text-friday-muted ${compact ? "font-mono" : ""}`}>{children}</div>;
+}
+
 function ControlRow({ row, onToggle }) {
   const Icon = row.icon;
   return (
@@ -706,19 +703,20 @@ function transcriptItems(messages, interim = "") {
       interim: true
     });
   }
-  return cleaned.length ? cleaned : FALLBACK_TRANSCRIPT;
+  return cleaned;
 }
 
 function buildVoiceMetrics(summary, runtime, speech) {
   const stats = backendStats(summary);
-  const accuracy = stats.samples ? `${Math.max(0, Math.round((1 - stats.mistakes / stats.samples) * 1000) / 10).toFixed(1)}%` : "99.2%";
-  const sttModel = speech?.backend || [runtime.stt_backend, runtime.stt_model].filter(Boolean).join(" ") || "Deepgram nova-3";
-  const voice = [runtime.tts_backend, runtime.edge_voice].filter(Boolean).join(" / ") || "Edge Neural";
+  const accuracy = stats.samples ? `${Math.max(0, Math.round((1 - stats.mistakes / stats.samples) * 1000) / 10).toFixed(1)}%` : "--";
+  const latency = runtime.stt_latency_ms || runtime.voice_latency_ms || runtime.latency_ms;
+  const sttModel = speech?.backend || [runtime.stt_backend, runtime.stt_model].filter(Boolean).join(" ") || "";
+  const voice = [runtime.tts_backend, runtime.edge_voice].filter(Boolean).join(" / ");
   return [
-    { label: "STT Latency", value: "32ms" },
-    { label: "TTS Accuracy", value: accuracy },
-    { label: "STT Model", value: compactModel(sttModel) },
-    { label: "Neural Voice", value: compactModel(voice) }
+    { label: "STT Latency", value: latencyLabel(latency) },
+    { label: "STT Success", value: accuracy },
+    { label: "STT Model", value: compactModel(sttModel) || "not reported" },
+    { label: "Neural Voice", value: compactModel(voice) || "not reported" }
   ];
 }
 
@@ -733,6 +731,12 @@ function backendStats(summary) {
   );
 }
 
+function latencyLabel(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number) || number <= 0) return "--";
+  return `${Math.round(number)}ms`;
+}
+
 function buildActiveContext(data) {
   const project = data.projectMemory?.projects?.[0] || data.projects?.[0] || {};
   const documents = (data.projectReferences || [])
@@ -740,8 +744,8 @@ function buildActiveContext(data) {
     .filter(Boolean)
     .slice(0, 3);
   return {
-    focus: project.name || project.root_hash || "Project Apollo Financials",
-    documents: documents.length ? documents : ["apollo_budget_q3_actuals.xls", "project_apollo_master_plan.pdf", "corporate_ledger_retailing.pdf"]
+    focus: project.name || project.root_hash || data.contextFusion?.summary || "No project context attached",
+    documents
   };
 }
 

@@ -16,7 +16,8 @@ import {
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 
 export function DashboardView() {
-  const { data } = useDashboard();
+  const { data, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("dashboard") || {};
   const approvals = approvalItems(data);
   const tasks = data.tasks || [];
   const offices = data.offices || [];
@@ -25,23 +26,23 @@ export function DashboardView() {
   return (
     <section className="friday-scroll h-full overflow-y-auto bg-friday-bg px-2 py-2 text-white" aria-label="Dashboard operations board">
       <div className="grid max-w-100dvw gap-3">
-        <NowStrip data={data} />
-        <CommandStrip />
+        <NowStrip data={data} copy={copy} />
+        <CommandStrip copy={copy} />
 
         <div className="grid grid-cols-[minmax(0,1fr)_314px] gap-3">
           <div className="grid content-start gap-3">
             <div className="grid grid-cols-2 gap-3">
-              <RecommendedAction data={data} tasks={tasks} approvals={approvals} />
-              <ActiveMissions missions={missions} missionStatus={data.missionStatus} />
+              <RecommendedAction data={data} tasks={tasks} approvals={approvals} copy={copy} />
+              <ActiveMissions missions={missions} missionStatus={data.missionStatus} copy={copy} />
             </div>
-            <TaskQueue tasks={tasks} />
-            <BackgroundAgents offices={offices} workerStatus={data.status} />
+            <TaskQueue tasks={tasks} copy={copy} />
+            <BackgroundAgents offices={offices} workerStatus={data.status} copy={copy} />
           </div>
 
           <div className="grid content-start gap-3">
-            <PendingApprovals approvals={approvals} summary={data.approvalSummary} />
+            <PendingApprovals approvals={approvals} summary={data.approvalSummary} copy={copy} />
             <Telemetry data={data} />
-            <RecentActivity data={data} />
+            <RecentActivity data={data} copy={copy} />
           </div>
         </div>
       </div>
@@ -49,8 +50,8 @@ export function DashboardView() {
   );
 }
 
-function NowStrip({ data }) {
-  const activeWindow = data.pcAwareness?.active_window || "No active window captured";
+function NowStrip({ data, copy }) {
+  const activeWindow = data.pcAwareness?.active_window || copy?.rail?.focus || "Friday is waiting for the next desktop signal";
   const workers = data.status?.running ? `${data.status.workers || 0} workers` : "workers stopped";
   const mode = data.status?.mode || (data.status?.running ? "agent mode" : "idle");
   const runningApps = data.pcAwareness?.stats?.running_apps;
@@ -80,23 +81,24 @@ function StatusChip({ icon, label, active }) {
   );
 }
 
-function CommandStrip() {
+function CommandStrip({ copy }) {
   return (
     <div className="flex min-h-[54px] items-center gap-3 rounded border border-friday-line bg-[#151b22] px-4">
       <span className="font-mono text-friday-accent">&gt;</span>
-      <span className="flex-1 font-mono text-[12px] tracking-[.08em] text-[#7f8da0]">Use Chat or voice to command Friday. This strip reflects the same orchestrator.</span>
+      <span className="flex-1 truncate font-mono text-[12px] tracking-[.08em] text-[#7f8da0]">{copy?.status || copy?.subtitle || "Friday is syncing the next command surface."}</span>
       <a className="grid min-h-7 place-items-center border border-[#465365] bg-[#1a2028] px-3 font-mono text-[11px] uppercase tracking-[.12em] text-white" href="/chat">
-        Chat
+        {copy?.labels?.ask || "Ask Friday"}
       </a>
     </div>
   );
 }
 
-function RecommendedAction({ data, tasks, approvals }) {
+function RecommendedAction({ data, tasks, approvals, copy }) {
   const observation = data.contextFusion?.observations?.[0];
   const notification = data.notifications?.items?.[0];
   const task = tasks.find((item) => ["active", "pending", "blocked"].includes(lower(item.status)));
   const approval = approvals[0];
+  const primary = copy?.primaryAction || copy?.actions?.[0];
   const item = observation
     ? { title: "Review Live Context Signal", detail: observation.summary, href: "/vision", action: "Open Context" }
     : approval
@@ -105,24 +107,24 @@ function RecommendedAction({ data, tasks, approvals }) {
         ? { title: task.title, detail: task.description || task.status, href: "/tasks", action: "Open Task" }
         : notification
           ? { title: notification.title, detail: notification.message, href: "/approvals", action: "Open Inbox" }
-          : { title: "No urgent action", detail: "Friday has no active mission, approval, or queued task needing attention.", href: "/chat", action: "Ask Friday" };
+          : { title: copy?.title || "Friday is clear", detail: copy?.empty?.urgent || "Friday has no active mission, approval, or queued task needing attention.", href: primary?.href || "/chat", action: primary?.label || "Ask Friday" };
 
   return (
     <article className="grid min-h-[230px] content-between rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14] p-4">
       <div className="min-w-0">
         <CardTitle icon={<ClipboardList size={13} />} label="Next Recommended Action" />
         <h2 className="mt-5 line-clamp-2 text-[20px] font-extrabold leading-tight">{item.title}</h2>
-        <p className="mt-3 line-clamp-3 max-w-[270px] text-[13px] leading-relaxed text-[#dce7f3]">{item.detail || "No extra detail available."}</p>
+        <p className="mt-3 line-clamp-3 max-w-[270px] text-[13px] leading-relaxed text-[#dce7f3]">{item.detail || copy?.subtitle || "Friday is waiting for one clean next move."}</p>
       </div>
       <div className="grid grid-cols-[1fr_86px] gap-2">
         <a className="grid min-h-9 place-items-center border border-[#97c8f8] bg-[#97c8f8] text-[12px] text-[#04111f]" href={item.href}>{item.action}</a>
-        <a className="grid min-h-9 place-items-center border border-friday-line bg-[#151b23] text-[12px] text-white" href="/chat">Ask</a>
+        <a className="grid min-h-9 place-items-center border border-friday-line bg-[#151b23] text-[12px] text-white" href="/chat">{copy?.labels?.ask || "Ask"}</a>
       </div>
     </article>
   );
 }
 
-function ActiveMissions({ missions, missionStatus }) {
+function ActiveMissions({ missions, missionStatus, copy }) {
   const rows = missions.slice(0, 2);
   return (
     <article className="min-h-[230px] rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14] p-4">
@@ -132,7 +134,7 @@ function ActiveMissions({ missions, missionStatus }) {
       </div>
       <div className="grid gap-3">
         {rows.length ? rows.map((mission, index) => <MissionRow mission={mission} key={mission.id || `${index}-${mission.goal}`} />) : (
-          <EmptyBox text={missionStatus?.summary || "No mission running. Start one from Mission Control or Chat."} />
+          <EmptyBox text={missionStatus?.summary || copy?.empty?.missions || "No mission running. Start one from Mission Control or Chat."} />
         )}
       </div>
     </article>
@@ -154,7 +156,7 @@ function MissionRow({ mission }) {
   );
 }
 
-function PendingApprovals({ approvals, summary }) {
+function PendingApprovals({ approvals, summary, copy }) {
   return (
     <article className="rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14] p-4">
       <div className="mb-4 flex items-center">
@@ -163,7 +165,7 @@ function PendingApprovals({ approvals, summary }) {
       </div>
       <div className="grid gap-3">
         {approvals.length ? approvals.slice(0, 2).map((approval) => <ApprovalCard approval={approval} key={`${approval.kind}-${approval.id}`} />) : (
-          <EmptyBox text="No approval decisions are waiting." />
+          <EmptyBox text={copy?.empty?.approvals || "Friday has no approval decision waiting."} />
         )}
       </div>
     </article>
@@ -186,7 +188,7 @@ function ApprovalCard({ approval }) {
   );
 }
 
-function TaskQueue({ tasks }) {
+function TaskQueue({ tasks, copy }) {
   const rows = tasks.filter((item) => !["done", "cancelled"].includes(lower(item.status))).slice(0, 3);
   const fallback = tasks.slice(0, 3);
   const display = rows.length ? rows : fallback;
@@ -194,10 +196,12 @@ function TaskQueue({ tasks }) {
     <article className="rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14]">
       <div className="flex h-[56px] items-center border-b border-friday-line px-4">
         <CardTitle icon={<ClipboardList size={13} />} label="Task Queue Priorities" />
-        <Plus className="ml-auto text-friday-accent" size={18} />
+        <a className="ml-auto grid h-8 w-8 place-items-center text-friday-accent transition-transform hover:-translate-y-px active:scale-95" href="/tasks" title={copy?.actions?.find?.((action) => action.id === "create-task")?.label || "Open task queue"}>
+          <Plus size={18} />
+        </a>
       </div>
       {display.length ? display.map((task, index) => <PriorityRow task={task} key={task.id || `${index}-${task.title}`} />) : (
-        <div className="px-4 py-5 text-[12px] text-friday-muted">No queued task records are loaded.</div>
+        <div className="px-4 py-5 text-[12px] text-friday-muted">{copy?.empty?.tasks || "Friday has no queued task in this snapshot."}</div>
       )}
     </article>
   );
@@ -212,14 +216,14 @@ function PriorityRow({ task }) {
       </span>
       <div className={done ? "min-w-0 text-friday-muted line-through" : "min-w-0"}>
         <strong className="block truncate text-[12px]">{task.title || `Task #${task.id}`}</strong>
-        <span className="block truncate text-[10px] text-[#cbd7e6]">{task.agent_id || "agent"} · {task.description || task.status}</span>
+        <span className="block truncate text-[10px] text-[#cbd7e6]">{task.agent_id || "agent"} / {task.description || task.status}</span>
       </div>
       <StatusTag label={task.status || "unknown"} />
     </div>
   );
 }
 
-function BackgroundAgents({ offices, workerStatus }) {
+function BackgroundAgents({ offices, workerStatus, copy }) {
   const rows = offices.slice(0, 4);
   return (
     <section>
@@ -232,7 +236,7 @@ function BackgroundAgents({ offices, workerStatus }) {
           </a>
         )) : (
           <div className="col-span-4 border border-friday-line bg-[#151b22] px-2 py-2 font-mono text-[10px] text-friday-muted">
-            {workerStatus?.running ? "Workers running, no office snapshots loaded." : "Workers stopped."}
+            {workerStatus?.running ? copy?.empty?.agents || "Workers running, no agent rows loaded." : "Worker pool is paused; Friday can wake it from the top bar."}
           </div>
         )}
       </div>
@@ -260,7 +264,7 @@ function Telemetry({ data }) {
         <div className="col-span-2 grid min-h-[47px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden border border-friday-line bg-[#171d24] px-3">
           <div className="min-w-0">
             <span className="block font-mono text-[10px] uppercase text-[#cbd7e6]">Reliability</span>
-            <span className="block truncate font-mono text-[12px]">{providerCount} provider(s) configured · {unsupported} unsupported claim alert(s)</span>
+            <span className="block truncate font-mono text-[12px]">{providerCount} provider(s) configured / {unsupported} unsupported claim alert(s)</span>
           </div>
           <Wifi className="shrink-0 text-[#79e8af]" size={22} />
         </div>
@@ -284,7 +288,7 @@ function MetricBox({ label, value, detail }) {
   );
 }
 
-function RecentActivity({ data }) {
+function RecentActivity({ data, copy }) {
   const notificationRows = (data.notifications?.items || []).map((item) => ({
     color: item.severity >= 3 ? "bg-[#c58f88]" : "bg-[#97c8f8]",
     time: formatTime(item.timestamp),
@@ -300,7 +304,7 @@ function RecentActivity({ data }) {
     <article className="rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14] p-4">
       <CardTitle icon={<RefreshCcw size={13} />} label="Recent Activity" />
       <div className="mt-4 grid gap-3 border-l border-[#34404d] pl-3">
-        {rows.length ? rows.map((item, index) => <ActivityItem {...item} key={`${item.time}-${index}`} />) : <p className="text-[11px] text-friday-muted">No recent notification or audit events loaded.</p>}
+        {rows.length ? rows.map((item, index) => <ActivityItem {...item} key={`${item.time}-${index}`} />) : <p className="text-[11px] text-friday-muted">{copy?.empty?.activity || "Friday has no notification or audit event in this read."}</p>}
       </div>
     </article>
   );

@@ -16,10 +16,20 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 const ICONS = [SquareTerminal, Code2, FilePenLine, Bot];
 
 export function AgentsView() {
-  const { data } = useDashboard();
-  const offices = useMemo(() => normalizeOffices(data.offices, data.agents), [data.offices, data.agents]);
+  const { data, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("agents") || {};
+  const [filter, setFilter] = useState("all");
+  const allOffices = useMemo(() => normalizeOffices(data.offices, data.agents), [data.offices, data.agents]);
+  const offices = useMemo(() => filterOffices(allOffices, filter), [allOffices, filter]);
   const [selectedId, setSelectedId] = useState("");
+  const [detailOpen, setDetailOpen] = useState(true);
   const selected = offices.find((office) => office.agent_id === selectedId) || offices[0] || null;
+
+  function cycleFilter() {
+    const next = { all: "active", active: "blocked", blocked: "idle", idle: "all" };
+    setFilter(next[filter] || "all");
+    setDetailOpen(true);
+  }
 
   return (
     <section className="friday-scroll h-full overflow-y-auto overflow-x-hidden bg-friday-bg text-[#eaf2fb]" aria-label="Active Agents">
@@ -27,13 +37,13 @@ export function AgentsView() {
         <main className="min-w-0 p-6">
           <header className="mb-5 flex min-w-0 items-end justify-between gap-4 border-b border-friday-line pb-5">
             <div className="min-w-0">
-              <h1 className="text-[26px] font-extrabold leading-none text-white">Active Agents</h1>
-              <p className="mt-2 text-[14px] text-[#c4d2e2]">Office floor grid &amp; operational status</p>
+              <h1 className="text-[26px] font-extrabold leading-none text-white">{copy?.title || "Active Agents"}</h1>
+              <p className="mt-2 text-[14px] text-[#c4d2e2]">{copy?.subtitle || "Office floor grid and operational status"}</p>
             </div>
             <div className="flex shrink-0 gap-2">
-              <button className="flex min-h-9 items-center gap-2 border border-friday-line bg-[#151c25] px-5 text-[13px] font-semibold text-[#dce8f7]" type="button">
+              <button className="flex min-h-9 items-center gap-2 border border-friday-line bg-[#151c25] px-5 text-[13px] font-semibold text-[#dce8f7] hover:border-friday-accent" type="button" onClick={cycleFilter} title="Cycle agent status filter">
                 <Filter size={15} />
-                Filter
+                {filter === "all" ? "All Agents" : titleize(filter)}
               </button>
               <a className="flex min-h-9 items-center gap-2 border border-friday-blue bg-friday-blue px-5 text-[13px] font-bold text-[#061420]" href="/tasks">
                 <Plus size={16} />
@@ -44,16 +54,16 @@ export function AgentsView() {
 
           <div className="grid min-w-0 grid-cols-2 gap-4">
             {offices.length ? offices.map((office, index) => (
-              <AgentCard agent={office} index={index} key={`${office.agent_id || "agent"}-${index}`} selected={office.agent_id === selected?.agent_id} onSelect={() => setSelectedId(office.agent_id)} />
+              <AgentCard agent={office} index={index} key={`${office.agent_id || "agent"}-${index}`} selected={detailOpen && office.agent_id === selected?.agent_id} onSelect={() => { setSelectedId(office.agent_id); setDetailOpen(true); }} />
             )) : (
               <div className="col-span-2 grid min-h-[220px] place-items-center border border-friday-line bg-[#151b22] text-friday-muted">
-                No agent office snapshots loaded.
+                {copy?.empty?.agents || "Friday has no agent office rows in this read."}
               </div>
             )}
           </div>
         </main>
 
-        <AgentDetail agent={selected} data={data} />
+        {detailOpen ? <AgentDetail agent={selected} data={data} copy={copy} onClose={() => setDetailOpen(false)} /> : <AgentSummary offices={offices} copy={copy} onOpen={() => setDetailOpen(true)} />}
       </div>
     </section>
   );
@@ -110,9 +120,10 @@ function Field({ label, value, muted }) {
   );
 }
 
-function AgentDetail({ agent, data }) {
+function AgentDetail({ agent, data, copy, onClose }) {
   const thoughts = (data.thoughts?.recent || []).filter((thought) => !agent || !thought.target_agent_id || thought.target_agent_id === agent.agent_id);
   const quality = qualityForAgent(data.agentQuality, agent?.agent_id);
+  const contextRows = loadedContext(agent);
   return (
     <aside className="grid min-w-0 grid-rows-[auto_1fr_auto] overflow-hidden border-l border-friday-line bg-[#151b23]">
       <header className="flex min-w-0 items-start gap-4 border-b border-friday-line p-5">
@@ -121,12 +132,12 @@ function AgentDetail({ agent, data }) {
         </span>
         <div className="min-w-0">
           <h2 className="flex min-w-0 items-center gap-2 text-[24px] font-extrabold leading-none text-white">
-            <span className="truncate">{agent?.agent_name || "No Agent"}</span>
+            <span className="truncate">{agent?.agent_name || copy?.empty?.agents || "No Agent"}</span>
             {agent ? <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-friday-accent" /> : null}
           </h2>
           <p className="mt-2 truncate font-mono text-[13px] font-bold uppercase tracking-[.18em] text-friday-accent">{agent?.purpose || agent?.room_name || "Agent detail"}</p>
         </div>
-        <button className="ml-auto shrink-0 text-[#d5dfeb]" type="button" aria-label="Close agent detail">
+        <button className="ml-auto shrink-0 text-[#d5dfeb] hover:text-white" type="button" aria-label="Close agent detail" onClick={onClose}>
           <X size={20} />
         </button>
       </header>
@@ -134,7 +145,7 @@ function AgentDetail({ agent, data }) {
       <div className="friday-scroll grid min-w-0 content-start gap-6 overflow-y-auto overflow-x-hidden p-5">
         <DetailSection icon={<Target size={16} />} title="Active Operation">
           <div className="border border-friday-line bg-[#0d1218] p-4">
-            <p className="text-[16px] leading-relaxed text-[#f2f7ff]">{agent?.current_task?.title || agent?.current_focus || "No active operation."}</p>
+            <p className="text-[16px] leading-relaxed text-[#f2f7ff]">{agent?.current_task?.title || agent?.current_focus || copy?.empty?.tasks || "No active operation."}</p>
             <div className="mt-4 flex min-w-0 flex-wrap gap-2">
               <Chip label={`Agent: ${agent?.agent_id || "none"}`} />
               <Chip label={`Status: ${agent?.status || "unknown"}`} active />
@@ -157,7 +168,7 @@ function AgentDetail({ agent, data }) {
                 </div>
               </>
             ) : (
-              <p className="text-[14px] text-friday-muted">No open thought packet or agent question for this agent.</p>
+              <p className="text-[14px] text-friday-muted">{copy?.empty?.activity || "Friday has no open thought packet or agent question for this agent."}</p>
             )}
           </div>
         </DetailSection>
@@ -165,7 +176,7 @@ function AgentDetail({ agent, data }) {
         <div className="grid min-w-0 grid-cols-2 gap-4">
           <DetailCard title="Loaded Context">
             <div className="flex flex-wrap gap-2">
-              {loadedContext(agent).map((item, index) => <Chip label={item} key={`${index}-${item}`} />)}
+              {contextRows.length ? contextRows.map((item, index) => <Chip label={item} key={`${index}-${item}`} />) : <p className="m-0 text-[12px] text-friday-muted">{copy?.empty?.evidence || "No provider, topic, or peer context is attached to this agent yet."}</p>}
             </div>
           </DetailCard>
           <DetailCard title="Output Quality">
@@ -180,7 +191,7 @@ function AgentDetail({ agent, data }) {
                 </div>
               </>
             ) : (
-              <p className="text-[12px] text-friday-muted">No quality profile learned yet.</p>
+              <p className="text-[12px] text-friday-muted">{copy?.empty?.evidence || "Friday has not learned a quality profile for this agent yet."}</p>
             )}
           </DetailCard>
         </div>
@@ -190,6 +201,20 @@ function AgentDetail({ agent, data }) {
         <a className="grid min-h-11 place-items-center border border-friday-line bg-[#10161d] font-mono text-[13px] font-bold text-[#dfe9f6]" href="/tasks">Tasks</a>
         <a className="grid min-h-11 place-items-center border border-friday-line bg-[#10161d] font-mono text-[13px] font-bold text-[#dfe9f6]" href="/memory">Memory</a>
       </footer>
+    </aside>
+  );
+}
+
+function AgentSummary({ offices, copy, onOpen }) {
+  const active = offices.filter((office) => ["active", "working", "running"].includes(lower(office.status))).length;
+  return (
+    <aside className="grid min-w-0 content-center border-l border-friday-line bg-[#151b23] p-6 text-center">
+      <div className="grid gap-3">
+        <Bot className="mx-auto text-friday-accent" size={28} />
+        <strong className="text-[17px] text-white">{copy?.rail?.title || "Agent detail is hidden"}</strong>
+        <p className="text-[13px] leading-relaxed text-friday-muted">{active} active agent(s) in the current filter. {copy?.rail?.focus || "Select an agent or reopen the side panel."}</p>
+        <button className="mx-auto min-h-9 border border-friday-line bg-[#10161d] px-4 text-[12px] text-[#dfe9f6] hover:border-friday-accent" type="button" onClick={onOpen}>Open Detail</button>
+      </div>
     </aside>
   );
 }
@@ -220,7 +245,7 @@ function MemoryList({ rows }) {
     <div className="min-w-0 overflow-hidden border border-friday-line bg-[#0d1218]">
       {rows.length ? rows.map((row, index) => (
         <p className="break-words border-b border-friday-line px-4 py-3 font-mono text-[12px] leading-relaxed text-[#dfe8f4] last:border-b-0" key={`${index}-${row.slice(0, 32)}`}>{row}</p>
-      )) : <p className="px-4 py-3 text-[12px] text-friday-muted">No recent task messages or office memory loaded.</p>}
+      )) : <p className="px-4 py-3 text-[12px] text-friday-muted">Friday has no recent task message or office memory in this read.</p>}
     </div>
   );
 }
@@ -256,13 +281,23 @@ function normalizeOffices(offices, agents) {
   }));
 }
 
+function filterOffices(offices, filter) {
+  if (filter === "all") return offices;
+  return offices.filter((office) => {
+    const status = lower(office.status);
+    if (filter === "active") return ["active", "working", "running"].includes(status);
+    if (filter === "blocked") return ["blocked", "failed"].includes(status);
+    return status === filter;
+  });
+}
+
 function providerChain(agent) {
-  return (agent.provider_chain || []).length ? agent.provider_chain.join(" > ") : "No provider chain loaded";
+  return (agent.provider_chain || []).length ? agent.provider_chain.join(" > ") : "Provider chain is not attached to this snapshot";
 }
 
 function taskCountLine(agent) {
   const counts = agent.task_counts || {};
-  return `${counts.active || 0} active · ${counts.pending || 0} pending · ${counts.done || 0} done`;
+  return `${counts.active || 0} active / ${counts.pending || 0} pending / ${counts.done || 0} done`;
 }
 
 function workingMemoryRows(agent) {
@@ -275,7 +310,7 @@ function loadedContext(agent) {
   const providers = agent?.provider_chain || [];
   const topics = (agent?.competence || []).map((item) => item.topic).filter(Boolean);
   const peers = agent?.known_peers?.length ? [`${agent.known_peers.length} peer(s)`] : [];
-  return [...providers, ...topics, ...peers].slice(0, 6).length ? [...providers, ...topics, ...peers].slice(0, 6) : ["office snapshot"];
+  return [...providers, ...topics, ...peers].slice(0, 6);
 }
 
 function qualityForAgent(agentQuality, agentId) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, BarChart3, Briefcase, CheckCircle2, Code2, Eye, FileText, Lock, Pause, Search, Square } from "lucide-react";
+import { useState } from "react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 
 const PHASES = [
@@ -19,7 +20,9 @@ const PHASES = [
 ];
 
 export function MissionControlView() {
-  const { data, post, refresh, busy } = useDashboard();
+  const { data, post, refresh, busy, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("mission-control") || {};
+  const [status, setStatus] = useState("");
   const missionStatus = data.missionStatus || {};
   const missions = Array.isArray(data.missions) ? data.missions : [];
   const activeMission = missions.find((mission) => ["running", "blocked", "paused"].includes(lower(mission.status))) || missionStatus.active?.[0] || missions[0] || null;
@@ -30,20 +33,29 @@ export function MissionControlView() {
     await refresh();
   }
 
+  async function changeMissionState(mission, action) {
+    if (!mission?.id) return;
+    setStatus("");
+    await post(`/missions/${mission.id}/${action}`, { note: `${labelize(action)} from Mission Control.` });
+    setStatus(`Mission ${labelize(action).toLowerCase()} requested.`);
+    await refresh();
+  }
+
   return (
     <section className="friday-scroll h-full overflow-y-auto bg-friday-bg p-3 text-white" aria-label="Mission Control">
       <div className="grid max-w-[1000px] gap-5">
         <div className="grid grid-cols-[minmax(0,1fr)_320px] gap-5">
-          <MissionDetail mission={activeMission} missionStatus={missionStatus} onApproveDesignPreview={approveDesignPreview} busy={busy} />
+          <MissionDetail mission={activeMission} missionStatus={missionStatus} copy={copy} onApproveDesignPreview={approveDesignPreview} onMissionAction={changeMissionState} busy={busy} />
           <FinalProof mission={activeMission} missionStatus={missionStatus} />
         </div>
-        <MissionRegistry missions={missions} />
+        {status ? <div className="rounded border border-[#405063] bg-[#101820] px-4 py-3 text-[13px] text-[#dce9f8]">{status}</div> : null}
+        <MissionRegistry missions={missions} copy={copy} />
       </div>
     </section>
   );
 }
 
-function MissionDetail({ mission, missionStatus, onApproveDesignPreview, busy }) {
+function MissionDetail({ mission, missionStatus, copy, onApproveDesignPreview, onMissionAction, busy }) {
   const phase = lower(mission?.current_phase || "intake");
   const blockers = blockerItems(mission, missionStatus);
   const designPreview = designPreviewState(mission, missionStatus);
@@ -52,12 +64,12 @@ function MissionDetail({ mission, missionStatus, onApproveDesignPreview, busy })
       <header className="flex min-h-[68px] items-center gap-3 border-b border-friday-line px-4">
         <span className="shrink-0 border border-[#7d542b] bg-[#35210f] px-2 py-1 font-mono text-[11px] text-[#ffb76d]">{mission ? `M-${mission.id}` : "NO-MISSION"}</span>
         <div className="min-w-0">
-          <h2 className="truncate text-[19px] font-extrabold">{mission?.goal || "No autonomous mission selected"}</h2>
-          <p className="mt-1 truncate font-mono text-[12px] text-[#d9e4f0]">&gt; {mission?.summary || missionStatus.summary || "Start a mission from Chat or the Mission Control API."}</p>
+          <h2 className="truncate text-[19px] font-extrabold">{mission?.goal || copy?.title || "No autonomous mission selected"}</h2>
+          <p className="mt-1 truncate font-mono text-[12px] text-[#d9e4f0]">&gt; {mission?.summary || missionStatus.summary || copy?.empty?.missions || "Start a mission from Chat or the Mission Control API."}</p>
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <IconButton icon={<Pause size={13} />} disabled={!mission} />
-          <IconButton icon={<Square size={12} />} disabled={!mission} />
+          <IconButton icon={<Pause size={13} />} disabled={!mission || busy} title={lower(mission?.status) === "paused" ? "Resume mission" : "Pause mission"} onClick={() => onMissionAction?.(mission, lower(mission?.status) === "paused" ? "resume" : "pause")} />
+          <IconButton icon={<Square size={12} />} disabled={!mission || busy} title="Stop mission" onClick={() => onMissionAction?.(mission, "stop")} />
           <a className={`grid min-h-10 place-items-center border px-5 text-[12px] ${mission ? "border-friday-blue bg-friday-blue text-[#061420]" : "border-friday-line bg-[#151b22] text-friday-muted"}`} href="/approvals">
             Approvals
           </a>
@@ -78,7 +90,7 @@ function MissionDetail({ mission, missionStatus, onApproveDesignPreview, busy })
           <AgentCard title={agentForPhase(phase)} subtitle="Current phase owner" icon={<Briefcase size={18} />} />
           <AgentCard title={mission?.deploy_policy || "approval gated"} subtitle="Deploy policy" icon={<Code2 size={18} />} color="blue" />
           <DesignPreviewCard mission={mission} preview={designPreview} onApprove={onApproveDesignPreview} busy={busy} />
-          <EvidenceCard mission={mission} />
+          <EvidenceCard mission={mission} copy={copy} />
           <BlockerCard blockers={blockers} />
         </main>
       </div>
@@ -122,9 +134,9 @@ function DesignPreviewCard({ mission, preview, onApprove, busy }) {
   );
 }
 
-function IconButton({ icon, disabled }) {
+function IconButton({ icon, disabled, title, onClick }) {
   return (
-    <button className="grid h-10 w-10 place-items-center border border-friday-line bg-[#1b222c] text-[#d9e4f0] disabled:opacity-40" type="button" disabled={disabled}>
+    <button className="grid h-10 w-10 place-items-center border border-friday-line bg-[#1b222c] text-[#d9e4f0] hover:border-friday-accent disabled:opacity-40" type="button" disabled={disabled} title={title} onClick={onClick}>
       {icon}
     </button>
   );
@@ -142,14 +154,14 @@ function AgentCard({ color, title, subtitle, icon }) {
   );
 }
 
-function EvidenceCard({ mission }) {
+function EvidenceCard({ mission, copy }) {
   const evidence = mission?.evidence || [];
   return (
     <section className="min-h-[228px] overflow-hidden border border-friday-line bg-[#080d11] p-4">
       <CardHeader icon={<FileText size={13} />} label={`Evidence (${mission?.evidence_count || evidence.length || 0})`} />
       <div className="mt-4 grid gap-3 font-mono text-[12px] leading-relaxed text-[#eef6ff]">
         {evidence.length ? evidence.slice(0, 4).map((item) => <p className="line-clamp-2" key={item.id}>&gt; {item.title}: {item.summary}</p>) : (
-          <p className="text-friday-muted">&gt; No mission evidence loaded yet. Friday cannot mark a mission complete without proof.</p>
+          <p className="text-friday-muted">&gt; {copy?.empty?.evidence || "Friday has no mission evidence yet; completion stays blocked until proof exists."}</p>
         )}
       </div>
     </section>
@@ -219,7 +231,7 @@ function ProofPill({ label }) {
   return <span className="truncate border border-friday-line bg-[#111820] px-2 py-2 font-mono text-[11px] text-[#e6edf7]">{label}</span>;
 }
 
-function MissionRegistry({ missions }) {
+function MissionRegistry({ missions, copy }) {
   return (
     <section className="rounded border border-friday-line bg-gradient-to-b from-friday-panel to-[#0a0f14]">
       <header className="flex min-h-[54px] items-center border-b border-friday-line px-4">
@@ -244,7 +256,7 @@ function MissionRegistry({ missions }) {
         </table>
       ) : (
         <div className="grid min-h-[150px] place-items-center px-4 text-center text-[13px] text-friday-muted">
-          No mission records loaded. Use Chat: "start mission ..." or POST /missions to create one.
+          {copy?.empty?.missions || "Friday has no mission record yet. Start one from Chat and it will appear here."}
         </div>
       )}
     </section>

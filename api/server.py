@@ -50,7 +50,7 @@ _CORE_MODULES = [
     "certainty_brain", "cloud_sync", "cloud_worker_mode", "cognitive_cycle", "company_runtime", "competence",
     "competitive_benchmark", "connector_runtime", "context_aware_silence",
     "context_fusion", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
-    "decision_memory", "deep_project_autopilot", "deployment_brain", "desktop_tasks", "desktop_vision", "device_command_mesh",
+    "decision_memory", "deep_project_autopilot", "deployment_brain", "desktop_tasks", "desktop_vision", "device_command_mesh", "dynamic_interface",
     "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
     "executive_capabilities", "focus_protection", "friday_gateway", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
     "identity", "image_generation", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
@@ -70,7 +70,7 @@ _CORE_MODULES = [
     "workspace_brain", "world_model", "agent_council", "agent_lifecycle", "agent_quality_manager", "agent_simulation_sandbox",
     "code_change_simulator", "codebase_standards", "command_graph", "dev_server_copilot", "do_not_forget", "emotional_timing",
     "failure_autopsy", "memory_constitution", "personal_taste_engine", "reality_check", "refactor_planner",
-    "visual_skill_memory_v2",
+    "ui_control", "visual_skill_memory_v2",
 ]
 
 globals().update({name: lazy_module(f"core.{name}") for name in _CORE_MODULES})
@@ -367,6 +367,35 @@ class AppOperatorRequest(BaseModel):
     app: str = Field(min_length=1, max_length=120)
     instruction: str = Field(default="", max_length=4000)
     max_steps: int = 0
+
+
+class UiControlContextRequest(BaseModel):
+    app: str = Field(default="", max_length=120)
+    instruction: str = Field(default="", max_length=4000)
+
+
+class UiControlActionRequest(BaseModel):
+    action: str = Field(min_length=1, max_length=120)
+    app: str = Field(default="", max_length=120)
+    instruction: str = Field(default="", max_length=4000)
+    target: str = Field(default="", max_length=1000)
+    text: str = Field(default="", max_length=4000)
+    x: float | None = None
+    y: float | None = None
+    amount: int = 0
+    key: str = Field(default="", max_length=80)
+    keys: list[str] | str = Field(default_factory=list)
+    seconds: float = Field(default=1.0, ge=0.0, le=30.0)
+    url: str = Field(default="", max_length=2000)
+    steps: list[dict[str, Any]] = Field(default_factory=list)
+    session_id: int = Field(default=0, ge=0)
+    max_steps: int = Field(default=12, ge=1, le=50)
+    limit: int = Field(default=40, ge=1, le=200)
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
+
+class InterfaceCopyRequest(BaseModel):
+    payload: dict[str, Any] = Field(default_factory=dict)
 
 
 class AutonomousCodingRequest(BaseModel):
@@ -1540,6 +1569,21 @@ def create_app() -> FastAPI:
 
     register_domain_routers(app, sys.modules[__name__])
 
+    @app.get("/interface/snapshot")
+    def interface_snapshot(_user: str = Depends(require_user)) -> dict[str, Any]:
+        payload = _dashboard_snapshot()
+        interface = payload.get("interface")
+        return interface if isinstance(interface, dict) else dynamic_interface.snapshot(payload)
+
+    @app.get("/interface/views/{view}")
+    def interface_view(view: str, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return dynamic_interface.view_copy(view, _dashboard_snapshot())
+
+    @app.post("/interface/views/{view}")
+    def interface_view_from_payload(view: str, request: InterfaceCopyRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        payload = request.payload or _dashboard_snapshot()
+        return dynamic_interface.view_copy(view, payload)
+
     @app.get("/desktop/tasks")
     def list_desktop_tasks(limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return [_decorate_desktop_session(session) for session in desktop_tasks.list_sessions(limit=max(1, min(int(limit), 100)))]
@@ -1580,6 +1624,50 @@ def create_app() -> FastAPI:
     def cancel_desktop_task(session_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
         reply = desktop_vision.cancel_desktop_task(session_id)
         return _desktop_task_action_payload(session_id, reply)
+
+    @app.get("/ui-control/status")
+    def ui_control_status(app: str = "", limit: int = 12, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return ui_control.status(app, limit=max(1, min(int(limit), 50)))
+
+    @app.post("/ui-control/context")
+    def ui_control_context(request: UiControlContextRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return ui_control.context(request.app, request.instruction)
+
+    @app.post("/ui-control/action")
+    def ui_control_action(request: UiControlActionRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return ui_control.execute(
+            request.action,
+            app=request.app,
+            instruction=request.instruction,
+            target=request.target,
+            text=request.text,
+            x=request.x,
+            y=request.y,
+            amount=request.amount,
+            key=request.key,
+            keys=request.keys,
+            seconds=request.seconds,
+            url=request.url,
+            steps=request.steps,
+            session_id=request.session_id,
+            max_steps=request.max_steps,
+            limit=request.limit,
+            metadata=request.metadata,
+        )
+
+    @app.post("/ui-control/task")
+    def ui_control_task(request: UiControlActionRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        instruction = ui_control.task_instruction(request.app, request.instruction or request.target)
+        if not instruction.strip():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Instruction is required.")
+        max_steps = max(1, min(50, int(request.max_steps or config_value("desktop_task_max_steps", 5))))
+        session_id = desktop_tasks.create_session(instruction, max_steps=max_steps)
+        _start_desktop_task_thread(session_id, instruction, max_steps)
+        session = desktop_tasks.get_session(session_id, include_steps=True)
+        payload = _decorate_desktop_session(session, include_steps=True) if session else {"id": session_id}
+        payload["reply"] = f"UI control desktop task #{session_id} started."
+        payload["summary"] = payload["reply"]
+        return payload
 
     @app.get("/desktop/screenshots/{filename}")
     def desktop_screenshot(
@@ -5737,6 +5825,7 @@ def _dashboard_snapshot() -> dict[str, Any]:
         "contractsSummary": _snapshot_value(task_contracts.summary, None),
         "skillsSummary": _snapshot_value(skill_library.skill_summary, None),
     }
+    payload["interface"] = _snapshot_value(lambda: dynamic_interface.snapshot(payload), None)
     with _DASHBOARD_SNAPSHOT_LOCK:
         _DASHBOARD_SNAPSHOT_CACHE = dict(payload)
         _DASHBOARD_SNAPSHOT_CACHE_TIME = time.time()

@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CheckSquare, Clock3, Filter, MoreHorizontal, Pause, Search, ShieldAlert, X } from "lucide-react";
+import { CheckSquare, Filter, Loader2, MoreHorizontal, Plus, ShieldAlert, X } from "lucide-react";
 import { useState } from "react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 
@@ -11,11 +11,17 @@ const LANES = [
 ];
 
 export function TasksView() {
-  const { api, data, post } = useDashboard();
-  const tasks = data.tasks || [];
+  const { api, data, post, refresh, interfaceFor } = useDashboard();
+  const copy = interfaceFor?.("tasks") || {};
+  const [laneFilter, setLaneFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [createBusy, setCreateBusy] = useState(false);
+  const [status, setStatus] = useState("");
   const [selected, setSelected] = useState(null);
   const [detail, setDetail] = useState(null);
   const [detailBusy, setDetailBusy] = useState(false);
+  const tasks = filterTasks(data.tasks || [], laneFilter, priorityFilter);
 
   async function openTask(task) {
     setSelected(task);
@@ -38,25 +44,58 @@ export function TasksView() {
     setDetail(null);
   }
 
+  async function createTask(values) {
+    setCreateBusy(true);
+    setStatus("");
+    try {
+      await api("/tasks", {
+        method: "POST",
+        body: JSON.stringify(values)
+      });
+      setCreateOpen(false);
+      setStatus(copy?.primaryAction?.label ? `${copy.primaryAction.label}: queued.` : "Task queued.");
+      await refresh();
+    } catch (err) {
+      setStatus(err.message || "Task could not be created.");
+    } finally {
+      setCreateBusy(false);
+    }
+  }
+
+  function cycleLaneFilter() {
+    const next = { all: "pending", pending: "active", active: "completed", completed: "all" };
+    setLaneFilter(next[laneFilter] || "all");
+  }
+
+  function cyclePriorityFilter() {
+    const next = { all: "high", high: "medium", medium: "low", low: "all" };
+    setPriorityFilter(next[priorityFilter] || "all");
+  }
+
   return (
     <section className="friday-scroll h-full overflow-y-auto overflow-x-hidden bg-friday-bg p-3 text-white" aria-label="Active Operations">
       <div className="grid max-w-[1000px] gap-4">
         <header className="flex min-h-10 items-center gap-2">
-          <h1 className="mr-3 text-[18px] font-extrabold">Active Operations</h1>
-          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#cfd9e6]" type="button">
+          <h1 className="mr-3 text-[18px] font-extrabold">{copy?.title || "Active Operations"}</h1>
+          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#cfd9e6] hover:border-friday-accent" type="button" onClick={cycleLaneFilter} title="Cycle task lane filter">
             <Filter size={12} />
-            Filter
+            {laneFilter === "all" ? "All Lanes" : labelize(laneFilter)}
           </button>
-          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#cfd9e6]" type="button">
+          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#cfd9e6] hover:border-friday-accent" type="button" onClick={cyclePriorityFilter} title="Cycle priority filter">
             <ShieldAlert size={12} />
-            Priority
+            {priorityFilter === "all" ? "All Priority" : labelize(priorityFilter)}
+          </button>
+          <button className="inline-flex min-h-7 items-center gap-2 border border-friday-blue bg-friday-blue px-3 font-mono text-[11px] font-bold text-[#061420]" type="button" onClick={() => setCreateOpen(true)}>
+            <Plus size={12} />
+            {copy?.actions?.find?.((action) => action.id === "create-task")?.label || "New Task"}
           </button>
           <span className="ml-auto font-mono text-[11px] text-friday-muted">{tasks.length} task(s)</span>
         </header>
+        {status ? <div className="border border-[#405063] bg-[#101820] px-3 py-2 text-[12px] text-[#dce9f8]">{status}</div> : null}
 
         <div className="grid min-w-0 grid-cols-3 gap-4">
           {LANES.map((lane) => (
-            <TaskLane lane={lane} tasks={tasksForLane(tasks, lane)} key={lane.id} onOpen={openTask} />
+            <TaskLane lane={lane} tasks={tasksForLane(tasks, lane)} copy={copy} key={lane.id} onOpen={openTask} />
           ))}
         </div>
       </div>
@@ -64,6 +103,7 @@ export function TasksView() {
       {selected ? (
         <TaskDetailModal
           task={detail || selected}
+          copy={copy}
           busy={detailBusy}
           onClose={() => {
             setSelected(null);
@@ -72,11 +112,20 @@ export function TasksView() {
           onCancel={() => cancelTask(detail || selected)}
         />
       ) : null}
+      {createOpen ? (
+        <TaskCreateModal
+          agents={data.agents || []}
+          copy={copy}
+          busy={createBusy}
+          onClose={() => setCreateOpen(false)}
+          onCreate={createTask}
+        />
+      ) : null}
     </section>
   );
 }
 
-function TaskLane({ lane, tasks, onOpen }) {
+function TaskLane({ lane, tasks, copy, onOpen }) {
   return (
     <section className="min-w-0">
       <div className="mb-3 flex items-center gap-2 border-b border-friday-line pb-2">
@@ -88,7 +137,7 @@ function TaskLane({ lane, tasks, onOpen }) {
       <div className="grid gap-3">
         {tasks.length ? tasks.slice(0, 8).map((task, index) => <TaskCard task={task} key={task.id || `${lane.id}-${index}-${task.title}`} onOpen={() => onOpen(task)} />) : (
           <div className="grid min-h-[88px] place-items-center border border-friday-line bg-[#10161d] px-3 text-center text-[12px] text-friday-muted">
-            No {lane.label.toLowerCase()} tasks.
+            {copy?.empty?.tasks || `Friday has no ${lane.label.toLowerCase()} task in this lane.`}
           </div>
         )}
       </div>
@@ -107,7 +156,7 @@ function TaskCard({ task, onOpen }) {
         <span className="ml-auto shrink-0 font-mono text-[10px] text-friday-muted">#{task.id}</span>
       </div>
       <div className="min-w-0">
-        <h3 className="line-clamp-2 text-[13px] font-extrabold leading-snug">{task.title || "Untitled task"}</h3>
+        <h3 className="line-clamp-2 text-[13px] font-extrabold leading-snug">{task.title || "Friday task"}</h3>
         <p className="mt-1 truncate text-[11px] text-friday-muted">{contract.risk_level ? `${contract.risk_level} risk` : task.description || "No description"}</p>
       </div>
       <div>
@@ -123,7 +172,7 @@ function TaskCard({ task, onOpen }) {
   );
 }
 
-function TaskDetailModal({ task, busy, onClose, onCancel }) {
+function TaskDetailModal({ task, copy, busy, onClose, onCancel }) {
   const contract = task.contract || {};
   const output = normalizeOutput(task.output);
   const messages = task.messages || [];
@@ -139,8 +188,8 @@ function TaskDetailModal({ task, busy, onClose, onCancel }) {
               <X size={18} />
             </button>
           </div>
-          <h2 className="text-[18px] font-extrabold leading-tight">{task.title || "Untitled task"}</h2>
-          <p className="mt-2 font-mono text-[11px] text-friday-muted">ID: {task.id || "n/a"} · Updated: {formatTime(task.updated_at)}</p>
+          <h2 className="text-[18px] font-extrabold leading-tight">{task.title || "Friday task"}</h2>
+          <p className="mt-2 font-mono text-[11px] text-friday-muted">ID: {task.id || "n/a"} / Updated: {formatTime(task.updated_at)}</p>
         </header>
 
         <div className="grid content-start gap-4 p-4">
@@ -150,15 +199,15 @@ function TaskDetailModal({ task, busy, onClose, onCancel }) {
           </div>
 
           <DetailSection title="Goal Alignment">
-            <p>{contract.goal || task.description || "No goal/description loaded for this task."}</p>
+            <p>{contract.goal || task.description || copy?.empty?.tasks || "Friday has no goal text attached to this task yet."}</p>
           </DetailSection>
 
           <DetailSection title="Expected Output">
-            <CodeBlock value={contract.expected_output || "No expected output contract loaded."} />
+            <CodeBlock value={contract.expected_output || copy?.empty?.evidence || "Friday has no expected-output contract attached yet."} />
           </DetailSection>
 
           <DetailSection title="Actual Output / Evidence">
-            <p>{output || "No task output recorded yet."}</p>
+            <p>{output || copy?.empty?.evidence || "Friday has no task output recorded yet."}</p>
           </DetailSection>
 
           <DetailSection title="Success Criteria">
@@ -197,6 +246,58 @@ function TaskDetailModal({ task, busy, onClose, onCancel }) {
           </a>
         </footer>
       </aside>
+    </div>
+  );
+}
+
+function TaskCreateModal({ agents, copy, busy, onClose, onCreate }) {
+  const [form, setForm] = useState({ title: "", description: "", agent_id: "", priority: 5, scheduled_at: "" });
+  function update(key, value) {
+    setForm((current) => ({ ...current, [key]: value }));
+  }
+  function submit(event) {
+    event.preventDefault();
+    if (!form.title.trim()) return;
+    onCreate({ ...form, priority: Number(form.priority || 5) });
+  }
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/55 p-4" role="dialog" aria-modal="true" aria-label="Create task">
+      <form className="grid w-[420px] max-w-[calc(100dvw-32px)] gap-4 border border-[#334154] bg-[#111821] p-4 shadow-2xl" onSubmit={submit}>
+        <header className="flex items-center gap-3 border-b border-friday-line pb-3">
+          <h2 className="text-[18px] font-extrabold">{copy?.actions?.find?.((action) => action.id === "create-task")?.label || "Queue New Task"}</h2>
+          <button className="ml-auto text-[#d6e1ee]" type="button" onClick={onClose} aria-label="Close task form">
+            <X size={18} />
+          </button>
+        </header>
+        <label className="grid gap-1">
+          <span className="font-mono text-[10px] uppercase text-friday-muted">Title</span>
+          <input className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[13px] text-white outline-none focus:border-friday-accent" value={form.title} onChange={(event) => update("title", event.target.value)} maxLength={500} required />
+        </label>
+        <label className="grid gap-1">
+          <span className="font-mono text-[10px] uppercase text-friday-muted">Description</span>
+          <textarea className="min-h-[88px] resize-y border border-friday-line bg-[#0c1218] px-3 py-2 text-[13px] text-white outline-none focus:border-friday-accent" value={form.description} onChange={(event) => update("description", event.target.value)} />
+        </label>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="grid gap-1">
+            <span className="font-mono text-[10px] uppercase text-friday-muted">Agent</span>
+            <select className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[13px] text-white outline-none focus:border-friday-accent" value={form.agent_id} onChange={(event) => update("agent_id", event.target.value)}>
+              <option value="">Unassigned</option>
+              {agents.map((agent) => <option value={agent.id || agent.agent_id} key={agent.id || agent.agent_id}>{agent.name || agent.agent_name || agent.id}</option>)}
+            </select>
+          </label>
+          <label className="grid gap-1">
+            <span className="font-mono text-[10px] uppercase text-friday-muted">Priority</span>
+            <input className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[13px] text-white outline-none focus:border-friday-accent" type="number" min="0" max="20" value={form.priority} onChange={(event) => update("priority", event.target.value)} />
+          </label>
+        </div>
+        <footer className="grid grid-cols-2 gap-3 border-t border-friday-line pt-3">
+          <button className="min-h-10 border border-friday-line bg-[#151b22] font-mono text-[12px] text-[#dfe9f6]" type="button" onClick={onClose}>Cancel</button>
+          <button className="inline-flex min-h-10 items-center justify-center gap-2 border border-friday-blue bg-friday-blue font-mono text-[12px] font-bold text-[#061420] disabled:opacity-50" type="submit" disabled={busy || !form.title.trim()}>
+            {busy ? <Loader2 className="animate-spin" size={14} /> : <Plus size={14} />}
+            Create
+          </button>
+        </footer>
+      </form>
     </div>
   );
 }
@@ -266,6 +367,15 @@ function tasksForLane(tasks, lane) {
   return tasks.filter((task) => lane.statuses.includes(lower(task.status)));
 }
 
+function filterTasks(tasks, laneFilter, priorityFilter) {
+  return tasks.filter((task) => {
+    const laneMatch = laneFilter === "all" || LANES.find((lane) => lane.id === laneFilter)?.statuses.includes(lower(task.status));
+    const priority = priorityLabel(task.priority);
+    const priorityMatch = priorityFilter === "all" || lower(priority).includes(priorityFilter);
+    return laneMatch && priorityMatch;
+  });
+}
+
 function priorityLabel(value) {
   const number = Number(value || 5);
   if (number <= 2) return "high priority";
@@ -297,4 +407,8 @@ function formatTime(value) {
 
 function lower(value) {
   return String(value || "").toLowerCase();
+}
+
+function labelize(value) {
+  return String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }

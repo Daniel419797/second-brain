@@ -12,7 +12,7 @@ try:
 except Exception:  # pragma: no cover
     psutil = None
 
-from core import agent_blackboard, agent_quality_manager, agent_thought_bus, evaluation_lab, agents, episodic_store, failure_autopsy, knowledge_graph, task_contracts, task_queue
+from core import agent_blackboard, agent_quality_manager, agent_thought_bus, autonomous_coding, evaluation_lab, agents, episodic_store, failure_autopsy, knowledge_graph, task_contracts, task_queue
 from core.config import config_value
 
 _STOP = threading.Event()
@@ -156,7 +156,10 @@ def _run_claimed_task(task: dict[str, Any]) -> None:
         _record_heartbeat()
         task_queue.post_message(task_id, "office", "Progress 55%: specialist work is in progress.")
         agent_blackboard.post_item(str(task["agent_id"]), "need", f"Task #{task_id} needs output", "Specialist work is in progress.", task_id=task_id, confidence=0.5, status="active")
-        result = agents.run_task(task)
+        if autonomous_coding.should_handle_task(task):
+            result = autonomous_coding.run_task(task)
+        else:
+            result = agents.run_task(task)
         task_queue.post_message(task_id, "office", "Progress 90%: result prepared for review.")
         contract_result = task_contracts.verify_contract(task, result)
         result["contract"] = {

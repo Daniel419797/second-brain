@@ -32,7 +32,7 @@ export function TasksView({ tasks }) {
 export function ApprovalsView({ approvals, summary }) {
   const rows = approvals?.length ? approvals : summary?.items || [];
   return (
-    <SimpleView title="Approval Inbox" empty="No decisions waiting">
+    <SimpleView title="Approval Inbox" empty="Friday has no decision gate waiting.">
       {rows.map((item) => (
         <ListRow key={`${item.kind}-${item.id}`} title={item.title} sub={item.summary || item.action_hint || item.kind} />
       ))}
@@ -40,7 +40,7 @@ export function ApprovalsView({ approvals, summary }) {
   );
 }
 
-export function GenericView({ title, rows = [], empty = "Nothing loaded yet" }) {
+export function GenericView({ title, rows = [], empty = "Friday has no row for this surface yet." }) {
   return (
     <SimpleView title={title} empty={empty}>
       {rows.map((item, index) => (
@@ -66,7 +66,7 @@ function ListRow({ title, sub }) {
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-friday-line py-2">
       <div>
         <strong className="block truncate">{title}</strong>
-        <span className="text-xs text-friday-muted">{sub || "No details"}</span>
+        <span className="text-xs text-friday-muted">{sub || "Friday has no extra detail attached yet."}</span>
       </div>
     </div>
   );

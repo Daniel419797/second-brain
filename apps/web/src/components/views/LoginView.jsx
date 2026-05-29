@@ -5,8 +5,8 @@ export function LoginView({ username, setUsername, password, setPassword, error,
   return (
     <main className="grid min-h-dvh place-items-center bg-friday-bg p-4 text-white">
       <form className="grid w-full max-w-[420px] gap-3 rounded-md border border-friday-line bg-[#111820] p-6" onSubmit={onSubmit}>
-        <h1 className="m-0 text-2xl font-extrabold">Friday Command Center</h1>
-        <p className="text-sm text-friday-muted">Connect to the protected local API running at {API_URL}.</p>
+        <h1 className="m-0 text-2xl font-extrabold">Friday Local Node</h1>
+        <p className="text-sm text-friday-muted">Unlock the local API at {API_URL}; Friday will author the interface after the first snapshot.</p>
         <div className="grid gap-1.5">
           <label className="text-sm text-friday-muted" htmlFor="username">Username</label>
           <input className="min-h-10 rounded border border-friday-line bg-[#0b1117] px-3 text-white" id="username" value={username} onChange={(event) => setUsername(event.target.value)} />

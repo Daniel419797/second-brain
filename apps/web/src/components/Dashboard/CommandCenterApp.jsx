@@ -9,6 +9,7 @@ import { useFridaySession } from "@/hooks/useFridaySession";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopNav } from "@/components/layout/TopNav";
 import { LoginView } from "@/components/views/LoginView";
+import { chromeCopy, interfaceFor } from "@/lib/dynamicInterface";
 
 export default function CommandCenterApp({ children }) {
   const session = useFridaySession();
@@ -27,10 +28,16 @@ export default function CommandCenterApp({ children }) {
   const approvalCount = data.approvalSummary?.count || data.approvals?.length || 0;
   const notificationCount = data.notifications?.unread_count || data.notifications?.items?.length || 0;
   const activeView = viewFromPath(pathname);
+  const activeInterface = useMemo(() => interfaceFor(data, activeView), [data, activeView]);
+  const activeChrome = useMemo(() => chromeCopy(data), [data]);
   const toggleSystemIntelligence = useCallback(() => {
     if (!intelligenceOpen) void refresh();
     setIntelligenceOpen((value) => !value);
   }, [intelligenceOpen, refresh]);
+  const startWorkers = useCallback(async () => {
+    await post("/workers/start");
+    await refresh();
+  }, [post, refresh]);
 
   if (!session.token) {
     return (
@@ -63,11 +70,13 @@ export default function CommandCenterApp({ children }) {
           approvalCount={approvalCount}
           notificationCount={notificationCount}
           activeMission={activeMission}
+          interfaceCopy={activeInterface}
+          chrome={activeChrome}
           busy={busy}
           onRefresh={refresh}
           intelligenceOpen={intelligenceOpen}
           onOpenIntelligence={toggleSystemIntelligence}
-          onStartWorkers={() => post("/workers/start")}
+          onStartWorkers={startWorkers}
           onLogout={session.logout}
         />
         <section className="h-[calc(100dvh-64px)] min-w-0 overflow-hidden">
@@ -81,6 +90,9 @@ export default function CommandCenterApp({ children }) {
               chatMessages,
               activeMission,
               approvalCount,
+              interfaceCopy: activeInterface,
+              interfaceFor: (view) => interfaceFor(data, view),
+              chromeCopy: activeChrome,
               chat,
               voiceChat,
               clearChat,

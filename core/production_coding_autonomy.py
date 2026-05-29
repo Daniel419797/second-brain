@@ -125,6 +125,8 @@ def discover_tests(root: str | Path = "") -> list[str]:
         commands.extend(["cargo test", "cargo clippy -- -D warnings"])
     if (base / "pom.xml").exists():
         commands.append("mvn test")
+    if (base / "pubspec.yaml").exists():
+        commands.extend(["flutter test", "flutter analyze"])
     return _dedupe(commands)
 
 
