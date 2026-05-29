@@ -174,6 +174,7 @@ def _scaffold_new_app(base_root: Path, request: str, *, task_id: int, risk_level
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
         written.append(str(path))
+    scaffold_verification = _verify_scaffold(target, stack, written)
     prep = production_coding_autonomy.prepare_project(target, request=request, create_files=True, run_scans=True)
     note = project_memory.remember(
         target,
@@ -187,22 +188,23 @@ def _scaffold_new_app(base_root: Path, request: str, *, task_id: int, risk_level
         f"Autonomous coding scaffold for {product_name}",
         task_id=task_id or None,
         changed=[f"Created {len(written)} {stack.get('label')} starter file(s) under {target}.", *[f"Created guard artifact: {item}" for item in prep.get("artifacts") or []]],
-        tested=prep.get("test_commands") or ["npm run build"],
-        evidence=[prep.get("summary", "Production prep completed.")],
+        tested=scaffold_verification["checks"] + (prep.get("test_commands") or []),
+        evidence=[scaffold_verification["summary"], prep.get("summary", "Production prep completed.")],
         risks=["Dependencies are not installed until npm install is run.", "AI integrations are represented as UI/product flow stubs until provider credentials are configured."],
         confidence=0.78,
-        metadata={"source": "autonomous_coding", "root": str(target), "risk_level": risk_level},
+        metadata={"source": "autonomous_coding", "root": str(target), "risk_level": risk_level, "scaffold_verification": scaffold_verification},
     )
     _post(task_id, "autonomous_coding", f"Progress 90%: starter app written to {target}.")
     return _result(
         task_id,
-        "done",
-        f"Created a runnable {stack.get('label')} for {product_name} at {target}.",
+        "done" if scaffold_verification["status"] == "passed" else "failed",
+        f"Created and file-verified a runnable {stack.get('label')} for {product_name} at {target}." if scaffold_verification["status"] == "passed" else f"Created scaffold for {product_name}, but file verification failed at {target}.",
         next_step=f"Open {target}, install dependencies for {stack.get('label')}, then run the README command.",
         risks=["No dependency install or browser verification has run yet.", "Generated business assumptions should be reviewed before demo submission."],
         changed=[*written, *(prep.get("artifacts") or [])],
-        tested=prep.get("test_commands") or ["npm run build"],
-        metadata={"project_root": str(target), "project_name": product_name, "stack": stack, "production_prep": prep, "memory": note, "proof": proof},
+        tested=scaffold_verification["checks"] + (prep.get("test_commands") or []),
+        failed=scaffold_verification["missing"],
+        metadata={"project_root": str(target), "project_name": product_name, "stack": stack, "production_prep": prep, "memory": note, "proof": proof, "scaffold_verification": scaffold_verification},
     )
 
 
@@ -813,6 +815,34 @@ def _target_project_root(base_root: Path, request: str, *, stack: dict[str, str]
         if not candidate.exists():
             return candidate
     return base_root / f"{slug}-{int(dt.datetime.now().timestamp())}"
+
+
+def _verify_scaffold(target: Path, stack: dict[str, str], written: list[str]) -> dict[str, Any]:
+    stack_id = stack.get("stack") or "nextjs"
+    required_by_stack = {
+        "nextjs": ["package.json", "README.md", "src/app/page.tsx"],
+        "flutter": ["pubspec.yaml", "README.md", "lib/main.dart"],
+        "node_fastify": ["package.json", "README.md", "src/server.js"],
+        "python_fastapi": ["pyproject.toml", "README.md"],
+        "go_api": ["go.mod", "README.md", "main.go"],
+        "rust_axum": ["Cargo.toml", "README.md", "src/main.rs"],
+    }
+    required = required_by_stack.get(stack_id, ["README.md"])
+    missing = [relative for relative in required if not (target / relative).exists()]
+    written_missing = [path for path in written if not Path(path).exists()]
+    all_missing = [*missing, *written_missing]
+    checks = [f"verified file exists: {relative}" for relative in required if (target / relative).exists()]
+    if not all_missing:
+        summary = f"Scaffold file verification passed for {target}."
+    else:
+        summary = f"Scaffold file verification failed for {target}: missing {', '.join(all_missing[:5])}."
+    return {
+        "status": "passed" if not all_missing else "failed",
+        "summary": summary,
+        "checks": checks,
+        "missing": all_missing,
+        "project_root": str(target),
+    }
 
 
 def _looks_like_new_app_request(request: str, project_root: Path) -> bool:

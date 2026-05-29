@@ -102,18 +102,30 @@ def draft_from_task(task: dict[str, Any]) -> dict[str, Any]:
         risk = "high"
     elif any(word in text for word in ("modify", "write file", "apply", "deploy", "install")):
         risk = "medium"
+    success_criteria = [
+        "A concise Summary is produced.",
+        "A Next step is stated or the task is explicitly complete.",
+        "Risks or verification limits are stated.",
+    ]
+    expected_output = "Concise agent result with Summary, Next step, and Risks."
+    verification_method = "Check structured output fields and supporting task messages/evidence."
+    if _is_autonomous_coding_task(task):
+        success_criteria.extend(
+            [
+                "Generated or changed files exist at the reported project root.",
+                "File-level verification, discovered checks, or explicit verification limits are recorded.",
+            ]
+        )
+        expected_output = "Concise coding result with Summary, Next step, Risks, project root, changed files, and verification evidence."
+        verification_method = "Check structured fields, supporting task messages, reported paths, changed files, and verification evidence."
     return {
         "task_id": int(task.get("id") or 0),
         "goal": title,
-        "success_criteria": [
-            "A concise Summary is produced.",
-            "A Next step is stated or the task is explicitly complete.",
-            "Risks or verification limits are stated.",
-        ],
+        "success_criteria": success_criteria,
         "tools_needed": _dedupe(tools),
         "risk_level": risk,
-        "expected_output": "Concise agent result with Summary, Next step, and Risks.",
-        "verification_method": "Check structured output fields and supporting task messages/evidence.",
+        "expected_output": expected_output,
+        "verification_method": verification_method,
         "status": "draft",
         "evidence": {},
     }
@@ -145,7 +157,7 @@ def verify_contract(task: dict[str, Any], result: Any) -> dict[str, Any]:
     contract = ensure_contract(task)
     task_id = int(task.get("id") or contract["task_id"])
     evidence = _evidence_from_result(result)
-    satisfied = _satisfies_default_contract(result, evidence)
+    satisfied = _satisfies_autonomous_coding_contract(result, evidence) if _is_autonomous_coding_task(task) else _satisfies_default_contract(result, evidence)
     status = "verified" if satisfied else "unsatisfied"
     now = _now()
     with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
@@ -203,6 +215,28 @@ def _satisfies_default_contract(result: Any, evidence: dict[str, Any]) -> bool:
     return bool(has_summary and has_next and has_risk)
 
 
+def _satisfies_autonomous_coding_contract(result: Any, evidence: dict[str, Any]) -> bool:
+    if not _satisfies_default_contract(result, evidence):
+        return False
+    if not isinstance(result, dict):
+        return False
+    if str(result.get("task_status") or "").lower() != "done":
+        return False
+    metadata = result.get("metadata") if isinstance(result.get("metadata"), dict) else {}
+    project_root = _clean(metadata.get("project_root") or metadata.get("root") or "")
+    changed = [str(item) for item in result.get("changed") or [] if str(item).strip()]
+    tested = [str(item) for item in result.get("tested") or [] if str(item).strip()]
+    scaffold = metadata.get("scaffold_verification") if isinstance(metadata.get("scaffold_verification"), dict) else {}
+    if scaffold and scaffold.get("status") != "passed":
+        return False
+    if project_root and not Path(project_root).exists():
+        return False
+    existing_changed = [path for path in changed if Path(path).exists()]
+    has_file_evidence = bool(project_root and Path(project_root).exists()) or bool(existing_changed)
+    has_verification = bool(tested) or bool(scaffold.get("checks"))
+    return bool(has_file_evidence and has_verification)
+
+
 def _evidence_from_result(result: Any) -> dict[str, Any]:
     if isinstance(result, dict):
         summary = _clean(result.get("summary") or result.get("output") or result)
@@ -222,6 +256,13 @@ def _evidence_from_result(result: Any) -> dict[str, Any]:
         "has_next_step": bool(re.search(r"\bnext\s+step\b|\bnext:", text, re.IGNORECASE)),
         "has_risks": bool(re.search(r"\brisks?\b", text, re.IGNORECASE)),
     }
+
+
+def _is_autonomous_coding_task(task: dict[str, Any]) -> bool:
+    input_data = task.get("input") if isinstance(task.get("input"), dict) else {}
+    if str(input_data.get("source") or "") == "autonomous_coding":
+        return True
+    return "autonomous coding" in _clean(task.get("title") or "").lower()
 
 
 def _row_to_contract(row: sqlite3.Row) -> dict[str, Any]:
