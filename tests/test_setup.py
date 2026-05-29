@@ -590,6 +590,23 @@ def test_coding_roots_resolve_under_configured_projects_root(monkeypatch, tmp_pa
     assert core_config.resolve_coding_root("new-app") == (tmp_path / "new-app").resolve()
 
 
+def test_default_coding_root_avoids_missing_container_desktop(monkeypatch, tmp_path):
+    from core import config as core_config
+
+    home = tmp_path / "root"
+    repo = tmp_path / "workspace" / "second-brain"
+    repo.mkdir(parents=True)
+    monkeypatch.setattr(core_config, "ROOT_DIR", repo)
+    monkeypatch.setattr(core_config.Path, "home", staticmethod(lambda: home))
+    monkeypatch.setattr(
+        core_config,
+        "config_value",
+        lambda key, default=None: "Desktop" if key == "coding_projects_root" else default,
+    )
+
+    assert core_config.default_coding_root() == (repo.parent / "friday-projects").resolve()
+
+
 def test_voice_default_uses_free_neural_edge_voice():
     config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 

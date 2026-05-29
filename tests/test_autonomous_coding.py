@@ -23,8 +23,11 @@ def test_autonomous_coding_scaffolds_new_app(monkeypatch, tmp_path):
     assert (project_root / "package.json").exists()
     assert (project_root / "src" / "app" / "page.tsx").exists()
     assert (project_root / ".friday" / "ci-plan.yml").exists()
+    assert result["contract"]["status"] == "verified"
     assert result["execution"]["metadata"]["stack"]["stack"] == "nextjs"
-    assert "Created a runnable Next.js web app" in result["summary"]
+    assert result["execution"]["metadata"]["scaffold_verification"]["status"] == "passed"
+    assert any("verified file exists" in item for item in result["execution"]["tested"])
+    assert "file-verified a runnable Next.js web app" in result["summary"]
 
 
 def test_autonomous_coding_scaffolds_flutter_mobile_app(monkeypatch, tmp_path):
@@ -36,7 +39,34 @@ def test_autonomous_coding_scaffolds_flutter_mobile_app(monkeypatch, tmp_path):
     assert result["task"]["status"] == "done"
     assert (project_root / "pubspec.yaml").exists()
     assert (project_root / "lib" / "main.dart").exists()
+    assert result["contract"]["status"] == "verified"
     assert result["execution"]["metadata"]["stack"]["stack"] == "flutter"
+
+
+def test_autonomous_coding_contract_rejects_missing_project_root(monkeypatch, tmp_path):
+    _isolate_common(monkeypatch, tmp_path)
+    task_id = task_queue.create_task(
+        "Autonomous coding: build app",
+        agent_id="senior_developer",
+        input_data={"source": "autonomous_coding"},
+    )
+    task = task_queue.get_task(task_id)
+
+    verified = task_contracts.verify_contract(
+        task,
+        {
+            "agent_id": "senior_developer",
+            "task_status": "done",
+            "summary": "Summary: done. Next step: review. Risks: not installed.",
+            "next_step": "review",
+            "risks": ["not installed"],
+            "changed": [],
+            "tested": ["reported only"],
+            "metadata": {"project_root": str(tmp_path / "missing-project")},
+        },
+    )
+
+    assert verified["status"] == "unsatisfied"
 
 
 def test_approved_self_update_task_stages_llm_change(monkeypatch, tmp_path):
