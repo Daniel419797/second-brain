@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from core import codebase_standards, llm, production_coding_autonomy, project_memory, project_scaffolds, self_update, task_contracts, task_queue, trust_proof
+from core import codebase_standards, coding_workflow, engineering_discipline, llm, product_studio, product_studio_gates, production_coding_autonomy, project_memory, project_scaffolds, self_update, task_contracts, task_files, task_queue, trust_proof
 from core.config import ROOT_DIR, config_value, resolve_coding_root
 
 SKIP_PARTS = {".git", ".venv", "node_modules", "__pycache__", ".pytest_cache", ".next", "dist", "build", "data"}
@@ -29,9 +29,20 @@ def start(request: str, *, root: str = "", risk_level: str = "medium") -> dict[s
     """
 
     project_root = _task_project_root(root)
-    standards = codebase_standards.scan(project_root, max_files=120)
     cleaned_request = _clean(request) or "project improvement"
+    stack = project_scaffolds.detect_stack(cleaned_request)
+    standards = codebase_standards.scan(project_root, max_files=120)
+    inspection = coding_workflow.inspect_project(project_root, cleaned_request, stack=stack)
     execution_kind = _execution_kind(cleaned_request, project_root)
+    execution_plan = coding_workflow.build_execution_plan(
+        cleaned_request,
+        project_root,
+        stack=stack,
+        inspection=inspection,
+        standards=standards,
+        execution_kind=execution_kind,
+    )
+    operating_kernel = engineering_discipline.preflight(project_root, cleaned_request, stack=stack, execution_kind=execution_kind)
     title = f"Autonomous coding: {cleaned_request[:120]}"
     task_id = task_queue.create_task(
         title,
@@ -44,7 +55,15 @@ def start(request: str, *, root: str = "", risk_level: str = "medium") -> dict[s
             "root": str(project_root),
             "risk_level": risk_level,
             "execution_kind": execution_kind,
-            "quality_priorities": ["security", "speed_performance", "maintainability", "reliability", "portability"],
+            "stack": stack,
+            "project_inspection": inspection,
+            "execution_plan": execution_plan,
+            "operating_kernel": operating_kernel,
+            "operating_rules": coding_workflow.operating_rules(),
+            "engineering_habits": engineering_discipline.operating_habits(),
+            "readiness_policy": engineering_discipline.readiness_policy(),
+            "product_studio_phases": product_studio.studio_phases(),
+            "quality_priorities": engineering_discipline.QUALITY_PRIORITIES,
             "standards": standards,
             "required_flow": [
                 "inspect",
@@ -93,13 +112,26 @@ def run_task(task: dict[str, Any]) -> dict[str, Any]:
     request = _clean(input_data.get("request") or task.get("description") or task.get("title") or "")
     project_root = _task_project_root(input_data.get("root") or "")
     risk_level = str(input_data.get("risk_level") or "medium")
+    stack = input_data.get("stack") if isinstance(input_data.get("stack"), dict) else project_scaffolds.detect_stack(request)
+    standards = input_data.get("standards") if isinstance(input_data.get("standards"), dict) else {}
+    inspection = input_data.get("project_inspection") if isinstance(input_data.get("project_inspection"), dict) else coding_workflow.inspect_project(project_root, request, stack=stack)
+    execution_kind = str(input_data.get("execution_kind") or _execution_kind(request, project_root))
+    execution_plan = input_data.get("execution_plan") if isinstance(input_data.get("execution_plan"), dict) else coding_workflow.build_execution_plan(
+        request,
+        project_root,
+        stack=stack,
+        inspection=inspection,
+        standards=standards,
+        execution_kind=execution_kind,
+    )
     task_id = int(task.get("id") or 0)
-    _post(task_id, "autonomous_coding", "Progress 35%: project inspected and coding executor selected.")
+    _post(task_id, "autonomous_coding", f"Progress 25%: {inspection.get('summary') or 'project inspected.'}")
+    _post(task_id, "autonomous_coding", f"Progress 35%: scoped as {execution_plan.get('execution_kind')}; coding executor selected.")
     if _looks_like_new_app_request(request, project_root):
-        return _scaffold_new_app(project_root, request, task_id=task_id, risk_level=risk_level)
+        return _scaffold_new_app(project_root, request, task_id=task_id, risk_level=risk_level, stack=stack, inspection=inspection, execution_plan=execution_plan, standards=standards)
     if _is_friday_root(project_root):
-        return _open_self_update_proposal(request, task_id=task_id, risk_level=risk_level)
-    return _prepare_existing_project(project_root, request, task_id=task_id, risk_level=risk_level)
+        return _open_self_update_proposal(request, task_id=task_id, risk_level=risk_level, inspection=inspection, execution_plan=execution_plan)
+    return _prepare_existing_project(project_root, request, task_id=task_id, risk_level=risk_level, stack=stack, inspection=inspection, execution_plan=execution_plan, standards=standards)
 
 
 def prepare_self_update_task(task: dict[str, Any]) -> dict[str, Any]:
@@ -162,8 +194,18 @@ def prepare_self_update_task(task: dict[str, Any]) -> dict[str, Any]:
     )
 
 
-def _scaffold_new_app(base_root: Path, request: str, *, task_id: int, risk_level: str) -> dict[str, Any]:
-    stack = project_scaffolds.detect_stack(request)
+def _scaffold_new_app(
+    base_root: Path,
+    request: str,
+    *,
+    task_id: int,
+    risk_level: str,
+    stack: dict[str, Any] | None = None,
+    inspection: dict[str, Any] | None = None,
+    execution_plan: dict[str, Any] | None = None,
+    standards: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    stack = stack or project_scaffolds.detect_stack(request)
     target = _target_project_root(base_root, request, stack=stack)
     target.mkdir(parents=True, exist_ok=True)
     product_name = project_scaffolds.product_name(request)
@@ -174,41 +216,117 @@ def _scaffold_new_app(base_root: Path, request: str, *, task_id: int, risk_level
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
         written.append(str(path))
-    scaffold_verification = _verify_scaffold(target, stack, written)
+    responsibility_boundaries = coding_workflow.responsibility_boundaries(stack)
+    scaffold_verification = coding_workflow.verify_project_artifact(target, stack, written)
     prep = production_coding_autonomy.prepare_project(target, request=request, create_files=True, run_scans=True)
+    changed_files = [*written, *(prep.get("artifacts") or [])]
+    tested = scaffold_verification["checks"] + (prep.get("test_commands") or [])
+    _post(task_id, "autonomous_coding", "Progress 72%: executing dependency, test/build, audit, browser, and preview gates.")
+    gate_results = _execute_product_studio_gates(target, stack=stack, install=True)
+    changed_files.extend(gate_results.get("artifacts") or [])
+    tested.extend(_gate_tested(gate_results))
+    studio = product_studio.prepare_product_studio(
+        target,
+        request,
+        product_name=product_name,
+        stack=stack,
+        inspection=inspection,
+        execution_plan=execution_plan,
+        artifact_verification=scaffold_verification,
+        production_prep=prep,
+        gate_results=gate_results,
+        standards=prep.get("scan") if isinstance(prep.get("scan"), dict) else standards,
+        changed_files=changed_files,
+        test_commands=tested,
+        create_files=True,
+    )
+    task_packet = task_files.write_task_files(
+        target,
+        request,
+        run_id=task_id,
+        intent={"user_intent": "autonomous_coding", "recommended_action": "scaffold_or_build_with_verification", "risk_level": risk_level},
+        preflight={"intelligence": inspection, "acceptance_criteria": engineering_discipline.acceptance_criteria({"style_profile": {}})},
+        architecture={"stack": stack, "framework": stack.get("stack"), "package_manager": "npm" if stack.get("stack") == "nextjs" else stack.get("language"), "style_profile_id": "nexus_forge_nextjs" if stack.get("stack") == "nextjs" else ""},
+        research_context={},
+        execution_plan=execution_plan,
+    )
+    changed_files.extend(studio.get("artifacts") or [])
+    changed_files.extend(task_packet.get("files") or [])
     note = project_memory.remember(
         target,
         "autonomous_coding_scaffold",
-        f"Created {product_name} starter app",
+        f"Created {product_name} product-studio scaffold",
         f"Request: {request}",
         confidence=0.82,
-        metadata={"task_id": task_id, "files": written, "production_prep": prep.get("artifacts", [])},
+        metadata={"task_id": task_id, "files": written, "task_packet": task_packet, "production_prep": prep.get("artifacts", []), "product_studio": studio, "product_studio_gates": gate_results},
     )
     proof = trust_proof.create_report(
         f"Autonomous coding scaffold for {product_name}",
         task_id=task_id or None,
-        changed=[f"Created {len(written)} {stack.get('label')} starter file(s) under {target}.", *[f"Created guard artifact: {item}" for item in prep.get("artifacts") or []]],
-        tested=scaffold_verification["checks"] + (prep.get("test_commands") or []),
-        evidence=[scaffold_verification["summary"], prep.get("summary", "Production prep completed.")],
-        risks=["Dependencies are not installed until npm install is run.", "AI integrations are represented as UI/product flow stubs until provider credentials are configured."],
+        changed=[f"Created {len(written)} {stack.get('label')} file(s) under {target}.", *[f"Created task document: {item}" for item in task_packet.get("files") or []], *[f"Created guard artifact: {item}" for item in prep.get("artifacts") or []], *[f"Created gate artifact: {item}" for item in gate_results.get("artifacts") or []], *[f"Created product-studio artifact: {item}" for item in studio.get("artifacts") or []]],
+        tested=tested,
+        evidence=[scaffold_verification["summary"], prep.get("summary", "Production prep completed."), gate_results.get("summary", "Product-studio gates executed."), studio.get("summary", "Product studio proof prepared.")],
+        risks=_readiness_risks(gate_results, studio),
         confidence=0.78,
-        metadata={"source": "autonomous_coding", "root": str(target), "risk_level": risk_level, "scaffold_verification": scaffold_verification},
+        metadata={
+            "source": "autonomous_coding",
+            "root": str(target),
+            "risk_level": risk_level,
+            "project_inspection": inspection,
+            "execution_plan": execution_plan,
+            "responsibility_boundaries": responsibility_boundaries,
+            "scaffold_verification": scaffold_verification,
+            "product_studio_gates": gate_results,
+            "product_studio": studio,
+        },
     )
-    _post(task_id, "autonomous_coding", f"Progress 90%: starter app written to {target}.")
+    _post(task_id, "autonomous_coding", f"Progress 70%: wrote {len(written)} scoped file(s) with separated responsibilities.")
+    _post(task_id, "autonomous_coding", f"Progress 82%: executable gates {gate_results.get('status')}; {len(gate_results.get('failed_required') or [])} required gap(s).")
+    _post(task_id, "autonomous_coding", f"Progress 90%: verification {scaffold_verification['status']} for {target}.")
     return _result(
         task_id,
         "done" if scaffold_verification["status"] == "passed" else "failed",
-        f"Created and file-verified a runnable {stack.get('label')} for {product_name} at {target}." if scaffold_verification["status"] == "passed" else f"Created scaffold for {product_name}, but file verification failed at {target}.",
-        next_step=f"Open {target}, install dependencies for {stack.get('label')}, then run the README command.",
-        risks=["No dependency install or browser verification has run yet.", "Generated business assumptions should be reviewed before demo submission."],
-        changed=[*written, *(prep.get("artifacts") or [])],
-        tested=scaffold_verification["checks"] + (prep.get("test_commands") or []),
-        failed=scaffold_verification["missing"],
-        metadata={"project_root": str(target), "project_name": product_name, "stack": stack, "production_prep": prep, "memory": note, "proof": proof, "scaffold_verification": scaffold_verification},
+        f"Created a scoped {stack.get('label')} for {product_name} at {target}, executed product-studio gates, and attached proof artifacts." if scaffold_verification["status"] == "passed" else f"Created scaffold for {product_name}, but workflow verification failed at {target}.",
+        next_step=studio.get("final_proof_report", {}).get("next_step") or f"Open {target}, install dependencies for {stack.get('label')}, then run the README command.",
+        risks=_readiness_risks(gate_results, studio),
+        changed=changed_files,
+        tested=tested,
+        failed=[*(scaffold_verification["missing"] or []), *(gate_results.get("failed_required") or []), *(studio.get("gaps") or [])],
+        metadata={
+            "project_root": str(target),
+            "project_name": product_name,
+            "stack": stack,
+            "project_inspection": inspection,
+            "execution_plan": execution_plan,
+            "responsibility_boundaries": responsibility_boundaries,
+            "production_prep": prep,
+            "task_packet": task_packet,
+            "memory": note,
+            "proof": proof,
+            "scaffold_verification": scaffold_verification,
+            "product_studio_gates": gate_results,
+            "product_studio": studio,
+            "workflow": {
+                "operating_rules": coding_workflow.operating_rules(),
+                "inspection": inspection,
+                "execution_plan": execution_plan,
+                "responsibility_boundaries": responsibility_boundaries,
+                "verification": scaffold_verification,
+                "product_studio_gates": gate_results,
+                "product_studio": studio,
+            },
+        },
     )
 
 
-def _open_self_update_proposal(request: str, *, task_id: int, risk_level: str) -> dict[str, Any]:
+def _open_self_update_proposal(
+    request: str,
+    *,
+    task_id: int,
+    risk_level: str,
+    inspection: dict[str, Any] | None = None,
+    execution_plan: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     proposal = self_update.create_proposal(request)
     _post(task_id, "autonomous_coding", f"Self-update proposal #{proposal.get('id')} opened. Approval phrase: {proposal.get('approval_phrase')}")
     proof = trust_proof.create_report(
@@ -219,7 +337,7 @@ def _open_self_update_proposal(request: str, *, task_id: int, risk_level: str) -
         evidence=[f"Self-update proposal #{proposal.get('id')} is {proposal.get('status')}."],
         risks=["Friday codebase changes require approval before staging/applying."],
         confidence=0.72,
-        metadata={"source": "autonomous_coding", "self_update_id": proposal.get("id"), "risk_level": risk_level},
+        metadata={"source": "autonomous_coding", "self_update_id": proposal.get("id"), "risk_level": risk_level, "project_inspection": inspection, "execution_plan": execution_plan},
     )
     return _result(
         task_id,
@@ -228,44 +346,216 @@ def _open_self_update_proposal(request: str, *, task_id: int, risk_level: str) -
         next_step=f"Approve planning with: {proposal.get('approval_phrase')}. After that the coding executor will stage exact replacements.",
         risks=["No Friday source files were changed yet.", "Applying staged changes still needs a second approval phrase."],
         changed=["Created self-update proposal."],
-        metadata={"self_update": proposal, "proof": proof},
+        metadata={"self_update": proposal, "proof": proof, "project_inspection": inspection, "execution_plan": execution_plan, "responsibility_boundaries": coding_workflow.responsibility_boundaries({"stack": "existing"})},
     )
 
 
-def _prepare_existing_project(project_root: Path, request: str, *, task_id: int, risk_level: str) -> dict[str, Any]:
+def _prepare_existing_project(
+    project_root: Path,
+    request: str,
+    *,
+    task_id: int,
+    risk_level: str,
+    stack: dict[str, Any] | None = None,
+    inspection: dict[str, Any] | None = None,
+    execution_plan: dict[str, Any] | None = None,
+    standards: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     prep = production_coding_autonomy.prepare_project(project_root, request=request, create_files=True, run_scans=True)
     plan_path = project_root / ".friday" / "implementation-plan.md"
     plan_path.parent.mkdir(parents=True, exist_ok=True)
-    plan = _implementation_plan(project_root, request, prep)
+    stack = stack or project_scaffolds.detect_stack(request)
+    responsibility_boundaries = coding_workflow.responsibility_boundaries(stack, markers=(inspection or {}).get("markers") or [])
+    plan = _implementation_plan(project_root, request, prep, inspection=inspection, execution_plan=execution_plan, responsibility_boundaries=responsibility_boundaries)
     plan_path.write_text(plan, encoding="utf-8")
+    artifact_verification = coding_workflow.verify_project_artifact(project_root, {"stack": "plan"}, [str(plan_path), *(prep.get("artifacts") or [])])
+    _post(task_id, "autonomous_coding", "Progress 72%: executing safe existing-project gates without changing source files.")
+    gate_results = _execute_product_studio_gates(
+        project_root,
+        stack=stack,
+        install=bool(config_value("product_studio_install_existing_dependencies", False)),
+    )
+    changed_files = [str(plan_path), *(prep.get("artifacts") or []), *(gate_results.get("artifacts") or [])]
+    tested = [*(prep.get("test_commands") or []), *_gate_tested(gate_results)]
+    studio = product_studio.prepare_product_studio(
+        project_root,
+        request,
+        product_name=project_root.name,
+        stack=stack,
+        inspection=inspection,
+        execution_plan=execution_plan,
+        artifact_verification=artifact_verification,
+        production_prep=prep,
+        gate_results=gate_results,
+        standards=prep.get("scan") if isinstance(prep.get("scan"), dict) else standards,
+        changed_files=changed_files,
+        test_commands=tested,
+        create_files=True,
+    )
+    task_packet = task_files.write_task_files(
+        project_root,
+        request,
+        run_id=task_id,
+        intent={"user_intent": "autonomous_coding", "recommended_action": "prepare_existing_project_with_verification", "risk_level": risk_level},
+        preflight={"intelligence": inspection or {}, "acceptance_criteria": engineering_discipline.acceptance_criteria((inspection or {}))},
+        architecture={"stack": stack, "framework": stack.get("stack"), "package_manager": "discovered", "style_profile_id": "nexus_forge_nextjs" if stack.get("stack") == "nextjs" else ""},
+        research_context={},
+        execution_plan=execution_plan,
+    )
+    changed_files.extend(task_packet.get("files") or [])
     note = project_memory.remember(
         project_root,
         "autonomous_coding_plan",
         "Prepared implementation plan",
         request,
         confidence=0.76,
-        metadata={"task_id": task_id, "plan_path": str(plan_path), "production_prep": prep.get("artifacts", [])},
+        metadata={"task_id": task_id, "plan_path": str(plan_path), "task_packet": task_packet, "production_prep": prep.get("artifacts", []), "product_studio": studio, "product_studio_gates": gate_results},
     )
     proof = trust_proof.create_report(
         f"Autonomous coding prep for {project_root.name}",
         task_id=task_id or None,
-        changed=[f"Wrote implementation plan: {plan_path}", *[f"Created guard artifact: {item}" for item in prep.get("artifacts") or []]],
-        tested=prep.get("test_commands") or ["No test commands discovered yet."],
-        evidence=[prep.get("summary", "Production coding prep completed.")],
-        risks=["Existing project source files were not patched automatically because no project-specific approval/apply workflow exists for this root."],
+        changed=[f"Wrote implementation plan: {plan_path}", *[f"Created task document: {item}" for item in task_packet.get("files") or []], *[f"Created guard artifact: {item}" for item in prep.get("artifacts") or []], *[f"Created gate artifact: {item}" for item in gate_results.get("artifacts") or []], *[f"Created product-studio artifact: {item}" for item in studio.get("artifacts") or []]],
+        tested=tested or ["No test commands discovered yet."],
+        evidence=[prep.get("summary", "Production coding prep completed."), gate_results.get("summary", "Product-studio gates executed."), studio.get("summary", "Product studio proof prepared.")],
+        risks=["Existing project source files were not patched automatically because no project-specific approval/apply workflow exists for this root.", *_readiness_risks(gate_results, studio)],
         confidence=0.74,
-        metadata={"source": "autonomous_coding", "root": str(project_root), "risk_level": risk_level},
+        metadata={
+            "source": "autonomous_coding",
+            "root": str(project_root),
+            "risk_level": risk_level,
+            "project_inspection": inspection,
+            "execution_plan": execution_plan,
+            "responsibility_boundaries": responsibility_boundaries,
+            "artifact_verification": artifact_verification,
+            "product_studio_gates": gate_results,
+            "product_studio": studio,
+        },
     )
+    _post(task_id, "autonomous_coding", f"Progress 82%: executable gates {gate_results.get('status')}; {len(gate_results.get('failed_required') or [])} required gap(s).")
     return _result(
         task_id,
         "done",
         f"Prepared coding workspace for {project_root.name} and wrote an implementation plan.",
-        next_step=f"Review {plan_path}, then approve a concrete patch request or run the discovered checks.",
-        risks=["No existing app source files were changed by this prep step.", "Manual review is still needed before modifying an existing project."],
-        changed=[str(plan_path), *(prep.get("artifacts") or [])],
-        tested=prep.get("test_commands") or [],
-        metadata={"project_root": str(project_root), "plan_path": str(plan_path), "production_prep": prep, "memory": note, "proof": proof},
+        next_step=studio.get("final_proof_report", {}).get("next_step") or f"Review {plan_path}, then approve a concrete patch request or run the discovered checks.",
+        risks=["No existing app source files were changed by this prep step.", "Manual review is still needed before modifying an existing project.", *_readiness_risks(gate_results, studio)],
+        changed=[*changed_files, *(studio.get("artifacts") or [])],
+        tested=tested,
+        failed=[*(gate_results.get("failed_required") or []), *(studio.get("gaps") or [])],
+        metadata={
+            "project_root": str(project_root),
+            "plan_path": str(plan_path),
+            "task_packet": task_packet,
+            "stack": stack,
+            "project_inspection": inspection,
+            "execution_plan": execution_plan,
+            "responsibility_boundaries": responsibility_boundaries,
+            "artifact_verification": artifact_verification,
+            "production_prep": prep,
+            "memory": note,
+            "proof": proof,
+            "product_studio_gates": gate_results,
+            "product_studio": studio,
+            "workflow": {
+                "operating_rules": coding_workflow.operating_rules(),
+                "inspection": inspection,
+                "execution_plan": execution_plan,
+                "responsibility_boundaries": responsibility_boundaries,
+                "verification": artifact_verification,
+                "product_studio_gates": gate_results,
+                "product_studio": studio,
+            },
+        },
     )
+
+
+def _execute_product_studio_gates(project_root: Path, *, stack: dict[str, Any], install: bool) -> dict[str, Any]:
+    if not bool(config_value("product_studio_execute_gates", True)):
+        return {
+            "attempted": True,
+            "root": str(project_root),
+            "status": "blocked",
+            "summary": "Executable product-studio gates are disabled by configuration.",
+            "technical_ready": False,
+            "market_ready": False,
+            "failed_required": ["Executable product-studio gates are disabled by configuration."],
+            "gates": [
+                {
+                    "id": "product_studio_gates",
+                    "label": "Product-studio gates",
+                    "group": "general",
+                    "status": "blocked",
+                    "required": True,
+                    "summary": "Enable product_studio_execute_gates to run install, tests, audit, browser, and preview checks.",
+                }
+            ],
+            "required_gate_statuses": [],
+            "artifacts": [],
+            "approval_gates_cleared": False,
+        }
+    try:
+        return product_studio_gates.execute_gates(project_root, stack=stack, install=install)
+    except Exception as exc:
+        return {
+            "attempted": True,
+            "root": str(project_root),
+            "status": "failed",
+            "summary": f"Executable product-studio gates crashed: {exc}",
+            "technical_ready": False,
+            "market_ready": False,
+            "failed_required": [f"Product-studio gate runner crashed: {exc}"],
+            "gates": [
+                {
+                    "id": "product_studio_gates",
+                    "label": "Product-studio gates",
+                    "group": "general",
+                    "status": "failed",
+                    "required": True,
+                    "summary": str(exc),
+                }
+            ],
+            "required_gate_statuses": [],
+            "artifacts": [],
+            "approval_gates_cleared": False,
+        }
+
+
+def _gate_tested(gate_results: dict[str, Any]) -> list[str]:
+    items: list[str] = []
+    for gate in gate_results.get("gates") or []:
+        if not isinstance(gate, dict):
+            continue
+        command = _clean(gate.get("command") or "")
+        label = _clean(gate.get("label") or gate.get("id") or "gate")
+        status = _clean(gate.get("status") or "unknown")
+        if command:
+            items.append(f"{command} -> {status}")
+        else:
+            items.append(f"{label} -> {status}")
+    return items
+
+
+def _readiness_risks(gate_results: dict[str, Any], studio: dict[str, Any]) -> list[str]:
+    risks: list[str] = []
+    failed_required = gate_results.get("failed_required") or []
+    if failed_required:
+        risks.append(f"{len(failed_required)} required executable gate(s) still need attention.")
+    if not gate_results.get("technical_ready"):
+        risks.append("Friday must not mark this technically ready until install, tests/build, audit, browser, and preview gates pass.")
+    if not studio.get("market_ready"):
+        risks.append("Friday must not mark this market-ready until launch approvals and final proof gaps are cleared.")
+    risks.append("Generated business assumptions, pricing, and ads must be reviewed before public launch.")
+    return _dedupe([str(item) for item in risks if str(item).strip()])
+
+
+def _dedupe(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    result: list[str] = []
+    for item in items:
+        clean = _clean(item)
+        if clean and clean not in seen:
+            seen.add(clean)
+            result.append(clean)
+    return result
 
 
 def _generate_self_update_changes(update: dict[str, Any], *, task_id: int) -> dict[str, Any]:
@@ -396,9 +686,20 @@ def _parse_change_set(raw: str) -> list[dict[str, Any]]:
     return parsed
 
 
-def _implementation_plan(project_root: Path, request: str, prep: dict[str, Any]) -> str:
+def _implementation_plan(
+    project_root: Path,
+    request: str,
+    prep: dict[str, Any],
+    *,
+    inspection: dict[str, Any] | None = None,
+    execution_plan: dict[str, Any] | None = None,
+    responsibility_boundaries: list[dict[str, str]] | None = None,
+) -> str:
     analysis = prep.get("scan") if isinstance(prep.get("scan"), dict) else {}
     tests = prep.get("test_commands") or []
+    inspection = inspection or {}
+    execution_plan = execution_plan or {}
+    responsibility_boundaries = responsibility_boundaries or []
     lines = [
         "# Autonomous Coding Implementation Plan",
         "",
@@ -406,12 +707,31 @@ def _implementation_plan(project_root: Path, request: str, prep: dict[str, Any])
         f"Project: `{project_root}`",
         f"Request: {_clean(request)}",
         "",
+        "## Project Inspection",
+        str(inspection.get("summary") or "Project inspection was not available."),
+        "",
+        "### Markers",
+        *[f"- `{marker}`" for marker in (inspection.get("markers") or ["No project markers found."])],
+        "",
+        "## Responsibility Boundaries",
+        *[
+            f"- `{item.get('owner')}` owns {item.get('area')}: {item.get('rule')}"
+            for item in responsibility_boundaries
+        ],
+        "",
         "## Proposed Flow",
-        "1. Inspect the files most related to the request.",
-        "2. Make the smallest source change that satisfies the requested user flow.",
-        "3. Add or update focused tests where the project already has a test runner.",
-        "4. Run the discovered checks and attach the result before claiming completion.",
-        "5. Keep rollback simple: revert the touched files or restore from version control.",
+        *[
+            f"{index}. {str(step).replace('_', ' ').capitalize()}."
+            for index, step in enumerate(execution_plan.get("flow") or [
+                "inspect_project_shape",
+                "prepare_scoped_change_set",
+                "verify_artifact_or_plan",
+                "report_summary_next_step_risks",
+            ], start=1)
+        ],
+        "",
+        "## Quality Gates",
+        *[f"- {gate}" for gate in (execution_plan.get("quality_gates") or ["Verification evidence is attached."])],
         "",
         "## Discovered Checks",
     ]
@@ -826,34 +1146,6 @@ def _task_project_root(raw_root: Any = "") -> Path:
     if normalized.startswith("/root/desktop") or normalized == "/root":
         return (ROOT_DIR.parent / "friday-projects").resolve()
     return root
-
-
-def _verify_scaffold(target: Path, stack: dict[str, str], written: list[str]) -> dict[str, Any]:
-    stack_id = stack.get("stack") or "nextjs"
-    required_by_stack = {
-        "nextjs": ["package.json", "README.md", "src/app/page.tsx"],
-        "flutter": ["pubspec.yaml", "README.md", "lib/main.dart"],
-        "node_fastify": ["package.json", "README.md", "src/server.js"],
-        "python_fastapi": ["pyproject.toml", "README.md"],
-        "go_api": ["go.mod", "README.md", "main.go"],
-        "rust_axum": ["Cargo.toml", "README.md", "src/main.rs"],
-    }
-    required = required_by_stack.get(stack_id, ["README.md"])
-    missing = [relative for relative in required if not (target / relative).exists()]
-    written_missing = [path for path in written if not Path(path).exists()]
-    all_missing = [*missing, *written_missing]
-    checks = [f"verified file exists: {relative}" for relative in required if (target / relative).exists()]
-    if not all_missing:
-        summary = f"Scaffold file verification passed for {target}."
-    else:
-        summary = f"Scaffold file verification failed for {target}: missing {', '.join(all_missing[:5])}."
-    return {
-        "status": "passed" if not all_missing else "failed",
-        "summary": summary,
-        "checks": checks,
-        "missing": all_missing,
-        "project_root": str(target),
-    }
 
 
 def _looks_like_new_app_request(request: str, project_root: Path) -> bool:

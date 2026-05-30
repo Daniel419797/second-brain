@@ -47,13 +47,14 @@ _CORE_MODULES = [
     "autonomous_debugger", "autonomous_fix_loop", "autonomous_learning", "autonomous_qa_lab", "autonomous_release_engine",
     "autonomy_control", "autonomy_engine", "awareness_graph", "background_agents", "backup_recovery", "barge_in", "browser_extension_bridge",
     "browser_extension_pro", "browser_pc_copilot", "browser_playwright", "calendar_email_assistant", "capability_center",
-    "certainty_brain", "cloud_sync", "cloud_worker_mode", "cognitive_cycle", "company_runtime", "competence",
+    "certainty_brain", "cloud_sync", "cloud_worker_mode", "cognitive_cycle", "coding_workflow", "company_runtime", "competence",
     "competitive_benchmark", "connector_runtime", "context_aware_silence",
-    "context_fusion", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
+    "context_fusion", "context_interpreter", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
     "decision_memory", "deep_project_autopilot", "deployment_brain", "desktop_tasks", "desktop_vision", "device_command_mesh", "dynamic_interface",
-    "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
-    "executive_capabilities", "focus_protection", "friday_gateway", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
-    "identity", "image_generation", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
+    "document_intelligence", "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
+    "engineering_discipline", "execution_contracts", "executive_capabilities", "fix_and_rerun_loop", "focus_protection", "friday_gateway",
+    "friday_memory", "friday_operating_system", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
+    "hypothesis_runner", "identity", "image_generation", "intent_judgment", "judgment_kernel", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
     "live_workspace_coach", "local_ai_search", "local_file_intelligence", "local_voice_brain", "llm", "long_term_learning",
     "meeting_study_companion", "memory_debate", "memory_governance", "mission_control", "model_3d", "model_3d_studio",
     "model_benchmark_lab", "model_router_brain",
@@ -61,7 +62,8 @@ _CORE_MODULES = [
     "operator_skills", "orchestrator", "os_autopilot", "pc_awareness", "pc_timeline", "performance", "permissions",
     "personal_automation_daemon", "personal_command_memory", "personal_crm", "personal_data_timeline", "personal_finance",
     "personal_knowledge_vault", "personal_life_os", "personal_memory_review", "personal_safety_guardian", "phone_bridge",
-    "phone_mesh", "private_embedding_memory", "privacy_firewall_pro", "privacy_vault", "production_coding_autonomy", "project_autopilot", "project_cto",
+    "phone_mesh", "private_embedding_memory", "privacy_firewall_pro", "privacy_vault", "product_studio", "product_studio_gates", "production_coding_autonomy", "production_readiness", "project_autopilot", "project_cto",
+    "project_ideation", "project_intelligence", "project_convention_engine", "integration_registry",
     "project_memory", "project_watchdog", "proactive_guardian", "release_manager", "reliability_score", "research_briefings",
     "sandbox_simulation", "search_broker", "security_guardian_pro", "self_debugger", "self_model", "self_reflection",
     "self_testing_personality", "self_update", "semantic_search", "skill_evolution", "skill_improvement", "skill_library",
@@ -70,7 +72,8 @@ _CORE_MODULES = [
     "workspace_brain", "world_model", "agent_council", "agent_lifecycle", "agent_quality_manager", "agent_simulation_sandbox",
     "code_change_simulator", "codebase_standards", "command_graph", "dev_server_copilot", "do_not_forget", "emotional_timing",
     "failure_autopsy", "memory_constitution", "personal_taste_engine", "reality_check", "refactor_planner",
-    "ui_control", "visual_skill_memory_v2",
+    "agent_output_review", "evidence_judgment", "failure_autopsy_engine", "final_answer_reviewer", "honesty_gate", "quality_judgment", "readiness_claim_guard", "self_review_gate",
+    "shallow_output_detector", "style_profiles", "task_files", "taste_memory", "ui_control", "user_intent_model", "visual_skill_memory_v2",
 ]
 
 globals().update({name: lazy_module(f"core.{name}") for name in _CORE_MODULES})
@@ -402,6 +405,110 @@ class AutonomousCodingRequest(BaseModel):
     request: str = Field(min_length=1, max_length=4000)
     root: str = Field(default="", max_length=1000)
     risk_level: str = Field(default="medium", max_length=80)
+
+
+class ProductStudioPrepareRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    request: str = Field(default="", max_length=4000)
+    product_name: str = Field(default="", max_length=200)
+    create_files: bool = True
+
+
+class ProductStudioGateRunRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    target_url: str = Field(default="", max_length=2000)
+    install: bool = True
+    tests: bool = True
+    audits: bool = True
+    browser: bool = True
+    preview: bool = True
+    external_preview: bool | None = None
+    timeout: int = Field(default=0, ge=0, le=1800)
+    stack: dict[str, Any] = Field(default_factory=dict)
+
+
+class ProductionReadinessStartRequest(BaseModel):
+    request: str = Field(min_length=1, max_length=4000)
+    root: str = Field(default="", max_length=1000)
+    target: str = Field(default="", max_length=1000)
+    production_profile: str = Field(default="auto", max_length=120)
+    risk_level: str = Field(default="medium", max_length=80)
+    max_fix_attempts: int = Field(default=0, ge=0, le=3)
+
+
+class ProductionReadinessRerunRequest(BaseModel):
+    failed_only: bool = True
+
+
+class ProductionReadinessApprovalRequest(BaseModel):
+    action: str = Field(min_length=1, max_length=80)
+    note: str = Field(default="", max_length=1000)
+
+
+class FridayOSStartRequest(BaseModel):
+    request: str = Field(min_length=1, max_length=4000)
+    root: str = Field(default="", max_length=1000)
+    target: str = Field(default="", max_length=1000)
+    production_profile: str = Field(default="auto", max_length=120)
+    risk_level: str = Field(default="medium", max_length=80)
+    max_fix_attempts: int = Field(default=0, ge=0, le=3)
+
+
+class FridayOSRunActionRequest(BaseModel):
+    note: str = Field(default="", max_length=1000)
+
+
+class FridayOSRerunRequest(BaseModel):
+    failed_only: bool = True
+
+
+class FridayOSApprovalRequest(BaseModel):
+    action: str = Field(min_length=1, max_length=80)
+    note: str = Field(default="", max_length=1000)
+
+
+class StyleProfileRequest(BaseModel):
+    id: str = Field(default="", max_length=120)
+    name: str = Field(default="", max_length=200)
+    framework: str = Field(default="generic", max_length=120)
+    description: str = Field(default="", max_length=1000)
+    required_paths: list[str] = Field(default_factory=list)
+    forbidden_paths: list[str] = Field(default_factory=list)
+    rules: list[str] = Field(default_factory=list)
+    evidence: list[str] = Field(default_factory=list)
+
+
+class StyleProfileApplyRequest(BaseModel):
+    root: str = Field(min_length=1, max_length=1000)
+    profile_id: str = Field(default="nexus_forge_nextjs", max_length=120)
+
+
+class JudgmentIntentRequest(BaseModel):
+    text: str = Field(min_length=1, max_length=20000)
+    root: str = Field(default="", max_length=1000)
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
+class JudgmentReviewRequest(BaseModel):
+    text: str = Field(default="", max_length=20000)
+    root: str = Field(default="", max_length=1000)
+    result: dict[str, Any] = Field(default_factory=dict)
+    claims: list[str] = Field(default_factory=list)
+    remember: bool = False
+    context: dict[str, Any] = Field(default_factory=dict)
+
+
+class JudgmentDebugRequest(BaseModel):
+    failure: Any = Field(default="")
+    root: str = Field(default="", max_length=1000)
+    remember: bool = True
+
+
+class JudgmentTasteRequest(BaseModel):
+    correction: str = Field(min_length=1, max_length=4000)
+    domain: str = Field(default="coding", max_length=120)
+    root: str = Field(default="", max_length=1000)
+    evidence: list[str] = Field(default_factory=list)
 
 
 class RoutineRequest(BaseModel):
@@ -819,6 +926,40 @@ class ResearchBriefingRequest(BaseModel):
     cadence: str = Field(default="daily", max_length=80)
     target_agent_id: str = Field(default="research_analyst", max_length=120)
     create_task: bool = False
+
+
+class ProjectIdeaResearchRequest(BaseModel):
+    context: str = Field(default="", max_length=2000)
+    audience: str = Field(default="individuals, small teams, and SMBs", max_length=500)
+    root: str = Field(default="", max_length=1000)
+    limit: int = Field(default=5, ge=1, le=8)
+    max_sources: int = Field(default=8, ge=3, le=20)
+    create_files: bool = True
+
+
+class TaskFilesRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    request: str = Field(min_length=1, max_length=4000)
+    run_id: str = Field(default="", max_length=120)
+    intent: dict[str, Any] = Field(default_factory=dict)
+    preflight: dict[str, Any] = Field(default_factory=dict)
+    architecture: dict[str, Any] = Field(default_factory=dict)
+    research_context: dict[str, Any] = Field(default_factory=dict)
+    execution_plan: dict[str, Any] = Field(default_factory=dict)
+    formats: list[str] = Field(default_factory=lambda: ["md", "docx", "pdf"])
+
+
+class DocumentReadRequest(BaseModel):
+    path: str = Field(min_length=1, max_length=2000)
+    max_chars: int = Field(default=12000, ge=500, le=100000)
+
+
+class DocumentGenerateRequest(BaseModel):
+    title: str = Field(default="Friday Document", max_length=300)
+    markdown: str = Field(min_length=1, max_length=200000)
+    root: str = Field(default="", max_length=1000)
+    filename: str = Field(default="", max_length=300)
+    formats: list[str] = Field(default_factory=lambda: ["md", "docx", "pdf"])
 
 
 class TimelineNoteRequest(BaseModel):
@@ -2618,6 +2759,57 @@ def create_app() -> FastAPI:
     @app.get("/research-briefings/recent")
     def research_briefings_recent(limit: int = 20, topic: str = "", _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return research_briefings.recent(limit=limit, topic=topic)
+
+    @app.get("/project-ideas/status")
+    def project_ideas_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return project_ideation.status()
+
+    @app.get("/project-ideas/recent")
+    def project_ideas_recent(limit: int = 10, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return project_ideation.recent(limit=limit)
+
+    @app.post("/project-ideas/research")
+    def project_ideas_research(request: ProjectIdeaResearchRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return project_ideation.research_project_ideas(
+            request.context,
+            audience=request.audience,
+            root=request.root,
+            limit=request.limit,
+            max_sources=request.max_sources,
+            create_files=request.create_files,
+        )
+
+    @app.post("/task-files/create")
+    def task_files_create(request: TaskFilesRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return task_files.write_task_files(
+            request.root,
+            request.request,
+            run_id=request.run_id,
+            intent=request.intent,
+            preflight=request.preflight,
+            architecture=request.architecture,
+            research_context=request.research_context,
+            execution_plan=request.execution_plan,
+            formats=request.formats,
+        )
+
+    @app.get("/documents/capabilities")
+    def documents_capabilities(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return document_intelligence.capabilities()
+
+    @app.post("/documents/read")
+    def documents_read(request: DocumentReadRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return document_intelligence.read_document(request.path, max_chars=request.max_chars)
+
+    @app.post("/documents/generate")
+    def documents_generate(request: DocumentGenerateRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return document_intelligence.generate_document(
+            request.title,
+            request.markdown,
+            root=request.root,
+            filename=request.filename,
+            formats=request.formats,
+        )
 
     @app.get("/workspace-context/status")
     def workspace_context_status(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -4438,6 +4630,223 @@ def create_app() -> FastAPI:
     def autonomous_coding_start(request: AutonomousCodingRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
         return autonomous_coding.start(request.request, root=request.root, risk_level=request.risk_level)
 
+    @app.get("/coding/autonomous/rules")
+    def autonomous_coding_rules(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return {"rules": coding_workflow.operating_rules()}
+
+    @app.get("/coding/product-studio/phases")
+    def product_studio_phases(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return {"phases": product_studio.studio_phases()}
+
+    @app.get("/coding/product-studio/gates")
+    def product_studio_gate_registry(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return {"gates": product_studio_gates.gate_registry()}
+
+    @app.post("/coding/product-studio/prepare")
+    def product_studio_prepare(request: ProductStudioPrepareRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return product_studio.prepare_product_studio(
+            request.root,
+            request.request,
+            product_name=request.product_name,
+            create_files=request.create_files,
+        )
+
+    @app.post("/coding/product-studio/gates/run")
+    def product_studio_gates_run(request: ProductStudioGateRunRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return product_studio_gates.execute_gates(
+            request.root,
+            stack=request.stack,
+            target_url=request.target_url,
+            install=request.install,
+            tests=request.tests,
+            audits=request.audits,
+            browser=request.browser,
+            preview=request.preview,
+            external_preview=request.external_preview,
+            timeout=request.timeout or None,
+        )
+
+    @app.get("/coding/production/readiness/status")
+    def production_readiness_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return production_readiness.status()
+
+    @app.post("/coding/production/start")
+    def production_readiness_start(request: ProductionReadinessStartRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return production_readiness.start(
+            request.request,
+            root=request.root,
+            target=request.target,
+            production_profile=request.production_profile,
+            risk_level=request.risk_level,
+            max_fix_attempts=request.max_fix_attempts,
+        )
+
+    @app.get("/coding/production/runs/{run_id}")
+    def production_readiness_run(run_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
+        run = production_readiness.get_run(run_id)
+        if not run:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Production readiness run not found.")
+        return run
+
+    @app.post("/coding/production/runs/{run_id}/rerun-gates")
+    def production_readiness_rerun(run_id: int, request: ProductionReadinessRerunRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = production_readiness.rerun_gates(run_id, failed_only=request.failed_only)
+        if not result:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Production readiness run not found.")
+        return result
+
+    @app.post("/coding/production/runs/{run_id}/approve")
+    def production_readiness_approve(run_id: int, request: ProductionReadinessApprovalRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = production_readiness.approve(run_id, request.action, note=request.note)
+        if result.get("ok") is False:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=result.get("summary") or "Approval failed.")
+        return result
+
+    @app.get("/friday-os/status")
+    def friday_os_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_operating_system.status()
+
+    @app.post("/friday-os/runs/start")
+    def friday_os_start(request: FridayOSStartRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_operating_system.start(
+            request.request,
+            root=request.root,
+            target=request.target,
+            production_profile=request.production_profile,
+            risk_level=request.risk_level,
+            max_fix_attempts=request.max_fix_attempts,
+        )
+
+    @app.get("/friday-os/runs/{run_id}")
+    def friday_os_run(run_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
+        run = friday_operating_system.get_run(run_id)
+        if not run:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Friday OS run not found.")
+        return run
+
+    @app.post("/friday-os/runs/{run_id}/pause")
+    def friday_os_pause(run_id: int, request: FridayOSRunActionRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = friday_operating_system.pause(run_id, note=request.note)
+        if result.get("ok") is False:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result.get("summary") or "Friday OS run not found.")
+        return result
+
+    @app.post("/friday-os/runs/{run_id}/resume")
+    def friday_os_resume(run_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = friday_operating_system.resume(run_id)
+        if result.get("ok") is False:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=result.get("summary") or "Friday OS run not found.")
+        return result
+
+    @app.post("/friday-os/runs/{run_id}/rerun-gates")
+    def friday_os_rerun_gates(run_id: int, request: FridayOSRerunRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = friday_operating_system.rerun_gates(run_id, failed_only=request.failed_only)
+        if result.get("ok") is False:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=result.get("summary") or "Gate rerun failed.")
+        return result
+
+    @app.post("/friday-os/runs/{run_id}/approve")
+    def friday_os_approve(run_id: int, request: FridayOSApprovalRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = friday_operating_system.approve(run_id, request.action, note=request.note)
+        if result.get("ok") is False:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=result.get("summary") or "Approval failed.")
+        return result
+
+    @app.get("/friday-os/style-profiles")
+    def friday_os_style_profiles(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return style_profiles.status()
+
+    @app.post("/friday-os/style-profiles")
+    def friday_os_save_style_profile(request: StyleProfileRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return style_profiles.save_profile(request.model_dump())
+
+    @app.post("/friday-os/style-profiles/apply")
+    def friday_os_apply_style_profile(request: StyleProfileApplyRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return style_profiles.apply_profile(request.root, request.profile_id)
+
+    @app.get("/friday-os/memory")
+    def friday_os_memory(limit: int = 30, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_memory.status(limit=limit)
+
+    @app.get("/friday-os/integrations")
+    def friday_os_integrations(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return integration_registry.status()
+
+    @app.get("/friday-os/artifact")
+    def friday_os_artifact(path: str, _user: str = Depends(require_user)) -> dict[str, Any]:
+        target = Path(path).expanduser().resolve()
+        if ".friday" not in target.parts and target.suffix.lower() not in {".log", ".txt", ".md", ".json"}:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only Friday proof artifacts and logs can be opened here.")
+        if not target.exists() or not target.is_file():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Artifact not found.")
+        if target.stat().st_size > 1_500_000:
+            raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Artifact is too large for inline viewing.")
+        binary_suffixes = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
+        if target.suffix.lower() in binary_suffixes:
+            return {"path": str(target), "size": target.stat().st_size, "binary": True, "base64": base64.b64encode(target.read_bytes()).decode("ascii")}
+        return {"path": str(target), "size": target.stat().st_size, "binary": False, "content": target.read_text(encoding="utf-8", errors="replace")}
+
+    @app.get("/judgment/status")
+    def judgment_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.status()
+
+    @app.post("/judgment/intent")
+    def judgment_intent(request: JudgmentIntentRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.infer_intent(request.text, root=request.root, context=request.context)
+
+    @app.post("/judgment/evidence")
+    def judgment_evidence(request: JudgmentReviewRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.review_evidence(request.result or {"summary": request.text}, root=request.root)
+
+    @app.post("/judgment/review")
+    def judgment_review(request: JudgmentReviewRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.review(
+            text=request.text,
+            result=request.result or {"summary": request.text},
+            root=request.root,
+            claims=request.claims,
+            remember=request.remember,
+            context=request.context,
+        )
+
+    @app.post("/judgment/claims")
+    def judgment_claims(request: JudgmentReviewRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.challenge_claims(
+            text=request.text,
+            result=request.result or {"summary": request.text},
+            root=request.root,
+            claims=request.claims,
+            remember=request.remember,
+        )
+
+    @app.post("/judgment/debug")
+    def judgment_debug(request: JudgmentDebugRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.debug_failure(request.failure, root=request.root, remember=request.remember)
+
+    @app.post("/judgment/self-review")
+    def judgment_self_review(request: JudgmentReviewRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.self_review(
+            text=request.text,
+            result=request.result or {"summary": request.text},
+            root=request.root,
+            request=request.text,
+            claims=request.claims,
+        )
+
+    @app.post("/judgment/final-answer")
+    def judgment_final_answer(request: JudgmentReviewRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.final_answer(
+            request.text,
+            result=request.result or {"summary": request.text},
+            root=request.root,
+            request=request.text,
+            claims=request.claims,
+        )
+
+    @app.post("/judgment/taste")
+    def judgment_taste(request: JudgmentTasteRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return judgment_kernel.save_lesson(request.correction, domain=request.domain, root=request.root, evidence=request.evidence)
+
     @app.get("/memory/competence")
     def competence_maps(_user: str = Depends(require_user)) -> dict[str, Any]:
         return competence.all_maps()
@@ -5806,6 +6215,10 @@ def _dashboard_snapshot() -> dict[str, Any]:
         "companyRuntime": _snapshot_value(company_runtime.status, None),
         "memoryGovernance": _snapshot_value(memory_governance.status, None),
         "productionCoding": _snapshot_value(production_coding_autonomy.status, None),
+        "productionReadiness": _snapshot_value(production_readiness.status, None),
+        "fridayOs": _snapshot_value(friday_operating_system.status, None),
+        "judgment": _snapshot_value(judgment_kernel.status, None),
+        "projectIdeas": _snapshot_value(project_ideation.status, None),
         "approvals": _snapshot_value(lambda: approval_inbox.items(limit=10), []),
         "approvalSummary": _snapshot_value(lambda: approval_inbox.summary(limit=8), None),
         "thoughts": _snapshot_value(lambda: agent_thought_bus.summary(limit=8), None),

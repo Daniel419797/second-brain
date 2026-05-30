@@ -11,11 +11,13 @@ import { ControlRoomView } from "@/components/views/ControlRoomView";
 import { DashboardView } from "@/components/views/DashboardView";
 import { GovernanceView } from "@/components/views/GovernanceView";
 import { IntegrationsView } from "@/components/views/IntegrationsView";
+import { FridayStudioView } from "@/components/views/FridayStudioView";
 import { MemoryView } from "@/components/views/MemoryView";
 import { MissionControlView } from "@/components/views/MissionControlView";
 import { NotificationsView } from "@/components/views/NotificationsView";
 import { OperatorsView } from "@/components/views/OperatorsView";
 import { ProjectsView } from "@/components/views/ProjectsView";
+import { ProductionStudioView } from "@/components/views/ProductionStudioView";
 import { ReliabilityView } from "@/components/views/ReliabilityView";
 import { SafetyView } from "@/components/views/SafetyView";
 import { SettingsView } from "@/components/views/SettingsView";
@@ -94,6 +96,14 @@ export function GovernanceRoute() {
 
 export function ProjectsRoute() {
   return <ProjectsView />;
+}
+
+export function ProductionStudioRoute() {
+  return <ProductionStudioView />;
+}
+
+export function FridayStudioRoute() {
+  return <FridayStudioView />;
 }
 
 export function VisionRoute() {

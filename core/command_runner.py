@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import shlex
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -55,6 +56,9 @@ def parse_command(command: str, *, extra_allowed: set[str] | None = None) -> lis
     basename = Path(executable).name.lower()
     if executable not in allowed and basename not in allowed:
         raise CommandRejected(f"Command executable is not allowlisted: {args[0]}")
+    resolved = shutil.which(args[0])
+    if resolved:
+        args[0] = resolved
     return args
 
 

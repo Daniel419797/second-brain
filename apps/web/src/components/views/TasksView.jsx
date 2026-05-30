@@ -175,6 +175,24 @@ function TaskCard({ task, onOpen }) {
 function TaskDetailModal({ task, copy, busy, onClose, onCancel }) {
   const contract = task.contract || {};
   const output = normalizeOutput(task.output);
+  const outputData = task.output && typeof task.output === "object" ? task.output : {};
+  const metadata = outputData.metadata || {};
+  const workflow = metadata.workflow || {};
+  const inspection = metadata.project_inspection || workflow.inspection || {};
+  const executionPlan = metadata.execution_plan || workflow.execution_plan || {};
+  const productStudio = metadata.product_studio || workflow.product_studio || {};
+  const studioGates = metadata.product_studio_gates || workflow.product_studio_gates || productStudio.gate_results || {};
+  const studioReport = productStudio.final_proof_report || {};
+  const studioPhases = asArray(productStudio.phases);
+  const gateItems = asArray(studioGates.gates || studioGates.required_gate_statuses);
+  const studioGaps = asArray(studioReport.critical_gaps?.length ? studioReport.critical_gaps : productStudio.gaps || studioReport.gaps);
+  const boundaries = asArray(metadata.responsibility_boundaries || workflow.responsibility_boundaries);
+  const verification = metadata.scaffold_verification || metadata.artifact_verification || workflow.verification || {};
+  const executionFlow = asArray(executionPlan.flow);
+  const changedFiles = asArray(outputData.changed);
+  const checkItems = [...asArray(outputData.tested), ...asArray(outputData.failed).map((item) => `gap: ${item}`)];
+  const codingEvidenceVisible = outputData.mode === "autonomous_coding" || metadata.project_root || executionFlow.length || boundaries.length || verification.status;
+  const studioVisible = studioPhases.length || studioReport.next_step || studioGaps.length || gateItems.length;
   const messages = task.messages || [];
   const canCancel = !["done", "completed", "cancelled", "failed"].includes(lower(task.status));
   return (
@@ -209,6 +227,48 @@ function TaskDetailModal({ task, copy, busy, onClose, onCancel }) {
           <DetailSection title="Actual Output / Evidence">
             <p>{output || copy?.empty?.evidence || "Friday has no task output recorded yet."}</p>
           </DetailSection>
+
+          {codingEvidenceVisible ? (
+            <DetailSection title="Autonomous Coding Evidence">
+              <div className="grid gap-3">
+                <InfoBox label="Project Root" value={metadata.project_root || metadata.root || "not reported"} />
+                <InfoBox label="Verification" value={verification.status || outputData.contract?.status || "not verified"} warn={lower(verification.status || outputData.contract?.status) !== "passed" && lower(outputData.contract?.status) !== "verified"} />
+                <p className="text-friday-muted">{inspection.summary || "No project inspection summary was recorded."}</p>
+                <ChipList items={executionFlow} empty="No execution flow recorded" />
+                <BoundaryList items={boundaries} />
+              </div>
+            </DetailSection>
+          ) : null}
+
+          {studioVisible ? (
+            <DetailSection title="Product Studio">
+              <div className="grid gap-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <InfoBox label="Readiness" value={readinessLabel(studioReport, studioGates)} warn={!studioReport.market_ready} />
+                  <InfoBox label="Market Ready" value={studioReport.market_ready ? "yes" : "not yet"} warn={!studioReport.market_ready} />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InfoBox label="Technical Gates" value={studioGates.technical_ready ? "passed" : studioGates.status || studioReport.gate_status || "not ready"} warn={!studioGates.technical_ready} />
+                  <InfoBox label="Phase Count" value={`${studioPhases.length || 0} phases`} />
+                </div>
+                <p className="text-friday-muted">{productStudio.summary || studioReport.next_step || "Product-studio proof is attached."}</p>
+                <GateList gates={gateItems} previewUrl={studioGates.preview_url} />
+                <PhaseList phases={studioPhases} />
+                <ChipList items={studioGaps.slice(0, 8)} empty="No critical gaps recorded" />
+              </div>
+            </DetailSection>
+          ) : null}
+
+          {codingEvidenceVisible ? (
+            <div className="grid grid-cols-2 gap-3">
+              <DetailSection title="Changed Files">
+                <ChipList items={changedFiles} empty="No changed files reported" />
+              </DetailSection>
+              <DetailSection title="Checks / Limits">
+                <ChipList items={checkItems} empty="No checks reported" />
+              </DetailSection>
+            </div>
+          ) : null}
 
           <DetailSection title="Success Criteria">
             <Checklist items={contract.success_criteria || []} satisfied={contract.status === "verified" || contract.satisfied} />
@@ -349,6 +409,52 @@ function ChipList({ items, empty }) {
   );
 }
 
+function BoundaryList({ items }) {
+  if (!items.length) return <p className="text-friday-muted">No responsibility boundaries recorded.</p>;
+  return (
+    <div className="grid gap-2">
+      {items.slice(0, 6).map((item, index) => (
+        <div className="border border-friday-line bg-[#0c1218] p-2 font-mono text-[10px]" key={`${index}-${item.owner || item.area}`}>
+          <strong className="block text-[#dce7f4]">{item.owner || item.area || "scope"}</strong>
+          <span className="text-friday-muted">{item.rule || item.area || stringify(item)}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PhaseList({ phases }) {
+  if (!phases.length) return <p className="text-friday-muted">No product-studio phases recorded.</p>;
+  return (
+    <div className="grid gap-2">
+      {phases.slice(0, 8).map((phase, index) => (
+        <div className="grid grid-cols-[1fr_auto] gap-2 border border-friday-line bg-[#0c1218] p-2 font-mono text-[10px]" key={`${index}-${phase.id || phase.label}`}>
+          <span className="truncate text-[#dce7f4]">{phase.label || phase.id || "phase"}</span>
+          <span className={phase.status === "verified" ? "text-friday-accent" : phase.status === "blocked" ? "text-[#ffaaa0]" : "text-[#ffb56d]"}>{phase.status || "planned"}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GateList({ gates, previewUrl }) {
+  if (!gates.length && !previewUrl) return <p className="text-friday-muted">No executable gate evidence recorded.</p>;
+  const screenshot = gates.find((gate) => gate?.screenshot)?.screenshot;
+  return (
+    <div className="grid gap-2 border border-friday-line bg-[#070c11] p-2">
+      {previewUrl ? <p className="truncate font-mono text-[10px] text-friday-accent">Preview: {previewUrl}</p> : null}
+      {screenshot ? <p className="truncate font-mono text-[10px] text-[#dce7f4]">Screenshot: {screenshot}</p> : null}
+      {gates.slice(0, 8).map((gate, index) => (
+        <div className="grid grid-cols-[1fr_auto] gap-2 border border-[#202b37] bg-[#0c1218] p-2 font-mono text-[10px]" key={`${index}-${gate.id || gate.label}`}>
+          <span className="truncate text-[#dce7f4]">{gate.label || gate.id || "gate"}</span>
+          <span className={gate.status === "passed" ? "text-friday-accent" : gate.status === "failed" || gate.status === "blocked" || gate.status === "timeout" ? "text-[#ffaaa0]" : "text-[#ffb56d]"}>{gate.status || "unknown"}</span>
+          <span className="col-span-2 line-clamp-2 text-friday-muted">{gate.command || gate.summary || "No command recorded"}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function LogLine({ text }) {
   return <p className="border-b border-friday-line px-3 py-2 font-mono text-[11px] text-[#dce6f2] last:border-b-0">[{new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}] {text}</p>;
 }
@@ -411,4 +517,18 @@ function lower(value) {
 
 function labelize(value) {
   return String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function readinessLabel(report, gates) {
+  if (report?.market_ready) return "Market ready";
+  if (report?.technical_ready || gates?.technical_ready) return "Market blocked";
+  if (gates?.status === "attention" || gates?.status === "failed") return "Gates blocked";
+  if (gates?.attempted) return "Gates running";
+  return "Not built";
+}
+
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  if (value) return [value];
+  return [];
 }
