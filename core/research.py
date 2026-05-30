@@ -31,12 +31,12 @@ from core import search_broker
 from core.config import config_value
 
 
-def research_topic(query: str, *, limit: int | None = None) -> dict[str, Any]:
+def research_topic(query: str, *, limit: int | None = None, max_sources: int | None = None) -> dict[str, Any]:
     """Collect lightweight free context for an agent task."""
     query = _clean(query)
     if not query:
         return {"query": "", "sources": [], "notes": "No research query provided."}
-    max_sources = int(limit or config_value("research_max_sources", 2))
+    max_sources = int(limit or max_sources or config_value("research_max_sources", 2))
     results = search_web(query, limit=max_sources)
     sources: list[dict[str, Any]] = []
     for result in results:

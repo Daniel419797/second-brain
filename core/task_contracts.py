@@ -112,12 +112,17 @@ def draft_from_task(task: dict[str, Any]) -> dict[str, Any]:
     if _is_autonomous_coding_task(task):
         success_criteria.extend(
             [
+                "Project shape is inspected before files are written or staged.",
+                "Responsibility boundaries and scoped execution plan are recorded.",
+                "Product-studio phases are recorded: requirements, architecture, implementation, tests, security, performance, UX, deployment, launch, docs, and proof gaps.",
+                "Executable product-studio gates are attempted and recorded: dependency install, tests/build, audit, browser check, and preview/deploy proof.",
                 "Generated or changed files exist at the reported project root.",
                 "File-level verification, discovered checks, or explicit verification limits are recorded.",
+                "Final proof report states technical readiness, market-readiness, and names remaining gaps.",
             ]
         )
-        expected_output = "Concise coding result with Summary, Next step, Risks, project root, changed files, and verification evidence."
-        verification_method = "Check structured fields, supporting task messages, reported paths, changed files, and verification evidence."
+        expected_output = "Concise coding result with Summary, Next step, Risks, project root, changed files, inspection, execution plan, responsibility boundaries, executable gate results, product-studio phases, final proof gaps, and verification evidence."
+        verification_method = "Check structured fields, supporting task messages, reported paths, changed files, inspection/plan metadata, executable product-studio gates, product-studio proof, and verification evidence."
     return {
         "task_id": int(task.get("id") or 0),
         "goal": title,
@@ -223,18 +228,71 @@ def _satisfies_autonomous_coding_contract(result: Any, evidence: dict[str, Any])
     if str(result.get("task_status") or "").lower() != "done":
         return False
     metadata = result.get("metadata") if isinstance(result.get("metadata"), dict) else {}
+    workflow = metadata.get("workflow") if isinstance(metadata.get("workflow"), dict) else {}
     project_root = _clean(metadata.get("project_root") or metadata.get("root") or "")
     changed = [str(item) for item in result.get("changed") or [] if str(item).strip()]
     tested = [str(item) for item in result.get("tested") or [] if str(item).strip()]
-    scaffold = metadata.get("scaffold_verification") if isinstance(metadata.get("scaffold_verification"), dict) else {}
-    if scaffold and scaffold.get("status") != "passed":
+    inspection = metadata.get("project_inspection") if isinstance(metadata.get("project_inspection"), dict) else workflow.get("inspection")
+    execution_plan = metadata.get("execution_plan") if isinstance(metadata.get("execution_plan"), dict) else workflow.get("execution_plan")
+    boundaries = metadata.get("responsibility_boundaries") if isinstance(metadata.get("responsibility_boundaries"), list) else workflow.get("responsibility_boundaries")
+    verification = (
+        metadata.get("scaffold_verification")
+        if isinstance(metadata.get("scaffold_verification"), dict)
+        else metadata.get("artifact_verification")
+        if isinstance(metadata.get("artifact_verification"), dict)
+        else workflow.get("verification")
+        if isinstance(workflow.get("verification"), dict)
+        else {}
+    )
+    if not isinstance(inspection, dict) or not inspection.get("summary"):
+        return False
+    if not isinstance(execution_plan, dict) or not execution_plan.get("flow"):
+        return False
+    if not isinstance(boundaries, list) or not boundaries:
+        return False
+    product_studio = metadata.get("product_studio") if isinstance(metadata.get("product_studio"), dict) else workflow.get("product_studio")
+    if not isinstance(product_studio, dict):
+        return False
+    phases = product_studio.get("phases")
+    report = product_studio.get("final_proof_report")
+    if not isinstance(phases, list) or len(phases) < 10:
+        return False
+    if not isinstance(report, dict) or "market_ready" not in report or not isinstance(report.get("gaps"), list):
+        return False
+    if report.get("market_ready") and report.get("critical_gaps"):
+        return False
+    gate_results = metadata.get("product_studio_gates") if isinstance(metadata.get("product_studio_gates"), dict) else workflow.get("product_studio_gates")
+    if not isinstance(gate_results, dict):
+        gate_results = product_studio.get("gate_results") if isinstance(product_studio.get("gate_results"), dict) else {}
+    if not _valid_product_studio_gates(gate_results):
+        return False
+    if (report.get("market_ready") or report.get("technical_ready")) and not gate_results.get("technical_ready"):
+        return False
+    if verification and verification.get("status") != "passed":
         return False
     if project_root and not Path(project_root).exists():
         return False
     existing_changed = [path for path in changed if Path(path).exists()]
     has_file_evidence = bool(project_root and Path(project_root).exists()) or bool(existing_changed)
-    has_verification = bool(tested) or bool(scaffold.get("checks"))
+    has_verification = bool(tested) or bool(verification.get("checks"))
     return bool(has_file_evidence and has_verification)
+
+
+def _valid_product_studio_gates(gate_results: dict[str, Any]) -> bool:
+    if not gate_results.get("attempted"):
+        return False
+    gates = gate_results.get("gates") if isinstance(gate_results.get("gates"), list) else gate_results.get("required_gate_statuses")
+    if not isinstance(gates, list) or not gates:
+        return False
+    required = [gate for gate in gates if isinstance(gate, dict) and gate.get("required")]
+    if not required:
+        return False
+    required_groups = {str(gate.get("group") or "").strip() for gate in required}
+    if not (required_groups & {"install", "tests", "security", "browser", "preview", "general"}):
+        return False
+    if gate_results.get("technical_ready") and any(str(gate.get("status") or "") != "passed" for gate in required):
+        return False
+    return True
 
 
 def _evidence_from_result(result: Any) -> dict[str, Any]:

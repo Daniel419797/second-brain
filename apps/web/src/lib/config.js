@@ -17,6 +17,8 @@ export const NAV_ITEMS = [
   ["approvals", "Approvals", "/approvals"],
   ["notifications", "Notifications", "/notifications"],
   ["projects", "Projects", "/projects"],
+  ["friday-studio", "Friday Studio", "/friday-studio"],
+  ["production-studio", "Production Studio", "/production-studio"],
   ["vision", "Vision", "/vision"],
   ["android", "Android", "/android"],
   ["memory", "Memory", "/memory"],

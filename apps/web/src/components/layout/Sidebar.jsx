@@ -13,6 +13,7 @@ import {
   Phone,
   Play,
   Puzzle,
+  Rocket,
   ShieldCheck,
   Users
 } from "lucide-react";
@@ -29,6 +30,8 @@ const ICONS = {
   Approvals: CheckCircle,
   Notifications: Bell,
   Projects: FileText,
+  "Friday Studio": Rocket,
+  "Production Studio": Rocket,
   Vision: Eye,
   Android: Phone,
   Memory: Brain,
