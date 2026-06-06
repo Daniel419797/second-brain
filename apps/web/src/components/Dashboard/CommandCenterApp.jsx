@@ -70,9 +70,6 @@ export default function CommandCenterApp({ children }) {
             activeView={activeView}
             approvalCount={approvalCount}
             notificationCount={notificationCount}
-            activeMission={activeMission}
-            interfaceCopy={activeInterface}
-            chrome={activeChrome}
             busy={busy}
             onRefresh={refresh}
             intelligenceOpen={intelligenceOpen}

@@ -1,15 +1,16 @@
 import { Bell, Brain, Database, Fingerprint, Mic } from "lucide-react";
 import Link from "next/link";
 
-export function TopNav({ activeView, approvalCount, notificationCount, activeMission, interfaceCopy = {}, chrome = {}, busy, intelligenceOpen, onOpenIntelligence, onStartWorkers, onLogout }) {
+const BRAND_TITLE = "Friday";
+const VOICE_LABEL = "Voice Mode";
+const OBSERVATION_LABEL = "Observation Mode";
+const INTELLIGENCE_TITLE = "System Intelligence";
+
+export function TopNav({ activeView, approvalCount, notificationCount, busy, intelligenceOpen, onOpenIntelligence, onStartWorkers, onLogout }) {
   const voiceActive = activeView === "voice-mode";
-  const title = chrome.title || interfaceCopy.title || "Friday";
-  const modeLabel = interfaceCopy.modeLabel || chrome.modeLabel || (activeMission ? "Mission active" : "Observation mode");
-  const voiceLabel = chrome.voiceLabel || "Voice Mode";
-  const intelligenceTitle = chrome.intelligenceTitle || interfaceCopy.rail?.subtitle || "System Intelligence";
-  const workersTitle = chrome.workersTitle || "Agent services";
-  const approvalsLabel = chrome.approvalsLabel || `${approvalCount > 9 ? "9+" : approvalCount} Approvals`;
-  const notificationTitle = chrome.notificationTitle || `${notificationCount || 0} unread notification${notificationCount === 1 ? "" : "s"}`;
+  const workersTitle = "Agent services";
+  const approvalsLabel = `${approvalCount > 9 ? "9+" : approvalCount} Approvals`;
+  const notificationTitle = `${notificationCount || 0} unread notification${notificationCount === 1 ? "" : "s"}`;
   const modeLinkClass = (active) =>
     `grid h-full place-items-center border-b-2 px-2 text-[13px] font-semibold transition-colors ${
       active ? "border-friday-accent text-friday-accent" : "border-transparent text-[#d9e2ef] hover:text-friday-accent"
@@ -18,17 +19,17 @@ export function TopNav({ activeView, approvalCount, notificationCount, activeMis
   return (
     <header className="flex h-16 min-h-16 w-full items-center gap-5 border-b border-friday-line bg-friday-top px-4">
       <div className="flex min-w-[230px] max-w-[430px] shrink-0 items-center gap-4">
-        <h1 className="m-0 truncate text-[14px] font-black uppercase leading-none text-white" title={title}>{title}</h1>
+        <h1 className="m-0 truncate text-[14px] font-black uppercase leading-none text-white" title={BRAND_TITLE}>{BRAND_TITLE}</h1>
         <span className="h-5 w-px bg-[#3d4857]" />
       </div>
       <div className="flex h-full items-center gap-5 text-[13px] font-semibold text-[#d9e2ef]" aria-label="Operating mode">
-        <Link className={modeLinkClass(voiceActive)} href="/voice-mode">{voiceLabel}</Link>
-        <strong className={`${modeLinkClass(!voiceActive)} max-w-[260px] truncate`} title={modeLabel}>
-          {modeLabel}
+        <Link className={modeLinkClass(voiceActive)} href="/voice-mode">{VOICE_LABEL}</Link>
+        <strong className={`${modeLinkClass(!voiceActive)} max-w-[260px] truncate`} title={OBSERVATION_LABEL}>
+          {OBSERVATION_LABEL}
         </strong>
       </div>
       <div className="ml-auto flex items-center gap-3">
-        <Link className={`grid min-h-7 w-7 place-items-center bg-transparent transition-[color,transform] duration-150 hover:-translate-y-px hover:text-friday-accent active:scale-95 motion-reduce:transition-none ${voiceActive ? "text-friday-accent" : "text-[#dbe5f1]"}`} href="/voice-mode" title={voiceLabel}>
+        <Link className={`grid min-h-7 w-7 place-items-center bg-transparent transition-[color,transform] duration-150 hover:-translate-y-px hover:text-friday-accent active:scale-95 motion-reduce:transition-none ${voiceActive ? "text-friday-accent" : "text-[#dbe5f1]"}`} href="/voice-mode" title={VOICE_LABEL}>
           <Mic size={17} />
         </Link>
         <button
@@ -38,7 +39,7 @@ export function TopNav({ activeView, approvalCount, notificationCount, activeMis
           type="button"
           onClick={onOpenIntelligence}
           disabled={busy}
-          title={intelligenceTitle}
+          title={INTELLIGENCE_TITLE}
           aria-pressed={Boolean(intelligenceOpen)}
         >
           <Brain size={15} />
