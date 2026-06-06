@@ -1,0 +1,1991 @@
+{
+  "design_context": {
+    "brand_system": {
+      "accessibility": [
+        "AA contrast for body text",
+        "visible focus states",
+        "tap targets at least 44px on mobile"
+      ],
+      "brand_name": "Nocturne Audio",
+      "color_tokens": {
+        "accent": "#9f6b3e",
+        "accent_2": "#2f2924",
+        "bg": "#f7f1e8",
+        "border": "#ded2c3",
+        "danger": "#9f1239",
+        "muted": "#71675e",
+        "success": "#3f6f53",
+        "surface": "#fffaf3",
+        "surface_2": "#14110f",
+        "text": "#17120d",
+        "warning": "#b7791f"
+      },
+      "do_not_render": [
+        "internal style profile names",
+        "raw prompt labels",
+        "provider/debug labels"
+      ],
+      "icon_style": "minimal marks; use icons sparingly",
+      "imagery_direction": "macro product details, craftsmanship, architecture, human service moments",
+      "logo_direction": "quiet wordmark for Nocturne Audio; refined spacing, no loud badge",
+      "motion_style": "slow, restrained reveals; no bouncy UI",
+      "radius": "0px to 6px; editorial, not pill-heavy",
+      "radius_system": "0px to 6px; editorial, not pill-heavy",
+      "spacing_scale": {
+        "lg": "24px",
+        "md": "16px",
+        "section": "72px desktop / 44px mobile",
+        "sm": "8px",
+        "xl": "40px",
+        "xs": "4px"
+      },
+      "tokens": {
+        "accent": "#9f6b3e",
+        "accent_2": "#2f2924",
+        "bg": "#f7f1e8",
+        "border": "#ded2c3",
+        "danger": "#9f1239",
+        "muted": "#71675e",
+        "success": "#3f6f53",
+        "surface": "#fffaf3",
+        "surface_2": "#14110f",
+        "text": "#17120d",
+        "warning": "#b7791f"
+      },
+      "typography": {
+        "body": "clean readable sans",
+        "display": "editorial serif or high-contrast display",
+        "mono": "not primary"
+      }
+    },
+    "code_context": {
+      "dependencies": [],
+      "dev_dependencies": [],
+      "existing_paths": [],
+      "implementation_warning": "Use this as context for feasibility; do not render file paths or package metadata as visible UI copy.",
+      "package_manager": "",
+      "package_name": "",
+      "project_root": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-nocturne-audio-test",
+      "scripts": {},
+      "stack": {
+        "label": "Next.js web app",
+        "stack": "nextjs"
+      }
+    },
+    "component_inventory": [
+      "full-bleed scene/canvas surface",
+      "scene fallback poster/content",
+      "reduced-motion controls",
+      "editorial hero",
+      "material image field",
+      "provenance cards",
+      "lookbook modules",
+      "concierge inquiry form"
+    ],
+    "composition_spec": {
+      "allowed_archetypes": [
+        {
+          "avoid": "Do not crop the meaningful subject away or hide the page behind a dark generic overlay.",
+          "first_viewport": "Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.",
+          "id": "full_bleed_media",
+          "name": "Full-Bleed Media Hero",
+          "why": "Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression."
+        },
+        {
+          "avoid": "Do not use a corporate hero grid or explain the experience only with paragraphs.",
+          "first_viewport": "Full-viewport scene or animated visual world with concise action copy, platform/action buttons, and visible gameplay or interaction cues.",
+          "id": "immersive_scene",
+          "name": "Immersive Scene",
+          "why": "Games, interactive products, and experiential launches should feel alive before explaining features."
+        },
+        {
+          "avoid": "Do not make all sections equal cards or repeat the same grid rhythm.",
+          "first_viewport": "Asymmetric headline, image crop, metadata, and proof arranged like a designed editorial spread.",
+          "id": "editorial_asymmetric",
+          "name": "Editorial Asymmetric",
+          "why": "Premium, creative, portfolio, fashion, and construction pages often need a composed editorial rhythm instead of a default grid."
+        },
+        {
+          "avoid": "Do not leave the viewport empty, poster-like, or disconnected from the next section.",
+          "first_viewport": "Centered or left-anchored headline over a quiet background system, with CTAs and the next proof section peeking into view.",
+          "id": "centered_statement",
+          "name": "Centered Statement Hero",
+          "why": "Strong brands or simple offers can lead with one confident statement and proof visible below."
+        },
+        {
+          "avoid": "Do not use a decorative empty card, generic analytics dashboard, or vague launch-path panel.",
+          "first_viewport": "Two-column hero is allowed only when the right side carries real proof: UI, code, map, product, case image, or workflow state.",
+          "id": "split_product_proof",
+          "name": "Split Product Proof",
+          "why": "Use when the user must compare a clear promise with an inspectable product or domain proof object."
+        }
+      ],
+      "archetype": "full_bleed_media",
+      "archetype_name": "Full-Bleed Media Hero",
+      "archetype_rationale": "Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression.",
+      "composition_rules": [
+        "Choose the composition before visual styling; colors and cards must not be the main differentiator.",
+        "Do not default to a left-text/right-card split hero unless Split Product Proof is the selected archetype.",
+        "Each generated variant must change the first viewport structure, not just copy, palette, or card styling.",
+        "If the archetype uses media or a scene, the media must carry real product/domain meaning.",
+        "For visual/physical brands, use image, material, scene, or place as the first-viewport evidence."
+      ],
+      "first_viewport": [
+        "Use the Full-Bleed Media Hero composition archetype: Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.",
+        "Brand and navigation must identify Nocturne Audio clearly without visible internal profile labels.",
+        "The first viewport must expose the next meaningful section; do not end at a blank hero.",
+        "Every visible proof object must be domain-specific, not a decorative placeholder.",
+        "Use real-feeling media, image, material, site, or scene as the hero background with text anchored over it, not trapped in a card."
+      ],
+      "layout_depth": [
+        "Generate multiple sections with different rhythm; do not repeat the same card grid after the hero.",
+        "Variant explorations must change composition archetype or first-viewport structure, not just palette or copy.",
+        "Normalize exaggerated Stitch scale during implementation so headings, sections, and buttons fit real desktop and mobile viewports.",
+        "Use 5 to 7 meaningful sections in a single landing page or page-specific depth for multi-page sites.",
+        "Every section should have a job: explain, prove, compare, qualify, transact, or convert."
+      ],
+      "responsive_notes": "On mobile, maintain readable type, no overlapping text, and clear CTA order.",
+      "variant_policy": "Ask Stitch for compositionally different variants; reject same split-hero/card rhythm unless it is explicitly selected and well justified.",
+      "visual_hierarchy": "Composition comes before styling. H1 should be strong but not viewport-breaking; proof must be visible, inspectable, and domain-specific."
+    },
+    "content_model": {
+      "brand": "Nocturne Audio",
+      "copy_guidance": [
+        "Use concrete nouns from the project domain, not vague words like smarter, seamless, or solutions by themselves.",
+        "Make every claim attach to a feature, workflow, proof object, or CTA.",
+        "Avoid provider artifacts, route labels, and numbered labels as visible marketing copy."
+      ],
+      "domain_terms": [
+        "cinematic",
+        "luxury",
+        "landing",
+        "nocturne",
+        "audio",
+        "premium",
+        "spatial-audio",
+        "headphone",
+        "should",
+        "feel",
+        "immersive",
+        "tactile",
+        "nocturnal",
+        "editorial",
+        "product-led",
+        "first",
+        "viewport",
+        "generic"
+      ],
+      "navigation": [
+        "Atelier",
+        "Collections",
+        "Process",
+        "Concierge"
+      ],
+      "page_label": "home",
+      "page_map": [
+        {
+          "focus": "complete product landing page with hero, proof/status strip, capabilities, how it works, architecture/security proof, plugin or ecosystem story, and conversion call to action",
+          "id": "home",
+          "label": "Home",
+          "navigation": "Home (/)",
+          "route": "/"
+        }
+      ],
+      "primary_ctas": [
+        "Request concierge access",
+        "Explore collection"
+      ],
+      "proof_objects": [
+        "client proof",
+        "process step",
+        "result metric",
+        "response promise"
+      ],
+      "required_sections": [
+        "global navigation",
+        "brand-specific hero",
+        "proof/status strip",
+        "problem-to-solution",
+        "core capabilities",
+        "how it works",
+        "primary CTA/footer"
+      ]
+    },
+    "copy_bank": {
+      "headline_directions": [
+        "Crafted for private clients who notice the difference.",
+        "A quieter standard of luxury, made visible.",
+        "Objects and experiences with provenance."
+      ],
+      "microcopy_examples": [
+        "Request concierge access",
+        "View the collection",
+        "Private appointment"
+      ],
+      "subhead_direction": "Nocturne Audio should communicate The brand is scarce, crafted, and worth slowing down for. in a spare, sensorial, confident, never loud voice.",
+      "words_to_avoid": [
+        "discount",
+        "deal",
+        "limited-time offer",
+        "all-in-one solution",
+        "Home 1",
+        "Service 1",
+        "lorem ipsum",
+        "smarter operations"
+      ],
+      "words_to_use": [
+        "cinematic",
+        "luxury",
+        "landing",
+        "nocturne",
+        "audio",
+        "premium",
+        "spatial-audio",
+        "headphone",
+        "should",
+        "feel",
+        "immersive",
+        "tactile",
+        "craft proof",
+        "provenance",
+        "atelier detail",
+        "private appointment"
+      ]
+    },
+    "creative_brief": {
+      "decision_moment": "A high-intent private client is deciding whether the brand feels rare, crafted, and worthy of a personal inquiry.",
+      "design_answer": "Use restraint, material detail, provenance, appointment paths, and quiet confidence instead of badges or discounts.",
+      "one_sentence": "Nocturne Audio should feel like quiet luxury with editorial restraint and tactile detail.",
+      "primary_objection": "The experience can feel mass-market, loud, or insufficiently premium.",
+      "trust_signals": [
+        "craft proof",
+        "provenance",
+        "atelier detail",
+        "private appointment",
+        "concierge access"
+      ]
+    },
+    "design_rules": {
+      "anti_patterns": [
+        "Do not use generic SaaS dashboard imagery for a non-SaaS company website.",
+        "Do not use huge empty hero sections or headings that consume the viewport.",
+        "Do not repeat page labels as section titles.",
+        "Do not use placeholder copy, raw prompts, debug labels, or Friday proof language.",
+        "Do not rely on only beige/cream cards unless the domain truly calls for it.",
+        "Do not use loud gradients, badge-heavy SaaS cards, discount language, or cluttered grids."
+      ],
+      "composition": {
+        "allowed_archetypes": [
+          {
+            "avoid": "Do not crop the meaningful subject away or hide the page behind a dark generic overlay.",
+            "first_viewport": "Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.",
+            "id": "full_bleed_media",
+            "name": "Full-Bleed Media Hero",
+            "visual_objects": "real photography, editorial image, material detail, environment, cinematic scene",
+            "why": "Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression."
+          },
+          {
+            "avoid": "Do not use a corporate hero grid or explain the experience only with paragraphs.",
+            "first_viewport": "Full-viewport scene or animated visual world with concise action copy, platform/action buttons, and visible gameplay or interaction cues.",
+            "id": "immersive_scene",
+            "name": "Immersive Scene",
+            "visual_objects": "3D/canvas scene, gameplay capture, character/world layer, live stats, motion cue",
+            "why": "Games, interactive products, and experiential launches should feel alive before explaining features."
+          },
+          {
+            "avoid": "Do not make all sections equal cards or repeat the same grid rhythm.",
+            "first_viewport": "Asymmetric headline, image crop, metadata, and proof arranged like a designed editorial spread.",
+            "id": "editorial_asymmetric",
+            "name": "Editorial Asymmetric",
+            "visual_objects": "large crop, caption, metadata, proof strip, case teaser",
+            "why": "Premium, creative, portfolio, fashion, and construction pages often need a composed editorial rhythm instead of a default grid."
+          },
+          {
+            "avoid": "Do not leave the viewport empty, poster-like, or disconnected from the next section.",
+            "first_viewport": "Centered or left-anchored headline over a quiet background system, with CTAs and the next proof section peeking into view.",
+            "id": "centered_statement",
+            "name": "Centered Statement Hero",
+            "visual_objects": "texture, subtle product backdrop, proof strip, brand mark, secondary content hint",
+            "why": "Strong brands or simple offers can lead with one confident statement and proof visible below."
+          },
+          {
+            "avoid": "Do not use a decorative empty card, generic analytics dashboard, or vague launch-path panel.",
+            "first_viewport": "Two-column hero is allowed only when the right side carries real proof: UI, code, map, product, case image, or workflow state.",
+            "id": "split_product_proof",
+            "name": "Split Product Proof",
+            "visual_objects": "product UI, code panel, domain image, proof card, status panel",
+            "why": "Use when the user must compare a clear promise with an inspectable product or domain proof object."
+          }
+        ],
+        "primary": {
+          "avoid": "Do not crop the meaningful subject away or hide the page behind a dark generic overlay.",
+          "first_viewport": "Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.",
+          "id": "full_bleed_media",
+          "name": "Full-Bleed Media Hero",
+          "visual_objects": "real photography, editorial image, material detail, environment, cinematic scene",
+          "why": "Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression."
+        },
+        "route": "home",
+        "rules": [
+          "Choose the composition before visual styling; colors and cards must not be the main differentiator.",
+          "Do not default to a left-text/right-card split hero unless Split Product Proof is the selected archetype.",
+          "Each generated variant must change the first viewport structure, not just copy, palette, or card styling.",
+          "If the archetype uses media or a scene, the media must carry real product/domain meaning.",
+          "For visual/physical brands, use image, material, scene, or place as the first-viewport evidence."
+        ]
+      },
+      "experience": {
+        "allowed_modes": [
+          {
+            "id": "interactive_3d",
+            "implementation": [
+              "full-bleed canvas",
+              "camera/framing",
+              "lighting",
+              "interactive object states",
+              "fallback image/static path"
+            ],
+            "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+            "libraries": [
+              "Three.js",
+              "@react-three/fiber",
+              "@react-three/drei",
+              "Framer Motion optional"
+            ],
+            "name": "Interactive 3D",
+            "rejection_rules": [
+              "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+            ],
+            "rules": [
+              "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+              "Do not put the primary 3D scene inside a decorative card.",
+              "Include reduced-motion and non-WebGL fallback content.",
+              "Keep geometry/textures performant and avoid blocking page content."
+            ],
+            "verification": [
+              "Playwright screenshot",
+              "canvas-pixel/nonblank check",
+              "desktop/mobile framing check",
+              "interaction smoke",
+              "performance budget"
+            ],
+            "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+          },
+          {
+            "id": "cinematic_scroll",
+            "implementation": [
+              "scroll sections",
+              "pinned scenes",
+              "layered media",
+              "progressive narrative",
+              "reduced-motion path"
+            ],
+            "intent": "Use scroll progression, layered sections, pinned moments, and reveal timing to tell a product or brand story.",
+            "libraries": [
+              "GSAP optional",
+              "Framer Motion",
+              "CSS scroll-driven animations where supported"
+            ],
+            "name": "Cinematic Scroll",
+            "rejection_rules": [
+              "Reject if animation causes clipped text, unreadable sections, or huge blank gaps."
+            ],
+            "rules": [
+              "Scroll effects must explain progression, not hide content.",
+              "Always provide a reduced-motion alternative.",
+              "Avoid scroll-jacking that blocks normal reading or keyboard navigation."
+            ],
+            "verification": [
+              "desktop/mobile screenshots across scroll positions",
+              "reduced-motion fallback",
+              "performance budget",
+              "no horizontal overflow"
+            ],
+            "when_to_use": "Launch pages, campaigns, construction/project stories, high-end product stories, AI product demos, and immersive marketing pages."
+          },
+          {
+            "id": "product_demo_motion",
+            "implementation": [
+              "stateful demo panel",
+              "tabs",
+              "command/result flow",
+              "status transitions",
+              "copyable examples"
+            ],
+            "intent": "Show how the product changes state: before, action, approval, result, and proof.",
+            "libraries": [
+              "Framer Motion",
+              "CSS transitions",
+              "Lottie optional only when asset-backed"
+            ],
+            "name": "Product Demo Motion",
+            "rejection_rules": [
+              "Reject if motion is just decorative floating cards or fake dashboard numbers."
+            ],
+            "rules": [
+              "Motion must clarify product workflow and state change.",
+              "Use code/product proof rather than stock illustration.",
+              "Keep animations interruptible and accessible."
+            ],
+            "verification": [
+              "browser screenshot",
+              "interaction smoke",
+              "reduced-motion fallback",
+              "dead-button check"
+            ],
+            "when_to_use": "Developer tools, AI SaaS, fintech, productivity, automation, and technical product pages."
+          },
+          {
+            "id": "editorial_luxury",
+            "implementation": [
+              "full-bleed media",
+              "editorial grid",
+              "material/detail imagery",
+              "subtle reveal transitions"
+            ],
+            "intent": "Create a premium, art-directed experience with restraint, asymmetry, tactile imagery, and slow confidence.",
+            "libraries": [
+              "Framer Motion optional",
+              "CSS transitions"
+            ],
+            "name": "Editorial Luxury",
+            "rejection_rules": [
+              "Reject if it looks like generic SaaS, ecommerce template clutter, or loud discount marketing."
+            ],
+            "rules": [
+              "Motion should feel slow, intentional, and expensive, not busy.",
+              "Never bury text inside cards when the hero should be media-led.",
+              "Use imagery, texture, and type rhythm as the main signal."
+            ],
+            "verification": [
+              "screenshot composition audit",
+              "image rendering check",
+              "reduced-motion fallback",
+              "viewport scale check"
+            ],
+            "when_to_use": "Luxury, fashion, portfolio, creative, hospitality, architecture, and visual brands."
+          },
+          {
+            "id": "parallax_story",
+            "implementation": [
+              "parallax layers",
+              "foreground subject",
+              "background media",
+              "section depth",
+              "reduced-motion path"
+            ],
+            "intent": "Use depth, foreground/background motion, and anchored content to create visual drama without requiring full 3D.",
+            "libraries": [
+              "Framer Motion optional",
+              "CSS transforms",
+              "IntersectionObserver"
+            ],
+            "name": "Parallax Story",
+            "rejection_rules": [
+              "Reject if parallax is decorative noise or text overlaps media."
+            ],
+            "rules": [
+              "Parallax must preserve readability at every scroll position.",
+              "Keep layer count modest for performance.",
+              "Disable or simplify parallax for reduced-motion users."
+            ],
+            "verification": [
+              "scroll screenshot audit",
+              "performance budget",
+              "reduced-motion fallback",
+              "mobile no-overlap check"
+            ],
+            "when_to_use": "Travel, real estate, construction, fashion, portfolio, NGO field stories, and visual company sites."
+          }
+        ],
+        "primary": {
+          "id": "interactive_3d",
+          "implementation": [
+            "full-bleed canvas",
+            "camera/framing",
+            "lighting",
+            "interactive object states",
+            "fallback image/static path"
+          ],
+          "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+          "libraries": [
+            "Three.js",
+            "@react-three/fiber",
+            "@react-three/drei",
+            "Framer Motion optional"
+          ],
+          "name": "Interactive 3D",
+          "rejection_rules": [
+            "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+          ],
+          "rules": [
+            "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+            "Do not put the primary 3D scene inside a decorative card.",
+            "Include reduced-motion and non-WebGL fallback content.",
+            "Keep geometry/textures performant and avoid blocking page content."
+          ],
+          "verification": [
+            "Playwright screenshot",
+            "canvas-pixel/nonblank check",
+            "desktop/mobile framing check",
+            "interaction smoke",
+            "performance budget"
+          ],
+          "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+        },
+        "route": "home",
+        "rules": [
+          "Pick interaction libraries from the mode; do not add heavy animation libraries unless the mode benefits from them.",
+          "Every motion/3D/parallax effect must have a user-facing purpose and a reduced-motion or fallback path.",
+          "Friday implementation must verify screenshots, responsiveness, interaction smoke, and performance before claiming visual quality.",
+          "Primary immersive scenes must be full-bleed or unframed, nonblank, correctly framed, and meaningful."
+        ]
+      },
+      "forbidden_visible_text": [
+        "Home 1",
+        "Home 2",
+        "Service 1",
+        "Service 2",
+        "About 1",
+        "Contact 1",
+        "Lorem ipsum",
+        "Independent service studio",
+        "A clear four-page website"
+      ],
+      "implementation_rule": "Friday may adapt spacing, typography, and layout for Next.js implementation; do not copy exaggerated Stitch scale literally.",
+      "motion_rule": "Use animation, parallax, 3D, and immersive scenes only when the selected experience mode calls for them; always include reduced-motion or static fallback.",
+      "normalization_rule": "Stitch may exaggerate scale; Friday must normalize typography, spacing, and viewport height during Next.js implementation.",
+      "page_label_rule": "Do not render page labels as giant hero eyebrows, standalone H1 text, or numbered section names.",
+      "quality_bar": [
+        "The first viewport must immediately communicate the specific brand/domain.",
+        "Every page must contain more than a hero: proof, services/features, trust, and next action.",
+        "Links and forms must have real destinations or preview-safe behavior.",
+        "Friday may adapt Stitch scale to professional production proportions."
+      ],
+      "scale_rule": "Use restrained production UI scale: no oversized headings that exceed one viewport, no decorative empty whitespace, and no section taller than its useful content.",
+      "screen_rule": "Produce a complete desktop web page with header/navigation, main content, page-specific sections, conversion action, and footer; do not return only a logo, icon, brand mark, or design-system asset."
+    },
+    "design_system_context": {
+      "experience": {
+        "allowed_modes": [
+          {
+            "id": "interactive_3d",
+            "implementation": [
+              "full-bleed canvas",
+              "camera/framing",
+              "lighting",
+              "interactive object states",
+              "fallback image/static path"
+            ],
+            "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+            "libraries": [
+              "Three.js",
+              "@react-three/fiber",
+              "@react-three/drei",
+              "Framer Motion optional"
+            ],
+            "name": "Interactive 3D",
+            "rejection_rules": [
+              "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+            ],
+            "rules": [
+              "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+              "Do not put the primary 3D scene inside a decorative card.",
+              "Include reduced-motion and non-WebGL fallback content.",
+              "Keep geometry/textures performant and avoid blocking page content."
+            ],
+            "verification": [
+              "Playwright screenshot",
+              "canvas-pixel/nonblank check",
+              "desktop/mobile framing check",
+              "interaction smoke",
+              "performance budget"
+            ],
+            "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+          },
+          {
+            "id": "cinematic_scroll",
+            "implementation": [
+              "scroll sections",
+              "pinned scenes",
+              "layered media",
+              "progressive narrative",
+              "reduced-motion path"
+            ],
+            "intent": "Use scroll progression, layered sections, pinned moments, and reveal timing to tell a product or brand story.",
+            "libraries": [
+              "GSAP optional",
+              "Framer Motion",
+              "CSS scroll-driven animations where supported"
+            ],
+            "name": "Cinematic Scroll",
+            "rejection_rules": [
+              "Reject if animation causes clipped text, unreadable sections, or huge blank gaps."
+            ],
+            "rules": [
+              "Scroll effects must explain progression, not hide content.",
+              "Always provide a reduced-motion alternative.",
+              "Avoid scroll-jacking that blocks normal reading or keyboard navigation."
+            ],
+            "verification": [
+              "desktop/mobile screenshots across scroll positions",
+              "reduced-motion fallback",
+              "performance budget",
+              "no horizontal overflow"
+            ],
+            "when_to_use": "Launch pages, campaigns, construction/project stories, high-end product stories, AI product demos, and immersive marketing pages."
+          },
+          {
+            "id": "product_demo_motion",
+            "implementation": [
+              "stateful demo panel",
+              "tabs",
+              "command/result flow",
+              "status transitions",
+              "copyable examples"
+            ],
+            "intent": "Show how the product changes state: before, action, approval, result, and proof.",
+            "libraries": [
+              "Framer Motion",
+              "CSS transitions",
+              "Lottie optional only when asset-backed"
+            ],
+            "name": "Product Demo Motion",
+            "rejection_rules": [
+              "Reject if motion is just decorative floating cards or fake dashboard numbers."
+            ],
+            "rules": [
+              "Motion must clarify product workflow and state change.",
+              "Use code/product proof rather than stock illustration.",
+              "Keep animations interruptible and accessible."
+            ],
+            "verification": [
+              "browser screenshot",
+              "interaction smoke",
+              "reduced-motion fallback",
+              "dead-button check"
+            ],
+            "when_to_use": "Developer tools, AI SaaS, fintech, productivity, automation, and technical product pages."
+          },
+          {
+            "id": "editorial_luxury",
+            "implementation": [
+              "full-bleed media",
+              "editorial grid",
+              "material/detail imagery",
+              "subtle reveal transitions"
+            ],
+            "intent": "Create a premium, art-directed experience with restraint, asymmetry, tactile imagery, and slow confidence.",
+            "libraries": [
+              "Framer Motion optional",
+              "CSS transitions"
+            ],
+            "name": "Editorial Luxury",
+            "rejection_rules": [
+              "Reject if it looks like generic SaaS, ecommerce template clutter, or loud discount marketing."
+            ],
+            "rules": [
+              "Motion should feel slow, intentional, and expensive, not busy.",
+              "Never bury text inside cards when the hero should be media-led.",
+              "Use imagery, texture, and type rhythm as the main signal."
+            ],
+            "verification": [
+              "screenshot composition audit",
+              "image rendering check",
+              "reduced-motion fallback",
+              "viewport scale check"
+            ],
+            "when_to_use": "Luxury, fashion, portfolio, creative, hospitality, architecture, and visual brands."
+          },
+          {
+            "id": "parallax_story",
+            "implementation": [
+              "parallax layers",
+              "foreground subject",
+              "background media",
+              "section depth",
+              "reduced-motion path"
+            ],
+            "intent": "Use depth, foreground/background motion, and anchored content to create visual drama without requiring full 3D.",
+            "libraries": [
+              "Framer Motion optional",
+              "CSS transforms",
+              "IntersectionObserver"
+            ],
+            "name": "Parallax Story",
+            "rejection_rules": [
+              "Reject if parallax is decorative noise or text overlaps media."
+            ],
+            "rules": [
+              "Parallax must preserve readability at every scroll position.",
+              "Keep layer count modest for performance.",
+              "Disable or simplify parallax for reduced-motion users."
+            ],
+            "verification": [
+              "scroll screenshot audit",
+              "performance budget",
+              "reduced-motion fallback",
+              "mobile no-overlap check"
+            ],
+            "when_to_use": "Travel, real estate, construction, fashion, portfolio, NGO field stories, and visual company sites."
+          }
+        ],
+        "primary": {
+          "id": "interactive_3d",
+          "implementation": [
+            "full-bleed canvas",
+            "camera/framing",
+            "lighting",
+            "interactive object states",
+            "fallback image/static path"
+          ],
+          "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+          "libraries": [
+            "Three.js",
+            "@react-three/fiber",
+            "@react-three/drei",
+            "Framer Motion optional"
+          ],
+          "name": "Interactive 3D",
+          "rejection_rules": [
+            "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+          ],
+          "rules": [
+            "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+            "Do not put the primary 3D scene inside a decorative card.",
+            "Include reduced-motion and non-WebGL fallback content.",
+            "Keep geometry/textures performant and avoid blocking page content."
+          ],
+          "verification": [
+            "Playwright screenshot",
+            "canvas-pixel/nonblank check",
+            "desktop/mobile framing check",
+            "interaction smoke",
+            "performance budget"
+          ],
+          "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+        },
+        "route": "home",
+        "rules": [
+          "Pick interaction libraries from the mode; do not add heavy animation libraries unless the mode benefits from them.",
+          "Every motion/3D/parallax effect must have a user-facing purpose and a reduced-motion or fallback path.",
+          "Friday implementation must verify screenshots, responsiveness, interaction smoke, and performance before claiming visual quality.",
+          "Primary immersive scenes must be full-bleed or unframed, nonblank, correctly framed, and meaningful."
+        ]
+      },
+      "industry": "luxury",
+      "style_profile": {
+        "description": "User's preferred production Next.js shape: thin app routes, feature components, services, stores, hooks, lib, shared types, and tests.",
+        "forbidden_paths": [
+          "src/components/WorkspaceConsole.tsx",
+          "src/components/WorkItemCard.tsx"
+        ],
+        "framework": "nextjs",
+        "id": "nexus_forge_nextjs",
+        "name": "NexusForge Next.js",
+        "required_paths": [
+          "src/app",
+          "src/components",
+          "src/components/ui",
+          "src/components/layout",
+          "src/services",
+          "src/store",
+          "src/hooks",
+          "src/lib",
+          "src/types",
+          "src/test",
+          "components.json",
+          "vitest.config.ts"
+        ],
+        "rules": [
+          "Use src/app only for routes, layouts, route handlers, and route-local boundaries.",
+          "Put real feature UI in src/components/<FeatureName>.",
+          "Put generic primitives in src/components/ui.",
+          "Put navigation and shell components in src/components/layout.",
+          "Put API clients and response normalization in src/services.",
+          "Put shared browser state in src/store.",
+          "Put reusable client workflows in src/hooks.",
+          "Put domain helpers, utilities, security helpers, and product contracts in src/lib.",
+          "Put shared DTOs and UI contracts in src/types.",
+          "Keep tests colocated in __tests__ or shared under src/test.",
+          "Do not put large feature UI, state, services, and route logic into one blob."
+        ],
+        "visible_branding_rule": "Profile names are internal memory. Never render NexusForge or profile labels unless they are the user's actual product brand."
+      },
+      "surface": "marketing_website",
+      "tokens": {
+        "accent": "use accents to guide interaction, not as decoration",
+        "color_mode": "scene-led with enough contrast for overlay text",
+        "components": "full-bleed canvas, fallback poster, overlay controls, section anchors",
+        "density": "immersive but still readable",
+        "motion": "real-time or scroll-reactive 3D with reduced-motion/static fallback"
+      }
+    },
+    "emotional_intent": "desire, restraint, intimacy, confidence, exclusivity",
+    "experience_mode": {
+      "allowed_modes": [
+        {
+          "id": "interactive_3d",
+          "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+          "libraries": [
+            "Three.js",
+            "@react-three/fiber",
+            "@react-three/drei",
+            "Framer Motion optional"
+          ],
+          "name": "Interactive 3D",
+          "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+        },
+        {
+          "id": "cinematic_scroll",
+          "intent": "Use scroll progression, layered sections, pinned moments, and reveal timing to tell a product or brand story.",
+          "libraries": [
+            "GSAP optional",
+            "Framer Motion",
+            "CSS scroll-driven animations where supported"
+          ],
+          "name": "Cinematic Scroll",
+          "when_to_use": "Launch pages, campaigns, construction/project stories, high-end product stories, AI product demos, and immersive marketing pages."
+        },
+        {
+          "id": "product_demo_motion",
+          "intent": "Show how the product changes state: before, action, approval, result, and proof.",
+          "libraries": [
+            "Framer Motion",
+            "CSS transitions",
+            "Lottie optional only when asset-backed"
+          ],
+          "name": "Product Demo Motion",
+          "when_to_use": "Developer tools, AI SaaS, fintech, productivity, automation, and technical product pages."
+        },
+        {
+          "id": "editorial_luxury",
+          "intent": "Create a premium, art-directed experience with restraint, asymmetry, tactile imagery, and slow confidence.",
+          "libraries": [
+            "Framer Motion optional",
+            "CSS transitions"
+          ],
+          "name": "Editorial Luxury",
+          "when_to_use": "Luxury, fashion, portfolio, creative, hospitality, architecture, and visual brands."
+        },
+        {
+          "id": "parallax_story",
+          "intent": "Use depth, foreground/background motion, and anchored content to create visual drama without requiring full 3D.",
+          "libraries": [
+            "Framer Motion optional",
+            "CSS transforms",
+            "IntersectionObserver"
+          ],
+          "name": "Parallax Story",
+          "when_to_use": "Travel, real estate, construction, fashion, portfolio, NGO field stories, and visual company sites."
+        }
+      ],
+      "fallback_requirement": "Must include no-WebGL/static fallback and prefers-reduced-motion fallback.",
+      "implementation_notes": [
+        "full-bleed canvas",
+        "camera/framing",
+        "lighting",
+        "interactive object states",
+        "fallback image/static path",
+        "Use a visible canvas/WebGL or scene layer only when the selected mode requires it.",
+        "Provide a static fallback poster or semantic content path for no-WebGL and reduced-motion users.",
+        "Keep the primary scene full-bleed or unframed; do not bury it inside a decorative card."
+      ],
+      "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+      "mode": "interactive_3d",
+      "mode_name": "Interactive 3D",
+      "motion_rules": [
+        "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+        "Do not put the primary 3D scene inside a decorative card.",
+        "Include reduced-motion and non-WebGL fallback content.",
+        "Keep geometry/textures performant and avoid blocking page content.",
+        "Pick interaction libraries from the mode; do not add heavy animation libraries unless the mode benefits from them.",
+        "Every motion/3D/parallax effect must have a user-facing purpose and a reduced-motion or fallback path.",
+        "Friday implementation must verify screenshots, responsiveness, interaction smoke, and performance before claiming visual quality.",
+        "Primary immersive scenes must be full-bleed or unframed, nonblank, correctly framed, and meaningful."
+      ],
+      "performance_budget": {
+        "asset_rule": "compress textures/media and avoid unbounded model sizes",
+        "frame_rate": "target smooth interaction on desktop and acceptable mobile fallback",
+        "initial_js": "keep immersive dependencies justified; lazy-load non-critical scene assets when possible"
+      },
+      "recommended_libraries": [
+        "Three.js",
+        "@react-three/fiber",
+        "@react-three/drei",
+        "Framer Motion optional"
+      ],
+      "rejection_rules": [
+        "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+      ],
+      "requires_canvas_check": true,
+      "requires_reduced_motion": true,
+      "verification_requirements": [
+        "Playwright screenshot",
+        "canvas-pixel/nonblank check",
+        "desktop/mobile framing check",
+        "interaction smoke",
+        "performance budget"
+      ],
+      "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+    },
+    "handoff_requirements": [
+      "Generate design variants first; frontend implementation may use only the selected accepted handoff.",
+      "Preserve the design intent, but normalize exaggerated Stitch scale for usable web/mobile viewports.",
+      "Friday may adapt spacing, typography, and layout for Next.js implementation; do not copy exaggerated Stitch scale literally.",
+      "Implement visible nonblank canvas/WebGL or scene proof only when the selected design calls for it.",
+      "Verify canvas/scene pixels and framing with Playwright before claiming the 3D/immersive experience works.",
+      "Include no-WebGL/static fallback and prefers-reduced-motion fallback.",
+      "Run Playwright/browser screenshot review after implementation.",
+      "Reject output with dead buttons, broken navigation, placeholder copy, route-label headings, or internal profile-name leaks.",
+      "Style rule: Use src/app only for routes, layouts, route handlers, and route-local boundaries.",
+      "Style rule: Put real feature UI in src/components/<FeatureName>.",
+      "Style rule: Put generic primitives in src/components/ui.",
+      "Style rule: Put navigation and shell components in src/components/layout.",
+      "Style rule: Put API clients and response normalization in src/services.",
+      "Style rule: Put shared browser state in src/store.",
+      "Style rule: Put reusable client workflows in src/hooks.",
+      "Style rule: Put domain helpers, utilities, security helpers, and product contracts in src/lib."
+    ],
+    "inspiration_references": [
+      {
+        "avoid": [
+          "coupon energy",
+          "crowded badges",
+          "loud gradients"
+        ],
+        "must_include": [
+          "material detail",
+          "craft proof",
+          "concierge CTA"
+        ],
+        "name": "Quiet editorial luxury",
+        "why": "Premium brands need restraint, materiality, white space, and concierge confidence."
+      },
+      {
+        "avoid": [
+          "stock-like hero",
+          "empty gradient panels",
+          "generic feature cards"
+        ],
+        "must_include": [
+          "specific hero",
+          "proof objects",
+          "clear CTA"
+        ],
+        "name": "Evidence-first product page",
+        "why": "Visitors should see proof, workflow, and CTA before decorative storytelling."
+      },
+      {
+        "avoid": [
+          "oversized type",
+          "absolute-positioned collage",
+          "unreadable microcopy"
+        ],
+        "must_include": [
+          "semantic sections",
+          "responsive grid",
+          "usable controls"
+        ],
+        "name": "Production interface handoff",
+        "why": "The design must convert into real components, not a static poster."
+      }
+    ],
+    "learned_rules": {
+      "available": true,
+      "domain": "design",
+      "prompt_lines": [
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Launch readiness. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Launch readiness.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Launch readiness. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Launch readiness.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Launch readiness. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Launch readiness.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Open workspace. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Open workspace. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Open workspace. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Open workspace. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Open workspace. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+        "NEVER: Quality failure: Visible surfaces contain scaffold/generic copy Open workspace. - Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+        "NEVER: Quality failure: Prepared 4 website page design runs 0/4 selected handoffs. - Reject or fix this pattern before handoff: Prepared 4 website page design run(s); 0/4 selected handoff(s)."
+      ],
+      "request": "Build a cinematic luxury landing page for Nocturne Audio, a premium spatial-audio headphone brand. It should feel immersive, tactile, nocturnal, editorial, and product-led. The first viewport should not be a generic split SaaS hero. Prefer a full-bleed product/media hero or immersive scene with the headphone as the first-viewport signal, with refined launch copy, product close-up moments, soundstage proof, creator testimonials, and a conversion path for preorders. Use rich dark materials, controlled contrast, precise typography, and subtle motion direction; avoid generic dashboard cards, operations copy, backend/Web3 language, and bland business-consulting phrasing.",
+      "rules": [
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Launch readiness.",
+          "created_at": "2026-06-04T16:39:35.822638+00:00",
+          "id": 356,
+          "memory_type": "design_failure",
+          "relevance": 1.49,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1325\\test_autonomous_coding_blocks_0\\turner-construction-company-web",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Launch readiness."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Launch readiness.",
+          "created_at": "2026-06-04T16:38:35.570400+00:00",
+          "id": 322,
+          "memory_type": "design_failure",
+          "relevance": 1.49,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\tmpbx7tcs90\\turner-construction-company-web",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Launch readiness."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Launch readiness.",
+          "created_at": "2026-06-04T16:35:35.415731+00:00",
+          "id": 302,
+          "memory_type": "design_failure",
+          "relevance": 1.49,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1322\\test_autonomous_coding_blocks_0\\turner-construction-company-web",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Launch readiness."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+          "created_at": "2026-06-04T16:39:41.678482+00:00",
+          "id": 371,
+          "memory_type": "design_failure",
+          "relevance": 1.44,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1325\\test_autonomous_coding_remaps_0\\workspace\\friday-projects\\vibeops-hackathon-mvp",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Open workspace."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+          "created_at": "2026-06-04T16:39:33.574969+00:00",
+          "id": 351,
+          "memory_type": "design_failure",
+          "relevance": 1.44,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1325\\test_autonomous_coding_scaffol1\\university-management-web",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Open workspace."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+          "created_at": "2026-06-04T16:39:24.905806+00:00",
+          "id": 344,
+          "memory_type": "design_failure",
+          "relevance": 1.44,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1325\\test_autonomous_coding_scaffol0\\vibeops-hackathon-mvp",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Open workspace."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+          "created_at": "2026-06-04T16:35:41.847383+00:00",
+          "id": 317,
+          "memory_type": "design_failure",
+          "relevance": 1.44,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1322\\test_autonomous_coding_remaps_0\\workspace\\friday-projects\\vibeops-hackathon-mvp",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Open workspace."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+          "created_at": "2026-06-04T16:35:32.964965+00:00",
+          "id": 297,
+          "memory_type": "design_failure",
+          "relevance": 1.44,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1322\\test_autonomous_coding_scaffol1\\university-management-web",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Open workspace."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Visible surfaces contain scaffold/generic copy: Open workspace.",
+          "created_at": "2026-06-04T16:35:25.630064+00:00",
+          "id": 290,
+          "memory_type": "design_failure",
+          "relevance": 1.44,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1322\\test_autonomous_coding_scaffol0\\vibeops-hackathon-mvp",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "generic_scaffold_copy"
+          ],
+          "title": "Quality failure: Visible surfaces contain scaffold/generic copy Open workspace."
+        },
+        {
+          "confidence": 0.84,
+          "content": "Reject or fix this pattern before handoff: Prepared 4 website page design run(s); 0/4 selected handoff(s).",
+          "created_at": "2026-06-04T16:39:35.854382+00:00",
+          "id": 358,
+          "memory_type": "design_failure",
+          "relevance": 1.39,
+          "root": "C:\\Users\\HomePC\\AppData\\Local\\Temp\\pytest-of-HomePC\\pytest-1325\\test_autonomous_coding_blocks_0\\turner-construction-company-web",
+          "tags": [
+            "learning",
+            "quality",
+            "design",
+            "design_handoff_blocked"
+          ],
+          "title": "Quality failure: Prepared 4 website page design runs 0/4 selected handoffs."
+        }
+      ],
+      "summary": "10 learned rule(s) selected for this request."
+    },
+    "message": "The brand is scarce, crafted, and worth slowing down for.",
+    "output_contract": {
+      "minimum_depth": "5 meaningful sections for a landing/website page",
+      "must_return": [
+        "a complete desktop screen/page, not a logo or isolated component",
+        "semantic sections with readable visible copy",
+        "responsive structure that can be converted to Next.js components",
+        "all visible buttons and links named as real actions",
+        "experience-mode evidence: canvas/scene, scroll behavior, product state transition, or a clear static-polished reason"
+      ],
+      "rejection_if": [
+        "the first viewport is mostly blank space",
+        "hero text is clipped or too large for the viewport",
+        "copy contains numbered artifacts like Home 1 or Service 2",
+        "layout looks like a generic SaaS scaffold unrelated to the industry",
+        "all variants reuse the same left-text/right-card hero structure without a composition-specific reason",
+        "design cannot be implemented without a giant one-file blob",
+        "the requested 3D/canvas/immersive scene is missing, blank, tiny, hidden, or only decorative",
+        "there is no static fallback for no-WebGL or reduced-motion users"
+      ]
+    },
+    "product_goal": "Help visitors understand Nocturne Audio, trust the offer, compare the value, and take the next step without generic filler or oversized brochure sections.",
+    "section_blueprint": [
+      {
+        "must_show": [
+          "brand statement",
+          "hero image",
+          "concierge CTA"
+        ],
+        "purpose": "Create desire with brand, material detail, and a discreet action.",
+        "section": "Hero",
+        "visual_objects": [
+          "editorial hero",
+          "material close-up"
+        ]
+      },
+      {
+        "must_show": [
+          "craft",
+          "materials",
+          "heritage"
+        ],
+        "purpose": "Show why the object/service is rare and credible.",
+        "section": "Provenance",
+        "visual_objects": [
+          "story panel",
+          "detail modules"
+        ]
+      },
+      {
+        "must_show": [
+          "collection",
+          "fit",
+          "scarcity"
+        ],
+        "purpose": "Let the visitor inspect options without ecommerce clutter.",
+        "section": "Collection or offer",
+        "visual_objects": [
+          "lookbook grid",
+          "product cards"
+        ]
+      },
+      {
+        "must_show": [
+          "appointment",
+          "inquiry",
+          "response promise"
+        ],
+        "purpose": "Make the next step private and high-touch.",
+        "section": "Concierge path",
+        "visual_objects": [
+          "concierge form",
+          "contact strip"
+        ]
+      }
+    ],
+    "site_continuity": {
+      "artifact_scope": "",
+      "page_label": "home",
+      "rules": [
+        "Use this shared site design system for every page in the same website.",
+        "Do not let per-page Stitch generations drift in typography, palette, navigation, button style, or brand voice.",
+        "Each page may change layout emphasis, but must preserve the global brand system and navigation model."
+      ],
+      "site_design_system": {
+        "brand_system": {
+          "accessibility": [
+            "AA contrast for body text",
+            "visible focus states",
+            "tap targets at least 44px on mobile"
+          ],
+          "brand_name": "Nocturne Audio",
+          "color_tokens": {
+            "accent": "#9f6b3e",
+            "accent_2": "#2f2924",
+            "bg": "#f7f1e8",
+            "border": "#ded2c3",
+            "danger": "#9f1239",
+            "muted": "#71675e",
+            "success": "#3f6f53",
+            "surface": "#fffaf3",
+            "surface_2": "#14110f",
+            "text": "#17120d",
+            "warning": "#b7791f"
+          },
+          "do_not_render": [
+            "internal style profile names",
+            "raw prompt labels",
+            "provider/debug labels"
+          ],
+          "icon_style": "minimal marks; use icons sparingly",
+          "imagery_direction": "macro product details, craftsmanship, architecture, human service moments",
+          "logo_direction": "quiet wordmark for Nocturne Audio; refined spacing, no loud badge",
+          "motion_style": "slow, restrained reveals; no bouncy UI",
+          "radius": "0px to 6px; editorial, not pill-heavy",
+          "radius_system": "0px to 6px; editorial, not pill-heavy",
+          "spacing_scale": {
+            "lg": "24px",
+            "md": "16px",
+            "section": "72px desktop / 44px mobile",
+            "sm": "8px",
+            "xl": "40px",
+            "xs": "4px"
+          },
+          "tokens": {
+            "accent": "#9f6b3e",
+            "accent_2": "#2f2924",
+            "bg": "#f7f1e8",
+            "border": "#ded2c3",
+            "danger": "#9f1239",
+            "muted": "#71675e",
+            "success": "#3f6f53",
+            "surface": "#fffaf3",
+            "surface_2": "#14110f",
+            "text": "#17120d",
+            "warning": "#b7791f"
+          },
+          "typography": {
+            "body": "clean readable sans",
+            "display": "editorial serif or high-contrast display",
+            "mono": "not primary"
+          }
+        },
+        "global_visual_language": {
+          "direction": "quiet luxury with editorial restraint and tactile detail",
+          "imagery": "macro product details, craftsmanship, architecture, human service moments",
+          "layout_signature": "immersive hero, provenance story, product/editorial modules, appointment or concierge path",
+          "palette": "warm ivory, ink, charcoal, metallic or jewel accent used sparingly",
+          "typography": "refined serif or high-contrast display paired with quiet readable body type"
+        },
+        "industry": "luxury",
+        "navigation": [
+          "Atelier",
+          "Collections",
+          "Process",
+          "Concierge"
+        ],
+        "pages": [
+          {
+            "focus": "complete product landing page with hero, proof/status strip, capabilities, how it works, architecture/security proof, plugin or ecosystem story, and conversion call to action",
+            "id": "home",
+            "label": "Home",
+            "navigation": "Home (/)",
+            "route": "/"
+          }
+        ],
+        "product_name": "Nocturne Audio",
+        "shared_components": [
+          "full-bleed scene/canvas surface",
+          "scene fallback poster/content",
+          "reduced-motion controls",
+          "editorial hero",
+          "material image field",
+          "provenance cards",
+          "lookbook modules",
+          "concierge inquiry form"
+        ],
+        "style_profile_id": "nexus_forge_nextjs",
+        "surface": "marketing_website",
+        "version": "site_design_system_v1"
+      },
+      "site_design_system_path": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-nocturne-audio-test\\.friday\\design\\site-design-system.json"
+    },
+    "source": "Friday design provider brief",
+    "target_audience": [
+      "first-time visitors deciding whether to trust the product",
+      "high-intent private clients",
+      "collectors",
+      "concierge buyers",
+      "brand loyalists"
+    ],
+    "taxonomy_prompt_profile": {
+      "avoid_words": [
+        "discount",
+        "deal",
+        "limited-time offer",
+        "all-in-one solution"
+      ],
+      "components": [
+        "editorial hero",
+        "material image field",
+        "provenance cards",
+        "lookbook modules",
+        "concierge inquiry form"
+      ],
+      "copy_voice": "spare, sensorial, confident, never loud",
+      "decision_moment": "A high-intent private client is deciding whether the brand feels rare, crafted, and worthy of a personal inquiry.",
+      "design_answer": "Use restraint, material detail, provenance, appointment paths, and quiet confidence instead of badges or discounts.",
+      "emotional_feel": "desire, restraint, intimacy, confidence, exclusivity",
+      "headline_directions": [
+        "Crafted for private clients who notice the difference.",
+        "A quieter standard of luxury, made visible.",
+        "Objects and experiences with provenance."
+      ],
+      "industry": "luxury",
+      "layout_signature": "immersive hero, provenance story, product/editorial modules, appointment or concierge path",
+      "message": "The brand is scarce, crafted, and worth slowing down for.",
+      "microcopy": [
+        "Request concierge access",
+        "View the collection",
+        "Private appointment"
+      ],
+      "primary_objection": "The experience can feel mass-market, loud, or insufficiently premium.",
+      "sections": [
+        [
+          "Hero",
+          "Create desire with brand, material detail, and a discreet action.",
+          [
+            "brand statement",
+            "hero image",
+            "concierge CTA"
+          ],
+          [
+            "editorial hero",
+            "material close-up"
+          ]
+        ],
+        [
+          "Provenance",
+          "Show why the object/service is rare and credible.",
+          [
+            "craft",
+            "materials",
+            "heritage"
+          ],
+          [
+            "story panel",
+            "detail modules"
+          ]
+        ],
+        [
+          "Collection or offer",
+          "Let the visitor inspect options without ecommerce clutter.",
+          [
+            "collection",
+            "fit",
+            "scarcity"
+          ],
+          [
+            "lookbook grid",
+            "product cards"
+          ]
+        ],
+        [
+          "Concierge path",
+          "Make the next step private and high-touch.",
+          [
+            "appointment",
+            "inquiry",
+            "response promise"
+          ],
+          [
+            "concierge form",
+            "contact strip"
+          ]
+        ]
+      ],
+      "trust_signals": [
+        "craft proof",
+        "provenance",
+        "atelier detail",
+        "private appointment",
+        "concierge access"
+      ],
+      "visual_language": "large negative space, close-up materials, elegant asymmetry, slow reveal"
+    },
+    "user_intent": {
+      "industry": "luxury",
+      "page_scope": "home",
+      "product_name": "Nocturne Audio",
+      "raw_request": "Build a cinematic luxury landing page for Nocturne Audio, a premium spatial-audio headphone brand. It should feel immersive, tactile, nocturnal, editorial, and product-led. The first viewport should not be a generic split SaaS hero. Prefer a full-bleed product/media hero or immersive scene with the headphone as the first-viewport signal, with refined launch copy, product close-up moments, soundstage proof, creator testimonials, and a conversion path for preorders. Use rich dark materials, controlled contrast, precise typography, and subtle motion direction; avoid generic dashboard cards, operations copy, backend/Web3 language, and bland business-consulting phrasing.",
+      "requested_stack": "Next.js web app",
+      "surface": "marketing_website"
+    },
+    "variant_briefs": [
+      {
+        "density": "compact product density",
+        "direction": "Editorial luxury lookbook with immersive imagery, provenance, and discreet concierge action.",
+        "evaluation_focus": "Will this be credible, usable, distinctive, and implementable in production?",
+        "must_change": "Use or reinterpret the Full-Bleed Media Hero composition archetype with the Interactive 3D experience mode. Change first-viewport structure, motion/interaction strategy, proof object placement, and section emphasis. Do not only change colors.",
+        "variant": "Variant 1"
+      },
+      {
+        "density": "compact product density",
+        "direction": "Boutique product story with material close-ups, collection modules, and appointment path.",
+        "evaluation_focus": "Will this be credible, usable, distinctive, and implementable in production?",
+        "must_change": "Use or reinterpret the Immersive Scene composition archetype with the Cinematic Scroll experience mode. Change first-viewport structure, motion/interaction strategy, proof object placement, and section emphasis. Do not only change colors.",
+        "variant": "Variant 2"
+      },
+      {
+        "density": "compact product density",
+        "direction": "Private-client service page with restrained typography, trust cues, and high-touch contact flow.",
+        "evaluation_focus": "Will this be credible, usable, distinctive, and implementable in production?",
+        "must_change": "Use or reinterpret the Editorial Asymmetric composition archetype with the Product Demo Motion experience mode. Change first-viewport structure, motion/interaction strategy, proof object placement, and section emphasis. Do not only change colors.",
+        "variant": "Variant 3"
+      }
+    ],
+    "version": "rich_stitch_context_v1",
+    "visual_context": {
+      "copy_voice": "spare, sensorial, confident, never loud",
+      "direction": "quiet luxury with editorial restraint and tactile detail",
+      "imagery": "macro product details, craftsmanship, architecture, human service moments",
+      "interaction_model": "concierge CTAs, appointment flows, lookbook navigation, restrained micro-interactions",
+      "layout_signature": "immersive hero, provenance story, product/editorial modules, appointment or concierge path",
+      "palette": "warm ivory, ink, charcoal, metallic or jewel accent used sparingly",
+      "tokens": {
+        "accent": "use accents to guide interaction, not as decoration",
+        "color_mode": "scene-led with enough contrast for overlay text",
+        "components": "full-bleed canvas, fallback poster, overlay controls, section anchors",
+        "density": "immersive but still readable",
+        "motion": "real-time or scroll-reactive 3D with reduced-motion/static fallback"
+      },
+      "typography": "refined serif or high-contrast display paired with quiet readable body type",
+      "visual_language": "large negative space, close-up materials, elegant asymmetry, slow reveal"
+    },
+    "visual_reference_memory": {
+      "assets": [],
+      "available": false,
+      "industry": "luxury",
+      "missing_reference_rule": "If no approved local visual references exist, rely on brand_system, taxonomy, and output_contract rather than generic SaaS defaults.",
+      "profile_evidence": [
+        "FRONTEND_STRUCTURE.md in C:/Users/HomePC/Desktop/my_project/frontend",
+        "components.json uses @/ aliases and lucide icons",
+        "Route groups: (auth), (dashboard), (test), public legal routes"
+      ],
+      "usage_rule": "Use available references for composition, density, tone, and polish only; do not copy protected assets or render local file paths as UI copy."
+    }
+  },
+  "design_strategy": {
+    "anti_patterns": [
+      "Do not use generic SaaS dashboard imagery for a non-SaaS company website.",
+      "Do not use huge empty hero sections or headings that consume the viewport.",
+      "Do not repeat page labels as section titles.",
+      "Do not use placeholder copy, raw prompts, debug labels, or Friday proof language.",
+      "Do not rely on only beige/cream cards unless the domain truly calls for it.",
+      "Do not use loud gradients, badge-heavy SaaS cards, discount language, or cluttered grids."
+    ],
+    "composition": {
+      "allowed_archetypes": [
+        {
+          "avoid": "Do not crop the meaningful subject away or hide the page behind a dark generic overlay.",
+          "first_viewport": "Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.",
+          "id": "full_bleed_media",
+          "name": "Full-Bleed Media Hero",
+          "visual_objects": "real photography, editorial image, material detail, environment, cinematic scene",
+          "why": "Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression."
+        },
+        {
+          "avoid": "Do not use a corporate hero grid or explain the experience only with paragraphs.",
+          "first_viewport": "Full-viewport scene or animated visual world with concise action copy, platform/action buttons, and visible gameplay or interaction cues.",
+          "id": "immersive_scene",
+          "name": "Immersive Scene",
+          "visual_objects": "3D/canvas scene, gameplay capture, character/world layer, live stats, motion cue",
+          "why": "Games, interactive products, and experiential launches should feel alive before explaining features."
+        },
+        {
+          "avoid": "Do not make all sections equal cards or repeat the same grid rhythm.",
+          "first_viewport": "Asymmetric headline, image crop, metadata, and proof arranged like a designed editorial spread.",
+          "id": "editorial_asymmetric",
+          "name": "Editorial Asymmetric",
+          "visual_objects": "large crop, caption, metadata, proof strip, case teaser",
+          "why": "Premium, creative, portfolio, fashion, and construction pages often need a composed editorial rhythm instead of a default grid."
+        },
+        {
+          "avoid": "Do not leave the viewport empty, poster-like, or disconnected from the next section.",
+          "first_viewport": "Centered or left-anchored headline over a quiet background system, with CTAs and the next proof section peeking into view.",
+          "id": "centered_statement",
+          "name": "Centered Statement Hero",
+          "visual_objects": "texture, subtle product backdrop, proof strip, brand mark, secondary content hint",
+          "why": "Strong brands or simple offers can lead with one confident statement and proof visible below."
+        },
+        {
+          "avoid": "Do not use a decorative empty card, generic analytics dashboard, or vague launch-path panel.",
+          "first_viewport": "Two-column hero is allowed only when the right side carries real proof: UI, code, map, product, case image, or workflow state.",
+          "id": "split_product_proof",
+          "name": "Split Product Proof",
+          "visual_objects": "product UI, code panel, domain image, proof card, status panel",
+          "why": "Use when the user must compare a clear promise with an inspectable product or domain proof object."
+        }
+      ],
+      "primary": {
+        "avoid": "Do not crop the meaningful subject away or hide the page behind a dark generic overlay.",
+        "first_viewport": "Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.",
+        "id": "full_bleed_media",
+        "name": "Full-Bleed Media Hero",
+        "visual_objects": "real photography, editorial image, material detail, environment, cinematic scene",
+        "why": "Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression."
+      },
+      "route": "home",
+      "rules": [
+        "Choose the composition before visual styling; colors and cards must not be the main differentiator.",
+        "Do not default to a left-text/right-card split hero unless Split Product Proof is the selected archetype.",
+        "Each generated variant must change the first viewport structure, not just copy, palette, or card styling.",
+        "If the archetype uses media or a scene, the media must carry real product/domain meaning.",
+        "For visual/physical brands, use image, material, scene, or place as the first-viewport evidence."
+      ]
+    },
+    "copy_voice": "spare, sensorial, confident, never loud",
+    "direction": "quiet luxury with editorial restraint and tactile detail",
+    "emotional_feel": "desire, restraint, intimacy, confidence, exclusivity",
+    "experience": {
+      "allowed_modes": [
+        {
+          "id": "interactive_3d",
+          "implementation": [
+            "full-bleed canvas",
+            "camera/framing",
+            "lighting",
+            "interactive object states",
+            "fallback image/static path"
+          ],
+          "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+          "libraries": [
+            "Three.js",
+            "@react-three/fiber",
+            "@react-three/drei",
+            "Framer Motion optional"
+          ],
+          "name": "Interactive 3D",
+          "rejection_rules": [
+            "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+          ],
+          "rules": [
+            "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+            "Do not put the primary 3D scene inside a decorative card.",
+            "Include reduced-motion and non-WebGL fallback content.",
+            "Keep geometry/textures performant and avoid blocking page content."
+          ],
+          "verification": [
+            "Playwright screenshot",
+            "canvas-pixel/nonblank check",
+            "desktop/mobile framing check",
+            "interaction smoke",
+            "performance budget"
+          ],
+          "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+        },
+        {
+          "id": "cinematic_scroll",
+          "implementation": [
+            "scroll sections",
+            "pinned scenes",
+            "layered media",
+            "progressive narrative",
+            "reduced-motion path"
+          ],
+          "intent": "Use scroll progression, layered sections, pinned moments, and reveal timing to tell a product or brand story.",
+          "libraries": [
+            "GSAP optional",
+            "Framer Motion",
+            "CSS scroll-driven animations where supported"
+          ],
+          "name": "Cinematic Scroll",
+          "rejection_rules": [
+            "Reject if animation causes clipped text, unreadable sections, or huge blank gaps."
+          ],
+          "rules": [
+            "Scroll effects must explain progression, not hide content.",
+            "Always provide a reduced-motion alternative.",
+            "Avoid scroll-jacking that blocks normal reading or keyboard navigation."
+          ],
+          "verification": [
+            "desktop/mobile screenshots across scroll positions",
+            "reduced-motion fallback",
+            "performance budget",
+            "no horizontal overflow"
+          ],
+          "when_to_use": "Launch pages, campaigns, construction/project stories, high-end product stories, AI product demos, and immersive marketing pages."
+        },
+        {
+          "id": "product_demo_motion",
+          "implementation": [
+            "stateful demo panel",
+            "tabs",
+            "command/result flow",
+            "status transitions",
+            "copyable examples"
+          ],
+          "intent": "Show how the product changes state: before, action, approval, result, and proof.",
+          "libraries": [
+            "Framer Motion",
+            "CSS transitions",
+            "Lottie optional only when asset-backed"
+          ],
+          "name": "Product Demo Motion",
+          "rejection_rules": [
+            "Reject if motion is just decorative floating cards or fake dashboard numbers."
+          ],
+          "rules": [
+            "Motion must clarify product workflow and state change.",
+            "Use code/product proof rather than stock illustration.",
+            "Keep animations interruptible and accessible."
+          ],
+          "verification": [
+            "browser screenshot",
+            "interaction smoke",
+            "reduced-motion fallback",
+            "dead-button check"
+          ],
+          "when_to_use": "Developer tools, AI SaaS, fintech, productivity, automation, and technical product pages."
+        },
+        {
+          "id": "editorial_luxury",
+          "implementation": [
+            "full-bleed media",
+            "editorial grid",
+            "material/detail imagery",
+            "subtle reveal transitions"
+          ],
+          "intent": "Create a premium, art-directed experience with restraint, asymmetry, tactile imagery, and slow confidence.",
+          "libraries": [
+            "Framer Motion optional",
+            "CSS transitions"
+          ],
+          "name": "Editorial Luxury",
+          "rejection_rules": [
+            "Reject if it looks like generic SaaS, ecommerce template clutter, or loud discount marketing."
+          ],
+          "rules": [
+            "Motion should feel slow, intentional, and expensive, not busy.",
+            "Never bury text inside cards when the hero should be media-led.",
+            "Use imagery, texture, and type rhythm as the main signal."
+          ],
+          "verification": [
+            "screenshot composition audit",
+            "image rendering check",
+            "reduced-motion fallback",
+            "viewport scale check"
+          ],
+          "when_to_use": "Luxury, fashion, portfolio, creative, hospitality, architecture, and visual brands."
+        },
+        {
+          "id": "parallax_story",
+          "implementation": [
+            "parallax layers",
+            "foreground subject",
+            "background media",
+            "section depth",
+            "reduced-motion path"
+          ],
+          "intent": "Use depth, foreground/background motion, and anchored content to create visual drama without requiring full 3D.",
+          "libraries": [
+            "Framer Motion optional",
+            "CSS transforms",
+            "IntersectionObserver"
+          ],
+          "name": "Parallax Story",
+          "rejection_rules": [
+            "Reject if parallax is decorative noise or text overlaps media."
+          ],
+          "rules": [
+            "Parallax must preserve readability at every scroll position.",
+            "Keep layer count modest for performance.",
+            "Disable or simplify parallax for reduced-motion users."
+          ],
+          "verification": [
+            "scroll screenshot audit",
+            "performance budget",
+            "reduced-motion fallback",
+            "mobile no-overlap check"
+          ],
+          "when_to_use": "Travel, real estate, construction, fashion, portfolio, NGO field stories, and visual company sites."
+        }
+      ],
+      "primary": {
+        "id": "interactive_3d",
+        "implementation": [
+          "full-bleed canvas",
+          "camera/framing",
+          "lighting",
+          "interactive object states",
+          "fallback image/static path"
+        ],
+        "intent": "Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.",
+        "libraries": [
+          "Three.js",
+          "@react-three/fiber",
+          "@react-three/drei",
+          "Framer Motion optional"
+        ],
+        "name": "Interactive 3D",
+        "rejection_rules": [
+          "Reject if canvas is blank, tiny, hidden, decorative only, or breaks mobile layout."
+        ],
+        "rules": [
+          "The 3D canvas must be visible, nonblank, framed, and meaningful.",
+          "Do not put the primary 3D scene inside a decorative card.",
+          "Include reduced-motion and non-WebGL fallback content.",
+          "Keep geometry/textures performant and avoid blocking page content."
+        ],
+        "verification": [
+          "Playwright screenshot",
+          "canvas-pixel/nonblank check",
+          "desktop/mobile framing check",
+          "interaction smoke",
+          "performance budget"
+        ],
+        "when_to_use": "3D websites, product configurators, technical products, games, architecture, spatial portfolios, and immersive launch pages."
+      },
+      "route": "home",
+      "rules": [
+        "Pick interaction libraries from the mode; do not add heavy animation libraries unless the mode benefits from them.",
+        "Every motion/3D/parallax effect must have a user-facing purpose and a reduced-motion or fallback path.",
+        "Friday implementation must verify screenshots, responsiveness, interaction smoke, and performance before claiming visual quality.",
+        "Primary immersive scenes must be full-bleed or unframed, nonblank, correctly framed, and meaningful."
+      ]
+    },
+    "imagery": "macro product details, craftsmanship, architecture, human service moments",
+    "industry": "luxury",
+    "interaction_model": "concierge CTAs, appointment flows, lookbook navigation, restrained micro-interactions",
+    "layout_signature": "immersive hero, provenance story, product/editorial modules, appointment or concierge path",
+    "message": "The brand is scarce, crafted, and worth slowing down for.",
+    "palette": "warm ivory, ink, charcoal, metallic or jewel accent used sparingly",
+    "prompt_block": "Art direction:\n- Surface: marketing_website\n- Industry/context: luxury\n- Message to communicate: The brand is scarce, crafted, and worth slowing down for.\n- Emotional feel: desire, restraint, intimacy, confidence, exclusivity\n- Creative direction: quiet luxury with editorial restraint and tactile detail\n- Visual language: large negative space, close-up materials, elegant asymmetry, slow reveal\n- Layout signature: immersive hero, provenance story, product/editorial modules, appointment or concierge path\n- Palette: warm ivory, ink, charcoal, metallic or jewel accent used sparingly\n- Typography: refined serif or high-contrast display paired with quiet readable body type\n- Imagery: macro product details, craftsmanship, architecture, human service moments\n- Interaction model: concierge CTAs, appointment flows, lookbook navigation, restrained micro-interactions\n- Copy voice: spare, sensorial, confident, never loud\n\nComposition direction:\n- Primary archetype: Full-Bleed Media Hero\n- Why this archetype: Physical, visual, luxury, fashion, construction, real estate, and story-led brands need place, material, or people to carry the first impression.\n- First viewport pattern: Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.\n- Alternative archetypes to explore:\n- Full-Bleed Media Hero: Full-bleed image, video, rendered scene, or strong visual background with text anchored directly on the media, not inside a floating card.\n- Immersive Scene: Full-viewport scene or animated visual world with concise action copy, platform/action buttons, and visible gameplay or interaction cues.\n- Editorial Asymmetric: Asymmetric headline, image crop, metadata, and proof arranged like a designed editorial spread.\n- Centered Statement Hero: Centered or left-anchored headline over a quiet background system, with CTAs and the next proof section peeking into view.\n- Composition rules:\n- Choose the composition before visual styling; colors and cards must not be the main differentiator.\n- Do not default to a left-text/right-card split hero unless Split Product Proof is the selected archetype.\n- Each generated variant must change the first viewport structure, not just copy, palette, or card styling.\n- If the archetype uses media or a scene, the media must carry real product/domain meaning.\n- For visual/physical brands, use image, material, scene, or place as the first-viewport evidence.\n\nExperience mode:\n- Primary mode: Interactive 3D\n- Intent: Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.\n- Recommended libraries: Three.js, @react-three/fiber, @react-three/drei, Framer Motion optional\n- Motion/interaction rules: The 3D canvas must be visible, nonblank, framed, and meaningful.; Do not put the primary 3D scene inside a decorative card.; Include reduced-motion and non-WebGL fallback content.; Keep geometry/textures performant and avoid blocking page content.\n- Alternative experience modes to explore:\n- Interactive 3D: Use a real 3D scene as the primary product/brand signal, with interaction and motion that reveals meaning.\n- Cinematic Scroll: Use scroll progression, layered sections, pinned moments, and reveal timing to tell a product or brand story.\n- Product Demo Motion: Show how the product changes state: before, action, approval, result, and proof.\n- Editorial Luxury: Create a premium, art-directed experience with restraint, asymmetry, tactile imagery, and slow confidence.\n- Verification requirements:\n- Playwright screenshot\n- canvas-pixel/nonblank check\n- desktop/mobile framing check\n- interaction smoke\n- performance budget\n\nGenerate distinct explorations, not small color swaps:\n- Variant 1: Editorial luxury lookbook with immersive imagery, provenance, and discreet concierge action.\n- Variant 2: Boutique product story with material close-ups, collection modules, and appointment path.\n- Variant 3: Private-client service page with restrained typography, trust cues, and high-touch contact flow.\n\nReject these visual/copy anti-patterns:\n- Do not use generic SaaS dashboard imagery for a non-SaaS company website.\n- Do not use huge empty hero sections or headings that consume the viewport.\n- Do not repeat page labels as section titles.\n- Do not use placeholder copy, raw prompts, debug labels, or Friday proof language.\n- Do not rely on only beige/cream cards unless the domain truly calls for it.\n- Do not use loud gradients, badge-heavy SaaS cards, discount language, or cluttered grids.\n\nQuality bar:\n- The first viewport must immediately communicate the specific brand/domain.\n- Every page must contain more than a hero: proof, services/features, trust, and next action.\n- Links and forms must have real destinations or preview-safe behavior.\n- Friday may adapt Stitch scale to professional production proportions.",
+    "quality_bar": [
+      "The first viewport must immediately communicate the specific brand/domain.",
+      "Every page must contain more than a hero: proof, services/features, trust, and next action.",
+      "Links and forms must have real destinations or preview-safe behavior.",
+      "Friday may adapt Stitch scale to professional production proportions."
+    ],
+    "route": "home",
+    "surface": "marketing_website",
+    "typography": "refined serif or high-contrast display paired with quiet readable body type",
+    "variant_directions": [
+      "Editorial luxury lookbook with immersive imagery, provenance, and discreet concierge action.",
+      "Boutique product story with material close-ups, collection modules, and appointment path.",
+      "Private-client service page with restrained typography, trust cues, and high-touch contact flow."
+    ],
+    "visual_language": "large negative space, close-up materials, elegant asymmetry, slow reveal"
+  },
+  "diversity": {
+    "required": false,
+    "samey": false,
+    "unique_count": 1
+  },
+  "frontend_handoff_allowed": false,
+  "frontend_handoff_required": true,
+  "generation_status": "",
+  "product_name": "Nocturne Audio",
+  "rejected_variants": [
+    {
+      "accepted": false,
+      "criteria": [
+        {
+          "id": "product_branding",
+          "label": "Uses the requested product brand and avoids internal profile names.",
+          "passed": true,
+          "score": 18,
+          "weight": 18
+        },
+        {
+          "id": "domain_fit",
+          "label": "Covers the real domain and recurring workflows in the request.",
+          "passed": false,
+          "score": 4,
+          "weight": 22
+        },
+        {
+          "id": "art_direction_fit",
+          "label": "Matches the selected creative direction instead of a generic scaffold or samey SaaS layout.",
+          "passed": true,
+          "score": 10,
+          "weight": 10
+        },
+        {
+          "id": "website_content_depth",
+          "label": "Shows a clear multi-page website, trust path, page-specific content, and conversion flow.",
+          "passed": true,
+          "score": 14,
+          "weight": 16
+        },
+        {
+          "id": "accessibility_semantics",
+          "label": "Includes semantic structure and accessible control hints.",
+          "passed": true,
+          "score": 9,
+          "weight": 12
+        },
+        {
+          "id": "copy_quality",
+          "label": "Avoids placeholders and uses specific, readable product copy.",
+          "passed": true,
+          "score": 14,
+          "weight": 14
+        },
+        {
+          "id": "frontend_feasibility",
+          "label": "Can be converted into structured frontend components without a one-file blob.",
+          "passed": true,
+          "score": 17,
+          "weight": 18
+        }
+      ],
+      "gaps": [
+        "Covers the real domain and recurring workflows in the request. scored 4/22.",
+        "Image/media issue: hero imagery is washed out by very low opacity."
+      ],
+      "html": "<!DOCTYPE html>\n\n<html class=\"dark scroll-smooth\" lang=\"en\"><head>\n<meta charset=\"utf-8\"/>\n<meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\"/>\n<title>NOCTURNE AUDIO | Crafted for private clients who notice the difference.</title>\n<!-- Material Symbols -->\n<link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap\" rel=\"stylesheet\"/>\n<!-- Google Fonts -->\n<link href=\"https://fonts.googleapis.com\" rel=\"preconnect\"/>\n<link crossorigin=\"\" href=\"https://fonts.gstatic.com\" rel=\"preconnect\"/>\n<link href=\"https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap\" rel=\"stylesheet\"/>\n<link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap\" rel=\"stylesheet\"/>\n<!-- Tailwind CSS -->\n<script src=\"https://cdn.tailwindcss.com?plugins=forms,container-queries\"></script>\n<script id=\"tailwind-config\">\n        tailwind.config = {\n            darkMode: \"class\",\n            theme: {\n                extend: {\n                    \"colors\": {\n                        \"surface-container-highest\": \"#3a342e\",\n                        \"background\": \"#17120e\",\n                        \"on-surface\": \"#ece0d8\",\n                        \"surface\": \"#17120e\",\n                        \"surface-container-low\": \"#201b16\",\n                        \"surface-bright\": \"#3f3833\",\n                        \"on-primary-container\": \"#827c79\",\n                        \"outline\": \"#998f89\",\n                        \"inverse-surface\": \"#ece0d8\",\n                        \"primary-container\": \"#14110f\",\n                        \"tertiary-container\": \"#200d00\",\n                        \"on-secondary-container\": \"#bdb8b0\",\n                        \"on-surface-variant\": \"#d0c4be\",\n                        \"outline-variant\": \"#4d4540\",\n                        \"surface-dim\": \"#17120e\",\n                        \"surface-container-high\": \"#2f2924\",\n                        \"on-secondary-fixed-variant\": \"#494640\",\n                        \"secondary-fixed-dim\": \"#cbc6bd\",\n                        \"secondary\": \"#cbc6bd\",\n                        \"error-container\": \"#93000a\",\n                        \"primary-fixed-dim\": \"#ccc5c1\",\n                        \"inverse-primary\": \"#625d5a\",\n                        \"surface-container-lowest\": \"#120d09\",\n                        \"on-background\": \"#ece0d8\",\n                        \"on-tertiary-fixed-variant\": \"#673c13\",\n                        \"primary-fixed\": \"#e9e1dd\",\n                        \"surface-container\": \"#241f1a\",\n                        \"error\": \"#ffb4ab\",\n                        \"on-primary-fixed-variant\": \"#4a4643\",\n                        \"on-secondary-fixed\": \"#1d1b16\",\n                        \"on-tertiary\": \"#4d2700\",\n                        \"tertiary-fixed-dim\": \"#f9b986\",\n                        \"surface-variant\": \"#3a342e\",\n                        \"on-primary\": \"#34302d\",\n                        \"on-error-container\": \"#ffdad6\",\n                        \"inverse-on-surface\": \"#352f2a\",\n                        \"secondary-fixed\": \"#e7e2d9\",\n                        \"primary\": \"#ccc5c1\",\n                        \"tertiary\": \"#f9b986\",\n                        \"tertiary-fixed\": \"#ffdcc2\",\n                        \"on-secondary\": \"#32302a\",\n                        \"on-tertiary-fixed\": \"#2e1500\",\n                        \"secondary-container\": \"#4c4942\",\n                        \"surface-tint\": \"#ccc5c1\",\n                        \"on-primary-fixed\": \"#1e1b19\",\n                        \"on-tertiary-container\": \"#a77244\",\n                        \"on-error\": \"#690005\"\n                    },\n                    \"borderRadius\": {\n                        \"DEFAULT\": \"0px\",\n                        \"lg\": \"0px\",\n                        \"xl\": \"0px\",\n                        \"full\": \"0px\"\n                    },\n                    \"spacing\": {\n                        \"gutter\": \"24px\",\n                        \"section-gap\": \"160px\",\n                        \"margin-mobile\": \"20px\",\n                        \"unit\": \"8px\",\n                        \"margin-desktop\": \"80px\"\n                    },\n                    \"fontFamily\": {\n                        \"body-md\": [\"Hanken Grotesk\"],\n                        \"label-caps\": [\"Hanken Grotesk\"],\n                        \"label-md\": [\"Hanken Grotesk\"],\n                        \"headline-lg-mobile\": [\"Bodoni Moda\"],\n                        \"headline-lg\": [\"Bodoni Moda\"],\n                        \"body-lg\": [\"Hanken Grotesk\"],\n                        \"display-lg\": [\"Bodoni Moda\"],\n                        \"headline-md\": [\"Bodoni Moda\"]\n                    },\n                    \"fontSize\": {\n                        \"body-md\": [\"16px\", { \"lineHeight\": \"24px\", \"fontWeight\": \"400\" }],\n                        \"label-caps\": [\"12px\", { \"lineHeight\": \"16px\", \"letterSpacing\": \"0.15em\", \"fontWeight\": \"600\" }],\n                        \"label-md\": [\"14px\", { \"lineHeight\": \"20px\", \"fontWeight\": \"500\" }],\n                        \"headline-lg-mobile\": [\"32px\", { \"lineHeight\": \"38px\", \"letterSpacing\": \"-0.01em\", \"fontWeight\": \"500\" }],\n                        \"headline-lg\": [\"48px\", { \"lineHeight\": \"56px\", \"letterSpacing\": \"-0.01em\", \"fontWeight\": \"500\" }],\n                        \"body-lg\": [\"18px\", { \"lineHeight\": \"28px\", \"letterSpacing\": \"0.01em\", \"fontWeight\": \"400\" }],\n                        \"display-lg\": [\"84px\", { \"lineHeight\": \"92px\", \"letterSpacing\": \"-0.02em\", \"fontWeight\": \"600\" }],\n                        \"headline-md\": [\"32px\", { \"lineHeight\": \"40px\", \"fontWeight\": \"400\" }]\n                    }\n                }\n            }\n        }\n    </script>\n<style>\n        .noise-overlay {\n            position: fixed;\n            top: 0;\n            left: 0;\n            width: 100vw;\n            height: 100vh;\n            pointer-events: none;\n            z-index: 9999;\n            opacity: 0.03;\n            background-image: url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\");\n        }\n        \n        /* Custom Scrollbar for dark theme */\n        ::-webkit-scrollbar {\n            width: 6px;\n        }\n        ::-webkit-scrollbar-track {\n            background: #14110f; \n        }\n        ::-webkit-scrollbar-thumb {\n            background: #2f2924; \n        }\n        ::-webkit-scrollbar-thumb:hover {\n            background: #4d4540; \n        }\n    </style>\n</head>\n<body class=\"bg-primary-container text-on-surface antialiased selection:bg-surface-bright selection:text-on-surface min-h-screen flex flex-col relative overflow-x-hidden\">\n<div class=\"noise-overlay\"></div>\n<!-- TopNavBar -->\n<header class=\"fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/20\">\n<div class=\"flex justify-between items-center px-margin-mobile md:px-margin-desktop py-gutter w-full\">\n<div class=\"font-display-lg text-headline-md tracking-tighter text-on-surface cursor-pointer hover:opacity-70 transition-opacity\">\n                NOCTURNE\n            </div>\n<nav class=\"hidden md:flex gap-12\">\n<a class=\"font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300\" href=\"#atelier\">Atelier</a>\n<a class=\"font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300\" href=\"#collections\">Collections</a>\n<a class=\"font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300\" href=\"#process\">Process</a>\n</nav>\n<div>\n<a class=\"font-label-caps text-label-caps text-on-surface cursor-pointer transition-all duration-500 ease-out border-b border-transparent hover:border-outline pb-1\" href=\"#concierge\">\n                    Concierge\n                </a>\n</div>\n</div>\n</header>\n<main class=\"flex-grow\">\n<!-- Hero Section -->\n<section class=\"relative min-h-screen flex items-end pb-32 px-margin-mobile md:px-margin-desktop pt-40\">\n<!-- 3D Canvas Placeholder -->\n<div class=\"absolute inset-0 z-0 bg-surface flex items-center justify-center overflow-hidden\">\n<div class=\"absolute inset-0 bg-gradient-to-t from-primary-container via-transparent to-transparent z-10\"></div>\n<img alt=\"Cinematic 3D render\" class=\"w-full h-full object-cover opacity-30 mix-blend-luminosity transform scale-105 transition-transform duration-10000\" data-alt=\"A cinematic, high-fidelity 3D render of a luxury over-ear headphone suspended in a pitch-black void. Dramatic, single-source rim lighting catches the machined titanium edges and the fine grain of the hand-stitched obsidian leather earpads. The aesthetic is extremely dark, minimalist, and editorial, resembling a high-end product photography studio setup. Sharp contrast between the absolute black background and the subtle metallic reflections of the audio hardware.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuAHHdhjPz8VAjaT7hgec1fq51ihiBSWwD93AwTdrjIUHvksTMu48abF6Kq3FUWjrNv2HBOpWFYTAYf65EKm4FMGzlbXXqCUYXfPNfPF6Zrm-XG2S2Epf-OmbgFQI_8tK0MmLYrJ2t-wWntosztN9pUa_dzlZRVkk7pd7kzDn53Au4BCX-4blOYuB-vDtCahUF_Ce6xqz7UYp_KoYxBpExuMJtKRjk42F3KoObWXVCA5ZiVbCpght3RipvRs-bLkHDHB5uljyY364R_B\"/>\n</div>\n<div class=\"relative z-20 max-w-4xl\">\n<h1 class=\"font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface mb-6\">\n                    Crafted for private clients who notice the difference.\n                </h1>\n<p class=\"font-body-md text-body-lg text-on-surface-variant max-w-xl mb-12\">\n                    A quieter standard of luxury, made visible. Engineered precision meets tactile elegance in an auditory experience designed for the discerning few.\n                </p>\n<div class=\"flex gap-6 items-center\">\n<a class=\"inline-flex items-center justify-center bg-on-surface text-primary-container px-8 py-4 font-label-caps text-label-caps hover:bg-surface-tint transition-colors duration-300\" href=\"#concierge\">\n                        Request concierge access\n                    </a>\n</div>\n</div>\n<div class=\"absolute bottom-12 right-margin-mobile md:right-margin-desktop z-20 flex flex-col items-end gap-2 text-on-surface-variant/50\">\n<span class=\"font-label-caps text-label-caps tracking-widest\">SCROLL</span>\n<div class=\"w-px h-12 bg-on-surface-variant/30\"></div>\n</div>\n</section>\n<!-- Provenance Section (The Atelier) -->\n<section class=\"py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-highest\" id=\"atelier\">\n<div class=\"grid grid-cols-1 md:grid-cols-12 gap-gutter items-center\">\n<div class=\"md:col-span-5 md:col-start-2 z-10\">\n<span class=\"font-label-caps text-label-caps text-outline mb-6 block\">01 \u2014 PROVENANCE</span>\n<h2 class=\"font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8\">\n                        The Atelier.\n                    </h2>\n<p class=\"font-body-md text-body-lg text-on-surface-variant mb-12 leading-relaxed\">\n                        Every component is a testament to restraint. Hand-stitched full-grain leather meets precision-machined aerospace titanium. There are no superfluous details, only materials selected for acoustic integrity and tactile permanence.\n                    </p>\n<a class=\"inline-flex items-center gap-4 text-on-surface hover:text-tertiary transition-colors font-label-caps text-label-caps group\" href=\"#\">\n                        Explore the materials\n                        <div class=\"w-8 h-px bg-on-surface group-hover:bg-tertiary group-hover:w-12 transition-all duration-300\"></div>\n</a>\n</div>\n<div class=\"md:col-span-6 md:col-start-7 relative mt-16 md:mt-0\">\n<div class=\"aspect-[3/4] bg-surface-container-low overflow-hidden relative\">\n<img alt=\"Macro leather detail\" class=\"w-full h-full object-cover opacity-80 mix-blend-luminosity hover:opacity-100 transition-opacity duration-700\" data-alt=\"A macro, extreme close-up shot of luxurious black full-grain leather being hand-stitched with dark metallic thread. The lighting is low-key and dramatic, casting deep shadows that emphasize the organic texture of the leather against the cold, sharp edge of a titanium tool resting nearby. The color palette is strictly monochromatic with subtle warm bronze highlights catching the metallic elements. The mood is quiet, focused, and deeply artisanal, reflecting a 'quiet luxury' aesthetic.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuDWW8Nr5c_yJwpx8BhnKuQM_riS6APjMUcjQXQWjVdll9CNfXESrVlP3WTz5WbZqwvhao6aKISS6ApguEwzRC80b0r7b19t8-sDvNgA6N4AyTpmqGPzU6v1U8CDFpXTmn_da40ywI58g_gaeeNCeYJwJIUfjPlhaNl0VA_vyMQjTugDEgut0x1sXm5eZjqljsFaQ_9Uzq96gYUgWbOaEWt7kSEuOAY6jw4_EByztOPAjJ-nnMxKie_NHUAzEZ0JgKNG9CWTGrCYcSDR\"/>\n</div>\n<!-- Decorative element -->\n<div class=\"absolute -bottom-8 -left-8 w-48 h-48 border border-outline-variant/30 z-0 hidden md:block\"></div>\n</div>\n</div>\n</section>\n<!-- Collection Section -->\n<section class=\"py-section-gap px-margin-mobile md:px-margin-desktop bg-primary-container\" id=\"collections\">\n<div class=\"flex flex-col md:flex-row justify-between items-end mb-24\">\n<div>\n<span class=\"font-label-caps text-label-caps text-outline mb-6 block\">02 \u2014 THE COLLECTION</span>\n<h2 class=\"font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface\">\n                        Instruments of silence.\n                    </h2>\n</div>\n<div class=\"mt-8 md:mt-0\">\n<a class=\"font-label-caps text-label-caps text-on-surface border-b border-on-surface/30 hover:border-on-surface pb-1 transition-all\" href=\"#\">View all models</a>\n</div>\n</div>\n<div class=\"grid grid-cols-1 md:grid-cols-2 gap-gutter\">\n<!-- Product Card 1 -->\n<div class=\"group cursor-pointer\">\n<div class=\"aspect-square bg-surface-container-high mb-8 overflow-hidden relative\">\n<img alt=\"Model N-01\" class=\"w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out\" data-alt=\"A sleek, minimalist over-ear headphone resting on a dark slate surface. The headphones feature matte black titanium earcups and a slender, geometric headband. The lighting is soft and directional, creating a moody, chiaroscuro effect that highlights the sharp, 0px radius architectural lines of the product. The environment is entirely dark charcoal and ink tones, exuding a premium, nocturnal audio lounge vibe.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuCeuK7ATg9FMeCjwnurIAo9KIxNB9LLS-Sq1skRsVKBgQ_InC6x6_VSj9_frVKJ4j0lFnD7SWax0RrPlqFItFGdJ8w2VKnUKc6iSynBOhk5OnX_1XUAGxFYwhoK_tZCAP9lkGX15Fuwv2HCUlNwge4hRWIsjEtNU-p9lZo4D37b6_R7cKjIzUsrLU7GEFwfeeFZnNl8z_L2nRj8eOeRHogYjXHIiq4wPRv7jfyctEhLNlWHQpm_EhrXhOzYQbSL0W7lBpYBU5G2unZj\"/>\n</div>\n<div class=\"flex justify-between items-start\">\n<div>\n<h3 class=\"font-headline-md text-headline-md text-on-surface mb-2\">Model N-01</h3>\n<p class=\"font-body-md text-body-md text-on-surface-variant\">Reference Standard Acoustic Profile</p>\n</div>\n<span class=\"font-label-caps text-label-caps text-outline\">EDITION OF 500</span>\n</div>\n</div>\n<!-- Product Card 2 -->\n<div class=\"group cursor-pointer mt-0 md:mt-32\">\n<div class=\"aspect-square bg-surface-container-high mb-8 overflow-hidden relative\">\n<img alt=\"Model N-02\" class=\"w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out\" data-alt=\"A close-up side profile of a high-end headphone resting against a textured charcoal acoustic panel. The earcup features a distinct brushed bronze accent ring around a deep black mesh grille. The lighting is low and atmospheric, emphasizing the premium tactile materials\u2014cold metal against warm, soft leather. The composition uses heavy negative space, pushing the product slightly off-center to create a modern, editorial layout typical of luxury lookbooks.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuCrUTgfcsRrx1QwSXcC2HyB3uSnHyxGWeUVKsTLlBTJk17ijB5rdehUr6f2dzT2nlY-EXW81eS1ZYvmUCW6_nk-C00ZVZQsJcJkMWOZcqhtD6UpzhteyEvCm5FOi4EmoJ7FbYkpwJwHmWB9uSwhDMF0CtcXp0e88Gz8KqaxqkQiG3lmvPODs93GyclE28SppCmrybMWKPQvAYyY45IYzQc4NDXTlWlup5h-zLTcEKejRJjEkxrRhKR-VMXB9zdxKijwyzXoe_ccj278\"/>\n</div>\n<div class=\"flex justify-between items-start\">\n<div>\n<h3 class=\"font-headline-md text-headline-md text-on-surface mb-2\">Model N-02</h3>\n<p class=\"font-body-md text-body-md text-on-surface-variant\">Closed-Back Immersion Profile</p>\n</div>\n<span class=\"font-label-caps text-label-caps text-outline\">EDITION OF 250</span>\n</div>\n</div>\n</div>\n</section>\n<!-- Concierge Form Section -->\n<section class=\"py-section-gap px-margin-mobile md:px-margin-desktop bg-surface border-t border-outline-variant/10\" id=\"concierge\">\n<div class=\"max-w-3xl mx-auto\">\n<span class=\"font-label-caps text-label-caps text-outline mb-6 block text-center\">03 \u2014 CONCIERGE</span>\n<h2 class=\"font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-16 text-center\">\n                    Request a private audition.\n                </h2>\n<form class=\"space-y-12\">\n<div class=\"grid grid-cols-1 md:grid-cols-2 gap-12\">\n<div class=\"relative\">\n<input class=\"w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors peer placeholder-transparent\" id=\"name\" placeholder=\"Name\" type=\"text\"/>\n<label class=\"absolute left-0 -top-4 font-label-caps text-label-caps text-on-surface-variant peer-placeholder-shown:text-body-md peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-label-caps peer-focus:text-tertiary transition-all\" for=\"name\">Full Name</label>\n</div>\n<div class=\"relative\">\n<input class=\"w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors peer placeholder-transparent\" id=\"email\" placeholder=\"Email\" type=\"email\"/>\n<label class=\"absolute left-0 -top-4 font-label-caps text-label-caps text-on-surface-variant peer-placeholder-shown:text-body-md peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-label-caps peer-focus:text-tertiary transition-all\" for=\"email\">Email Address</label>\n</div>\n</div>\n<div class=\"relative\">\n<select class=\"w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors appearance-none\" id=\"interest\">\n<option class=\"bg-surface-container-highest text-on-surface-variant\" disabled=\"\" selected=\"\" value=\"\">Select an area of interest</option>\n<option class=\"bg-surface-container-highest text-on-surface\" value=\"n01\">Model N-01 Inquiry</option>\n<option class=\"bg-surface-container-highest text-on-surface\" value=\"n02\">Model N-02 Inquiry</option>\n<option class=\"bg-surface-container-highest text-on-surface\" value=\"bespoke\">Bespoke Commission</option>\n</select>\n<span class=\"material-symbols-outlined absolute right-0 top-3 pointer-events-none text-on-surface-variant\">expand_more</span>\n</div>\n<div class=\"flex justify-end mt-16\">\n<button class=\"bg-transparent border border-tertiary text-tertiary px-12 py-4 font-label-caps text-label-caps hover:bg-tertiary hover:text-primary-container transition-colors duration-300\" type=\"submit\">\n                            Submit Inquiry\n                        </button>\n</div>\n</form>\n</div>\n</section>\n</main>\n<!-- Footer -->\n<footer class=\"w-full bg-surface-container-lowest border-t border-outline-variant/10\">\n<div class=\"flex flex-col gap-gutter px-margin-mobile md:px-margin-desktop py-section-gap max-w-7xl mx-auto\">\n<div class=\"flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-12\">\n<div class=\"font-display-lg text-headline-lg text-on-surface tracking-tighter\">\n                    NOCTURNE\n                </div>\n<nav class=\"flex flex-wrap gap-8\">\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Privacy</a>\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Terms</a>\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Contact</a>\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Press</a>\n</nav>\n</div>\n<div class=\"flex justify-between items-center border-t border-outline-variant/10 pt-8\">\n<p class=\"font-label-caps text-label-caps text-on-surface-variant\">\n                    \u00a9 2024 NOCTURNE AUDIO. ALL RIGHTS RESERVED.\n                </p>\n<div class=\"flex gap-4\">\n<a class=\"text-on-surface-variant hover:text-on-surface transition-colors\" href=\"#\">\n<span class=\"material-symbols-outlined\" style=\"font-variation-settings: 'FILL' 0;\">arrow_outward</span>\n</a>\n</div>\n</div>\n</div>\n</footer>\n<script>\n        // Simple script for header backdrop blur intensity on scroll\n        window.addEventListener('scroll', () => {\n            const header = document.querySelector('header');\n            if (window.scrollY > 50) {\n                header.classList.add('bg-background/90', 'border-outline-variant/30');\n                header.classList.remove('bg-background/80', 'border-outline-variant/20');\n            } else {\n                header.classList.add('bg-background/80', 'border-outline-variant/20');\n                header.classList.remove('bg-background/90', 'border-outline-variant/30');\n            }\n        });\n    </script>\n</body></html>",
+      "id": "stitch-base",
+      "label": "Stitch base",
+      "rejection_reasons": [
+        "Hero/media quality is not usable enough for frontend handoff: hero imagery is washed out by very low opacity.",
+        "Domain fit is too weak for the user's project request."
+      ],
+      "score": 86,
+      "threshold": 72,
+      "visual_review": {
+        "findings": [],
+        "method": "html_semantic_visual_proxy",
+        "needs_screenshot_review": true,
+        "passed": true,
+        "score": 88
+      }
+    }
+  ],
+  "request": "Build a cinematic luxury landing page for Nocturne Audio, a premium spatial-audio headphone brand. It should feel immersive, tactile, nocturnal, editorial, and product-led. The first viewport should not be a generic split SaaS hero. Prefer a full-bleed product/media hero or immersive scene with the headphone as the first-viewport signal, with refined launch copy, product close-up moments, soundstage proof, creator testimonials, and a conversion path for preorders. Use rich dark materials, controlled contrast, precise typography, and subtle motion direction; avoid generic dashboard cards, operations copy, backend/Web3 language, and bland business-consulting phrasing.",
+  "score_threshold": 72,
+  "selected_variant": null,
+  "status": "needs_revision",
+  "style_profile": "nexus_forge_nextjs",
+  "summary": "No generated variant reached the design quality threshold of 72/100.",
+  "variants": [
+    {
+      "accepted": false,
+      "criteria": [
+        {
+          "id": "product_branding",
+          "label": "Uses the requested product brand and avoids internal profile names.",
+          "passed": true,
+          "score": 18,
+          "weight": 18
+        },
+        {
+          "id": "domain_fit",
+          "label": "Covers the real domain and recurring workflows in the request.",
+          "passed": false,
+          "score": 4,
+          "weight": 22
+        },
+        {
+          "id": "art_direction_fit",
+          "label": "Matches the selected creative direction instead of a generic scaffold or samey SaaS layout.",
+          "passed": true,
+          "score": 10,
+          "weight": 10
+        },
+        {
+          "id": "website_content_depth",
+          "label": "Shows a clear multi-page website, trust path, page-specific content, and conversion flow.",
+          "passed": true,
+          "score": 14,
+          "weight": 16
+        },
+        {
+          "id": "accessibility_semantics",
+          "label": "Includes semantic structure and accessible control hints.",
+          "passed": true,
+          "score": 9,
+          "weight": 12
+        },
+        {
+          "id": "copy_quality",
+          "label": "Avoids placeholders and uses specific, readable product copy.",
+          "passed": true,
+          "score": 14,
+          "weight": 14
+        },
+        {
+          "id": "frontend_feasibility",
+          "label": "Can be converted into structured frontend components without a one-file blob.",
+          "passed": true,
+          "score": 17,
+          "weight": 18
+        }
+      ],
+      "gaps": [
+        "Covers the real domain and recurring workflows in the request. scored 4/22.",
+        "Image/media issue: hero imagery is washed out by very low opacity."
+      ],
+      "html": "<!DOCTYPE html>\n\n<html class=\"dark scroll-smooth\" lang=\"en\"><head>\n<meta charset=\"utf-8\"/>\n<meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\"/>\n<title>NOCTURNE AUDIO | Crafted for private clients who notice the difference.</title>\n<!-- Material Symbols -->\n<link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap\" rel=\"stylesheet\"/>\n<!-- Google Fonts -->\n<link href=\"https://fonts.googleapis.com\" rel=\"preconnect\"/>\n<link crossorigin=\"\" href=\"https://fonts.gstatic.com\" rel=\"preconnect\"/>\n<link href=\"https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap\" rel=\"stylesheet\"/>\n<link href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap\" rel=\"stylesheet\"/>\n<!-- Tailwind CSS -->\n<script src=\"https://cdn.tailwindcss.com?plugins=forms,container-queries\"></script>\n<script id=\"tailwind-config\">\n        tailwind.config = {\n            darkMode: \"class\",\n            theme: {\n                extend: {\n                    \"colors\": {\n                        \"surface-container-highest\": \"#3a342e\",\n                        \"background\": \"#17120e\",\n                        \"on-surface\": \"#ece0d8\",\n                        \"surface\": \"#17120e\",\n                        \"surface-container-low\": \"#201b16\",\n                        \"surface-bright\": \"#3f3833\",\n                        \"on-primary-container\": \"#827c79\",\n                        \"outline\": \"#998f89\",\n                        \"inverse-surface\": \"#ece0d8\",\n                        \"primary-container\": \"#14110f\",\n                        \"tertiary-container\": \"#200d00\",\n                        \"on-secondary-container\": \"#bdb8b0\",\n                        \"on-surface-variant\": \"#d0c4be\",\n                        \"outline-variant\": \"#4d4540\",\n                        \"surface-dim\": \"#17120e\",\n                        \"surface-container-high\": \"#2f2924\",\n                        \"on-secondary-fixed-variant\": \"#494640\",\n                        \"secondary-fixed-dim\": \"#cbc6bd\",\n                        \"secondary\": \"#cbc6bd\",\n                        \"error-container\": \"#93000a\",\n                        \"primary-fixed-dim\": \"#ccc5c1\",\n                        \"inverse-primary\": \"#625d5a\",\n                        \"surface-container-lowest\": \"#120d09\",\n                        \"on-background\": \"#ece0d8\",\n                        \"on-tertiary-fixed-variant\": \"#673c13\",\n                        \"primary-fixed\": \"#e9e1dd\",\n                        \"surface-container\": \"#241f1a\",\n                        \"error\": \"#ffb4ab\",\n                        \"on-primary-fixed-variant\": \"#4a4643\",\n                        \"on-secondary-fixed\": \"#1d1b16\",\n                        \"on-tertiary\": \"#4d2700\",\n                        \"tertiary-fixed-dim\": \"#f9b986\",\n                        \"surface-variant\": \"#3a342e\",\n                        \"on-primary\": \"#34302d\",\n                        \"on-error-container\": \"#ffdad6\",\n                        \"inverse-on-surface\": \"#352f2a\",\n                        \"secondary-fixed\": \"#e7e2d9\",\n                        \"primary\": \"#ccc5c1\",\n                        \"tertiary\": \"#f9b986\",\n                        \"tertiary-fixed\": \"#ffdcc2\",\n                        \"on-secondary\": \"#32302a\",\n                        \"on-tertiary-fixed\": \"#2e1500\",\n                        \"secondary-container\": \"#4c4942\",\n                        \"surface-tint\": \"#ccc5c1\",\n                        \"on-primary-fixed\": \"#1e1b19\",\n                        \"on-tertiary-container\": \"#a77244\",\n                        \"on-error\": \"#690005\"\n                    },\n                    \"borderRadius\": {\n                        \"DEFAULT\": \"0px\",\n                        \"lg\": \"0px\",\n                        \"xl\": \"0px\",\n                        \"full\": \"0px\"\n                    },\n                    \"spacing\": {\n                        \"gutter\": \"24px\",\n                        \"section-gap\": \"160px\",\n                        \"margin-mobile\": \"20px\",\n                        \"unit\": \"8px\",\n                        \"margin-desktop\": \"80px\"\n                    },\n                    \"fontFamily\": {\n                        \"body-md\": [\"Hanken Grotesk\"],\n                        \"label-caps\": [\"Hanken Grotesk\"],\n                        \"label-md\": [\"Hanken Grotesk\"],\n                        \"headline-lg-mobile\": [\"Bodoni Moda\"],\n                        \"headline-lg\": [\"Bodoni Moda\"],\n                        \"body-lg\": [\"Hanken Grotesk\"],\n                        \"display-lg\": [\"Bodoni Moda\"],\n                        \"headline-md\": [\"Bodoni Moda\"]\n                    },\n                    \"fontSize\": {\n                        \"body-md\": [\"16px\", { \"lineHeight\": \"24px\", \"fontWeight\": \"400\" }],\n                        \"label-caps\": [\"12px\", { \"lineHeight\": \"16px\", \"letterSpacing\": \"0.15em\", \"fontWeight\": \"600\" }],\n                        \"label-md\": [\"14px\", { \"lineHeight\": \"20px\", \"fontWeight\": \"500\" }],\n                        \"headline-lg-mobile\": [\"32px\", { \"lineHeight\": \"38px\", \"letterSpacing\": \"-0.01em\", \"fontWeight\": \"500\" }],\n                        \"headline-lg\": [\"48px\", { \"lineHeight\": \"56px\", \"letterSpacing\": \"-0.01em\", \"fontWeight\": \"500\" }],\n                        \"body-lg\": [\"18px\", { \"lineHeight\": \"28px\", \"letterSpacing\": \"0.01em\", \"fontWeight\": \"400\" }],\n                        \"display-lg\": [\"84px\", { \"lineHeight\": \"92px\", \"letterSpacing\": \"-0.02em\", \"fontWeight\": \"600\" }],\n                        \"headline-md\": [\"32px\", { \"lineHeight\": \"40px\", \"fontWeight\": \"400\" }]\n                    }\n                }\n            }\n        }\n    </script>\n<style>\n        .noise-overlay {\n            position: fixed;\n            top: 0;\n            left: 0;\n            width: 100vw;\n            height: 100vh;\n            pointer-events: none;\n            z-index: 9999;\n            opacity: 0.03;\n            background-image: url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E\");\n        }\n        \n        /* Custom Scrollbar for dark theme */\n        ::-webkit-scrollbar {\n            width: 6px;\n        }\n        ::-webkit-scrollbar-track {\n            background: #14110f; \n        }\n        ::-webkit-scrollbar-thumb {\n            background: #2f2924; \n        }\n        ::-webkit-scrollbar-thumb:hover {\n            background: #4d4540; \n        }\n    </style>\n</head>\n<body class=\"bg-primary-container text-on-surface antialiased selection:bg-surface-bright selection:text-on-surface min-h-screen flex flex-col relative overflow-x-hidden\">\n<div class=\"noise-overlay\"></div>\n<!-- TopNavBar -->\n<header class=\"fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/20\">\n<div class=\"flex justify-between items-center px-margin-mobile md:px-margin-desktop py-gutter w-full\">\n<div class=\"font-display-lg text-headline-md tracking-tighter text-on-surface cursor-pointer hover:opacity-70 transition-opacity\">\n                NOCTURNE\n            </div>\n<nav class=\"hidden md:flex gap-12\">\n<a class=\"font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300\" href=\"#atelier\">Atelier</a>\n<a class=\"font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300\" href=\"#collections\">Collections</a>\n<a class=\"font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300\" href=\"#process\">Process</a>\n</nav>\n<div>\n<a class=\"font-label-caps text-label-caps text-on-surface cursor-pointer transition-all duration-500 ease-out border-b border-transparent hover:border-outline pb-1\" href=\"#concierge\">\n                    Concierge\n                </a>\n</div>\n</div>\n</header>\n<main class=\"flex-grow\">\n<!-- Hero Section -->\n<section class=\"relative min-h-screen flex items-end pb-32 px-margin-mobile md:px-margin-desktop pt-40\">\n<!-- 3D Canvas Placeholder -->\n<div class=\"absolute inset-0 z-0 bg-surface flex items-center justify-center overflow-hidden\">\n<div class=\"absolute inset-0 bg-gradient-to-t from-primary-container via-transparent to-transparent z-10\"></div>\n<img alt=\"Cinematic 3D render\" class=\"w-full h-full object-cover opacity-30 mix-blend-luminosity transform scale-105 transition-transform duration-10000\" data-alt=\"A cinematic, high-fidelity 3D render of a luxury over-ear headphone suspended in a pitch-black void. Dramatic, single-source rim lighting catches the machined titanium edges and the fine grain of the hand-stitched obsidian leather earpads. The aesthetic is extremely dark, minimalist, and editorial, resembling a high-end product photography studio setup. Sharp contrast between the absolute black background and the subtle metallic reflections of the audio hardware.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuAHHdhjPz8VAjaT7hgec1fq51ihiBSWwD93AwTdrjIUHvksTMu48abF6Kq3FUWjrNv2HBOpWFYTAYf65EKm4FMGzlbXXqCUYXfPNfPF6Zrm-XG2S2Epf-OmbgFQI_8tK0MmLYrJ2t-wWntosztN9pUa_dzlZRVkk7pd7kzDn53Au4BCX-4blOYuB-vDtCahUF_Ce6xqz7UYp_KoYxBpExuMJtKRjk42F3KoObWXVCA5ZiVbCpght3RipvRs-bLkHDHB5uljyY364R_B\"/>\n</div>\n<div class=\"relative z-20 max-w-4xl\">\n<h1 class=\"font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface mb-6\">\n                    Crafted for private clients who notice the difference.\n                </h1>\n<p class=\"font-body-md text-body-lg text-on-surface-variant max-w-xl mb-12\">\n                    A quieter standard of luxury, made visible. Engineered precision meets tactile elegance in an auditory experience designed for the discerning few.\n                </p>\n<div class=\"flex gap-6 items-center\">\n<a class=\"inline-flex items-center justify-center bg-on-surface text-primary-container px-8 py-4 font-label-caps text-label-caps hover:bg-surface-tint transition-colors duration-300\" href=\"#concierge\">\n                        Request concierge access\n                    </a>\n</div>\n</div>\n<div class=\"absolute bottom-12 right-margin-mobile md:right-margin-desktop z-20 flex flex-col items-end gap-2 text-on-surface-variant/50\">\n<span class=\"font-label-caps text-label-caps tracking-widest\">SCROLL</span>\n<div class=\"w-px h-12 bg-on-surface-variant/30\"></div>\n</div>\n</section>\n<!-- Provenance Section (The Atelier) -->\n<section class=\"py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-highest\" id=\"atelier\">\n<div class=\"grid grid-cols-1 md:grid-cols-12 gap-gutter items-center\">\n<div class=\"md:col-span-5 md:col-start-2 z-10\">\n<span class=\"font-label-caps text-label-caps text-outline mb-6 block\">01 \u2014 PROVENANCE</span>\n<h2 class=\"font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8\">\n                        The Atelier.\n                    </h2>\n<p class=\"font-body-md text-body-lg text-on-surface-variant mb-12 leading-relaxed\">\n                        Every component is a testament to restraint. Hand-stitched full-grain leather meets precision-machined aerospace titanium. There are no superfluous details, only materials selected for acoustic integrity and tactile permanence.\n                    </p>\n<a class=\"inline-flex items-center gap-4 text-on-surface hover:text-tertiary transition-colors font-label-caps text-label-caps group\" href=\"#\">\n                        Explore the materials\n                        <div class=\"w-8 h-px bg-on-surface group-hover:bg-tertiary group-hover:w-12 transition-all duration-300\"></div>\n</a>\n</div>\n<div class=\"md:col-span-6 md:col-start-7 relative mt-16 md:mt-0\">\n<div class=\"aspect-[3/4] bg-surface-container-low overflow-hidden relative\">\n<img alt=\"Macro leather detail\" class=\"w-full h-full object-cover opacity-80 mix-blend-luminosity hover:opacity-100 transition-opacity duration-700\" data-alt=\"A macro, extreme close-up shot of luxurious black full-grain leather being hand-stitched with dark metallic thread. The lighting is low-key and dramatic, casting deep shadows that emphasize the organic texture of the leather against the cold, sharp edge of a titanium tool resting nearby. The color palette is strictly monochromatic with subtle warm bronze highlights catching the metallic elements. The mood is quiet, focused, and deeply artisanal, reflecting a 'quiet luxury' aesthetic.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuDWW8Nr5c_yJwpx8BhnKuQM_riS6APjMUcjQXQWjVdll9CNfXESrVlP3WTz5WbZqwvhao6aKISS6ApguEwzRC80b0r7b19t8-sDvNgA6N4AyTpmqGPzU6v1U8CDFpXTmn_da40ywI58g_gaeeNCeYJwJIUfjPlhaNl0VA_vyMQjTugDEgut0x1sXm5eZjqljsFaQ_9Uzq96gYUgWbOaEWt7kSEuOAY6jw4_EByztOPAjJ-nnMxKie_NHUAzEZ0JgKNG9CWTGrCYcSDR\"/>\n</div>\n<!-- Decorative element -->\n<div class=\"absolute -bottom-8 -left-8 w-48 h-48 border border-outline-variant/30 z-0 hidden md:block\"></div>\n</div>\n</div>\n</section>\n<!-- Collection Section -->\n<section class=\"py-section-gap px-margin-mobile md:px-margin-desktop bg-primary-container\" id=\"collections\">\n<div class=\"flex flex-col md:flex-row justify-between items-end mb-24\">\n<div>\n<span class=\"font-label-caps text-label-caps text-outline mb-6 block\">02 \u2014 THE COLLECTION</span>\n<h2 class=\"font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface\">\n                        Instruments of silence.\n                    </h2>\n</div>\n<div class=\"mt-8 md:mt-0\">\n<a class=\"font-label-caps text-label-caps text-on-surface border-b border-on-surface/30 hover:border-on-surface pb-1 transition-all\" href=\"#\">View all models</a>\n</div>\n</div>\n<div class=\"grid grid-cols-1 md:grid-cols-2 gap-gutter\">\n<!-- Product Card 1 -->\n<div class=\"group cursor-pointer\">\n<div class=\"aspect-square bg-surface-container-high mb-8 overflow-hidden relative\">\n<img alt=\"Model N-01\" class=\"w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out\" data-alt=\"A sleek, minimalist over-ear headphone resting on a dark slate surface. The headphones feature matte black titanium earcups and a slender, geometric headband. The lighting is soft and directional, creating a moody, chiaroscuro effect that highlights the sharp, 0px radius architectural lines of the product. The environment is entirely dark charcoal and ink tones, exuding a premium, nocturnal audio lounge vibe.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuCeuK7ATg9FMeCjwnurIAo9KIxNB9LLS-Sq1skRsVKBgQ_InC6x6_VSj9_frVKJ4j0lFnD7SWax0RrPlqFItFGdJ8w2VKnUKc6iSynBOhk5OnX_1XUAGxFYwhoK_tZCAP9lkGX15Fuwv2HCUlNwge4hRWIsjEtNU-p9lZo4D37b6_R7cKjIzUsrLU7GEFwfeeFZnNl8z_L2nRj8eOeRHogYjXHIiq4wPRv7jfyctEhLNlWHQpm_EhrXhOzYQbSL0W7lBpYBU5G2unZj\"/>\n</div>\n<div class=\"flex justify-between items-start\">\n<div>\n<h3 class=\"font-headline-md text-headline-md text-on-surface mb-2\">Model N-01</h3>\n<p class=\"font-body-md text-body-md text-on-surface-variant\">Reference Standard Acoustic Profile</p>\n</div>\n<span class=\"font-label-caps text-label-caps text-outline\">EDITION OF 500</span>\n</div>\n</div>\n<!-- Product Card 2 -->\n<div class=\"group cursor-pointer mt-0 md:mt-32\">\n<div class=\"aspect-square bg-surface-container-high mb-8 overflow-hidden relative\">\n<img alt=\"Model N-02\" class=\"w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out\" data-alt=\"A close-up side profile of a high-end headphone resting against a textured charcoal acoustic panel. The earcup features a distinct brushed bronze accent ring around a deep black mesh grille. The lighting is low and atmospheric, emphasizing the premium tactile materials\u2014cold metal against warm, soft leather. The composition uses heavy negative space, pushing the product slightly off-center to create a modern, editorial layout typical of luxury lookbooks.\" src=\"https://lh3.googleusercontent.com/aida-public/AB6AXuCrUTgfcsRrx1QwSXcC2HyB3uSnHyxGWeUVKsTLlBTJk17ijB5rdehUr6f2dzT2nlY-EXW81eS1ZYvmUCW6_nk-C00ZVZQsJcJkMWOZcqhtD6UpzhteyEvCm5FOi4EmoJ7FbYkpwJwHmWB9uSwhDMF0CtcXp0e88Gz8KqaxqkQiG3lmvPODs93GyclE28SppCmrybMWKPQvAYyY45IYzQc4NDXTlWlup5h-zLTcEKejRJjEkxrRhKR-VMXB9zdxKijwyzXoe_ccj278\"/>\n</div>\n<div class=\"flex justify-between items-start\">\n<div>\n<h3 class=\"font-headline-md text-headline-md text-on-surface mb-2\">Model N-02</h3>\n<p class=\"font-body-md text-body-md text-on-surface-variant\">Closed-Back Immersion Profile</p>\n</div>\n<span class=\"font-label-caps text-label-caps text-outline\">EDITION OF 250</span>\n</div>\n</div>\n</div>\n</section>\n<!-- Concierge Form Section -->\n<section class=\"py-section-gap px-margin-mobile md:px-margin-desktop bg-surface border-t border-outline-variant/10\" id=\"concierge\">\n<div class=\"max-w-3xl mx-auto\">\n<span class=\"font-label-caps text-label-caps text-outline mb-6 block text-center\">03 \u2014 CONCIERGE</span>\n<h2 class=\"font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-16 text-center\">\n                    Request a private audition.\n                </h2>\n<form class=\"space-y-12\">\n<div class=\"grid grid-cols-1 md:grid-cols-2 gap-12\">\n<div class=\"relative\">\n<input class=\"w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors peer placeholder-transparent\" id=\"name\" placeholder=\"Name\" type=\"text\"/>\n<label class=\"absolute left-0 -top-4 font-label-caps text-label-caps text-on-surface-variant peer-placeholder-shown:text-body-md peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-label-caps peer-focus:text-tertiary transition-all\" for=\"name\">Full Name</label>\n</div>\n<div class=\"relative\">\n<input class=\"w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors peer placeholder-transparent\" id=\"email\" placeholder=\"Email\" type=\"email\"/>\n<label class=\"absolute left-0 -top-4 font-label-caps text-label-caps text-on-surface-variant peer-placeholder-shown:text-body-md peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-label-caps peer-focus:text-tertiary transition-all\" for=\"email\">Email Address</label>\n</div>\n</div>\n<div class=\"relative\">\n<select class=\"w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors appearance-none\" id=\"interest\">\n<option class=\"bg-surface-container-highest text-on-surface-variant\" disabled=\"\" selected=\"\" value=\"\">Select an area of interest</option>\n<option class=\"bg-surface-container-highest text-on-surface\" value=\"n01\">Model N-01 Inquiry</option>\n<option class=\"bg-surface-container-highest text-on-surface\" value=\"n02\">Model N-02 Inquiry</option>\n<option class=\"bg-surface-container-highest text-on-surface\" value=\"bespoke\">Bespoke Commission</option>\n</select>\n<span class=\"material-symbols-outlined absolute right-0 top-3 pointer-events-none text-on-surface-variant\">expand_more</span>\n</div>\n<div class=\"flex justify-end mt-16\">\n<button class=\"bg-transparent border border-tertiary text-tertiary px-12 py-4 font-label-caps text-label-caps hover:bg-tertiary hover:text-primary-container transition-colors duration-300\" type=\"submit\">\n                            Submit Inquiry\n                        </button>\n</div>\n</form>\n</div>\n</section>\n</main>\n<!-- Footer -->\n<footer class=\"w-full bg-surface-container-lowest border-t border-outline-variant/10\">\n<div class=\"flex flex-col gap-gutter px-margin-mobile md:px-margin-desktop py-section-gap max-w-7xl mx-auto\">\n<div class=\"flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-12\">\n<div class=\"font-display-lg text-headline-lg text-on-surface tracking-tighter\">\n                    NOCTURNE\n                </div>\n<nav class=\"flex flex-wrap gap-8\">\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Privacy</a>\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Terms</a>\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Contact</a>\n<a class=\"font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors\" href=\"#\">Press</a>\n</nav>\n</div>\n<div class=\"flex justify-between items-center border-t border-outline-variant/10 pt-8\">\n<p class=\"font-label-caps text-label-caps text-on-surface-variant\">\n                    \u00a9 2024 NOCTURNE AUDIO. ALL RIGHTS RESERVED.\n                </p>\n<div class=\"flex gap-4\">\n<a class=\"text-on-surface-variant hover:text-on-surface transition-colors\" href=\"#\">\n<span class=\"material-symbols-outlined\" style=\"font-variation-settings: 'FILL' 0;\">arrow_outward</span>\n</a>\n</div>\n</div>\n</div>\n</footer>\n<script>\n        // Simple script for header backdrop blur intensity on scroll\n        window.addEventListener('scroll', () => {\n            const header = document.querySelector('header');\n            if (window.scrollY > 50) {\n                header.classList.add('bg-background/90', 'border-outline-variant/30');\n                header.classList.remove('bg-background/80', 'border-outline-variant/20');\n            } else {\n                header.classList.add('bg-background/80', 'border-outline-variant/20');\n                header.classList.remove('bg-background/90', 'border-outline-variant/30');\n            }\n        });\n    </script>\n</body></html>",
+      "id": "stitch-base",
+      "label": "Stitch base",
+      "rejection_reasons": [
+        "Hero/media quality is not usable enough for frontend handoff: hero imagery is washed out by very low opacity.",
+        "Domain fit is too weak for the user's project request."
+      ],
+      "score": 86,
+      "threshold": 72,
+      "visual_review": {
+        "findings": [],
+        "method": "html_semantic_visual_proxy",
+        "needs_screenshot_review": true,
+        "passed": true,
+        "score": 88
+      }
+    }
+  ]
+}

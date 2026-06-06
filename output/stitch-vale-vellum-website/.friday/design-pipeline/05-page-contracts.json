@@ -1,0 +1,143 @@
+{
+  "asset_direction": null,
+  "component_inventory": [
+    "editorial hero",
+    "material image field",
+    "provenance cards",
+    "lookbook modules",
+    "concierge inquiry form"
+  ],
+  "copy_bank": {
+    "headline_directions": [
+      "Crafted for private clients who notice the difference.",
+      "A quieter standard of luxury, made visible.",
+      "Objects and experiences with provenance."
+    ],
+    "microcopy_examples": [
+      "Request concierge access",
+      "View the collection",
+      "Private appointment"
+    ],
+    "subhead_direction": "Vale & Vellum should communicate The brand is scarce, crafted, and worth slowing down for. in a spare, sensorial, confident, never loud voice.",
+    "words_to_avoid": [
+      "discount",
+      "deal",
+      "limited-time offer",
+      "all-in-one solution",
+      "Home 1",
+      "Service 1",
+      "lorem ipsum",
+      "smarter operations"
+    ],
+    "words_to_use": [
+      "vale",
+      "vellum",
+      "boutique",
+      "stationery",
+      "wedding",
+      "invitation",
+      "studio",
+      "couples",
+      "planners",
+      "small",
+      "luxury",
+      "events",
+      "craft proof",
+      "provenance",
+      "atelier detail",
+      "private appointment"
+    ]
+  },
+  "implementation_requirements": [],
+  "pages": [
+    {
+      "focus": "brand, offer, proof, primary call to action",
+      "id": "conceptually-home",
+      "label": "conceptually: Home",
+      "navigation": "conceptually: Home (/conceptually-home); Collections (/collections); Process (/process); Inquiry (/inquiry)",
+      "route": "/conceptually-home"
+    },
+    {
+      "focus": "collection story, item/category modules, provenance, scarcity, inquiry path",
+      "id": "collections",
+      "label": "Collections",
+      "navigation": "conceptually: Home (/conceptually-home); Collections (/collections); Process (/process); Inquiry (/inquiry)",
+      "route": "/collections"
+    },
+    {
+      "focus": "page-specific story, proof, useful details, and a clear next action",
+      "id": "process",
+      "label": "Process",
+      "navigation": "conceptually: Home (/conceptually-home); Collections (/collections); Process (/process); Inquiry (/inquiry)",
+      "route": "/process"
+    },
+    {
+      "focus": "concierge inquiry form, appointment options, response promise, privacy and trust notes",
+      "id": "inquiry",
+      "label": "Inquiry",
+      "navigation": "conceptually: Home (/conceptually-home); Collections (/collections); Process (/process); Inquiry (/inquiry)",
+      "route": "/inquiry"
+    }
+  ],
+  "product_name": "Vale & Vellum",
+  "responsive_behavior": {
+    "desktop": "Use the selected composition archetype with stable spacing and no oversized accidental hero type.",
+    "mobile": "Single-column, accessible controls, no clipped text, no horizontal overflow.",
+    "tablet": "Preserve hierarchy while reducing columns before text wraps awkwardly."
+  },
+  "section_blueprint": [
+    {
+      "must_show": [
+        "brand statement",
+        "hero image",
+        "concierge CTA"
+      ],
+      "purpose": "Create desire with brand, material detail, and a discreet action.",
+      "section": "Hero",
+      "visual_objects": [
+        "editorial hero",
+        "material close-up"
+      ]
+    },
+    {
+      "must_show": [
+        "craft",
+        "materials",
+        "heritage"
+      ],
+      "purpose": "Show why the object/service is rare and credible.",
+      "section": "Provenance",
+      "visual_objects": [
+        "story panel",
+        "detail modules"
+      ]
+    },
+    {
+      "must_show": [
+        "collection",
+        "fit",
+        "scarcity"
+      ],
+      "purpose": "Let the visitor inspect options without ecommerce clutter.",
+      "section": "Collection or offer",
+      "visual_objects": [
+        "lookbook grid",
+        "product cards"
+      ]
+    },
+    {
+      "must_show": [
+        "appointment",
+        "inquiry",
+        "response promise"
+      ],
+      "purpose": "Make the next step private and high-touch.",
+      "section": "Concierge path",
+      "visual_objects": [
+        "concierge form",
+        "contact strip"
+      ]
+    }
+  ],
+  "surface": "marketing_website"
+}

@@ -1,0 +1,523 @@
+{
+  "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2I4ODUzZmU0Yjc1YjQ5N2ViZTE0OGJmYTRjZTgxZDhhEgsSBxDuxJTq7RkYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTc3Njg0ODc0MjUzNDQ1NTM2MQ&filename=&opi=96797242",
+  "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsicrxpDKbLWtgm-4KqXrH7K8WofuzMVDc8l68AcRjHxEroPwxzlHaD0NnGJDOsWsq7BLy3T2kBMoCb7AovxJN96upR8EuC6YvEQLVuNtVtT3U1RlL5a1BefHP3oOjlOde02_yPZVz8kGglXML3u5nMyuBLH7nlGHY-ySJ9Dnp4gfllZYPLQShJw-rz1hVNH04RouT4ZZ1sfOWDKalzmDeQ9iGLcsLUkQLDoZLmLUccFW_82OMq7SLK1Esw",
+  "modelId": "GEMINI_3_1_PRO",
+  "ok": true,
+  "projectId": "11776848742534455361",
+  "projectionPathsTried": [
+    "outputComponents[0].design.screens",
+    "outputComponents[0].design.screen",
+    "outputComponents[0].screens",
+    "outputComponents[0].screen",
+    "outputComponents[0].payload.design.screens",
+    "outputComponents[0].data.design.screens",
+    "outputComponents[1].design.screens",
+    "outputComponents[1].design.screen",
+    "outputComponents[1].screens",
+    "outputComponents[1].screen",
+    "outputComponents[1].payload.design.screens",
+    "outputComponents[1].data.design.screens",
+    "outputComponents[2].design.screens",
+    "outputComponents[2].design.screen",
+    "outputComponents[2].screens",
+    "outputComponents[2].screen",
+    "outputComponents[2].payload.design.screens",
+    "outputComponents[2].data.design.screens",
+    "outputComponents[3].design.screens",
+    "outputComponents[3].design.screen",
+    "outputComponents[3].screens",
+    "outputComponents[3].screen",
+    "outputComponents[3].payload.design.screens",
+    "outputComponents[3].data.design.screens",
+    "outputComponents[4].design.screens",
+    "outputComponents[4].design.screen",
+    "outputComponents[4].screens",
+    "outputComponents[4].screen",
+    "outputComponents[4].payload.design.screens",
+    "outputComponents[4].data.design.screens",
+    "outputComponents[5].design.screens",
+    "outputComponents[5].design.screen",
+    "outputComponents[5].screens",
+    "outputComponents[5].screen",
+    "outputComponents[5].payload.design.screens",
+    "outputComponents[5].data.design.screens",
+    "design.screens",
+    "screens",
+    "screen",
+    "generatedScreen",
+    "generated_screen",
+    "$.outputComponents[1].design.screens[0]"
+  ],
+  "provider": "stitch",
+  "rawFallbackGenerations": [],
+  "rawGenerate": {
+    "outputComponents": [
+      {
+        "designSystem": {
+          "designSystem": {
+            "displayName": "Nocturne Audio",
+            "styleGuidelines": "## Brand & Style\n\nThe design system is anchored in \"Quiet Luxury\"\u00e2\u20ac\u201da philosophy that prioritizes substance, tactile precision, and editorial restraint over loud ornamentation. It is built for a discerning audience that appreciates the nuance of spatial audio and the architectural beauty of high-end hardware.\n\nThe aesthetic follows a **Minimalist-Editorial** direction. It utilizes heavy negative space to allow products to breathe, creating an immersive, nocturnal atmosphere that mimics a private listening lounge. The visual language is sharp, confident, and unapologetically premium, avoiding rounded corners and soft shadows in favor of structural integrity and high-contrast precision.\n\n## Elevation & Depth\n\nIn keeping with the sharp, architectural nature of the brand, this design system eschews traditional soft shadows. Depth is communicated through **Tonal Layering** and **Material Contrast**:\n\n1.  **Level 0 (Base):** Ink (#14110f) background.\n2.  **Level 1 (Surface):** Charcoal (#2f2924) containers for cards or segregated content.\n3.  **Level 2 (Interaction):** Thin 1px borders in Warm Ivory (at 20% opacity) or Bronze (#9f6b3e) to define interactive boundaries.\n\nUse Backdrop Blurs (10px - 20px) behind navigation bars to create a \"smoke-glass\" effect, allowing the deep background colors to bleed through while maintaining legibility.\n\n## Components\n\n### Buttons\n- **Primary:** Solid Warm Ivory background with Ink text. Sharp corners. No shadow.\n- **Secondary:** Transparent background with a 1px Bronze border. Bronze text.\n- **Ghost:** Warm Ivory text with a Bronze underline that expands on hover.\n\n### Cards\n- Cards use the Charcoal background. They should have no borders by default, appearing as subtle shifts in the nocturnal background. \n- Content within cards should be aligned to the bottom-left to emphasize the asymmetrical layout.\n\n### Input Fields\n- Underline-only style using the Warm Ivory color at 40% opacity. \n- On focus, the line transforms to Metallic Bronze. \n- Labels use the `label-caps` typography style.\n\n### Interactive Sliders (Audio Controls)\n- Essential for a sound brand. Use 1px thin tracks in Charcoal.\n- The \"thumb\" or \"handle\" of the slider should be a sharp Bronze square, suggesting a physical, tactile dial.\n\n### Lists\n- Separated by thin, 1px lines in Charcoal. \n- Hover states should involve a subtle shift in background color to a slightly lighter Charcoal or the appearance of a 1px Bronze left-border.",
+            "theme": {
+              "bodyFont": "HANKEN_GROTESK",
+              "bodyFontFamily": "Hanken Grotesk",
+              "colorMode": "DARK",
+              "colorVariant": "FIDELITY",
+              "customColor": "#14110f",
+              "designMd": "---\nname: Nocturne Audio\ncolors:\n  surface: '#17120e'\n  surface-dim: '#17120e'\n  surface-bright: '#3f3833'\n  surface-container-lowest: '#120d09'\n  surface-container-low: '#201b16'\n  surface-container: '#241f1a'\n  surface-container-high: '#2f2924'\n  surface-container-highest: '#3a342e'\n  on-surface: '#ece0d8'\n  on-surface-variant: '#d0c4be'\n  inverse-surface: '#ece0d8'\n  inverse-on-surface: '#352f2a'\n  outline: '#998f89'\n  outline-variant: '#4d4540'\n  surface-tint: '#ccc5c1'\n  primary: '#ccc5c1'\n  on-primary: '#34302d'\n  primary-container: '#14110f'\n  on-primary-container: '#827c79'\n  inverse-primary: '#625d5a'\n  secondary: '#cbc6bd'\n  on-secondary: '#32302a'\n  secondary-container: '#4c4942'\n  on-secondary-container: '#bdb8b0'\n  tertiary: '#f9b986'\n  on-tertiary: '#4d2700'\n  tertiary-container: '#200d00'\n  on-tertiary-container: '#a77244'\n  error: '#ffb4ab'\n  on-error: '#690005'\n  error-container: '#93000a'\n  on-error-container: '#ffdad6'\n  primary-fixed: '#e9e1dd'\n  primary-fixed-dim: '#ccc5c1'\n  on-primary-fixed: '#1e1b19'\n  on-primary-fixed-variant: '#4a4643'\n  secondary-fixed: '#e7e2d9'\n  secondary-fixed-dim: '#cbc6bd'\n  on-secondary-fixed: '#1d1b16'\n  on-secondary-fixed-variant: '#494640'\n  tertiary-fixed: '#ffdcc2'\n  tertiary-fixed-dim: '#f9b986'\n  on-tertiary-fixed: '#2e1500'\n  on-tertiary-fixed-variant: '#673c13'\n  background: '#17120e'\n  on-background: '#ece0d8'\n  surface-variant: '#3a342e'\ntypography:\n  display-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 84px\n    fontWeight: '600'\n    lineHeight: 92px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '500'\n    lineHeight: 56px\n    letterSpacing: -0.01em\n  headline-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '500'\n    lineHeight: 38px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n    letterSpacing: 0.01em\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-caps:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  label-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 14px\n    fontWeight: '500'\n    lineHeight: 20px\nspacing:\n  unit: 8px\n  gutter: 24px\n  margin-desktop: 80px\n  margin-mobile: 20px\n  section-gap: 160px\n---\n\n## Brand & Style\n\nThe design system is anchored in \"Quiet Luxury\"\u00e2\u20ac\u201da philosophy that prioritizes substance, tactile precision, and editorial restraint over loud ornamentation. It is built for a discerning audience that appreciates the nuance of spatial audio and the architectural beauty of high-end hardware.\n\nThe aesthetic follows a **Minimalist-Editorial** direction. It utilizes heavy negative space to allow products to breathe, creating an immersive, nocturnal atmosphere that mimics a private listening lounge. The visual language is sharp, confident, and unapologetically premium, avoiding rounded corners and soft shadows in favor of structural integrity and high-contrast precision.\n\n## Colors\n\nThe palette is a study in shadow and light. \n\n- **Ink (#14110f):** The primary canvas. A deep, near-black that provides the \"nocturnal\" foundation for all interfaces.\n- **Warm Ivory (#f7f1e8):** The primary typographic and structural color. It provides a softer, more sophisticated contrast than pure white, evoking high-end stationery.\n- **Charcoal (#2f2924):** Used for subtle UI layering, dividers, and secondary containers to create depth without relying on shadows.\n- **Metallic Bronze (#9f6b3e):** Reserved for moments of tactile interaction, precise call-to-actions, and technical details. Use sparingly to maintain its premium impact.\n\n## Typography\n\nThis design system employs a high-contrast typographic pairing to balance heritage and technology.\n\n**Bodoni Moda** is used for headlines and display text. Its dramatic vertical stress and hair-thin serifs provide the \"editorial\" feel necessary for a luxury brand. Large-scale displays should use negative letter spacing to create a cohesive, architectural block of text.\n\n**Hanken Grotesk** serves as the functional workhorse. It is a sharp, contemporary sans-serif that remains highly legible at small sizes. Use the \"label-caps\" style for technical specifications and navigation to evoke the precision of Swiss industrial design.\n\n## Elevation & Depth\n\nIn keeping with the sharp, architectural nature of the brand, this design system eschews traditional soft shadows. Depth is communicated through **Tonal Layering** and **Material Contrast**:\n\n1.  **Level 0 (Base):** Ink (#14110f) background.\n2.  **Level 1 (Surface):** Charcoal (#2f2924) containers for cards or segregated content.\n3.  **Level 2 (Interaction):** Thin 1px borders in Warm Ivory (at 20% opacity) or Bronze (#9f6b3e) to define interactive boundaries.\n\nUse Backdrop Blurs (10px - 20px) behind navigation bars to create a \"smoke-glass\" effect, allowing the deep background colors to bleed through while maintaining legibility.\n\n## Shapes\n\nThe shape language is strictly **Geometric and Sharp**. \n\nAll buttons, cards, and input fields must use 0px border radius. This architectural approach reinforces the \"premium\" and \"precision\" aspects of the spatial-audio technology. Avoid all rounded containers; even image masks should remain perfectly rectangular. Lines should be thin (1px) and used sparingly as separators to define the grid.\n\n## Components\n\n### Buttons\n- **Primary:** Solid Warm Ivory background with Ink text. Sharp corners. No shadow.\n- **Secondary:** Transparent background with a 1px Bronze border. Bronze text.\n- **Ghost:** Warm Ivory text with a Bronze underline that expands on hover.\n\n### Cards\n- Cards use the Charcoal background. They should have no borders by default, appearing as subtle shifts in the nocturnal background. \n- Content within cards should be aligned to the bottom-left to emphasize the asymmetrical layout.\n\n### Input Fields\n- Underline-only style using the Warm Ivory color at 40% opacity. \n- On focus, the line transforms to Metallic Bronze. \n- Labels use the `label-caps` typography style.\n\n### Interactive Sliders (Audio Controls)\n- Essential for a sound brand. Use 1px thin tracks in Charcoal.\n- The \"thumb\" or \"handle\" of the slider should be a sharp Bronze square, suggesting a physical, tactile dial.\n\n### Lists\n- Separated by thin, 1px lines in Charcoal. \n- Hover states should involve a subtle shift in background color to a slightly lighter Charcoal or the appearance of a 1px Bronze left-border.",
+              "font": "BODONI_MODA",
+              "headlineFont": "BODONI_MODA",
+              "headlineFontFamily": "Bodoni Moda",
+              "labelFont": "HANKEN_GROTESK",
+              "labelFontFamily": "Hanken Grotesk",
+              "namedColors": {
+                "background": "#17120e",
+                "error": "#ffb4ab",
+                "error_container": "#93000a",
+                "inverse_on_surface": "#352f2a",
+                "inverse_primary": "#625d5a",
+                "inverse_surface": "#ece0d8",
+                "on_background": "#ece0d8",
+                "on_error": "#690005",
+                "on_error_container": "#ffdad6",
+                "on_primary": "#34302d",
+                "on_primary_container": "#827c79",
+                "on_primary_fixed": "#1e1b19",
+                "on_primary_fixed_variant": "#4a4643",
+                "on_secondary": "#32302a",
+                "on_secondary_container": "#bdb8b0",
+                "on_secondary_fixed": "#1d1b16",
+                "on_secondary_fixed_variant": "#494640",
+                "on_surface": "#ece0d8",
+                "on_surface_variant": "#d0c4be",
+                "on_tertiary": "#4d2700",
+                "on_tertiary_container": "#a77244",
+                "on_tertiary_fixed": "#2e1500",
+                "on_tertiary_fixed_variant": "#673c13",
+                "outline": "#998f89",
+                "outline_variant": "#4d4540",
+                "primary": "#ccc5c1",
+                "primary_container": "#14110f",
+                "primary_fixed": "#e9e1dd",
+                "primary_fixed_dim": "#ccc5c1",
+                "secondary": "#cbc6bd",
+                "secondary_container": "#4c4942",
+                "secondary_fixed": "#e7e2d9",
+                "secondary_fixed_dim": "#cbc6bd",
+                "surface": "#17120e",
+                "surface_bright": "#3f3833",
+                "surface_container": "#241f1a",
+                "surface_container_high": "#2f2924",
+                "surface_container_highest": "#3a342e",
+                "surface_container_low": "#201b16",
+                "surface_container_lowest": "#120d09",
+                "surface_dim": "#17120e",
+                "surface_tint": "#ccc5c1",
+                "surface_variant": "#3a342e",
+                "tertiary": "#f9b986",
+                "tertiary_container": "#200d00",
+                "tertiary_fixed": "#ffdcc2",
+                "tertiary_fixed_dim": "#f9b986"
+              },
+              "overrideNeutralColor": "#2f2924",
+              "overridePrimaryColor": "#14110f",
+              "overrideSecondaryColor": "#f7f1e8",
+              "overrideTertiaryColor": "#9f6b3e",
+              "spacing": {
+                "gutter": "24px",
+                "margin-desktop": "80px",
+                "margin-mobile": "20px",
+                "section-gap": "160px",
+                "unit": "8px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "18px",
+                  "fontWeight": "400",
+                  "letterSpacing": "0.01em",
+                  "lineHeight": "28px"
+                },
+                "body-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "24px"
+                },
+                "display-lg": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "84px",
+                  "fontWeight": "600",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "92px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "48px",
+                  "fontWeight": "500",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "32px",
+                  "fontWeight": "500",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "38px"
+                },
+                "headline-md": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "32px",
+                  "fontWeight": "400",
+                  "lineHeight": "40px"
+                },
+                "label-caps": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "12px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0.15em",
+                  "lineHeight": "16px"
+                },
+                "label-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "14px",
+                  "fontWeight": "500",
+                  "lineHeight": "20px"
+                }
+              }
+            }
+          },
+          "name": "assets/84835fa988624b1e9ea50db9576fa7f3",
+          "version": "1"
+        }
+      },
+      {
+        "design": {
+          "screens": [
+            {
+              "designSystem": {
+                "designSystem": {
+                  "displayName": "Nocturne Audio",
+                  "styleGuidelines": "## Brand & Style\n\nThe design system is anchored in \"Quiet Luxury\"\u00e2\u20ac\u201da philosophy that prioritizes substance, tactile precision, and editorial restraint over loud ornamentation. It is built for a discerning audience that appreciates the nuance of spatial audio and the architectural beauty of high-end hardware.\n\nThe aesthetic follows a **Minimalist-Editorial** direction. It utilizes heavy negative space to allow products to breathe, creating an immersive, nocturnal atmosphere that mimics a private listening lounge. The visual language is sharp, confident, and unapologetically premium, avoiding rounded corners and soft shadows in favor of structural integrity and high-contrast precision.\n\n## Elevation & Depth\n\nIn keeping with the sharp, architectural nature of the brand, this design system eschews traditional soft shadows. Depth is communicated through **Tonal Layering** and **Material Contrast**:\n\n1.  **Level 0 (Base):** Ink (#14110f) background.\n2.  **Level 1 (Surface):** Charcoal (#2f2924) containers for cards or segregated content.\n3.  **Level 2 (Interaction):** Thin 1px borders in Warm Ivory (at 20% opacity) or Bronze (#9f6b3e) to define interactive boundaries.\n\nUse Backdrop Blurs (10px - 20px) behind navigation bars to create a \"smoke-glass\" effect, allowing the deep background colors to bleed through while maintaining legibility.\n\n## Components\n\n### Buttons\n- **Primary:** Solid Warm Ivory background with Ink text. Sharp corners. No shadow.\n- **Secondary:** Transparent background with a 1px Bronze border. Bronze text.\n- **Ghost:** Warm Ivory text with a Bronze underline that expands on hover.\n\n### Cards\n- Cards use the Charcoal background. They should have no borders by default, appearing as subtle shifts in the nocturnal background. \n- Content within cards should be aligned to the bottom-left to emphasize the asymmetrical layout.\n\n### Input Fields\n- Underline-only style using the Warm Ivory color at 40% opacity. \n- On focus, the line transforms to Metallic Bronze. \n- Labels use the `label-caps` typography style.\n\n### Interactive Sliders (Audio Controls)\n- Essential for a sound brand. Use 1px thin tracks in Charcoal.\n- The \"thumb\" or \"handle\" of the slider should be a sharp Bronze square, suggesting a physical, tactile dial.\n\n### Lists\n- Separated by thin, 1px lines in Charcoal. \n- Hover states should involve a subtle shift in background color to a slightly lighter Charcoal or the appearance of a 1px Bronze left-border.",
+                  "theme": {
+                    "bodyFont": "HANKEN_GROTESK",
+                    "bodyFontFamily": "Hanken Grotesk",
+                    "colorMode": "DARK",
+                    "colorVariant": "FIDELITY",
+                    "customColor": "#14110f",
+                    "designMd": "---\nname: Nocturne Audio\ncolors:\n  surface: '#17120e'\n  surface-dim: '#17120e'\n  surface-bright: '#3f3833'\n  surface-container-lowest: '#120d09'\n  surface-container-low: '#201b16'\n  surface-container: '#241f1a'\n  surface-container-high: '#2f2924'\n  surface-container-highest: '#3a342e'\n  on-surface: '#ece0d8'\n  on-surface-variant: '#d0c4be'\n  inverse-surface: '#ece0d8'\n  inverse-on-surface: '#352f2a'\n  outline: '#998f89'\n  outline-variant: '#4d4540'\n  surface-tint: '#ccc5c1'\n  primary: '#ccc5c1'\n  on-primary: '#34302d'\n  primary-container: '#14110f'\n  on-primary-container: '#827c79'\n  inverse-primary: '#625d5a'\n  secondary: '#cbc6bd'\n  on-secondary: '#32302a'\n  secondary-container: '#4c4942'\n  on-secondary-container: '#bdb8b0'\n  tertiary: '#f9b986'\n  on-tertiary: '#4d2700'\n  tertiary-container: '#200d00'\n  on-tertiary-container: '#a77244'\n  error: '#ffb4ab'\n  on-error: '#690005'\n  error-container: '#93000a'\n  on-error-container: '#ffdad6'\n  primary-fixed: '#e9e1dd'\n  primary-fixed-dim: '#ccc5c1'\n  on-primary-fixed: '#1e1b19'\n  on-primary-fixed-variant: '#4a4643'\n  secondary-fixed: '#e7e2d9'\n  secondary-fixed-dim: '#cbc6bd'\n  on-secondary-fixed: '#1d1b16'\n  on-secondary-fixed-variant: '#494640'\n  tertiary-fixed: '#ffdcc2'\n  tertiary-fixed-dim: '#f9b986'\n  on-tertiary-fixed: '#2e1500'\n  on-tertiary-fixed-variant: '#673c13'\n  background: '#17120e'\n  on-background: '#ece0d8'\n  surface-variant: '#3a342e'\ntypography:\n  display-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 84px\n    fontWeight: '600'\n    lineHeight: 92px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '500'\n    lineHeight: 56px\n    letterSpacing: -0.01em\n  headline-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '500'\n    lineHeight: 38px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n    letterSpacing: 0.01em\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-caps:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  label-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 14px\n    fontWeight: '500'\n    lineHeight: 20px\nspacing:\n  unit: 8px\n  gutter: 24px\n  margin-desktop: 80px\n  margin-mobile: 20px\n  section-gap: 160px\n---\n\n## Brand & Style\n\nThe design system is anchored in \"Quiet Luxury\"\u00e2\u20ac\u201da philosophy that prioritizes substance, tactile precision, and editorial restraint over loud ornamentation. It is built for a discerning audience that appreciates the nuance of spatial audio and the architectural beauty of high-end hardware.\n\nThe aesthetic follows a **Minimalist-Editorial** direction. It utilizes heavy negative space to allow products to breathe, creating an immersive, nocturnal atmosphere that mimics a private listening lounge. The visual language is sharp, confident, and unapologetically premium, avoiding rounded corners and soft shadows in favor of structural integrity and high-contrast precision.\n\n## Colors\n\nThe palette is a study in shadow and light. \n\n- **Ink (#14110f):** The primary canvas. A deep, near-black that provides the \"nocturnal\" foundation for all interfaces.\n- **Warm Ivory (#f7f1e8):** The primary typographic and structural color. It provides a softer, more sophisticated contrast than pure white, evoking high-end stationery.\n- **Charcoal (#2f2924):** Used for subtle UI layering, dividers, and secondary containers to create depth without relying on shadows.\n- **Metallic Bronze (#9f6b3e):** Reserved for moments of tactile interaction, precise call-to-actions, and technical details. Use sparingly to maintain its premium impact.\n\n## Typography\n\nThis design system employs a high-contrast typographic pairing to balance heritage and technology.\n\n**Bodoni Moda** is used for headlines and display text. Its dramatic vertical stress and hair-thin serifs provide the \"editorial\" feel necessary for a luxury brand. Large-scale displays should use negative letter spacing to create a cohesive, architectural block of text.\n\n**Hanken Grotesk** serves as the functional workhorse. It is a sharp, contemporary sans-serif that remains highly legible at small sizes. Use the \"label-caps\" style for technical specifications and navigation to evoke the precision of Swiss industrial design.\n\n## Elevation & Depth\n\nIn keeping with the sharp, architectural nature of the brand, this design system eschews traditional soft shadows. Depth is communicated through **Tonal Layering** and **Material Contrast**:\n\n1.  **Level 0 (Base):** Ink (#14110f) background.\n2.  **Level 1 (Surface):** Charcoal (#2f2924) containers for cards or segregated content.\n3.  **Level 2 (Interaction):** Thin 1px borders in Warm Ivory (at 20% opacity) or Bronze (#9f6b3e) to define interactive boundaries.\n\nUse Backdrop Blurs (10px - 20px) behind navigation bars to create a \"smoke-glass\" effect, allowing the deep background colors to bleed through while maintaining legibility.\n\n## Shapes\n\nThe shape language is strictly **Geometric and Sharp**. \n\nAll buttons, cards, and input fields must use 0px border radius. This architectural approach reinforces the \"premium\" and \"precision\" aspects of the spatial-audio technology. Avoid all rounded containers; even image masks should remain perfectly rectangular. Lines should be thin (1px) and used sparingly as separators to define the grid.\n\n## Components\n\n### Buttons\n- **Primary:** Solid Warm Ivory background with Ink text. Sharp corners. No shadow.\n- **Secondary:** Transparent background with a 1px Bronze border. Bronze text.\n- **Ghost:** Warm Ivory text with a Bronze underline that expands on hover.\n\n### Cards\n- Cards use the Charcoal background. They should have no borders by default, appearing as subtle shifts in the nocturnal background. \n- Content within cards should be aligned to the bottom-left to emphasize the asymmetrical layout.\n\n### Input Fields\n- Underline-only style using the Warm Ivory color at 40% opacity. \n- On focus, the line transforms to Metallic Bronze. \n- Labels use the `label-caps` typography style.\n\n### Interactive Sliders (Audio Controls)\n- Essential for a sound brand. Use 1px thin tracks in Charcoal.\n- The \"thumb\" or \"handle\" of the slider should be a sharp Bronze square, suggesting a physical, tactile dial.\n\n### Lists\n- Separated by thin, 1px lines in Charcoal. \n- Hover states should involve a subtle shift in background color to a slightly lighter Charcoal or the appearance of a 1px Bronze left-border.",
+                    "font": "BODONI_MODA",
+                    "headlineFont": "BODONI_MODA",
+                    "headlineFontFamily": "Bodoni Moda",
+                    "labelFont": "HANKEN_GROTESK",
+                    "labelFontFamily": "Hanken Grotesk",
+                    "namedColors": {
+                      "background": "#17120e",
+                      "error": "#ffb4ab",
+                      "error_container": "#93000a",
+                      "inverse_on_surface": "#352f2a",
+                      "inverse_primary": "#625d5a",
+                      "inverse_surface": "#ece0d8",
+                      "on_background": "#ece0d8",
+                      "on_error": "#690005",
+                      "on_error_container": "#ffdad6",
+                      "on_primary": "#34302d",
+                      "on_primary_container": "#827c79",
+                      "on_primary_fixed": "#1e1b19",
+                      "on_primary_fixed_variant": "#4a4643",
+                      "on_secondary": "#32302a",
+                      "on_secondary_container": "#bdb8b0",
+                      "on_secondary_fixed": "#1d1b16",
+                      "on_secondary_fixed_variant": "#494640",
+                      "on_surface": "#ece0d8",
+                      "on_surface_variant": "#d0c4be",
+                      "on_tertiary": "#4d2700",
+                      "on_tertiary_container": "#a77244",
+                      "on_tertiary_fixed": "#2e1500",
+                      "on_tertiary_fixed_variant": "#673c13",
+                      "outline": "#998f89",
+                      "outline_variant": "#4d4540",
+                      "primary": "#ccc5c1",
+                      "primary_container": "#14110f",
+                      "primary_fixed": "#e9e1dd",
+                      "primary_fixed_dim": "#ccc5c1",
+                      "secondary": "#cbc6bd",
+                      "secondary_container": "#4c4942",
+                      "secondary_fixed": "#e7e2d9",
+                      "secondary_fixed_dim": "#cbc6bd",
+                      "surface": "#17120e",
+                      "surface_bright": "#3f3833",
+                      "surface_container": "#241f1a",
+                      "surface_container_high": "#2f2924",
+                      "surface_container_highest": "#3a342e",
+                      "surface_container_low": "#201b16",
+                      "surface_container_lowest": "#120d09",
+                      "surface_dim": "#17120e",
+                      "surface_tint": "#ccc5c1",
+                      "surface_variant": "#3a342e",
+                      "tertiary": "#f9b986",
+                      "tertiary_container": "#200d00",
+                      "tertiary_fixed": "#ffdcc2",
+                      "tertiary_fixed_dim": "#f9b986"
+                    },
+                    "overrideNeutralColor": "#2f2924",
+                    "overridePrimaryColor": "#14110f",
+                    "overrideSecondaryColor": "#f7f1e8",
+                    "overrideTertiaryColor": "#9f6b3e",
+                    "spacing": {
+                      "gutter": "24px",
+                      "margin-desktop": "80px",
+                      "margin-mobile": "20px",
+                      "section-gap": "160px",
+                      "unit": "8px"
+                    },
+                    "spacingScale": 2,
+                    "typography": {
+                      "body-lg": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "18px",
+                        "fontWeight": "400",
+                        "letterSpacing": "0.01em",
+                        "lineHeight": "28px"
+                      },
+                      "body-md": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "16px",
+                        "fontWeight": "400",
+                        "lineHeight": "24px"
+                      },
+                      "display-lg": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "84px",
+                        "fontWeight": "600",
+                        "letterSpacing": "-0.02em",
+                        "lineHeight": "92px"
+                      },
+                      "headline-lg": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "48px",
+                        "fontWeight": "500",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "56px"
+                      },
+                      "headline-lg-mobile": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "32px",
+                        "fontWeight": "500",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "38px"
+                      },
+                      "headline-md": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "32px",
+                        "fontWeight": "400",
+                        "lineHeight": "40px"
+                      },
+                      "label-caps": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "12px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.15em",
+                        "lineHeight": "16px"
+                      },
+                      "label-md": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "14px",
+                        "fontWeight": "500",
+                        "lineHeight": "20px"
+                      }
+                    }
+                  }
+                },
+                "name": "assets/84835fa988624b1e9ea50db9576fa7f3",
+                "version": "1"
+              },
+              "deviceType": "DESKTOP",
+              "generatedBy": "figaro_agent",
+              "height": "9242",
+              "htmlCode": {
+                "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+                "mimeType": "text/html",
+                "name": "projects/11776848742534455361/files/4b33aa485e0a4be39b2834420dba4ffb"
+              },
+              "id": "90795a87d41a4d36a8050ee40ec9cb7c",
+              "name": "projects/11776848742534455361/screens/90795a87d41a4d36a8050ee40ec9cb7c",
+              "prompt": "A cinematic luxury landing page for Nocturne Audio. \n- Hero: A full-bleed interactive 3D scene (using a placeholder for a Three.js canvas) featuring a high-fidelity headphone model. Headline: \"Crafted for private clients who notice the difference.\" Subheadline: \"A quieter standard of luxury, made visible.\" Primary CTA: \"Request concierge access\".\n- Provenance Section: Editorial layout showing \"The Atelier\". Focus on tactile materials like hand-stitched leather and machined titanium. Use large negative space and close-up imagery.\n- Collection Section: Lookbook-style grid of the collection with refined product cards. \n- Concierge Path: A minimalist inquiry form for private appointments. \n- Style: Dark materials, nocturnal atmosphere, editorial typography, no generic SaaS imagery. Sharp edges (0px radius).\n- Motion: Immersive scroll behavior and interactive 3D object states.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "DESIGN",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsicrxpDKbLWtgm-4KqXrH7K8WofuzMVDc8l68AcRjHxEroPwxzlHaD0NnGJDOsWsq7BLy3T2kBMoCb7AovxJN96upR8EuC6YvEQLVuNtVtT3U1RlL5a1BefHP3oOjlOde02_yPZVz8kGglXML3u5nMyuBLH7nlGHY-ySJ9Dnp4gfllZYPLQShJw-rz1hVNH04RouT4ZZ1sfOWDKalzmDeQ9iGLcsLUkQLDoZLmLUccFW_82OMq7SLK1Esw",
+                "name": "projects/11776848742534455361/files/b6fa846b063e4950b523a866efe8602e"
+              },
+              "theme": {
+                "bodyFont": "HANKEN_GROTESK",
+                "bodyFontFamily": "Hanken Grotesk",
+                "colorMode": "DARK",
+                "colorVariant": "FIDELITY",
+                "customColor": "#14110f",
+                "designMd": "---\nname: Nocturne Audio\ncolors:\n  surface: '#17120e'\n  surface-dim: '#17120e'\n  surface-bright: '#3f3833'\n  surface-container-lowest: '#120d09'\n  surface-container-low: '#201b16'\n  surface-container: '#241f1a'\n  surface-container-high: '#2f2924'\n  surface-container-highest: '#3a342e'\n  on-surface: '#ece0d8'\n  on-surface-variant: '#d0c4be'\n  inverse-surface: '#ece0d8'\n  inverse-on-surface: '#352f2a'\n  outline: '#998f89'\n  outline-variant: '#4d4540'\n  surface-tint: '#ccc5c1'\n  primary: '#ccc5c1'\n  on-primary: '#34302d'\n  primary-container: '#14110f'\n  on-primary-container: '#827c79'\n  inverse-primary: '#625d5a'\n  secondary: '#cbc6bd'\n  on-secondary: '#32302a'\n  secondary-container: '#4c4942'\n  on-secondary-container: '#bdb8b0'\n  tertiary: '#f9b986'\n  on-tertiary: '#4d2700'\n  tertiary-container: '#200d00'\n  on-tertiary-container: '#a77244'\n  error: '#ffb4ab'\n  on-error: '#690005'\n  error-container: '#93000a'\n  on-error-container: '#ffdad6'\n  primary-fixed: '#e9e1dd'\n  primary-fixed-dim: '#ccc5c1'\n  on-primary-fixed: '#1e1b19'\n  on-primary-fixed-variant: '#4a4643'\n  secondary-fixed: '#e7e2d9'\n  secondary-fixed-dim: '#cbc6bd'\n  on-secondary-fixed: '#1d1b16'\n  on-secondary-fixed-variant: '#494640'\n  tertiary-fixed: '#ffdcc2'\n  tertiary-fixed-dim: '#f9b986'\n  on-tertiary-fixed: '#2e1500'\n  on-tertiary-fixed-variant: '#673c13'\n  background: '#17120e'\n  on-background: '#ece0d8'\n  surface-variant: '#3a342e'\ntypography:\n  display-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 84px\n    fontWeight: '600'\n    lineHeight: 92px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '500'\n    lineHeight: 56px\n    letterSpacing: -0.01em\n  headline-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '500'\n    lineHeight: 38px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n    letterSpacing: 0.01em\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-caps:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  label-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 14px\n    fontWeight: '500'\n    lineHeight: 20px\nspacing:\n  unit: 8px\n  gutter: 24px\n  margin-desktop: 80px\n  margin-mobile: 20px\n  section-gap: 160px\n---\n\n## Brand & Style\n\nThe design system is anchored in \"Quiet Luxury\"\u00e2\u20ac\u201da philosophy that prioritizes substance, tactile precision, and editorial restraint over loud ornamentation. It is built for a discerning audience that appreciates the nuance of spatial audio and the architectural beauty of high-end hardware.\n\nThe aesthetic follows a **Minimalist-Editorial** direction. It utilizes heavy negative space to allow products to breathe, creating an immersive, nocturnal atmosphere that mimics a private listening lounge. The visual language is sharp, confident, and unapologetically premium, avoiding rounded corners and soft shadows in favor of structural integrity and high-contrast precision.\n\n## Colors\n\nThe palette is a study in shadow and light. \n\n- **Ink (#14110f):** The primary canvas. A deep, near-black that provides the \"nocturnal\" foundation for all interfaces.\n- **Warm Ivory (#f7f1e8):** The primary typographic and structural color. It provides a softer, more sophisticated contrast than pure white, evoking high-end stationery.\n- **Charcoal (#2f2924):** Used for subtle UI layering, dividers, and secondary containers to create depth without relying on shadows.\n- **Metallic Bronze (#9f6b3e):** Reserved for moments of tactile interaction, precise call-to-actions, and technical details. Use sparingly to maintain its premium impact.\n\n## Typography\n\nThis design system employs a high-contrast typographic pairing to balance heritage and technology.\n\n**Bodoni Moda** is used for headlines and display text. Its dramatic vertical stress and hair-thin serifs provide the \"editorial\" feel necessary for a luxury brand. Large-scale displays should use negative letter spacing to create a cohesive, architectural block of text.\n\n**Hanken Grotesk** serves as the functional workhorse. It is a sharp, contemporary sans-serif that remains highly legible at small sizes. Use the \"label-caps\" style for technical specifications and navigation to evoke the precision of Swiss industrial design.\n\n## Elevation & Depth\n\nIn keeping with the sharp, architectural nature of the brand, this design system eschews traditional soft shadows. Depth is communicated through **Tonal Layering** and **Material Contrast**:\n\n1.  **Level 0 (Base):** Ink (#14110f) background.\n2.  **Level 1 (Surface):** Charcoal (#2f2924) containers for cards or segregated content.\n3.  **Level 2 (Interaction):** Thin 1px borders in Warm Ivory (at 20% opacity) or Bronze (#9f6b3e) to define interactive boundaries.\n\nUse Backdrop Blurs (10px - 20px) behind navigation bars to create a \"smoke-glass\" effect, allowing the deep background colors to bleed through while maintaining legibility.\n\n## Shapes\n\nThe shape language is strictly **Geometric and Sharp**. \n\nAll buttons, cards, and input fields must use 0px border radius. This architectural approach reinforces the \"premium\" and \"precision\" aspects of the spatial-audio technology. Avoid all rounded containers; even image masks should remain perfectly rectangular. Lines should be thin (1px) and used sparingly as separators to define the grid.\n\n## Components\n\n### Buttons\n- **Primary:** Solid Warm Ivory background with Ink text. Sharp corners. No shadow.\n- **Secondary:** Transparent background with a 1px Bronze border. Bronze text.\n- **Ghost:** Warm Ivory text with a Bronze underline that expands on hover.\n\n### Cards\n- Cards use the Charcoal background. They should have no borders by default, appearing as subtle shifts in the nocturnal background. \n- Content within cards should be aligned to the bottom-left to emphasize the asymmetrical layout.\n\n### Input Fields\n- Underline-only style using the Warm Ivory color at 40% opacity. \n- On focus, the line transforms to Metallic Bronze. \n- Labels use the `label-caps` typography style.\n\n### Interactive Sliders (Audio Controls)\n- Essential for a sound brand. Use 1px thin tracks in Charcoal.\n- The \"thumb\" or \"handle\" of the slider should be a sharp Bronze square, suggesting a physical, tactile dial.\n\n### Lists\n- Separated by thin, 1px lines in Charcoal. \n- Hover states should involve a subtle shift in background color to a slightly lighter Charcoal or the appearance of a 1px Bronze left-border.",
+                "font": "BODONI_MODA",
+                "headlineFont": "BODONI_MODA",
+                "headlineFontFamily": "Bodoni Moda",
+                "labelFont": "HANKEN_GROTESK",
+                "labelFontFamily": "Hanken Grotesk",
+                "namedColors": {
+                  "background": "#17120e",
+                  "error": "#ffb4ab",
+                  "error_container": "#93000a",
+                  "inverse_on_surface": "#352f2a",
+                  "inverse_primary": "#625d5a",
+                  "inverse_surface": "#ece0d8",
+                  "on_background": "#ece0d8",
+                  "on_error": "#690005",
+                  "on_error_container": "#ffdad6",
+                  "on_primary": "#34302d",
+                  "on_primary_container": "#827c79",
+                  "on_primary_fixed": "#1e1b19",
+                  "on_primary_fixed_variant": "#4a4643",
+                  "on_secondary": "#32302a",
+                  "on_secondary_container": "#bdb8b0",
+                  "on_secondary_fixed": "#1d1b16",
+                  "on_secondary_fixed_variant": "#494640",
+                  "on_surface": "#ece0d8",
+                  "on_surface_variant": "#d0c4be",
+                  "on_tertiary": "#4d2700",
+                  "on_tertiary_container": "#a77244",
+                  "on_tertiary_fixed": "#2e1500",
+                  "on_tertiary_fixed_variant": "#673c13",
+                  "outline": "#998f89",
+                  "outline_variant": "#4d4540",
+                  "primary": "#ccc5c1",
+                  "primary_container": "#14110f",
+                  "primary_fixed": "#e9e1dd",
+                  "primary_fixed_dim": "#ccc5c1",
+                  "secondary": "#cbc6bd",
+                  "secondary_container": "#4c4942",
+                  "secondary_fixed": "#e7e2d9",
+                  "secondary_fixed_dim": "#cbc6bd",
+                  "surface": "#17120e",
+                  "surface_bright": "#3f3833",
+                  "surface_container": "#241f1a",
+                  "surface_container_high": "#2f2924",
+                  "surface_container_highest": "#3a342e",
+                  "surface_container_low": "#201b16",
+                  "surface_container_lowest": "#120d09",
+                  "surface_dim": "#17120e",
+                  "surface_tint": "#ccc5c1",
+                  "surface_variant": "#3a342e",
+                  "tertiary": "#f9b986",
+                  "tertiary_container": "#200d00",
+                  "tertiary_fixed": "#ffdcc2",
+                  "tertiary_fixed_dim": "#f9b986"
+                },
+                "overrideNeutralColor": "#2f2924",
+                "overridePrimaryColor": "#14110f",
+                "overrideSecondaryColor": "#f7f1e8",
+                "overrideTertiaryColor": "#9f6b3e",
+                "spacing": {
+                  "gutter": "24px",
+                  "margin-desktop": "80px",
+                  "margin-mobile": "20px",
+                  "section-gap": "160px",
+                  "unit": "8px"
+                },
+                "spacingScale": 2,
+                "typography": {
+                  "body-lg": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "18px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.01em",
+                    "lineHeight": "28px"
+                  },
+                  "body-md": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "16px",
+                    "fontWeight": "400",
+                    "lineHeight": "24px"
+                  },
+                  "display-lg": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "84px",
+                    "fontWeight": "600",
+                    "letterSpacing": "-0.02em",
+                    "lineHeight": "92px"
+                  },
+                  "headline-lg": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "48px",
+                    "fontWeight": "500",
+                    "letterSpacing": "-0.01em",
+                    "lineHeight": "56px"
+                  },
+                  "headline-lg-mobile": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "32px",
+                    "fontWeight": "500",
+                    "letterSpacing": "-0.01em",
+                    "lineHeight": "38px"
+                  },
+                  "headline-md": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "32px",
+                    "fontWeight": "400",
+                    "lineHeight": "40px"
+                  },
+                  "label-caps": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "12px",
+                    "fontWeight": "600",
+                    "letterSpacing": "0.15em",
+                    "lineHeight": "16px"
+                  },
+                  "label-md": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "14px",
+                    "fontWeight": "500",
+                    "lineHeight": "20px"
+                  }
+                }
+              },
+              "title": "Nocturne Audio | Immersive Luxury Landing Page",
+              "width": "2560"
+            }
+          ],
+          "theme": {}
+        }
+      },
+      {
+        "text": "I've designed the immersive landing page for Nocturne Audio, focusing on a \"quiet luxury\" aesthetic that emphasizes tactile detail and editorial restraint.\n\n### Key Design Decisions:\n- **Immersive Hero:** A full-bleed viewport designed to host an interactive 3D scene, creating an immediate sense of intimacy and premium craftsmanship.\n- **Editorial Asymmetry:** The layout uses generous whitespace and asymmetric positioning to mimic high-end fashion and lifestyle publications, moving away from standard SaaS patterns.\n- **Nocturnal Palette:** A deep, rich color scheme centered around ink and charcoal tones, accented by metallic bronze to evoke a sense of exclusivity and late-night listening.\n- **Provenance Storytelling:** Dedicated sections for the \"Atelier\" highlight the hand-stitched leather and aerospace-grade materials, grounding the digital experience in physical reality.\n- **Concierge Path:** The primary conversion path is framed as a \"Private Audition\" request, reinforcing the brand's high-touch, exclusive service model.\n\nWould you like to explore alternative interactive states for the 3D scene, or perhaps refine the typography for a specific editorial voice?"
+      },
+      {
+        "suggestion": "Add scroll-triggered reveals to the Atelier section"
+      },
+      {
+        "suggestion": "Create a mobile version of this landing page"
+      },
+      {
+        "suggestion": "Explore a 'Studio' light mode variation"
+      }
+    ],
+    "projectId": "11776848742534455361",
+    "sessionId": "583514101320364188"
+  },
+  "rawGetScreens": [],
+  "rawVariants": null,
+  "screenId": "90795a87d41a4d36a8050ee40ec9cb7c",
+  "variants": [
+    {
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2I4ODUzZmU0Yjc1YjQ5N2ViZTE0OGJmYTRjZTgxZDhhEgsSBxDuxJTq7RkYAZIBJAoKcHJvamVjdF9pZBIWQhQxMTc3Njg0ODc0MjUzNDQ1NTM2MQ&filename=&opi=96797242",
+      "id": "90795a87d41a4d36a8050ee40ec9cb7c",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsicrxpDKbLWtgm-4KqXrH7K8WofuzMVDc8l68AcRjHxEroPwxzlHaD0NnGJDOsWsq7BLy3T2kBMoCb7AovxJN96upR8EuC6YvEQLVuNtVtT3U1RlL5a1BefHP3oOjlOde02_yPZVz8kGglXML3u5nMyuBLH7nlGHY-ySJ9Dnp4gfllZYPLQShJw-rz1hVNH04RouT4ZZ1sfOWDKalzmDeQ9iGLcsLUkQLDoZLmLUccFW_82OMq7SLK1Esw",
+      "label": "Base direction",
+      "projectId": "11776848742534455361",
+      "screenId": "90795a87d41a4d36a8050ee40ec9cb7c",
+      "sourcePath": "outputComponents[1].design.screens[0]",
+      "title": "Nocturne Audio | Immersive Luxury Landing Page"
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,9 @@
+﻿{
+    "pid":  20372,
+    "port":  3087,
+    "url":  "http://127.0.0.1:3087",
+    "ready":  true,
+    "stdout":  "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-vale-vellum-website\\.friday\\design\\preview-start.out.log",
+    "stderr":  "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-vale-vellum-website\\.friday\\design\\preview-start.err.log",
+    "started_at":  "2026-06-05T10:57:18.6376019+01:00"
+}

@@ -42,8 +42,8 @@ _load_runtime_env()
 
 _CORE_MODULES = [
     "adaptive_attention", "agency_mode", "agent_blackboard", "agent_memory", "agent_scheduler", "agent_thought_bus", "agents", "agent_office",
-    "android_companion", "api_auth", "app_apprenticeship", "app_integrations", "app_operators", "app_operator_mastery",
-    "app_state_memory", "approval_inbox", "audit_log", "autobiographical_memory", "automation_builder", "autonomous_coding",
+    "android_companion", "api_auth", "app_apprenticeship", "app_integrations", "app_operators", "app_operator_mastery", "artifact_access",
+    "app_state_memory", "approval_inbox", "audit_log", "autobiographical_memory", "automation_builder", "autoeval_lab", "autonomous_coding",
     "autonomous_debugger", "autonomous_fix_loop", "autonomous_learning", "autonomous_qa_lab", "autonomous_release_engine",
     "autonomy_control", "autonomy_engine", "awareness_graph", "background_agents", "backup_recovery", "barge_in", "browser_extension_bridge",
     "browser_extension_pro", "browser_pc_copilot", "browser_playwright", "calendar_email_assistant", "capability_center",
@@ -51,10 +51,10 @@ _CORE_MODULES = [
     "competitive_benchmark", "connector_runtime", "context_aware_silence",
     "context_fusion", "context_interpreter", "contextual_workspace", "continuity_brain", "conversation_continuity", "daily_companion",
     "decision_memory", "deep_project_autopilot", "deployment_brain", "desktop_tasks", "desktop_vision", "device_command_mesh", "dynamic_interface",
-    "document_intelligence", "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
+    "design_importer", "design_pipeline", "design_providers", "document_intelligence", "document_knowledge", "emotion_tone", "environment_awareness", "episodic_store", "error_radar", "evaluation_lab", "event_nervous_system",
     "engineering_discipline", "execution_contracts", "executive_capabilities", "fix_and_rerun_loop", "focus_protection", "friday_gateway",
-    "friday_memory", "friday_operating_system", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
-    "hypothesis_runner", "identity", "image_generation", "intent_judgment", "judgment_kernel", "knowledge_graph", "learning_coach", "learning_roadmap", "life_os_mode",
+    "friday_learning_loop", "friday_memory", "friday_operating_system", "friday_run_engine", "friday_tool_registry", "friday_trace", "goal_manager", "goal_regulation", "google_workspace", "home_assistant",
+    "hypothesis_runner", "identity", "image_generation", "intent_judgment", "judgment_kernel", "knowledge_graph", "langchain_model_adapters", "learning_coach", "learning_roadmap", "life_os_mode",
     "live_workspace_coach", "local_ai_search", "local_file_intelligence", "local_voice_brain", "llm", "long_term_learning",
     "meeting_study_companion", "memory_debate", "memory_governance", "mission_control", "model_3d", "model_3d_studio",
     "model_benchmark_lab", "model_router_brain",
@@ -65,7 +65,7 @@ _CORE_MODULES = [
     "phone_mesh", "private_embedding_memory", "privacy_firewall_pro", "privacy_vault", "product_studio", "product_studio_gates", "production_coding_autonomy", "production_readiness", "project_autopilot", "project_cto",
     "project_ideation", "project_intelligence", "project_convention_engine", "integration_registry",
     "project_memory", "project_watchdog", "proactive_guardian", "release_manager", "reliability_score", "research_briefings",
-    "sandbox_simulation", "search_broker", "security_guardian_pro", "self_debugger", "self_model", "self_reflection",
+    "sandbox_simulation", "search_broker", "security_guardian_pro", "security_lab", "self_debugger", "self_model", "self_reflection",
     "self_testing_personality", "self_update", "semantic_search", "skill_evolution", "skill_improvement", "skill_library",
     "skill_marketplace", "skill_training_studio", "task_contracts", "task_queue", "test_build_monitor", "text_to_3d", "trust_dashboard",
     "trust_proof", "version_guardian", "vision_skill_learning", "visual_monitor", "voice_command_repair", "voice_reliability",
@@ -73,7 +73,7 @@ _CORE_MODULES = [
     "code_change_simulator", "codebase_standards", "command_graph", "dev_server_copilot", "do_not_forget", "emotional_timing",
     "failure_autopsy", "memory_constitution", "personal_taste_engine", "reality_check", "refactor_planner",
     "agent_output_review", "evidence_judgment", "failure_autopsy_engine", "final_answer_reviewer", "honesty_gate", "quality_judgment", "readiness_claim_guard", "self_review_gate",
-    "shallow_output_detector", "style_profiles", "task_files", "taste_memory", "ui_control", "user_intent_model", "visual_skill_memory_v2",
+    "shallow_output_detector", "structured_outputs", "style_profiles", "task_files", "taste_memory", "ui_control", "user_intent_model", "visual_skill_memory_v2",
 ]
 
 globals().update({name: lazy_module(f"core.{name}") for name in _CORE_MODULES})
@@ -225,6 +225,33 @@ class PortScanRequest(BaseModel):
     ports: list[int] = Field(default_factory=list)
 
 
+class SecurityLabRunRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    target: str = Field(default="", max_length=500)
+    profile: str = Field(default="auto", max_length=120)
+    tools: list[str] = Field(default_factory=list, max_length=40)
+    intensity: str = Field(default="safe", max_length=80)
+    execution_mode: str = Field(default="host", max_length=80)
+    timeout: int = Field(default=180, ge=5, le=1800)
+    ctf_lab: bool = False
+    authorization_note: str = Field(default="", max_length=2000)
+    scope_id: int = Field(default=0, ge=0)
+    apply_fixes: bool = False
+
+
+class SecurityLabReportRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    target: str = Field(default="", max_length=500)
+    run_id: int = Field(default=0, ge=0)
+
+
+class SecurityLabRemediateRequest(BaseModel):
+    run_id: int = Field(default=0, ge=0)
+    root: str = Field(default="", max_length=1000)
+    target: str = Field(default="", max_length=500)
+    apply: bool = False
+
+
 class CapabilityRootRequest(BaseModel):
     root: str = Field(default="", max_length=1000)
 
@@ -322,6 +349,23 @@ class BenchmarkRunRequest(BaseModel):
     run_live: bool = False
 
 
+class AutoEvalRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    request: str = Field(default="", max_length=8000)
+    mode: str = Field(default="product_quality", max_length=120)
+    target_files: list[str] = Field(default_factory=list)
+    experiment_command: str = Field(default="", max_length=1000)
+    apply_fixes: bool = False
+    run_gates: bool = False
+    install: bool = False
+    browser: bool = False
+    preview: bool = False
+    min_delta: float | None = Field(default=None, ge=0.0, le=100.0)
+    stack: dict[str, Any] = Field(default_factory=dict)
+    timeout: int = Field(default=180, ge=1, le=1800)
+    background: bool = False
+
+
 class CompanyStateRequest(BaseModel):
     agent_id: str = Field(min_length=1, max_length=120)
     state: str = Field(default="working", max_length=80)
@@ -405,6 +449,7 @@ class AutonomousCodingRequest(BaseModel):
     request: str = Field(min_length=1, max_length=4000)
     root: str = Field(default="", max_length=1000)
     risk_level: str = Field(default="medium", max_length=80)
+    background: bool = False
 
 
 class ProductStudioPrepareRequest(BaseModel):
@@ -412,6 +457,52 @@ class ProductStudioPrepareRequest(BaseModel):
     request: str = Field(default="", max_length=4000)
     product_name: str = Field(default="", max_length=200)
     create_files: bool = True
+
+
+class DesignCritiqueRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    request: str = Field(min_length=1, max_length=4000)
+    product_name: str = Field(default="", max_length=200)
+    stack: dict[str, Any] = Field(default_factory=dict)
+    variant_count: int = Field(default=3, ge=2, le=3)
+    dry_run: bool = True
+    background: bool = False
+
+
+class DesignPipelineRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    request: str = Field(min_length=1, max_length=4000)
+    product_name: str = Field(default="", max_length=200)
+    stack: dict[str, Any] = Field(default_factory=dict)
+    variant_count: int = Field(default=3, ge=2, le=3)
+    dry_run: bool = True
+    apply_to_source: bool = False
+    run_browser: bool | None = None
+    research_live: bool | None = None
+    max_fix_attempts: int = Field(default=1, ge=0, le=3)
+    background: bool = False
+
+
+class DesignImportImplementRequest(BaseModel):
+    root: str = Field(default="", max_length=1000)
+    project_slug: str = Field(default="", max_length=200)
+    request: str = Field(default="", max_length=4000)
+    product_name: str = Field(default="", max_length=200)
+    source_type: str = Field(default="raw_html", max_length=80)
+    source: str = Field(default="", max_length=10_000_000)
+    source_path: str = Field(default="", max_length=2000)
+    source_url: str = Field(default="", max_length=2000)
+    source_base64: str = Field(default="", max_length=30_000_000)
+    data_url: str = Field(default="", max_length=30_000_000)
+    pages: list[dict[str, Any]] = Field(default_factory=list)
+    verify: bool = True
+    install: bool = True
+    tests: bool = True
+    audits: bool = False
+    browser: bool = True
+    preview: bool = True
+    timeout: int = Field(default=0, ge=0, le=1800)
+    background: bool = False
 
 
 class ProductStudioGateRunRequest(BaseModel):
@@ -425,6 +516,7 @@ class ProductStudioGateRunRequest(BaseModel):
     external_preview: bool | None = None
     timeout: int = Field(default=0, ge=0, le=1800)
     stack: dict[str, Any] = Field(default_factory=dict)
+    background: bool = False
 
 
 class ProductionReadinessStartRequest(BaseModel):
@@ -434,6 +526,7 @@ class ProductionReadinessStartRequest(BaseModel):
     production_profile: str = Field(default="auto", max_length=120)
     risk_level: str = Field(default="medium", max_length=80)
     max_fix_attempts: int = Field(default=0, ge=0, le=3)
+    background: bool = False
 
 
 class ProductionReadinessRerunRequest(BaseModel):
@@ -465,6 +558,19 @@ class FridayOSRerunRequest(BaseModel):
 class FridayOSApprovalRequest(BaseModel):
     action: str = Field(min_length=1, max_length=80)
     note: str = Field(default="", max_length=1000)
+
+
+class FridayOpenPathRequest(BaseModel):
+    path: str = Field(min_length=1, max_length=2000)
+    run_id: int = Field(default=0, ge=0)
+
+
+class FridayLearningFeedbackRequest(BaseModel):
+    feedback: str = Field(min_length=1, max_length=8000)
+    root: str = Field(default="", max_length=1000)
+    domain: str = Field(default="product", max_length=120)
+    evidence: list[str] = Field(default_factory=list)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class StyleProfileRequest(BaseModel):
@@ -599,6 +705,10 @@ class AutomationTextRequest(BaseModel):
 
 class PermissionRuleRequest(BaseModel):
     mode: str = Field(pattern="^(allow|ask|block)$")
+
+
+class AuthorityModeRequest(BaseModel):
+    mode: str = Field(pattern="^(approval_gated|full_access|approval-gated|full-access|supervised|full|autonomous)$")
 
 
 class GoalCreateRequest(BaseModel):
@@ -960,6 +1070,25 @@ class DocumentGenerateRequest(BaseModel):
     root: str = Field(default="", max_length=1000)
     filename: str = Field(default="", max_length=300)
     formats: list[str] = Field(default_factory=lambda: ["md", "docx", "pdf"])
+
+
+class DocumentIndexRequest(BaseModel):
+    paths: list[str] = Field(default_factory=list, min_length=1, max_length=50)
+    root: str = Field(default="", max_length=1000)
+    query: str = Field(default="", max_length=2000)
+    max_chars: int = Field(default=60000, ge=500, le=250000)
+
+
+class FridayToolExecuteRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=160)
+    payload: dict[str, Any] = Field(default_factory=dict)
+    trace_id: str = Field(default="", max_length=240)
+    approval_override: bool | None = None
+
+
+class StructuredOutputValidateRequest(BaseModel):
+    kind: str = Field(min_length=1, max_length=120)
+    payload: dict[str, Any] = Field(default_factory=dict)
 
 
 class TimelineNoteRequest(BaseModel):
@@ -2115,6 +2244,55 @@ def create_app() -> FastAPI:
     def security_hardening_plan(request: CapabilityRootRequest, target: str = "", _user: str = Depends(require_user)) -> dict[str, Any]:
         return capability_center.hardening_plan(target, root=request.root)
 
+    @app.get("/security-lab/status")
+    def security_lab_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return security_lab.status()
+
+    @app.get("/security-lab/tools")
+    def security_lab_tools(_user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return security_lab.list_tools()
+
+    @app.get("/security-lab/runs")
+    def security_lab_runs(limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return security_lab.recent_runs(limit=limit)
+
+    @app.get("/security-lab/runs/{run_id}")
+    def security_lab_run_detail(run_id: int, _user: str = Depends(require_user)) -> dict[str, Any]:
+        run = security_lab.get_run(run_id)
+        if not run:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Security Lab run not found.")
+        return run
+
+    @app.post("/security-lab/run")
+    def security_lab_run(request: SecurityLabRunRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = security_lab.run_scan(
+            root=request.root,
+            target=request.target,
+            profile=request.profile,
+            tools=request.tools,
+            intensity=request.intensity,
+            execution_mode=request.execution_mode,
+            timeout=request.timeout,
+            ctf_lab=request.ctf_lab,
+            authorization_note=request.authorization_note,
+            scope_id=request.scope_id,
+            apply_fixes=request.apply_fixes,
+        )
+        _invalidate_dashboard_snapshot_cache()
+        return result
+
+    @app.post("/security-lab/report")
+    def security_lab_report(request: SecurityLabReportRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return security_lab.generate_report(root=request.root, target=request.target, run_id=request.run_id)
+
+    @app.post("/security-lab/hardening")
+    def security_lab_hardening(request: SecurityLabReportRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return security_lab.hardening_plan(root=request.root, target=request.target)
+
+    @app.post("/security-lab/remediate")
+    def security_lab_remediate(request: SecurityLabRemediateRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return security_lab.remediate(run_id=request.run_id, root=request.root, target=request.target, apply=request.apply)
+
     @app.get("/automation/recipes")
     def automation_recipes(limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return capability_center.list_recipes(limit=limit)
@@ -2390,6 +2568,72 @@ def create_app() -> FastAPI:
     def benchmark_history(limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return competitive_benchmark.history(limit=limit)
 
+    @app.get("/autoeval/status")
+    def autoeval_status(limit: int = 10, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return autoeval_lab.status(limit=limit)
+
+    @app.post("/autoeval/program")
+    def autoeval_program(request: AutoEvalRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return autoeval_lab.ensure_program(request.root, request.request, mode=request.mode)
+
+    @app.post("/autoeval/score")
+    def autoeval_score(request: AutoEvalRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return autoeval_lab.score_project(
+            request.root,
+            request.request,
+            mode=request.mode,
+            stack=request.stack,
+            run_gates=request.run_gates,
+            install=request.install,
+            browser=request.browser,
+            preview=request.preview,
+            timeout=request.timeout,
+        )
+
+    @app.post("/autoeval/run")
+    def autoeval_run(request: AutoEvalRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        if request.background:
+            return friday_run_engine.start_background(
+                "autoeval_lab",
+                request.request or request.mode,
+                lambda: autoeval_lab.run_experiment(
+                    request.root,
+                    request.request,
+                    mode=request.mode,
+                    target_files=request.target_files,
+                    experiment_command=request.experiment_command,
+                    apply_fixes=request.apply_fixes,
+                    run_gates=request.run_gates,
+                    install=request.install,
+                    browser=request.browser,
+                    preview=request.preview,
+                    min_delta=request.min_delta,
+                    stack=request.stack,
+                    timeout=request.timeout,
+                ),
+                root=request.root,
+                metadata={"mode": request.mode, "run_gates": request.run_gates},
+            )
+        return autoeval_lab.run_experiment(
+            request.root,
+            request.request,
+            mode=request.mode,
+            target_files=request.target_files,
+            experiment_command=request.experiment_command,
+            apply_fixes=request.apply_fixes,
+            run_gates=request.run_gates,
+            install=request.install,
+            browser=request.browser,
+            preview=request.preview,
+            min_delta=request.min_delta,
+            stack=request.stack,
+            timeout=request.timeout,
+        )
+
+    @app.get("/autoeval/history")
+    def autoeval_history(root: str = "", limit: int = 20, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
+        return autoeval_lab.history(limit=limit, root=root)
+
     @app.get("/connectors/runtime/status")
     def connector_runtime_status(_user: str = Depends(require_user)) -> dict[str, Any]:
         return connector_runtime.status()
@@ -2648,6 +2892,10 @@ def create_app() -> FastAPI:
     def model_router_summary(_user: str = Depends(require_user)) -> dict[str, Any]:
         return model_router_brain.summary()
 
+    @app.get("/model-gateway/status")
+    def model_gateway_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return llm.model_gateway_status()
+
     @app.post("/model-router/choose")
     def model_router_choose(request: ModelRouteRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
         return model_router_brain.choose_provider(request.task_type, request.text, online=request.online)
@@ -2810,6 +3058,49 @@ def create_app() -> FastAPI:
             filename=request.filename,
             formats=request.formats,
         )
+
+    @app.post("/documents/index")
+    def documents_index(request: DocumentIndexRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return document_intelligence.index_documents(
+            request.paths,
+            root=request.root,
+            query=request.query,
+            max_chars=request.max_chars,
+        )
+
+    @app.get("/tools/registry")
+    def tools_registry(_user: str = Depends(require_user)) -> dict[str, Any]:
+        tools = friday_tool_registry.list_tools()
+        return {
+            "tools": tools,
+            "count": len(tools),
+            "summary": f"{len(tools)} shared Friday tool(s) registered.",
+        }
+
+    @app.post("/tools/execute")
+    def tools_execute(request: FridayToolExecuteRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_tool_registry.execute_tool(
+            request.name,
+            request.payload,
+            trace_id=request.trace_id,
+            approval_override=request.approval_override,
+        )
+
+    @app.post("/structured-output/validate")
+    def structured_output_validate(request: StructuredOutputValidateRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return structured_outputs.validate(request.kind, request.payload)
+
+    @app.get("/traces")
+    def traces_recent(limit: int = 20, _user: str = Depends(require_user)) -> dict[str, Any]:
+        traces = friday_trace.recent(limit=limit)
+        return {"traces": traces, "count": len(traces)}
+
+    @app.get("/traces/{trace_id}")
+    def trace_detail(trace_id: str, _user: str = Depends(require_user)) -> dict[str, Any]:
+        trace = friday_trace.get_trace(trace_id)
+        if not trace:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Trace not found.")
+        return trace
 
     @app.get("/workspace-context/status")
     def workspace_context_status(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -4628,6 +4919,14 @@ def create_app() -> FastAPI:
 
     @app.post("/coding/autonomous/start")
     def autonomous_coding_start(request: AutonomousCodingRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        if request.background:
+            return friday_run_engine.start_background(
+                "autonomous_coding",
+                request.request,
+                lambda: autonomous_coding.start(request.request, root=request.root, risk_level=request.risk_level),
+                root=request.root,
+                metadata={"risk_level": request.risk_level},
+            )
         return autonomous_coding.start(request.request, root=request.root, risk_level=request.risk_level)
 
     @app.get("/coding/autonomous/rules")
@@ -4642,6 +4941,119 @@ def create_app() -> FastAPI:
     def product_studio_gate_registry(_user: str = Depends(require_user)) -> dict[str, Any]:
         return {"gates": product_studio_gates.gate_registry()}
 
+    @app.get("/design/providers/status")
+    def design_provider_status(probe: bool = False, root: str = "", _user: str = Depends(require_user)) -> dict[str, Any]:
+        return design_providers.status(probe=probe, root=root)
+
+    @app.get("/design/stitch/debug")
+    def design_stitch_debug(root: str = "", limit: int = 12, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return design_providers.stitch_debug(root=root, limit=limit)
+
+    @app.post("/design/critique/run")
+    def design_critique_run(request: DesignCritiqueRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        if request.background:
+            return friday_run_engine.start_background(
+                "design_critique",
+                request.request,
+                lambda: design_providers.run_design_critique_loop(
+                    request.request,
+                    root=request.root,
+                    product_name=request.product_name,
+                    stack=request.stack,
+                    variant_count=request.variant_count,
+                    dry_run=request.dry_run,
+                ),
+                root=request.root,
+                metadata={"product_name": request.product_name, "dry_run": request.dry_run},
+            )
+        return design_providers.run_design_critique_loop(
+            request.request,
+            root=request.root,
+            product_name=request.product_name,
+            stack=request.stack,
+            variant_count=request.variant_count,
+            dry_run=request.dry_run,
+        )
+
+    @app.get("/design/pipeline/contract")
+    def design_pipeline_contract(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return design_pipeline.pipeline_contract()
+
+    @app.get("/design/import/sources")
+    def design_import_sources(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return design_importer.supported_sources()
+
+    @app.post("/design/import/implement")
+    def design_import_implement(request: DesignImportImplementRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        kwargs = {
+            "request": request.request,
+            "product_name": request.product_name,
+            "source_type": request.source_type,
+            "source": request.source,
+            "source_path": request.source_path,
+            "source_url": request.source_url,
+            "source_base64": request.source_base64,
+            "data_url": request.data_url,
+            "root": request.root,
+            "project_slug": request.project_slug,
+            "pages": request.pages or None,
+            "verify": request.verify,
+            "install": request.install,
+            "tests": request.tests,
+            "audits": request.audits,
+            "browser": request.browser,
+            "preview": request.preview,
+            "timeout": request.timeout or None,
+        }
+        if request.background:
+            return friday_run_engine.start_background(
+                "design_import_implementation",
+                request.request or request.product_name or request.project_slug or "external design import",
+                lambda: design_importer.import_and_implement(**kwargs),
+                root=request.root or request.project_slug,
+                metadata={"product_name": request.product_name, "source_type": request.source_type, "verify": request.verify},
+            )
+        return design_importer.import_and_implement(**kwargs)
+
+    @app.post("/design/pipeline/run")
+    def design_pipeline_run(request: DesignPipelineRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        if request.background:
+            return friday_run_engine.start_background(
+                "design_pipeline",
+                request.request,
+                lambda: design_pipeline.run(
+                    request.request,
+                    root=request.root,
+                    product_name=request.product_name,
+                    stack=request.stack,
+                    variant_count=request.variant_count,
+                    dry_run=request.dry_run,
+                    apply_to_source=request.apply_to_source,
+                    run_browser=request.run_browser,
+                    research_live=request.research_live,
+                    max_fix_attempts=request.max_fix_attempts,
+                ),
+                root=request.root,
+                metadata={
+                    "product_name": request.product_name,
+                    "dry_run": request.dry_run,
+                    "apply_to_source": request.apply_to_source,
+                    "run_browser": request.run_browser,
+                },
+            )
+        return design_pipeline.run(
+            request.request,
+            root=request.root,
+            product_name=request.product_name,
+            stack=request.stack,
+            variant_count=request.variant_count,
+            dry_run=request.dry_run,
+            apply_to_source=request.apply_to_source,
+            run_browser=request.run_browser,
+            research_live=request.research_live,
+            max_fix_attempts=request.max_fix_attempts,
+        )
+
     @app.post("/coding/product-studio/prepare")
     def product_studio_prepare(request: ProductStudioPrepareRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
         return product_studio.prepare_product_studio(
@@ -4653,6 +5065,25 @@ def create_app() -> FastAPI:
 
     @app.post("/coding/product-studio/gates/run")
     def product_studio_gates_run(request: ProductStudioGateRunRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        if request.background:
+            return friday_run_engine.start_background(
+                "product_studio_gates",
+                request.root or "gates",
+                lambda: product_studio_gates.execute_gates(
+                    request.root,
+                    stack=request.stack,
+                    target_url=request.target_url,
+                    install=request.install,
+                    tests=request.tests,
+                    audits=request.audits,
+                    browser=request.browser,
+                    preview=request.preview,
+                    external_preview=request.external_preview,
+                    timeout=request.timeout or None,
+                ),
+                root=request.root,
+                metadata={"target_url": request.target_url, "stack": request.stack},
+            )
         return product_studio_gates.execute_gates(
             request.root,
             stack=request.stack,
@@ -4672,6 +5103,22 @@ def create_app() -> FastAPI:
 
     @app.post("/coding/production/start")
     def production_readiness_start(request: ProductionReadinessStartRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        if request.background:
+            return friday_run_engine.start_background(
+                "production_readiness",
+                request.request,
+                lambda: production_readiness.start(
+                    request.request,
+                    root=request.root,
+                    target=request.target,
+                    production_profile=request.production_profile,
+                    risk_level=request.risk_level,
+                    max_fix_attempts=request.max_fix_attempts,
+                ),
+                root=request.root,
+                target=request.target,
+                metadata={"production_profile": request.production_profile, "risk_level": request.risk_level},
+            )
         return production_readiness.start(
             request.request,
             root=request.root,
@@ -4768,23 +5215,71 @@ def create_app() -> FastAPI:
     def friday_os_memory(limit: int = 30, _user: str = Depends(require_user)) -> dict[str, Any]:
         return friday_memory.status(limit=limit)
 
+    @app.get("/friday-os/learning/status")
+    def friday_os_learning_status(limit: int = 30, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_learning_loop.status(limit=limit)
+
+    @app.get("/friday-os/learning/context")
+    def friday_os_learning_context(query: str = "", root: str = "", domain: str = "", limit: int = 10, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_learning_loop.learning_context_for_request(query, root=root, domain=domain, limit=limit)
+
+    @app.post("/friday-os/learning/feedback")
+    def friday_os_learning_feedback(request: FridayLearningFeedbackRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        return friday_learning_loop.learn_from_user_feedback(
+            request.feedback,
+            root=request.root,
+            domain=request.domain,
+            evidence=request.evidence,
+            metadata=request.metadata,
+        )
+
     @app.get("/friday-os/integrations")
     def friday_os_integrations(_user: str = Depends(require_user)) -> dict[str, Any]:
         return integration_registry.status()
 
     @app.get("/friday-os/artifact")
-    def friday_os_artifact(path: str, _user: str = Depends(require_user)) -> dict[str, Any]:
-        target = Path(path).expanduser().resolve()
-        if ".friday" not in target.parts and target.suffix.lower() not in {".log", ".txt", ".md", ".json"}:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Only Friday proof artifacts and logs can be opened here.")
-        if not target.exists() or not target.is_file():
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Artifact not found.")
-        if target.stat().st_size > 1_500_000:
-            raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Artifact is too large for inline viewing.")
-        binary_suffixes = {".png", ".jpg", ".jpeg", ".webp", ".gif"}
-        if target.suffix.lower() in binary_suffixes:
-            return {"path": str(target), "size": target.stat().st_size, "binary": True, "base64": base64.b64encode(target.read_bytes()).decode("ascii")}
-        return {"path": str(target), "size": target.stat().st_size, "binary": False, "content": target.read_text(encoding="utf-8", errors="replace")}
+    def friday_os_artifact(path: str, run_id: int = 0, _user: str = Depends(require_user)) -> dict[str, Any]:
+        allowed: list[str] = []
+        require_manifest_match = False
+        if run_id:
+            runs = [
+                friday_run_engine.get_run(run_id),
+                friday_operating_system.get_run(run_id),
+                production_readiness.get_run(run_id),
+            ]
+            for run in runs:
+                allowed.extend(artifact_access.collect_manifest_paths(run))
+            require_manifest_match = True
+        try:
+            return artifact_access.read_artifact(path, allowed_paths=allowed, require_manifest_match=require_manifest_match)
+        except FileNotFoundError:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Artifact not found.") from None
+        except OverflowError:
+            raise HTTPException(status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE, detail="Artifact is too large for inline viewing.") from None
+        except artifact_access.ArtifactAccessError as exc:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(exc)) from None
+
+    @app.post("/friday-os/open-folder")
+    def friday_os_open_folder(request: FridayOpenPathRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        target = Path(request.path).expanduser().resolve()
+        allowed: list[str] = []
+        if request.run_id:
+            for run in (friday_run_engine.get_run(request.run_id), friday_operating_system.get_run(request.run_id), production_readiness.get_run(request.run_id)):
+                if isinstance(run, dict):
+                    allowed.extend(artifact_access.collect_manifest_paths(run))
+                    if run.get("root"):
+                        allowed.append(str(Path(run["root"]).expanduser().resolve()))
+                    output = run.get("output") if isinstance(run.get("output"), dict) else {}
+                    if output.get("root"):
+                        allowed.append(str(Path(output["root"]).expanduser().resolve()))
+        if request.run_id and str(target) not in set(allowed):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Path is not attached to this Friday run.")
+        folder = target if target.is_dir() else target.parent
+        if not folder.exists():
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Folder not found.")
+        from tools import pc_control
+
+        return {"path": str(folder), "reply": pc_control.execute({"action": "open_path", "target": str(folder)})}
 
     @app.get("/judgment/status")
     def judgment_status(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -5069,6 +5564,16 @@ def create_app() -> FastAPI:
     @app.get("/permissions/events")
     def permission_events(limit: int = 50, _user: str = Depends(require_user)) -> list[dict[str, Any]]:
         return permissions.recent_events(limit=limit)
+
+    @app.get("/autonomy-control/status")
+    def autonomy_control_status(_user: str = Depends(require_user)) -> dict[str, Any]:
+        return autonomy_control.status()
+
+    @app.put("/autonomy-control/mode")
+    def update_autonomy_control_mode(request: AuthorityModeRequest, _user: str = Depends(require_user)) -> dict[str, Any]:
+        result = autonomy_control.set_authority_mode(request.mode, actor=_user)
+        _invalidate_dashboard_snapshot_cache()
+        return result
 
     @app.post("/graph/neo4j/export")
     def export_neo4j(_user: str = Depends(require_user)) -> dict[str, Any]:
@@ -6219,11 +6724,18 @@ def _dashboard_snapshot() -> dict[str, Any]:
         "connectorRuntime": _snapshot_value(connector_runtime.status, None),
         "controlRoom": _snapshot_value(friday_gateway.control_room, None),
         "benchmark": _snapshot_value(competitive_benchmark.status, None),
+        "autoeval": _snapshot_value(lambda: autoeval_lab.status(limit=8), None),
         "companyRuntime": _snapshot_value(company_runtime.status, None),
         "memoryGovernance": _snapshot_value(memory_governance.status, None),
         "productionCoding": _snapshot_value(production_coding_autonomy.status, None),
         "productionReadiness": _snapshot_value(production_readiness.status, None),
+        "securityLab": _snapshot_value(security_lab.status, None),
         "fridayOs": _snapshot_value(friday_operating_system.status, None),
+        "fridayRuns": _snapshot_value(friday_run_engine.status, None),
+        "autonomyControl": _snapshot_value(autonomy_control.status, None),
+        "toolRegistry": _snapshot_value(_tool_registry_snapshot, None),
+        "traces": _snapshot_value(lambda: {"traces": friday_trace.recent(limit=12)}, None),
+        "modelGateway": _snapshot_value(llm.model_gateway_status, None),
         "judgment": _snapshot_value(judgment_kernel.status, None),
         "projectIdeas": _snapshot_value(project_ideation.status, None),
         "approvals": _snapshot_value(lambda: approval_inbox.items(limit=10), []),
@@ -6257,6 +6769,11 @@ def _snapshot_value(fn: Any, default: Any) -> Any:
         return fn()
     except Exception:
         return default
+
+
+def _tool_registry_snapshot() -> dict[str, Any]:
+    tools = friday_tool_registry.list_tools()
+    return {"tools": tools, "count": len(tools)}
 
 
 def _dashboard_pc_awareness() -> dict[str, Any]:

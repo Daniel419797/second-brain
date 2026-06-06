@@ -111,7 +111,7 @@ def discover_tests(root: str | Path = "") -> list[str]:
     if (base / "yarn.lock").exists():
         commands = [cmd.replace("npm run ", "yarn ") if cmd.startswith("npm run ") else cmd for cmd in commands]
     pyproject = _read_text(base / "pyproject.toml")
-    if (base / "pytest.ini").exists() or (base / "tests").exists() or "pytest" in pyproject:
+    if (base / "pytest.ini").exists() or _has_python_tests(base) or "pytest" in pyproject:
         commands.append("python -m pytest")
     if "ruff" in pyproject or (base / "ruff.toml").exists():
         commands.append("python -m ruff check .")
@@ -128,6 +128,16 @@ def discover_tests(root: str | Path = "") -> list[str]:
     if (base / "pubspec.yaml").exists():
         commands.extend(["flutter test", "flutter analyze"])
     return _dedupe(commands)
+
+
+def _has_python_tests(base: Path) -> bool:
+    tests_root = base / "tests"
+    if not tests_root.exists():
+        return False
+    try:
+        return any(path.suffix == ".py" for path in tests_root.rglob("*.py"))
+    except OSError:
+        return False
 
 
 def wipe_all(root: str | Path = "") -> dict[str, Any]:

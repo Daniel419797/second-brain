@@ -251,6 +251,31 @@ def verify_project_artifact(root: str | Path, stack: dict[str, Any], written: li
 
 def required_files_for_stack(stack_id: str, root: Path | None = None) -> list[str]:
     if stack_id == "nextjs":
+        if root and _is_nextjs_marketing_site(root):
+            return [
+                "package.json",
+                "README.md",
+                "FRONTEND_STRUCTURE.md",
+                "components.json",
+                "vitest.config.ts",
+                "src/app/page.tsx",
+                "src/app/about/page.tsx",
+                "src/app/services/page.tsx",
+                "src/app/contact/page.tsx",
+                "src/app/api/health/route.ts",
+                "src/components/Landing/HomePage.tsx",
+                "src/components/Marketing/SiteShell.tsx",
+                "src/components/Marketing/SiteHeader.tsx",
+                "src/components/Marketing/SiteFooter.tsx",
+                "src/components/Marketing/AboutPage.tsx",
+                "src/components/Marketing/ServicesPage.tsx",
+                "src/components/Marketing/ContactPage.tsx",
+                "src/components/Marketing/__tests__/siteContent.test.ts",
+                "src/components/ui/button.tsx",
+                "src/lib/siteContent.ts",
+                "src/test/setup.ts",
+                "src/types/index.ts",
+            ]
         return [
             "package.json",
             "README.md",
@@ -405,6 +430,8 @@ def _manifest_errors(base: Path) -> list[str]:
 def _stack_shape_errors(base: Path, stack_id: str) -> list[str]:
     errors: list[str] = []
     if stack_id == "nextjs":
+        if _is_nextjs_marketing_site(base):
+            return _nextjs_marketing_shape_errors(base)
         page = _read(base / "src/app/page.tsx")
         dashboard_page = _read(base / "src/app/(dashboard)/workspace/page.tsx")
         console = _read(base / "src/components/Workspace/WorkspaceConsole.tsx")
@@ -432,6 +459,38 @@ def _stack_shape_errors(base: Path, stack_id: str) -> list[str]:
             errors.append("components.json must declare NexusForge-style src aliases")
         if "jsdom" not in vitest_config or "src/test/setup.ts" not in vitest_config:
             errors.append("vitest.config.ts must use jsdom and src/test setup")
+    return errors
+
+
+def _is_nextjs_marketing_site(root: Path) -> bool:
+    return (root / "src/lib/siteContent.ts").exists() and (root / "src/components/Marketing/SiteShell.tsx").exists()
+
+
+def _nextjs_marketing_shape_errors(base: Path) -> list[str]:
+    errors: list[str] = []
+    page = _read(base / "src/app/page.tsx")
+    about = _read(base / "src/app/about/page.tsx")
+    services = _read(base / "src/app/services/page.tsx")
+    contact = _read(base / "src/app/contact/page.tsx")
+    shell = _read(base / "src/components/Marketing/SiteShell.tsx")
+    content = _read(base / "src/lib/siteContent.ts")
+    components_config = _read(base / "components.json")
+    vitest_config = _read(base / "vitest.config.ts")
+    if "HomePage" not in page:
+        errors.append("src/app/page.tsx must stay thin and compose components/Landing/HomePage")
+    if "AboutPage" not in about or "ServicesPage" not in services or "ContactPage" not in contact:
+        errors.append("marketing website routes must compose AboutPage, ServicesPage, and ContactPage")
+    if "SiteHeader" not in shell or "SiteFooter" not in shell:
+        errors.append("Marketing SiteShell must compose SiteHeader and SiteFooter")
+    for href in ["/", "/about", "/services", "/contact"]:
+        if f"href: '{href}'" not in content and f'\"href\": \"{href}\"' not in content:
+            errors.append(f"src/lib/siteContent.ts must define nav href '{href}'")
+    if "src/app/(dashboard)" in _read(base / "FRONTEND_STRUCTURE.md"):
+        errors.append("marketing website structure must not describe a dashboard route group")
+    if "@/components" not in components_config or "@/lib" not in components_config:
+        errors.append("components.json must declare NexusForge-style src aliases")
+    if "jsdom" not in vitest_config or "src/test/setup.ts" not in vitest_config:
+        errors.append("vitest.config.ts must use jsdom and src/test setup")
     return errors
 
 

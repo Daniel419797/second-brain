@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact OrbitFoundry Robotics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#004ac6",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#c0c6db",
+                        "background": "#f7f9fb",
+                        "on-tertiary-fixed": "#141b2b",
+                        "outline": "#737686",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-primary-fixed": "#00174b",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#434655",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ecf0ff",
+                        "on-secondary-container": "#006f67",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-container": "#666d7f",
+                        "surface": "#f7f9fb",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#dce2f7",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#00201d",
+                        "on-primary-container": "#eeefff",
+                        "inverse-surface": "#2d3133",
+                        "surface-variant": "#e0e3e5",
+                        "secondary": "#006a63",
+                        "tertiary": "#4e5566",
+                        "primary-container": "#2563eb",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-tint": "#0053db",
+                        "on-tertiary-fixed-variant": "#404758",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#99efe5",
+                        "on-error": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#9cf2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "element-padding-md": "16px",
+                        "section-gap": "72px",
+                        "element-padding-lg": "24px",
+                        "element-padding-sm": "8px",
+                        "grid-gutter": "24px",
+                        "container-margin": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-mono-sm": ["JetBrains Mono"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-mono-allcaps": ["JetBrains Mono"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-mono-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-mono-allcaps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pt-[112px] flex flex-col">
+<!-- Telemetry Bar -->
+<div class="fixed top-0 w-full z-[60] h-8 flex items-center justify-center gap-4 px-4 bg-on-tertiary-fixed dark:bg-tertiary-fixed-dim cursor-default">
+<span class="material-symbols-outlined text-tertiary-fixed dark:text-on-tertiary-fixed font-label-mono-sm text-label-mono-sm">sensors</span>
+<span class="text-tertiary-fixed dark:text-on-tertiary-fixed font-label-mono-sm text-label-mono-sm">Fleet Status: Online • Optimizing Route 4 • Latency: 12ms</span>
+</div>
+<!-- TopAppBar -->
+<header class="fixed top-[32px] w-full z-50 flex justify-between items-center px-grid-gutter h-20 bg-surface/90 backdrop-blur-md border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface dark:text-surface-bright tracking-tight">
+            OrbitFoundry
+        </div>
+<nav class="hidden md:flex gap-grid-gutter items-center h-full">
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors h-full flex items-center hover:bg-surface-container-low dark:hover:bg-tertiary-container px-2" href="#">Home</a>
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors h-full flex items-center hover:bg-surface-container-low dark:hover:bg-tertiary-container px-2" href="#">Platform</a>
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors h-full flex items-center hover:bg-surface-container-low dark:hover:bg-tertiary-container px-2" href="#">Robotics Network</a>
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-primary dark:text-primary-fixed-dim border-b-2 border-primary pb-1 h-full flex items-center px-2" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden md:block font-label-mono-allcaps text-label-mono-allcaps text-on-surface bg-transparent border border-outline px-element-padding-md py-element-padding-sm rounded hover:bg-surface-container-low transition-colors">See Services</button>
+<button class="font-label-mono-allcaps text-label-mono-allcaps bg-primary text-on-primary px-element-padding-md py-element-padding-sm rounded hover:bg-primary-container transition-colors">Start Inquiry</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center w-full max-w-screen-2xl mx-auto px-container-margin md:px-grid-gutter pb-section-gap gap-section-gap">
+<!-- Hero Section -->
+<section class="w-full pt-section-gap flex flex-col md:flex-row gap-grid-gutter items-start">
+<div class="w-full md:w-5/12 flex flex-col gap-6">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Ready for production-quality automation?</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Deploying robotic fleets at scale requires precision engineering and steadfast support. Initiate a dialogue with our systems architects to design an automation protocol tailored to your facility's unique topology and throughput requirements.
+                </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+<!-- Metric Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-element-padding-md rounded flex flex-col gap-2 relative overflow-hidden group hover:shadow-[0_4px_16px_rgba(0,0,0,0.05)] transition-all">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-primary mb-2" style="font-variation-settings: 'FILL' 1;">timer</span>
+<div class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider">Response Promise</div>
+<div class="font-headline-md text-headline-md text-on-surface">&lt; 2 Hrs</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">Priority SLA evaluation for enterprise deployments.</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant p-element-padding-md rounded flex flex-col gap-2 relative overflow-hidden group hover:shadow-[0_4px_16px_rgba(0,0,0,0.05)] transition-all">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-secondary mb-2" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<div class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider">Success Support</div>
+<div class="font-headline-md text-headline-md text-on-surface">24/7</div>
+<div class="font-body-md text-body-md text-on-surface-variant text-sm">Continuous telemetry monitoring and direct engineering access.</div>
+</div>
+</div>
+</div>
+<!-- Form Module -->
+<div class="w-full md:w-7/12 bg-surface-container-lowest border border-outline-variant rounded p-element-padding-lg relative overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+<div class="font-headline-sm text-headline-sm text-on-surface mb-6 border-b border-outline-variant pb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">terminal</span>
+                    System Inquiry Form
+                </div>
+<form class="flex flex-col gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider" for="firstName">Primary Contact // First Name</label>
+<input class="bg-surface border border-outline-variant rounded px-element-padding-md py-3 font-label-mono-sm text-label-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline" id="firstName" placeholder="e.g. Alan" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider" for="lastName">Primary Contact // Last Name</label>
+<input class="bg-surface border border-outline-variant rounded px-element-padding-md py-3 font-label-mono-sm text-label-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline" id="lastName" placeholder="e.g. Turing" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider" for="email">Corporate Authentication // Email</label>
+<input class="bg-surface border border-outline-variant rounded px-element-padding-md py-3 font-label-mono-sm text-label-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline" id="email" placeholder="system.admin@enterprise.com" type="email"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider" for="facility">Deployment Environment // Facility Type</label>
+<select class="bg-surface border border-outline-variant rounded px-element-padding-md py-3 font-label-mono-sm text-label-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none" id="facility">
+<option value="">Select facility configuration...</option>
+<option value="warehouse">Fulfillment Center / Warehouse Grid</option>
+<option value="manufacturing">Heavy Manufacturing Floor</option>
+<option value="cleanroom">Class 100 Cleanroom Environment</option>
+<option value="outdoor">Outdoor Logistics Yard</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="font-label-mono-sm text-label-mono-sm text-on-surface-variant uppercase tracking-wider" for="specs">Technical Specifications // Requirements</label>
+<textarea class="bg-surface border border-outline-variant rounded px-element-padding-md py-3 font-label-mono-sm text-label-mono-sm text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-outline resize-none" id="specs" placeholder="Describe operational throughput goals, payload requirements, and current WMS integration needs..." rows="4"></textarea>
+</div>
+<button class="self-start font-label-mono-allcaps text-label-mono-allcaps bg-primary text-on-primary px-element-padding-lg py-4 rounded hover:bg-primary-container transition-colors flex items-center gap-2" type="submit">
+                        Transmit Inquiry
+                        <span class="material-symbols-outlined text-sm">send</span>
+</button>
+</form>
+</div>
+</section>
+<!-- Global Offices Grid -->
+<section class="w-full flex flex-col gap-grid-gutter border-t border-outline-variant pt-section-gap">
+<div class="flex flex-col gap-2 items-center text-center">
+<span class="font-label-mono-allcaps text-label-mono-allcaps text-primary tracking-widest uppercase">Infrastructure</span>
+<h2 class="font-headline-md text-headline-md text-on-surface">Global Operations Centers</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Hardware depots and engineering hubs strategically located to support rapid fleet deployment and maintenance.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-grid-gutter mt-8">
+<!-- Location 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded overflow-hidden flex flex-col group hover:border-outline transition-colors">
+<div class="h-48 bg-surface-variant relative overflow-hidden">
+<img alt="Industrial warehouse exterior in Seattle" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A modern industrial warehouse exterior situated in Seattle, featuring clean architectural lines and large loading bays. The building is constructed with concrete and steel, exhibiting a stark, utilitarian aesthetic typical of a high-tech hardware depot. The lighting is overcast, providing soft, diffused illumination that emphasizes the structural geometry. The image incorporates the overarching OrbitFoundry brand style, relying on a cool color palette of deep greys, pristine whites, and subtle metallic accents to convey a sense of calm, capable intelligence and corporate reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9pLwXEj4peL8Jm_xYAWr9f88N_fJR_sH0XgZzcKtmARAC-useqozIhEnZtAHJb1IbJLYOX9sdGb3ZElUt6fN13-98kjO4-mbzXbgxf2sGtZZE6RdRe4cHCcbhxqyAJEPj35F7nF-AmayP-gtsZlbK28DVlc2cjaFC54EYyeURRXXB152LLOHqlVmCQQ36Qza17toEuMD3aFjOA21PKm2SQRetOIRe4fRjn3zJsLYKV4BBeLbg6ukfhyI_nxGwaytT9imA-t9_HQ"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest px-2 py-1 rounded font-label-mono-sm text-label-mono-sm border border-outline-variant">HQ / SEA</div>
+</div>
+<div class="p-element-padding-md flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Seattle Foundry</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Primary R&amp;D and Command Center.</p>
+<div class="font-label-mono-sm text-label-mono-sm text-outline mt-4">10400 NE 4th St<br/>Bellevue, WA 98004</div>
+</div>
+</div>
+<!-- Location 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded overflow-hidden flex flex-col group hover:border-outline transition-colors">
+<div class="h-48 bg-surface-variant relative overflow-hidden">
+<img alt="High-tech manufacturing floor in Berlin" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="A spacious, high-tech manufacturing facility floor located in Berlin, showcasing rows of pristine assembly stations and robotic components. The environment is impeccably clean, lit by bright, even fluorescent overhead lighting that reflects off the polished epoxy floors. The aesthetic aligns with the OrbitFoundry brand, utilizing a minimalist, industrial palette of stark whites, technical greys, and sparse blue accents to evoke an atmosphere of precision, transparency, and advanced engineering capabilities." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN2Lo91lO4R8APya1sk3J93Fr12qCW-t2NLNrwWPlLJ6vQcRyXUIo8vg48iw192HdFe9qvSmRvfQy58rL4MnHSww6SFDLj05fWFO1iyFyiDnr0zuCt73Yl1YSCdma--KAOdy8JQB2gMQc5syz-Y3C5Aa9ddmVNEwcN78My2J17SKhW6Bp7H_wxiRR8i2LTzLy6bCQBlo-DvH7agS5mq5Gzm6qoUmle9Ax1IpXDiYP5dtdiLUfk0FZo7rk8FPKsipFD5S1y_rvcFg"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest px-2 py-1 rounded font-label-mono-sm text-label-mono-sm border border-outline-variant">EU / BER</div>
+</div>
+<div class="p-element-padding-md flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Berlin Hub</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">European Logistics &amp; Assembly.</p>
+<div class="font-label-mono-sm text-label-mono-sm text-outline mt-4">Mühlenstraße 25<br/>10243 Berlin, Germany</div>
+</div>
+</div>
+<!-- Location 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded overflow-hidden flex flex-col group hover:border-outline transition-colors">
+<div class="h-48 bg-surface-variant relative overflow-hidden">
+<img alt="Automated logistics yard in Tokyo" class="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" data-alt="An expansive automated logistics yard in Tokyo at dusk, featuring shipping containers and heavy machinery arranged in a strict grid layout. The scene is illuminated by tall, industrial floodlights casting long shadows, creating a cinematic, high-contrast atmosphere. The visual style adheres to the OrbitFoundry identity, using deep shadows and sharp, structural outlines against a cool, dimming sky to represent a robust, indestructible, and highly organized telemetry environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm5dizUsuvuckaG3GzZABy4lKunn6tCU1Zzet26WQ8y8EMA8jWCTMD8E49qmjM_Puiczu-s4-ibe1TpOgR8DhmezbeExk9urk361eFigUPCqJSRQt5zNqEOJK02iGVq5tjCdsOZjKbZRF00DuB318Z0sj4lRLL-Ga-ou4a3Bb5D4lXzfGK_Wz53_DeEKkQRLFa4DmApCv_9Avz8uaVprBXDuW7pFTPiHCgzTJQkl1b0N08aXQEgo3zy8RVncujDIS75sYLjRhzrA"/>
+<div class="absolute top-4 left-4 bg-surface-container-lowest px-2 py-1 rounded font-label-mono-sm text-label-mono-sm border border-outline-variant">APAC / TYO</div>
+</div>
+<div class="p-element-padding-md flex flex-col gap-2">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Tokyo Depot</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">APAC Hardware Distribution.</p>
+<div class="font-label-mono-sm text-label-mono-sm text-outline mt-4">1-chōme-1-2 Oshiage<br/>Sumida City, Tokyo 131-8634</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-container-margin grid grid-cols-1 md:grid-cols-4 gap-grid-gutter bg-surface-container-highest dark:bg-on-background border-t border-outline-variant flat">
+<div class="flex flex-col gap-4">
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">OrbitFoundry</div>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 OrbitFoundry Robotics. All systems operational.</p>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-mono-allcaps text-label-mono-allcaps text-outline mb-2">Systems</span>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Resources</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Documentation</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">API Reference</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-mono-allcaps text-label-mono-allcaps text-outline mb-2">Company</span>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Status</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary hover:underline decoration-primary transition-all duration-200" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-2 items-start md:items-end">
+<div class="bg-surface-container-lowest border border-outline-variant p-2 rounded flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface">Network: Nominal</span>
+</div>
+</div>
+</footer>
+</body></html>

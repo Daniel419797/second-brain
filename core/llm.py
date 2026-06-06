@@ -1104,6 +1104,60 @@ def provider_limit_status() -> dict[str, Any]:
         }
 
 
+def model_gateway_status() -> dict[str, Any]:
+    """Describe Friday's model-call architecture without exposing secrets."""
+
+    try:
+        from core import langchain_model_adapters
+
+        adapter_payload = langchain_model_adapters.capabilities()
+    except Exception as exc:
+        adapter_payload = {
+            "layer": "optional_langchain_adapter",
+            "ready": False,
+            "summary": f"LangChain adapter status unavailable: {exc}",
+            "adapters": {},
+        }
+    default_chain = provider_sequence(
+        str(config_value("v2_api_agent_online_providers", "nvidia>gemini>openrouter>anthropic") or "")
+        + ">ollama"
+    )
+    return {
+        "layer": "friday_internal_model_gateway",
+        "architecture": [
+            "Friday Product Brain",
+            "Friday Model Gateway",
+            "Optional LangChain/provider adapters",
+            "Actual AI providers",
+        ],
+        "native_gateway": {
+            "default_chain": default_chain,
+            "online_providers": sorted(ONLINE_PROVIDERS),
+            "tool_contract_source": "core.llm TOOL_DEFINITIONS plus core.friday_tool_registry for shared tools",
+            "provider_limits": provider_limit_status(),
+        },
+        "langchain_adapters": adapter_payload,
+        "decision": {
+            "keep_core_llm": True,
+            "use_langchain_for": [
+                "standardized tool contracts",
+                "structured agent flows",
+                "provider interoperability",
+                "integrations where LangChain saves time",
+            ],
+            "keep_friday_custom_for": [
+                "strict provider routing",
+                "local fallback",
+                "custom approval rules",
+                "logging and traces",
+                "low-level control",
+                "free/cheap provider preference",
+            ],
+        },
+        "summary": "Friday uses its native model gateway for normal model calls, with optional LangChain adapters underneath for interoperability.",
+    }
+
+
 def ask_with_provider_chain(
     messages: list[dict[str, Any]],
     providers: str | list[str] | tuple[str, ...] | None,

@@ -858,7 +858,69 @@ def test_direct_build_uses_configured_coding_root(monkeypatch, tmp_path):
     assert calls == [
         {
             "action": "autonomous_coding",
-            "request": "a dashboard app for invoices",
+            "request": "Build a web-app for dashboard app for invoices",
+            "root": str(tmp_path),
+            "risk_level": "medium",
+        }
+    ]
+
+
+def test_project_idea_request_runs_research_not_agent_queue(monkeypatch, tmp_path):
+    memory.wipe_all()
+    _allow_permissions(monkeypatch)
+    calls = []
+    monkeypatch.setattr(orchestrator.llm, "ask", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM called")))
+    monkeypatch.setattr(orchestrator.intent_engine, "resolve_coding_root", lambda root="": tmp_path)
+    monkeypatch.setattr(orchestrator.power_center, "execute", lambda inputs: calls.append(inputs) or "Research-backed idea: Client Onboarding Command Center.")
+    monkeypatch.setattr(orchestrator.agent_team, "execute", lambda inputs: (_ for _ in ()).throw(AssertionError("agent queue should not be used")))
+
+    assert orchestrator.handle_command("give me an idea on what to build next") == "Research-backed idea: Client Onboarding Command Center."
+    assert calls == [
+        {
+            "action": "project_ideas_research",
+            "context": "AI-assisted everyday tools for individuals, small teams, and SMBs",
+            "root": str(tmp_path),
+            "limit": 5,
+            "max_sources": 8,
+            "audience": "individuals, small teams, and SMBs",
+        }
+    ]
+
+
+def test_dashboard_build_request_is_handed_to_web_app_scaffold(monkeypatch, tmp_path):
+    memory.wipe_all()
+    _allow_permissions(monkeypatch)
+    calls = []
+    monkeypatch.setattr(orchestrator.llm, "ask", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM called")))
+    monkeypatch.setattr(orchestrator.intent_engine, "resolve_coding_root", lambda root="": tmp_path)
+    monkeypatch.setattr(orchestrator.power_center, "execute", lambda inputs: calls.append(inputs) or "Coding task queued.")
+
+    assert orchestrator.handle_command("build a university management dashboard") == "Coding task queued."
+    assert calls == [
+        {
+            "action": "autonomous_coding",
+            "request": "Build a web-app for university management dashboard",
+            "root": str(tmp_path),
+            "risk_level": "medium",
+        }
+    ]
+
+
+def test_website_mobile_screenshot_language_does_not_route_to_flutter(monkeypatch, tmp_path):
+    memory.wipe_all()
+    _allow_permissions(monkeypatch)
+    calls = []
+    monkeypatch.setattr(orchestrator.llm, "ask", lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("LLM called")))
+    monkeypatch.setattr(orchestrator.intent_engine, "resolve_coding_root", lambda root="": tmp_path)
+    monkeypatch.setattr(orchestrator.power_center, "execute", lambda inputs: calls.append(inputs) or "Coding task queued.")
+
+    command = "build me a website for a construction company with desktop and mobile screenshots"
+
+    assert orchestrator.handle_command(command) == "Coding task queued."
+    assert calls == [
+        {
+            "action": "autonomous_coding",
+            "request": "Build a web-app for website for a construction company with desktop and mobile screenshots",
             "root": str(tmp_path),
             "risk_level": "medium",
         }
@@ -883,7 +945,7 @@ def test_intent_router_handles_semantic_build_request(monkeypatch, tmp_path):
     assert calls == [
         {
             "action": "autonomous_coding",
-            "request": "invoice portal for my shop",
+            "request": "Build a web-app for invoice portal for my shop",
             "root": str(tmp_path),
             "risk_level": "medium",
         }

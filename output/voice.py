@@ -256,8 +256,6 @@ def _prune_persistent_edge_cache(max_files: int) -> None:
 
 def preview_edge_voices(text: str = DEFAULT_PREVIEW_TEXT) -> list[str]:
     """Play a short sample through the free Edge neural voices."""
-    if edge_tts is None:
-        raise RuntimeError("edge-tts is not installed.")
     if not _is_online():
         raise RuntimeError("Edge neural voice preview needs internet access.")
     cfg = dict(reload_config())

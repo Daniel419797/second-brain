@@ -54,6 +54,7 @@ def write_task_files(
         exported = document_exports.export_markdown(content, packet_root / name, formats=selected_formats)
         exports[name] = exported.get("paths") or {}
         written.extend(str(path) for path in (exported.get("paths") or {}).values())
+    knowledge_index = _index_task_documents(base, request, exports)
     manifest = {
         **payload,
         "formats": selected_formats,
@@ -64,15 +65,20 @@ def write_task_files(
             "features": "Feature inventory, priorities, user flows, expected states, and validation notes.",
         },
         "exports": exports,
+        "knowledge_index": knowledge_index,
     }
     manifest_path = packet_root / "manifest.json"
     manifest_path.write_text(_json_dumps(manifest), encoding="utf-8")
     written.append(str(manifest_path))
+    artifact = str(knowledge_index.get("artifact") or "").strip() if isinstance(knowledge_index, dict) else ""
+    if artifact:
+        written.append(artifact)
     return {
         "packet_id": packet_id,
         "root": str(packet_root),
         "files": written,
         "exports": exports,
+        "knowledge_index": knowledge_index,
         "summary": f"Task packet written with requirements, system design, implementation plan, and features documents in {', '.join(selected_formats).upper()}.",
     }
 
@@ -273,6 +279,34 @@ def _formats(formats: list[str] | tuple[str, ...] | None) -> list[str]:
     selected = [str(item or "").strip().lower().lstrip(".") for item in raw if str(item or "").strip()]
     allowed = {"md", "docx", "pdf"}
     return [item for item in selected if item in allowed] or list(DEFAULT_FORMATS)
+
+
+def _index_task_documents(base: Path, request: str, exports: dict[str, Any]) -> dict[str, Any]:
+    markdown_paths: list[str] = []
+    for paths in exports.values():
+        if not isinstance(paths, dict):
+            continue
+        md_path = str(paths.get("md") or "").strip()
+        if md_path:
+            markdown_paths.append(md_path)
+    if not markdown_paths:
+        return {"ok": False, "status": "skipped", "summary": "No Markdown task documents were available for indexing."}
+    try:
+        from core import document_intelligence
+
+        return document_intelligence.index_documents(
+            markdown_paths,
+            root=str(base),
+            query=request,
+            max_chars=80000,
+        )
+    except Exception as exc:
+        return {
+            "ok": False,
+            "status": "failed",
+            "summary": f"Task documents were written but knowledge indexing failed: {exc}",
+            "paths": markdown_paths,
+        }
 
 
 def _json_dumps(value: Any) -> str:

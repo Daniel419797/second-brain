@@ -102,6 +102,7 @@ from core import (
     privacy_vault,
     production_coding_autonomy,
     project_cto,
+    project_ideation,
     project_memory,
     project_autopilot,
     project_watchdog,
@@ -161,6 +162,16 @@ def execute(inputs: dict[str, Any]) -> str:
                 root=str(inputs.get("root") or ""),
                 risk_level=str(inputs.get("risk_level") or "medium"),
             ).get("summary", "Autonomous coding unavailable.")
+        if action == "project_ideas_research":
+            return _project_ideas_summary(
+                project_ideation.research_project_ideas(
+                    str(inputs.get("context") or inputs.get("request") or inputs.get("query") or ""),
+                    audience=str(inputs.get("audience") or "individuals, small teams, and SMBs"),
+                    root=str(inputs.get("root") or ""),
+                    limit=_int(inputs.get("limit"), 5),
+                    max_sources=_int(inputs.get("max_sources"), 8),
+                )
+            )
         if action == "daily_plan":
             return personal_life_os.daily_plan().get("summary", "No plan.")
         if action == "next_action":
@@ -1099,6 +1110,31 @@ def execute(inputs: dict[str, Any]) -> str:
     except Exception as exc:
         return f"Power center action failed: {exc}"
     return "Unknown power center action."
+
+
+def _project_ideas_summary(result: dict[str, Any]) -> str:
+    ideas = result.get("ideas") if isinstance(result.get("ideas"), list) else []
+    artifacts = result.get("artifacts") if isinstance(result.get("artifacts"), list) else []
+    sufficient = bool(result.get("research_sufficient"))
+    summary = str(result.get("summary") or "").strip()
+    if not sufficient or not ideas:
+        packet = artifacts[0] if artifacts else ""
+        suffix = f" Research packet: {packet}" if packet else ""
+        return (summary or "I could not recommend a project yet because the research evidence was not strong enough.") + suffix
+    top = ideas[0]
+    title = str(top.get("title") or "Recommended project").strip()
+    problem = str(top.get("problem") or "").strip()
+    wedge = str(top.get("product_wedge") or "").strip()
+    evidence_count = _int(top.get("evidence_count"), 0)
+    packet = artifacts[0] if artifacts else ""
+    parts = [
+        f"Research-backed idea: {title}.",
+        f"Problem: {problem}" if problem else "",
+        f"Build wedge: {wedge}" if wedge else "",
+        f"Evidence: {evidence_count} source signal(s) across the research run.",
+        f"Research packet: {packet}" if packet else "",
+    ]
+    return " ".join(part for part in parts if part)
 
 
 def _permission_reply(inputs: dict[str, Any]) -> str:

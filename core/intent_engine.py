@@ -56,6 +56,15 @@ INTENT_SPECS: dict[str, IntentSpec] = {
         min_confidence=0.82,
         required_slots=("request",),
     ),
+    "project_ideas": IntentSpec(
+        name="project_ideas",
+        description="Research source-backed project ideas before recommending what to build next.",
+        tool_name="power_center",
+        tool_action="project_ideas_research",
+        risk="network_read",
+        min_confidence=0.78,
+        required_slots=("context",),
+    ),
     "create_agent_task": IntentSpec(
         name="create_agent_task",
         description="Delegate a task to Friday's background agent team.",
@@ -321,6 +330,7 @@ ACTIONABLE_HINTS = {
     "generate",
     "draft",
     "advertise",
+    "give",
     "get",
     "have",
     "index",
@@ -330,11 +340,13 @@ ACTIONABLE_HINTS = {
     "prepare",
     "post",
     "publish",
+    "recommend",
     "remind",
     "schedule",
     "search",
     "show",
     "start",
+    "suggest",
     "tell",
     "write",
 }
@@ -426,10 +438,25 @@ def _tool_input(spec: IntentSpec, slots: dict[str, Any]) -> dict[str, Any]:
             return {}
         return {
             "action": action,
-            "request": request,
+            "request": _normalize_coding_request(request),
             "root": str(resolve_coding_root(_slot_text(slots, "root"))),
             "risk_level": _slot_text(slots, "risk_level") or "medium",
         }
+    if spec.name == "project_ideas":
+        context = _slot_text(slots, "context", "topic", "query", "request")
+        if not context:
+            return {}
+        payload: dict[str, Any] = {
+            "action": action,
+            "context": context,
+            "root": str(resolve_coding_root(_slot_text(slots, "root"))),
+            "limit": _slot_int(slots, "limit", 5),
+            "max_sources": _slot_int(slots, "max_sources", 8),
+        }
+        audience = _slot_text(slots, "audience")
+        if audience:
+            payload["audience"] = audience
+        return payload
     if spec.name == "create_agent_task":
         title = _slot_text(slots, "title", "task", "goal")
         if not title:
@@ -808,6 +835,32 @@ def _classify_academic_project(text: str) -> IntentResult | None:
     return None
 
 
+def _classify_project_ideas(text: str) -> IntentResult | None:
+    lowered = text.lower()
+    if not re.search(r"\b(?:idea|ideas|what\s+to\s+build|build\s+next|project\s+to\s+build|app\s+idea|startup\s+idea)\b", lowered):
+        return None
+    patterns = (
+        r"(?:what\s+should\s+i\s+build\s+next|what\s+to\s+build\s+next)(?:\s+(?:for|about|around)\s+(?P<context>.+))?",
+        r"(?:give\s+me\s+an?\s+idea\s+on\s+what\s+to\s+build\s+next)(?:\s+(?:for|about|around)\s+(?P<context>.+))?",
+        r"(?:give\s+me|suggest|recommend|find|research|look\s+for)\s+(?:some\s+|an?\s+|the\s+)?(?:project\s+|app\s+|startup\s+|software\s+)?ideas?(?:\s+(?:on|for|about|around)\s+(?P<context>.+))?",
+    )
+    for pattern in patterns:
+        match = re.fullmatch(pattern, text, flags=re.IGNORECASE)
+        if not match:
+            continue
+        context = _clean_slot((match.groupdict().get("context") or "AI-assisted everyday tools for individuals, small teams, and SMBs"))
+        if context.lower() in {"what to build next", "what i should build next"}:
+            context = "AI-assisted everyday tools for individuals, small teams, and SMBs"
+        return IntentResult(
+            "project_ideas",
+            0.9,
+            {"context": context, "audience": "individuals, small teams, and SMBs"},
+            "rules",
+            "project idea request must use research-backed ideation",
+        )
+    return None
+
+
 def _classify_coding_project(text: str) -> IntentResult | None:
     lowered = text.lower()
     if re.match(r"^(?:create|queue|add)\s+(?:a\s+)?task\b", lowered):
@@ -914,6 +967,7 @@ _RULE_CLASSIFIERS: tuple[RuleClassifier, ...] = (
     _classify_ad_campaign,
     _classify_visual_asset,
     _classify_academic_project,
+    _classify_project_ideas,
     _classify_coding_project,
     _classify_agent_task,
     _classify_task_status,
@@ -1034,6 +1088,10 @@ def _normalize_slots(intent: str, slots: dict[str, Any]) -> dict[str, Any]:
         request = _slot_text(normalized, "request", "project_description", "description", "goal", "title")
         if request:
             normalized["request"] = request
+    if intent == "project_ideas":
+        context = _slot_text(normalized, "context", "topic", "query", "request")
+        if context:
+            normalized["context"] = context
     if intent == "create_agent_task":
         title = _slot_text(normalized, "title", "task", "goal", "request")
         if title:
@@ -1093,6 +1151,23 @@ def _clean_command(text: str) -> str:
     for name in sorted({item.strip().lower() for item in names if item.strip()}, key=len, reverse=True):
         cleaned = re.sub(rf"^(?:hey\s+)?{re.escape(name)}\b[\s,.:;!-]*", "", cleaned, flags=re.IGNORECASE)
     return cleaned.strip(" ,.!?:;")
+
+
+def _normalize_coding_request(request: str) -> str:
+    cleaned = _clean_slot(request)
+    if not cleaned:
+        return ""
+    lowered = cleaned.lower()
+    if re.match(r"^(?:build|create|make|develop|scaffold|spin\s+up|implement|code|program|put\s+together|set\s+up)\b", lowered):
+        return cleaned
+    subject = re.sub(r"^(?:an?|the)\s+", "", cleaned, flags=re.IGNORECASE).strip() or cleaned
+    if re.search(r"\b(?:dashboard|portal|website|site|frontend)\b", lowered) and not re.search(r"\b(?:web[-\s]?app|next(?:\.js|js)?)\b", lowered):
+        return f"Build a web-app for {subject}"
+    if re.search(r"\b(?:mobile|flutter|android|ios)\b", lowered) and not re.search(r"\b(?:screenshot|screenshots|viewport|viewports|responsive|browser|desktop\s+and\s+mobile|mobile\s+and\s+desktop)\b", lowered):
+        return f"Build a mobile app for {subject}"
+    if re.search(r"\b(?:backend|api|server|service|microservice)\b", lowered):
+        return f"Build a backend for {subject}"
+    return f"Build {cleaned}"
 
 
 def _clean_slot(value: Any) -> str:
@@ -1257,6 +1332,8 @@ def _parse_json_object(raw: str) -> dict[str, Any] | None:
 def _clarifying_question(intent: str, missing: list[str]) -> str:
     if intent == "start_coding_project":
         return "Tell me what you want built."
+    if intent == "project_ideas":
+        return "Tell me the audience or problem space to research for project ideas."
     if intent == "create_agent_task":
         return "Tell me what task to give the agents."
     if intent == "create_reminder":

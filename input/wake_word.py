@@ -10,13 +10,19 @@ from typing import Callable
 
 try:
     import numpy as np
+except Exception:  # pragma: no cover - optional in scaffold tests
+    np = None
+
+try:
     import sounddevice as sd
+except Exception:  # pragma: no cover - optional in scaffold tests
+    sd = None
+
+try:
     import openwakeword
     from openwakeword import Model
     from openwakeword.utils import download_models
 except Exception:  # pragma: no cover - optional in scaffold tests
-    np = None
-    sd = None
     openwakeword = None
     Model = None
     download_models = None

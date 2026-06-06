@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Collections | Vale &amp; Vellum</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-container": "#2f140e",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#5e5e5b",
+                        "outline-variant": "#c4c7c7",
+                        "on-background": "#191d11",
+                        "tertiary": "#000000",
+                        "inverse-primary": "#c8c6c5",
+                        "on-tertiary-fixed-variant": "#613e36",
+                        "background": "#f8fbe7",
+                        "primary-container": "#1c1b1b",
+                        "primary": "#000000",
+                        "surface": "#f8fbe7",
+                        "surface-bright": "#f8fbe7",
+                        "surface-tint": "#5f5e5e",
+                        "secondary-fixed": "#e4e2dd",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#e1e4d1",
+                        "surface-variant": "#e1e4d1",
+                        "on-secondary-fixed": "#1b1c19",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-fixed": "#2f140e",
+                        "inverse-on-surface": "#eff3df",
+                        "surface-container-low": "#f2f6e2",
+                        "outline": "#747878",
+                        "on-surface-variant": "#444748",
+                        "tertiary-fixed": "#ffdad2",
+                        "on-primary-fixed": "#1c1b1b",
+                        "secondary-fixed-dim": "#c8c6c2",
+                        "on-secondary-container": "#63635f",
+                        "on-secondary-fixed-variant": "#474744",
+                        "on-tertiary-container": "#a47a70",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#d8dcc9",
+                        "tertiary-fixed-dim": "#ecbbb0",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191d11",
+                        "inverse-surface": "#2e3225",
+                        "secondary-container": "#e1dfdb",
+                        "on-primary-container": "#858383",
+                        "surface-container": "#edf0dc",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7ead6",
+                        "on-primary-fixed-variant": "#474746"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "section-gap": "160px",
+                        "margin-desktop": "80px",
+                        "container-max": "1440px",
+                        "gutter": "32px",
+                        "unit": "8px",
+                        "margin-mobile": "24px"
+                    },
+                    fontFamily: {
+                        "headline-lg": ["Bodoni Moda"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "micro-copy": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["Bodoni Moda"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-md": ["Bodoni Moda"],
+                        "headline-lg-mobile": ["Bodoni Moda"],
+                        "display-lg": ["Bodoni Moda"]
+                    },
+                    fontSize: {
+                        "headline-lg": ["48px", { lineHeight: "56px", fontWeight: "400" }],
+                        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.15em", fontWeight: "600" }],
+                        "micro-copy": ["11px", { lineHeight: "14px", letterSpacing: "0.05em", fontWeight: "400" }],
+                        "display-lg-mobile": ["48px", { lineHeight: "54px", letterSpacing: "-0.01em", fontWeight: "400" }],
+                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+                        "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "headline-md": ["32px", { lineHeight: "40px", fontWeight: "400" }],
+                        "headline-lg-mobile": ["32px", { lineHeight: "40px", fontWeight: "400" }],
+                        "display-lg": ["80px", { lineHeight: "90px", letterSpacing: "-0.02em", fontWeight: "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Custom Utilities */
+        .ink-border { border: 1px solid #1A1A1A; }
+        .ink-border-subtle { border: 1px solid rgba(26, 26, 26, 0.15); }
+        .bg-ink { background-color: #1A1A1A; }
+        .text-ink { color: #1A1A1A; }
+        .bg-ivory { background-color: #F9F7F2; }
+        .text-ivory { color: #F9F7F2; }
+        .bg-olive { background-color: #4A5D4E; }
+        .text-olive { color: #4A5D4E; }
+        .bg-bronze { background-color: #B5935B; }
+        .text-bronze { color: #B5935B; }
+
+        .hover-lift { transition: transform 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-4px); }
+
+        .vellum-overlay {
+            background-color: rgba(249, 247, 242, 0.85);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased font-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-unit-4 bg-surface/80 backdrop-blur-sm dark:bg-surface-dim/80 transition-all duration-300" id="globalNav">
+<div class="hidden md:flex items-center gap-8">
+<a class="font-label-caps text-label-caps text-primary border-b border-primary pb-1 transition-colors hover:opacity-70" href="/collections">Collections</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:opacity-70" href="/process">Process</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:opacity-70" href="/inquiry">Inquiry</a>
+</div>
+<div class="flex-1 md:flex-none text-center">
+<a class="font-headline-md text-headline-md text-primary tracking-tighter hover:opacity-70 transition-opacity duration-300 inline-block" href="/conceptually-home">VALE &amp; VELLUM</a>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="Cart" class="text-primary hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+</button>
+<button aria-label="Menu" class="md:hidden text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative w-full min-h-[90vh] flex items-end pb-section-gap pt-32 px-margin-mobile md:px-margin-desktop bg-surface">
+<div class="absolute inset-0 z-0">
+<img alt="" class="w-full h-full object-cover object-center opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjShbNxBJuDyrgflUJVt6KE6UqSrq2Z7DlIlVRUa9a86_fg_lIBKetlHOemt8tqf2QqPl0A1Cdxtwvhf8O5broFjZWDJre5l38aq4im9HckyjWk-oKcNzuntACztBA1pkbfaqdrSBR5aKSyjx-vreBMnmtxlwu8azda-sEWIbhU9frvNt4RlmKoF1Yp3mffyjQ1SqD1KmG-P_LAPZIE4t-ALz1Cbwhf6166wWRL6H8lkl07O17mnNFo0cQhxCEQEcvWwBvIXfGCgEH"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-surface/30"></div>
+</div>
+<div class="relative z-10 max-w-[800px] mb-12 md:mb-24">
+<p class="font-label-caps text-label-caps text-primary mb-6 tracking-widest uppercase">The Archive</p>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-8 leading-tight">
+                    A quieter standard of luxury, made visible.
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                    Hand-crafted stationery for private clients who notice the difference. Every suite is a study in texture, weight, and intention.
+                </p>
+</div>
+</section>
+<!-- Collection Gallery -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+<div class="max-w-xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-6">Signature Suites</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Our foundational collections provide a canvas for your unique narrative. Printed on 300gsm cotton stock with hand-mixed inks, each piece is finished with bespoke vellum wraps and wax seals.
+                    </p>
+</div>
+<a class="inline-flex items-center gap-2 font-label-caps text-label-caps text-primary hover:text-bronze transition-colors pb-1 border-b border-primary hover:border-bronze" href="#inquiry">
+                    EXPLORE MATERIALS <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Card 1 -->
+<div class="md:col-span-5 hover-lift group">
+<div class="relative aspect-[4/5] overflow-hidden bg-surface-variant mb-6 ink-border-subtle">
+<img alt="" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMn5WliD62LjBLN_8zkkNqv1XwRrCpsgHsBbRK8APbzi0_qb8CVCxcwdMHYOUuACQTsmfQ3AXL4JdzD6O9YOkwOpurAwxg7ha5O1CvrB0EGuTiXm-zTJTMK4hzp1lRlfL2ojzIFxQb742NwwX_1JpL3HrpnR099518PK_gC-0mcMQ_Ufco0ty0lttCkzS5udWLLaZB_yoxQlmS1N3KsmDqpRWkAvqFZVx4gn9LzywacZNXd4xgiE_aJ26GhoR69KKqeaq3CnOba8PL"/>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-2 py-1 ink-border bg-ivory/90 backdrop-blur-sm font-micro-copy text-micro-copy text-ink uppercase">Letterpress</span>
+</div>
+</div>
+<div class="flex justify-between items-baseline">
+<h3 class="font-label-caps text-label-caps text-primary uppercase">The Solstice</h3>
+<span class="font-body-md text-body-md text-on-surface-variant">From $1,200</span>
+</div>
+</div>
+<!-- Spacer for asymmetry -->
+<div class="hidden md:block md:col-span-2"></div>
+<!-- Card 2 -->
+<div class="md:col-span-5 md:mt-32 hover-lift group">
+<div class="relative aspect-[4/5] overflow-hidden bg-surface-variant mb-6 ink-border-subtle">
+<!-- Placeholder for a detail shot -->
+<div class="w-full h-full bg-secondary-container flex items-center justify-center">
+<span class="font-headline-md text-secondary">Texture Detail</span>
+</div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="px-2 py-1 ink-border bg-ivory/90 backdrop-blur-sm font-micro-copy text-micro-copy text-ink uppercase">Blind Deboss</span>
+<span class="px-2 py-1 ink-border bg-ivory/90 backdrop-blur-sm font-micro-copy text-micro-copy text-ink uppercase">Hand-torn</span>
+</div>
+</div>
+<div class="flex justify-between items-baseline">
+<h3 class="font-label-caps text-label-caps text-primary uppercase">The Aethereal</h3>
+<span class="font-body-md text-body-md text-on-surface-variant">From $1,500</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Provenance / Process Highlight -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-low">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-6 order-2 md:order-1">
+<div class="max-w-md">
+<p class="font-label-caps text-label-caps text-bronze mb-6 tracking-widest uppercase">The Atelier</p>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-8">Provenance &amp; Craft</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-6">
+                            Every commission is treated as a piece of functional art. We eschew digital shortcuts in favor of atelier detail—from sourcing handmade papers to mixing precise ink tones.
+                        </p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-10">
+                            Our process demands time and intent. Private appointments ensure that every craft proof aligns perfectly with your vision before final pressing.
+                        </p>
+<a class="inline-flex items-center justify-center px-8 py-4 bg-ink text-ivory font-label-caps text-label-caps uppercase hover:bg-bronze transition-colors duration-300" href="/process">
+                            Discover the Process
+                        </a>
+</div>
+</div>
+<div class="md:col-span-6 order-1 md:order-2 mb-12 md:mb-0 relative">
+<div class="aspect-[3/4] overflow-hidden ink-border">
+<img alt="" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8Nyb7QYMXj3Df4gQlo5ZwIQP4KZTsHJ_x33vCH30ZPUs8oDmCrW-NB8howmf8p_JXqKoj-tblFxS8sN0zyni5B7wj561zGsKZnb60W1ZeOb0z73X9ImBhjubk6a4zcYeoQYLnFvNYxef7Ei63LQS7EzRIQRQd8hFE_9qopdEtf8evveZYER1AD8cPUo8iqA4MiFmekv4wmYFn3wJYVdouqqeHqGoofbFbf6cKibxbFk-CEfqHQYoqmeNc56OXbLYgzUpvYnyay1kr"/>
+</div>
+<!-- Decorative element -->
+<div class="absolute -bottom-8 -left-8 w-32 h-32 border-l border-b border-ink/20"></div>
+</div>
+</div>
+</section>
+<!-- Concierge Path -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface" id="inquiry">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<div class="md:col-span-5 mb-12 md:mb-0">
+<div class="aspect-square overflow-hidden ink-border-subtle grayscale hover:grayscale-0 transition-all duration-700">
+<img alt="" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC37wNjaGZoPkVvzPgxN6MgYQrPCe-TiCw0hwWSpPWS7ob4GZgM8J_1ZwUH-SRZrpYRShJBBpM-0EJUGU5dUeKhXBThcLwt3v1w8go9RWT0ELoi-IE3jVtf283egpQmBDBz5XGHPefSMPiXorYidhEPr5bdfHDTodiLsgJZAZISqlca6aA1gZjPdJMCg7uAiWwvHTtGCQRNJPRnBWIzcR7wSBlTUdhsP2oE7I41UMKch3VrBo9eCHp4REFIdJ50x9l_f7Nl8lvfw6Cl"/>
+</div>
+</div>
+<div class="md:col-span-6 md:col-start-7 flex flex-col justify-center">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-4">Concierge Inquiry</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-12 max-w-md">
+                        Begin the dialogue. We accept a limited number of commissions each season to ensure uncompromising quality.
+                    </p>
+<form class="space-y-8">
+<div class="relative">
+<input class="block w-full border-0 border-b border-ink bg-transparent py-2 px-0 text-primary font-body-md focus:ring-0 focus:border-bronze transition-colors placeholder-transparent peer" id="name" name="name" placeholder="Name" type="text"/>
+<label class="absolute left-0 -top-4 font-micro-copy text-micro-copy text-on-surface-variant transition-all peer-placeholder-shown:text-body-md peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-micro-copy peer-focus:text-bronze uppercase" for="name">Client Name</label>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="relative">
+<input class="block w-full border-0 border-b border-ink bg-transparent py-2 px-0 text-primary font-body-md focus:ring-0 focus:border-bronze transition-colors placeholder-transparent peer" id="date" name="date" placeholder="Date" type="text"/>
+<label class="absolute left-0 -top-4 font-micro-copy text-micro-copy text-on-surface-variant transition-all peer-placeholder-shown:text-body-md peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-micro-copy peer-focus:text-bronze uppercase" for="date">Event Date</label>
+</div>
+<div class="relative">
+<input class="block w-full border-0 border-b border-ink bg-transparent py-2 px-0 text-primary font-body-md focus:ring-0 focus:border-bronze transition-colors placeholder-transparent peer" id="guests" name="guests" placeholder="Guests" type="number"/>
+<label class="absolute left-0 -top-4 font-micro-copy text-micro-copy text-on-surface-variant transition-all peer-placeholder-shown:text-body-md peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-micro-copy peer-focus:text-bronze uppercase" for="guests">Est. Guest Count</label>
+</div>
+</div>
+<div class="relative pt-4">
+<label class="block font-micro-copy text-micro-copy text-on-surface-variant uppercase mb-4">Package Path</label>
+<div class="flex flex-wrap gap-4">
+<label class="cursor-pointer">
+<input class="peer sr-only" name="package" type="radio" value="signature"/>
+<span class="px-4 py-2 ink-border text-ink font-label-caps text-label-caps uppercase peer-checked:bg-ink peer-checked:text-ivory transition-colors block">Signature Suite</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="package" type="radio" value="bespoke"/>
+<span class="px-4 py-2 ink-border text-ink font-label-caps text-label-caps uppercase peer-checked:bg-ink peer-checked:text-ivory transition-colors block">Bespoke Commission</span>
+</label>
+</div>
+</div>
+<div class="pt-8">
+<button class="inline-flex items-center gap-2 font-label-caps text-label-caps text-primary hover:text-bronze transition-colors group" type="submit">
+                                REQUEST CONCIERGE ACCESS
+                                <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full px-margin-mobile md:px-margin-desktop py-section-gap flex flex-col md:flex-row justify-between items-start gap-gutter bg-surface border-t border-outline-variant/30">
+<div class="mb-8 md:mb-0">
+<span class="font-headline-md text-headline-md text-primary block mb-4">VALE &amp; VELLUM</span>
+<span class="font-micro-copy text-micro-copy text-on-surface-variant uppercase tracking-widest">© 2024 VALE &amp; VELLUM. ALL RIGHTS RESERVED.</span>
+</div>
+<div class="flex flex-wrap gap-x-8 gap-y-4">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-1 underline-offset-4 hover:opacity-80 uppercase" href="#">Privacy</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-1 underline-offset-4 hover:opacity-80 uppercase" href="#">Terms</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-1 underline-offset-4 hover:opacity-80 uppercase" href="#">Contact</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-1 underline-offset-4 hover:opacity-80 uppercase" href="#">Instagram</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors hover:underline decoration-1 underline-offset-4 hover:opacity-80 uppercase" href="#">Pinterest</a>
+</div>
+</footer>
+<script>
+        // Simple scroll effect for nav
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('globalNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-sm');
+                nav.classList.replace('bg-surface/80', 'bg-surface/95');
+            } else {
+                nav.classList.remove('shadow-sm');
+                nav.classList.replace('bg-surface/95', 'bg-surface/80');
+            }
+        });
+    </script>
+</body></html>

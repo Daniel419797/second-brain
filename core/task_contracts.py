@@ -268,13 +268,20 @@ def _satisfies_autonomous_coding_contract(result: Any, evidence: dict[str, Any])
         return False
     if (report.get("market_ready") or report.get("technical_ready")) and not gate_results.get("technical_ready"):
         return False
+    if gate_results.get("failed_required"):
+        return False
+    if not gate_results.get("technical_ready"):
+        return False
     if verification and verification.get("status") != "passed":
         return False
     if project_root and not Path(project_root).exists():
         return False
     existing_changed = [path for path in changed if Path(path).exists()]
     has_file_evidence = bool(project_root and Path(project_root).exists()) or bool(existing_changed)
-    has_verification = bool(tested) or bool(verification.get("checks"))
+    has_verification = bool(_executed_gate_evidence(gate_results))
+    proof_artifacts = _existing_artifacts(metadata, product_studio, gate_results)
+    if not proof_artifacts:
+        return False
     return bool(has_file_evidence and has_verification)
 
 
@@ -290,9 +297,51 @@ def _valid_product_studio_gates(gate_results: dict[str, Any]) -> bool:
     required_groups = {str(gate.get("group") or "").strip() for gate in required}
     if not (required_groups & {"install", "tests", "security", "browser", "preview", "general"}):
         return False
-    if gate_results.get("technical_ready") and any(str(gate.get("status") or "") != "passed" for gate in required):
+    if any(str(gate.get("status") or "") != "passed" for gate in required):
         return False
     return True
+
+
+def _executed_gate_evidence(gate_results: dict[str, Any]) -> list[dict[str, Any]]:
+    gates = gate_results.get("gates") if isinstance(gate_results.get("gates"), list) else gate_results.get("required_gate_statuses")
+    if not isinstance(gates, list):
+        return []
+    evidence: list[dict[str, Any]] = []
+    for gate in gates:
+        if not isinstance(gate, dict):
+            continue
+        if str(gate.get("status") or "") != "passed":
+            continue
+        if gate.get("executed") or gate.get("command") or gate.get("log_path") or gate.get("evidence"):
+            evidence.append(gate)
+    return evidence
+
+
+def _existing_artifacts(*payloads: Any) -> list[str]:
+    paths: list[str] = []
+    for payload in payloads:
+        if not isinstance(payload, dict):
+            continue
+        paths.extend(str(item) for item in (payload.get("artifacts") or []) if str(item).strip())
+        for key in ("proof", "final_proof_report"):
+            value = payload.get(key)
+            if isinstance(value, dict):
+                paths.extend(str(item) for item in (value.get("artifacts") or []) if str(item).strip())
+        gates = payload.get("gates") or payload.get("required_gate_statuses") or []
+        for gate in gates if isinstance(gates, list) else []:
+            if not isinstance(gate, dict):
+                continue
+            if gate.get("log_path"):
+                paths.append(str(gate["log_path"]))
+            paths.extend(str(item) for item in (gate.get("evidence") or []) if str(item).strip())
+    existing: list[str] = []
+    for item in paths:
+        try:
+            if Path(item).exists():
+                existing.append(item)
+        except Exception:
+            continue
+    return existing
 
 
 def _evidence_from_result(result: Any) -> dict[str, Any]:

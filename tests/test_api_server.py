@@ -671,6 +671,60 @@ def test_api_exposes_companion_growth_layers(monkeypatch, tmp_path):
     assert published.json()["skill_id"]
 
 
+def test_documents_index_route(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+    brief = tmp_path / "brief.md"
+    brief.write_text("# Brief\n\nFriday should index PDFs, docs, and project requirements with proof-aware retrieval.", encoding="utf-8")
+
+    response = client.post(
+        "/documents/index",
+        json={"paths": [str(brief)], "root": str(tmp_path), "query": "project proof requirements"},
+        headers=headers,
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ok"] is True
+    assert payload["top_chunks"]
+    assert Path(payload["artifact"]).exists()
+
+
+def test_tools_structured_outputs_and_traces_routes(monkeypatch, tmp_path):
+    from core import friday_trace
+
+    monkeypatch.setattr(friday_trace, "DB_PATH", tmp_path / "traces.sqlite3")
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+    brief = tmp_path / "brief.md"
+    brief.write_text("# Tool Brief\n\nTrace every tool call.", encoding="utf-8")
+
+    registry = client.get("/tools/registry", headers=headers)
+    gateway = client.get("/model-gateway/status", headers=headers)
+    tool_result = client.post(
+        "/tools/execute",
+        json={"name": "documents.read", "payload": {"path": str(brief), "max_chars": 500}},
+        headers=headers,
+    )
+    validation = client.post(
+        "/structured-output/validate",
+        json={"kind": "agent_result", "payload": {"summary": "Verified with trace.", "status": "done"}},
+        headers=headers,
+    )
+    trace_id = tool_result.json()["trace_id"]
+    trace = client.get(f"/traces/{trace_id}", headers=headers)
+
+    assert registry.status_code == 200
+    assert any(item["name"] == "documents.read" for item in registry.json()["tools"])
+    assert gateway.status_code == 200
+    assert gateway.json()["layer"] == "friday_internal_model_gateway"
+    assert tool_result.status_code == 200
+    assert tool_result.json()["ok"] is True
+    assert validation.json()["ok"] is True
+    assert trace.status_code == 200
+    assert any(event["event_type"] == "tool_finish" for event in trace.json()["events"])
+
+
 def test_api_exposes_executive_autonomy_layers(monkeypatch, tmp_path):
     client = _client(monkeypatch, tmp_path)
     headers = {"Authorization": f"Bearer {_token(client)}"}

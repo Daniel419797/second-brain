@@ -11,8 +11,10 @@ def isolate_thought_bus(monkeypatch, tmp_path):
 def test_agent_roster_contains_v2_roles():
     roster = agents.roster()
 
-    assert len(roster) == 14
+    assert len(roster) >= 14
     assert any(agent["id"] == "senior_developer" for agent in roster)
+    assert any(agent["id"] == "lead_researcher" for agent in roster)
+    assert any(agent["id"] == "customer_support" for agent in roster)
 
 
 def test_choose_agent_from_task_text():

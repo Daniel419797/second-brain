@@ -20,6 +20,7 @@ import { ProjectsView } from "@/components/views/ProjectsView";
 import { ProductionStudioView } from "@/components/views/ProductionStudioView";
 import { ReliabilityView } from "@/components/views/ReliabilityView";
 import { SafetyView } from "@/components/views/SafetyView";
+import { SecurityLabView } from "@/components/views/SecurityLabView";
 import { SettingsView } from "@/components/views/SettingsView";
 import { GenericView } from "@/components/views/SimpleListView";
 import { TasksView } from "@/components/views/TasksView";
@@ -136,6 +137,10 @@ export function SafetyRoute() {
       <SafetyView />
     </PageWithIntelligenceRail>
   );
+}
+
+export function SecurityLabRoute() {
+  return <SecurityLabView />;
 }
 
 export function ReliabilityRoute() {

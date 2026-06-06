@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Vale &amp; Vellum | Luxury Stationery Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&amp;family=Playfair+Display:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#c8c6c2",
+                        "on-primary-container": "#858383",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "on-surface": "#181e08",
+                        "secondary-container": "#e1dfdb",
+                        "on-primary-fixed-variant": "#474746",
+                        "on-secondary-fixed": "#1b1c19",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#ebf1ce",
+                        "tertiary": "#000000",
+                        "surface-variant": "#e0e6c3",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#2f1314",
+                        "on-tertiary-fixed": "#2f1314",
+                        "on-background": "#181e08",
+                        "outline": "#747878",
+                        "surface-container-highest": "#e0e6c3",
+                        "on-secondary-fixed-variant": "#474744",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#5f5e5e",
+                        "surface-dim": "#d7ddbb",
+                        "on-tertiary-container": "#a47979",
+                        "outline-variant": "#c4c7c7",
+                        "surface-container-low": "#f1f7d4",
+                        "inverse-primary": "#c8c6c5",
+                        "secondary": "#5e5e5b",
+                        "primary": "#000000",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "surface-container-high": "#e5ecc9",
+                        "on-surface-variant": "#444748",
+                        "tertiary-fixed-dim": "#ecbbba",
+                        "tertiary-fixed": "#ffdad9",
+                        "surface-bright": "#f7fdd9",
+                        "background": "#f7fdd9",
+                        "on-tertiary-fixed-variant": "#603d3e",
+                        "inverse-surface": "#2d331b",
+                        "surface": "#f7fdd9",
+                        "on-secondary-container": "#63635f",
+                        "inverse-on-surface": "#eef4d1",
+                        "on-primary-fixed": "#1c1b1b",
+                        "secondary-fixed": "#e4e2dd",
+                        "primary-container": "#1c1b1b",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "32px",
+                        "container-max": "1440px",
+                        "unit": "8px",
+                        "margin-mobile": "24px",
+                        "margin-desktop": "80px",
+                        "section-gap": "160px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "link": ["Montserrat"],
+                        "label-caps": ["Montserrat"],
+                        "headline-md": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-lg": ["Montserrat"],
+                        "body-md": ["Montserrat"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+                        "link": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.2em", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "display-lg": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-lg": ["48px", { "lineHeight": "56px", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "32px", "letterSpacing": "0.01em", "fontWeight": "300" }],
+                        "body-md": ["16px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom Styles for Editorial Feel */
+        body {
+            background-color: #f7fdd9; /* surface */
+            color: #181e08; /* on-surface */
+            overflow-x: hidden;
+        }
+
+        .letterpress-text {
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.5), -1px -1px 1px rgba(0,0,0,0.1);
+        }
+
+        .inner-shadow-subtle {
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-editorial {
+            border: 1px solid #000000;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-editorial:hover {
+            background-color: #e0e6c3; /* surface-variant / subtle wash */
+            color: #000000;
+        }
+
+        .link-editorial {
+            position: relative;
+            text-decoration: none;
+            padding-bottom: 4px;
+        }
+
+        .link-editorial::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: currentColor;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .link-editorial:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .input-editorial {
+            border: none;
+            border-bottom: 1px solid #000000;
+            background: transparent;
+            border-radius: 0;
+            padding: 8px 0;
+            transition: border-color 0.3s;
+        }
+
+        .input-editorial:focus {
+            outline: none;
+            border-bottom-color: #5e5e5b; /* secondary */
+            box-shadow: none;
+        }
+
+        .divider-line {
+            height: 0.5px;
+            background-color: #c4c7c7; /* outline-variant */
+            width: 100%;
+        }
+
+        /* Tonal background utilities */
+        .bg-ivory { background-color: #ffffff; } /* lowest surface */
+        .bg-rose-wash { background-color: #ffdad9; } /* tertiary-fixed */
+        .bg-olive-wash { background-color: #e0e6c3; } /* surface-container-highest */
+
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-tertiary-fixed selection:text-on-tertiary-fixed">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-link text-link text-primary border-b border-primary pb-1" href="#">Home</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Collections</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Process</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300" href="#">Inquiry</a>
+</div>
+<a class="font-display-lg text-[24px] md:text-[32px] tracking-tighter text-primary leading-none" href="#">Vale &amp; Vellum</a>
+<div class="flex items-center">
+<button class="font-label-caps text-label-caps text-primary uppercase tracking-widest hover:opacity-70 transition-opacity duration-200">Private Updates</button>
+</div>
+</nav>
+<main>
+<!-- 1. Full-Bleed Editorial Hero -->
+<section class="relative w-full h-[90vh] md:h-screen flex items-center justify-center bg-surface-container overflow-hidden pt-20">
+<div class="absolute inset-0 z-0">
+<img alt="Hero Background" class="w-full h-full object-cover object-center opacity-90 mix-blend-multiply filter grayscale-[20%]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD74oDj48yl2QZkYr6ohGGZUHxHJgFE5r8QhXGLANp5fikBpw9DSz4TmJAPFn1MVjqOqnq19o1xntzmpH9N8XUzdaFiuJmRMBNt-kaAKOESxrEDg3tr6vvWCW90y99UzMsJs5WnF1EFhvIjOSV-9y4iPwNBZvynyA7jEESL4Iuk-d-lxTfCt6jVpEyVdhFYx5KYSbdSrDkq0kmotDT1xc9iLssOtOfPjPpok-adRQgCJsnmDwEf-i9TpVqBDUl6zcfMF3arPDQLaIyf"/>
+<div class="absolute inset-0 bg-surface/20"></div> <!-- Subtle wash -->
+</div>
+<div class="relative z-10 text-center px-6 max-w-4xl mx-auto flex flex-col items-center gap-8 fade-in-up">
+<h1 class="font-display-lg text-display-lg text-primary letterpress-text max-w-3xl leading-tight">
+                    A quieter standard of luxury, made visible.
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                    Artisanal stationery and bespoke design for the discerning.
+                </p>
+<a class="mt-8 px-8 py-4 btn-editorial font-label-caps text-label-caps uppercase text-primary tracking-widest cursor-pointer" href="#inquiry">
+                    Request Concierge Access
+                </a>
+</div>
+</section>
+<!-- 2. Provenance (Story) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest relative">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 md:col-start-2 flex flex-col gap-8 z-10 fade-in-up">
+<h2 class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Atelier Detail</h2>
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary leading-tight">
+                        The physical impression of intent.
+                    </h3>
+<div class="font-body-md text-body-md text-on-surface-variant flex flex-col gap-4">
+<p>
+                            We believe in the tactile memory of heavy cotton paper. In the subtle, structural depth of a true letterpress impression. Every suite that leaves our studio is a testament to slow, considered craftsmanship.
+                        </p>
+<p>
+                            It is not merely an announcement; it is the first tangible artifact of your celebration, assembled by hand with absolute precision.
+                        </p>
+</div>
+<div class="pt-4">
+<a class="font-link text-link text-primary uppercase tracking-widest link-editorial" href="#">Discover Our Heritage</a>
+</div>
+</div>
+<div class="md:col-span-6 md:col-start-8 mt-12 md:mt-0 relative fade-in-up" style="transition-delay: 200ms;">
+<div class="aspect-[4/5] bg-surface-variant relative overflow-hidden">
+<img alt="Provenance Detail" class="w-full h-full object-cover inner-shadow-subtle hover:scale-105 transition-transform duration-[1.5s] ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4ua_vorBu2sAQUAsdnt_UkzvS-0AA3C3FbT6tHn8VOzKae4kvo7kNEMs2BKQnRpDz9BTb-BmjJeSVKnQdguBbQcLKTas0L5xtP7D4QszsdCSrZziDr6IOghVgPAtXqY4MBrDdA2JRChjpYSxvpqSRv3RV32ZisUPn5kTWe0-8Hv0uXPloqWt8Z_iZpWXbQWAuVvmk4be6ZigEB0sx8dDKQpGIwehjHYI0Jl_s-emuoWol0PD4vYEq63t6HFFxz-xULKbrU9sXfKDZ"/>
+</div>
+<!-- Decorative element -->
+<div class="absolute -bottom-8 -left-8 w-32 h-32 bg-tertiary-fixed opacity-50 z-[-1] rounded-full blur-2xl"></div>
+</div>
+</div>
+</section>
+<div class="px-margin-desktop"><div class="divider-line mx-auto max-w-container-max"></div></div>
+<!-- 3. Collection Showcase -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface">
+<div class="max-w-container-max mx-auto flex flex-col gap-16">
+<div class="text-center flex flex-col gap-4 fade-in-up">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Curated Repertoire</span>
+<h2 class="font-headline-md text-headline-md text-primary">The Collections</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Bento/Asymmetric Grid -->
+<!-- Item 1 (Large) -->
+<div class="md:col-span-7 flex flex-col gap-6 fade-in-up">
+<div class="aspect-[16/10] bg-ivory overflow-hidden relative group">
+<img alt="Signature Suites" class="w-full h-full object-cover mix-blend-darken transition-transform duration-[2s] group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbN1PbthLci_chnOgv_Cvk7UFISaNq2s6-wlDoR_F89Xf5G0RqxFK17lYAItXBYpiD0aTi42ZXx729qvCJrv9I9ezw_X2C0kE3oMsci1H5gJ3UHwQhiBLPNvY9xAc7svpzlCADBQpc7xIH3Zp33AMLTAeFIfWTUAHwhcqwo_a7UMxmvX-xy21fj3oOmrTxOtr7KygUvhzsZW-gUgPwGe7KL2-o32pxqRf1aLE73urRz0SIYIxDX0Tv-9pnzbB27foA7mVwqdnMnph7"/>
+<div class="absolute top-4 left-4 bg-tertiary-fixed px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-on-tertiary-fixed">Signature</div>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Signature Suites</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 max-w-sm">Refined, foundational designs ready to be personalized with your unique details and palette.</p>
+</div>
+</div>
+</div>
+<!-- Item 2 (Tall) -->
+<div class="md:col-span-5 flex flex-col gap-6 mt-12 md:mt-24 fade-in-up" style="transition-delay: 100ms;">
+<div class="aspect-[3/4] bg-surface-container-high overflow-hidden relative group">
+<div class="w-full h-full bg-olive-wash flex items-center justify-center p-8">
+<!-- Placeholder texture for variety -->
+<div class="w-full h-full border border-outline/20 relative inner-shadow-subtle" style="background-image: radial-gradient(#c8c6c2 1px, transparent 1px); background-size: 20px 20px;">
+<div class="absolute inset-0 flex items-center justify-center text-center p-6">
+<h4 class="font-headline-md text-headline-md text-primary opacity-80">Bespoke<br/>Editorial</h4>
+</div>
+</div>
+</div>
+<div class="absolute top-4 left-4 bg-surface px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-primary border border-outline-variant/50">Custom</div>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Bespoke Commissions</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">A blank canvas approach for completely unique, conceptually driven paper goods.</p>
+</div>
+</div>
+<!-- Item 3 (Small) -->
+<div class="md:col-span-4 flex flex-col gap-4 fade-in-up">
+<div class="aspect-square bg-surface-container-lowest overflow-hidden border border-outline-variant/30 flex items-center justify-center p-8">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary text-center">Weekend<br/>Details</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">Menus, place cards, and signage.</p>
+</div>
+<!-- Item 4 (Small) -->
+<div class="md:col-span-4 md:col-start-9 flex flex-col gap-4 mt-8 md:mt-0 fade-in-up" style="transition-delay: 200ms;">
+<div class="aspect-square bg-surface-container-low overflow-hidden border border-outline-variant/30 flex items-center justify-center p-8 bg-rose-wash/30">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-primary text-center">Planner<br/>Concierge</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">Streamlined collaboration for event professionals.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. The Process -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest relative overflow-hidden">
+<div class="absolute top-0 right-0 w-1/3 h-full bg-surface-container-low -z-10 hidden md:block"></div>
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 flex flex-col gap-12 z-10 fade-in-up">
+<div>
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Methodology</span>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary mt-4">The Studio Process</h2>
+</div>
+<div class="flex flex-col gap-8 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant/50">
+<div class="flex gap-6 relative">
+<div class="w-6 h-6 rounded-full bg-ivory border border-primary flex items-center justify-center shrink-0 z-10 mt-1">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+</div>
+<div>
+<h4 class="font-headline-md text-[24px] text-primary">Private Appointment</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2">We begin with a consultation to understand the aesthetic landscape of your event.</p>
+</div>
+</div>
+<div class="flex gap-6 relative">
+<div class="w-6 h-6 rounded-full bg-ivory border border-outline-variant flex items-center justify-center shrink-0 z-10 mt-1"></div>
+<div>
+<h4 class="font-headline-md text-[24px] text-primary opacity-60">Design &amp; Curation</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 opacity-80">Presenting digital proofs and material swatches for your approval.</p>
+</div>
+</div>
+<div class="flex gap-6 relative">
+<div class="w-6 h-6 rounded-full bg-ivory border border-outline-variant flex items-center justify-center shrink-0 z-10 mt-1"></div>
+<div>
+<h4 class="font-headline-md text-[24px] text-primary opacity-60">Atelier Production</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 opacity-80">Plates are cast, paper is cut, and each piece is pressed and assembled by hand.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="md:col-span-6 md:col-start-7 mt-16 md:mt-0 fade-in-up">
+<img alt="Craftsmanship Process" class="w-full aspect-square object-cover inner-shadow-subtle grayscale-[30%]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmDVvls5SoxF8tkIbMbpW30Id4ijTfSeg6n1rFNxi5Q1PtP5OpydEiHnp8YUmxAJIw-3-qIB6ee_Xt5g-incmUiQFhOfXwOKPKK3S527zJcG2K99qDPU-KkanpBEi_IymUkkLFY6gPxDLgzsI3a-YKu2pDs80RlVnBe4BqN6sBck2zNfNBqGa52NnAbHpDURWjE4zKeHTwz2Na2-84i0z8lOJtrKTEjFVwrbkfSFnQqKECN-WDBJ_H6jt8h2hzvTSEhyC8G1dUbUGY"/>
+</div>
+</div>
+</section>
+<!-- 5. Trust / Proof -->
+<section class="py-24 px-margin-mobile md:px-margin-desktop bg-surface-container text-center">
+<div class="max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30">
+<div class="flex flex-col items-center gap-4 py-8 md:py-0 px-6 fade-in-up">
+<span class="material-symbols-outlined text-primary text-[32px] font-light" style="font-variation-settings: 'wght' 200;">draw</span>
+<h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary">Craft Proofs</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Experience the tactile reality before full production with physical press proofs.</p>
+</div>
+<div class="flex flex-col items-center gap-4 py-8 md:py-0 px-6 fade-in-up" style="transition-delay: 100ms;">
+<span class="material-symbols-outlined text-primary text-[32px] font-light" style="font-variation-settings: 'wght' 200;">layers</span>
+<h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary">Material Provenance</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Sourcing only 100% cotton rag paper and hand-mixed inks for unparalleled texture.</p>
+</div>
+<div class="flex flex-col items-center gap-4 py-8 md:py-0 px-6 fade-in-up" style="transition-delay: 200ms;">
+<span class="material-symbols-outlined text-primary text-[32px] font-light" style="font-variation-settings: 'wght' 200;">calendar_today</span>
+<h4 class="font-label-caps text-label-caps uppercase tracking-widest text-primary">Planner-Friendly</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Meticulous organization and direct shipping options to streamline event execution.</p>
+</div>
+</div>
+</section>
+<!-- 6. Inquiry CTA -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-lowest" id="inquiry">
+<div class="max-w-3xl mx-auto flex flex-col items-center text-center gap-12 fade-in-up">
+<div class="flex flex-col items-center gap-4">
+<span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest">Connect</span>
+<h2 class="font-display-lg text-[48px] md:text-display-lg text-primary leading-tight">Begin the Ceremony.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                        Our studio responds to all private inquiries within 24 hours to secure your place on our production calendar.
+                    </p>
+</div>
+<form class="w-full flex flex-col gap-8 mt-8 text-left">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="flex flex-col gap-2 relative group">
+<label class="font-label-caps text-[10px] uppercase tracking-widest text-secondary transition-colors group-focus-within:text-primary">First &amp; Last Name</label>
+<input class="input-editorial font-body-md text-primary w-full" placeholder="Alexandra &amp; James" type="text"/>
+</div>
+<div class="flex flex-col gap-2 relative group">
+<label class="font-label-caps text-[10px] uppercase tracking-widest text-secondary transition-colors group-focus-within:text-primary">Email Address</label>
+<input class="input-editorial font-body-md text-primary w-full" placeholder="hello@example.com" type="email"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="flex flex-col gap-2 relative group">
+<label class="font-label-caps text-[10px] uppercase tracking-widest text-secondary transition-colors group-focus-within:text-primary">Event Date</label>
+<input class="input-editorial font-body-md text-primary w-full" placeholder="e.g., September 2024" type="text"/>
+</div>
+<div class="flex flex-col gap-2 relative group">
+<label class="font-label-caps text-[10px] uppercase tracking-widest text-secondary transition-colors group-focus-within:text-primary">Estimated Guest Count</label>
+<input class="input-editorial font-body-md text-primary w-full" placeholder="e.g., 150" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-2 relative group mt-4">
+<label class="font-label-caps text-[10px] uppercase tracking-widest text-secondary transition-colors group-focus-within:text-primary">Tell us about your vision</label>
+<textarea class="input-editorial font-body-md text-primary w-full resize-none min-h-[100px]" placeholder="Venues, aesthetic preferences, planner details..."></textarea>
+</div>
+<div class="flex justify-center mt-8">
+<button class="px-12 py-4 btn-editorial font-label-caps text-label-caps uppercase text-primary tracking-widest" type="button">
+                            Submit Inquiry
+                        </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer Shell -->
+<footer class="w-full py-section-gap px-margin-mobile md:px-margin-desktop flex flex-col items-center gap-12 text-center bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex flex-col items-center gap-6">
+<h2 class="font-headline-md text-headline-md text-primary">Vale &amp; Vellum</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">
+                Bespoke letterpress and fine art stationery for the modern romantic.
+            </p>
+</div>
+<div class="flex flex-wrap justify-center gap-8 md:gap-12">
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300 link-editorial" href="#">Email</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300 link-editorial" href="#">Instagram</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300 link-editorial" href="#">Pinterest</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300 link-editorial" href="#">Site Map</a>
+<a class="font-link text-link text-on-surface-variant hover:text-primary transition-colors duration-300 link-editorial" href="#">Privacy</a>
+</div>
+<div class="flex flex-col items-center gap-4 mt-8">
+<span class="font-label-caps text-label-caps uppercase text-secondary tracking-widest">Join our journal</span>
+<div class="flex items-end max-w-sm w-full border-b border-primary pb-2">
+<input class="bg-transparent border-none outline-none font-body-md text-primary w-full flex-grow focus:ring-0 p-0 placeholder-secondary/50" placeholder="Email Address" type="email"/>
+<button class="font-label-caps text-[10px] uppercase text-primary tracking-widest hover:opacity-70 transition-opacity whitespace-nowrap ml-4">Subscribe</button>
+</div>
+</div>
+<div class="mt-12 text-on-surface-variant/60 font-body-md text-[14px]">
+            © Vale &amp; Vellum. All rights reserved.
+        </div>
+</footer>
+<script>
+        // Simple fade-in on scroll intersection observer
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+        });
+    </script>
+</body></html>

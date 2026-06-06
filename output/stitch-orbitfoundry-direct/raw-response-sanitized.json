@@ -1,0 +1,1324 @@
+{
+  "outputComponents": [
+    {
+      "designSystem": {
+        "designSystem": {
+          "displayName": "Precision Industrial Intelligence",
+          "styleGuidelines": "## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+          "theme": {
+            "bodyFont": "HANKEN_GROTESK",
+            "bodyFontFamily": "Hanken Grotesk",
+            "colorMode": "LIGHT",
+            "colorVariant": "FIDELITY",
+            "customColor": "#2563eb",
+            "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+            "font": "HANKEN_GROTESK",
+            "headlineFont": "HANKEN_GROTESK",
+            "headlineFontFamily": "Hanken Grotesk",
+            "labelFont": "JETBRAINS_MONO",
+            "labelFontFamily": "Jetbrains Mono",
+            "namedColors": {
+              "background": "#f7f9fb",
+              "error": "#ba1a1a",
+              "error_container": "#ffdad6",
+              "inverse_on_surface": "#eff1f3",
+              "inverse_primary": "#b4c5ff",
+              "inverse_surface": "#2d3133",
+              "on_background": "#191c1e",
+              "on_error": "#ffffff",
+              "on_error_container": "#93000a",
+              "on_primary": "#ffffff",
+              "on_primary_container": "#eeefff",
+              "on_primary_fixed": "#00174b",
+              "on_primary_fixed_variant": "#003ea8",
+              "on_secondary": "#ffffff",
+              "on_secondary_container": "#006f67",
+              "on_secondary_fixed": "#00201d",
+              "on_secondary_fixed_variant": "#00504a",
+              "on_surface": "#191c1e",
+              "on_surface_variant": "#434655",
+              "on_tertiary": "#ffffff",
+              "on_tertiary_container": "#ecf0ff",
+              "on_tertiary_fixed": "#141b2b",
+              "on_tertiary_fixed_variant": "#404758",
+              "outline": "#737686",
+              "outline_variant": "#c3c6d7",
+              "primary": "#004ac6",
+              "primary_container": "#2563eb",
+              "primary_fixed": "#dbe1ff",
+              "primary_fixed_dim": "#b4c5ff",
+              "secondary": "#006a63",
+              "secondary_container": "#99efe5",
+              "secondary_fixed": "#9cf2e8",
+              "secondary_fixed_dim": "#80d5cb",
+              "surface": "#f7f9fb",
+              "surface_bright": "#f7f9fb",
+              "surface_container": "#eceef0",
+              "surface_container_high": "#e6e8ea",
+              "surface_container_highest": "#e0e3e5",
+              "surface_container_low": "#f2f4f6",
+              "surface_container_lowest": "#ffffff",
+              "surface_dim": "#d8dadc",
+              "surface_tint": "#0053db",
+              "surface_variant": "#e0e3e5",
+              "tertiary": "#4e5566",
+              "tertiary_container": "#666d7f",
+              "tertiary_fixed": "#dce2f7",
+              "tertiary_fixed_dim": "#c0c6db"
+            },
+            "overrideNeutralColor": "#f8fafc",
+            "overridePrimaryColor": "#2563eb",
+            "overrideSecondaryColor": "#0f766e",
+            "overrideTertiaryColor": "#111827",
+            "roundness": "ROUND_FOUR",
+            "spacing": {
+              "container-margin": "32px",
+              "element-padding-lg": "24px",
+              "element-padding-md": "16px",
+              "element-padding-sm": "8px",
+              "grid-gutter": "24px",
+              "section-gap": "72px"
+            },
+            "spacingScale": 2,
+            "typography": {
+              "body-lg": {
+                "fontFamily": "Hanken Grotesk",
+                "fontSize": "18px",
+                "fontWeight": "400",
+                "lineHeight": "28px"
+              },
+              "body-md": {
+                "fontFamily": "Hanken Grotesk",
+                "fontSize": "16px",
+                "fontWeight": "400",
+                "lineHeight": "24px"
+              },
+              "headline-lg": {
+                "fontFamily": "Hanken Grotesk",
+                "fontSize": "48px",
+                "fontWeight": "700",
+                "letterSpacing": "-0.02em",
+                "lineHeight": "56px"
+              },
+              "headline-lg-mobile": {
+                "fontFamily": "Hanken Grotesk",
+                "fontSize": "32px",
+                "fontWeight": "700",
+                "letterSpacing": "-0.01em",
+                "lineHeight": "40px"
+              },
+              "headline-md": {
+                "fontFamily": "Hanken Grotesk",
+                "fontSize": "32px",
+                "fontWeight": "600",
+                "lineHeight": "40px"
+              },
+              "headline-sm": {
+                "fontFamily": "Hanken Grotesk",
+                "fontSize": "24px",
+                "fontWeight": "600",
+                "lineHeight": "32px"
+              },
+              "label-mono-allcaps": {
+                "fontFamily": "JetBrains Mono",
+                "fontSize": "12px",
+                "fontWeight": "600",
+                "letterSpacing": "0.05em",
+                "lineHeight": "16px"
+              },
+              "label-mono-sm": {
+                "fontFamily": "JetBrains Mono",
+                "fontSize": "11px",
+                "fontWeight": "400",
+                "lineHeight": "14px"
+              }
+            }
+          }
+        },
+        "name": "assets/e3ffbb9b15374872a065ed19e006e1ca",
+        "version": "1"
+      }
+    },
+    {
+      "design": {
+        "screens": [
+          {
+            "designSystem": {
+              "designSystem": {
+                "displayName": "Precision Industrial Intelligence",
+                "styleGuidelines": "## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                "theme": {
+                  "bodyFont": "HANKEN_GROTESK",
+                  "bodyFontFamily": "Hanken Grotesk",
+                  "colorMode": "LIGHT",
+                  "colorVariant": "FIDELITY",
+                  "customColor": "#2563eb",
+                  "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                  "font": "HANKEN_GROTESK",
+                  "headlineFont": "HANKEN_GROTESK",
+                  "headlineFontFamily": "Hanken Grotesk",
+                  "labelFont": "JETBRAINS_MONO",
+                  "labelFontFamily": "Jetbrains Mono",
+                  "namedColors": {
+                    "background": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "error_container": "#ffdad6",
+                    "inverse_on_surface": "#eff1f3",
+                    "inverse_primary": "#b4c5ff",
+                    "inverse_surface": "#2d3133",
+                    "on_background": "#191c1e",
+                    "on_error": "#ffffff",
+                    "on_error_container": "#93000a",
+                    "on_primary": "#ffffff",
+                    "on_primary_container": "#eeefff",
+                    "on_primary_fixed": "#00174b",
+                    "on_primary_fixed_variant": "#003ea8",
+                    "on_secondary": "#ffffff",
+                    "on_secondary_container": "#006f67",
+                    "on_secondary_fixed": "#00201d",
+                    "on_secondary_fixed_variant": "#00504a",
+                    "on_surface": "#191c1e",
+                    "on_surface_variant": "#434655",
+                    "on_tertiary": "#ffffff",
+                    "on_tertiary_container": "#ecf0ff",
+                    "on_tertiary_fixed": "#141b2b",
+                    "on_tertiary_fixed_variant": "#404758",
+                    "outline": "#737686",
+                    "outline_variant": "#c3c6d7",
+                    "primary": "#004ac6",
+                    "primary_container": "#2563eb",
+                    "primary_fixed": "#dbe1ff",
+                    "primary_fixed_dim": "#b4c5ff",
+                    "secondary": "#006a63",
+                    "secondary_container": "#99efe5",
+                    "secondary_fixed": "#9cf2e8",
+                    "secondary_fixed_dim": "#80d5cb",
+                    "surface": "#f7f9fb",
+                    "surface_bright": "#f7f9fb",
+                    "surface_container": "#eceef0",
+                    "surface_container_high": "#e6e8ea",
+                    "surface_container_highest": "#e0e3e5",
+                    "surface_container_low": "#f2f4f6",
+                    "surface_container_lowest": "#ffffff",
+                    "surface_dim": "#d8dadc",
+                    "surface_tint": "#0053db",
+                    "surface_variant": "#e0e3e5",
+                    "tertiary": "#4e5566",
+                    "tertiary_container": "#666d7f",
+                    "tertiary_fixed": "#dce2f7",
+                    "tertiary_fixed_dim": "#c0c6db"
+                  },
+                  "overrideNeutralColor": "#f8fafc",
+                  "overridePrimaryColor": "#2563eb",
+                  "overrideSecondaryColor": "#0f766e",
+                  "overrideTertiaryColor": "#111827",
+                  "roundness": "ROUND_FOUR",
+                  "spacing": {
+                    "container-margin": "32px",
+                    "element-padding-lg": "24px",
+                    "element-padding-md": "16px",
+                    "element-padding-sm": "8px",
+                    "grid-gutter": "24px",
+                    "section-gap": "72px"
+                  },
+                  "spacingScale": 2,
+                  "typography": {
+                    "body-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "body-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg-mobile": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-allcaps": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    }
+                  }
+                }
+              },
+              "name": "assets/e3ffbb9b15374872a065ed19e006e1ca",
+              "version": "1"
+            },
+            "deviceType": "DESKTOP",
+            "generatedBy": "figaro_agent",
+            "height": "2328",
+            "htmlCode": {
+              "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+              "mimeType": "text/html",
+              "name": "projects/697502691238751967/files/7d8035d216a1448c8371708b9d2cbde2"
+            },
+            "id": "5d0b7e3a94ba4f8dbb41a5dd73901b5e",
+            "name": "projects/697502691238751967/screens/5d0b7e3a94ba4f8dbb41a5dd73901b5e",
+            "prompt": "Home Page for OrbitFoundry Robotics. \nComposition: Full-Bleed Media Hero showing a cinematic warehouse scene. \nHeadline: 'AI workflows your team can inspect and control.' \nSections: \n1. Hero: Workflow transformation (Problem to Approved Action). \n2. Agent Proof: An 'Agent Trace' panel showing prompt, execution, and human approval. \n3. Platform Overview: Cinematic grid showing fleet telemetry. \n4. Integrations: Grid of connected systems (Slack, CRM, DB). \n5. Security: Cards showing audit logs and permissions. \n6. Final CTA: 'Run Demo'. \nAvoid: Placeholder copy like 'Home 1'. Use real product copy. Premium industrial feel.",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "DESIGN",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvlbtxXHJvWI3l5yCz6jLnAUx4GQbqWc2o19F738DDTJdEL3N-jMFJ_vDRwTOPwY3zAZUH3-2AgeU63S52IFjoYgpcHpgt3o5I4mWj9YJYMhEKStL5fTTSFo2r8thE-xQTaNf3PyjPZwpNjXiLYcv-0EDVlcaV-dMeK_TRM3YwxoPpaG1nlqRvRmKxUosrrhpM7skAz3HBw_Pcr0r4cJwJonRhN2xqtj-A68tcXk_37OV6lZfBFkOcvdQ",
+              "name": "projects/697502691238751967/files/60910bd489ca40fc966b9780ae28133c"
+            },
+            "theme": {
+              "bodyFont": "HANKEN_GROTESK",
+              "bodyFontFamily": "Hanken Grotesk",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#2563eb",
+              "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+              "font": "HANKEN_GROTESK",
+              "headlineFont": "HANKEN_GROTESK",
+              "headlineFontFamily": "Hanken Grotesk",
+              "labelFont": "JETBRAINS_MONO",
+              "labelFontFamily": "Jetbrains Mono",
+              "namedColors": {
+                "background": "#f7f9fb",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#eff1f3",
+                "inverse_primary": "#b4c5ff",
+                "inverse_surface": "#2d3133",
+                "on_background": "#191c1e",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#eeefff",
+                "on_primary_fixed": "#00174b",
+                "on_primary_fixed_variant": "#003ea8",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#006f67",
+                "on_secondary_fixed": "#00201d",
+                "on_secondary_fixed_variant": "#00504a",
+                "on_surface": "#191c1e",
+                "on_surface_variant": "#434655",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#ecf0ff",
+                "on_tertiary_fixed": "#141b2b",
+                "on_tertiary_fixed_variant": "#404758",
+                "outline": "#737686",
+                "outline_variant": "#c3c6d7",
+                "primary": "#004ac6",
+                "primary_container": "#2563eb",
+                "primary_fixed": "#dbe1ff",
+                "primary_fixed_dim": "#b4c5ff",
+                "secondary": "#006a63",
+                "secondary_container": "#99efe5",
+                "secondary_fixed": "#9cf2e8",
+                "secondary_fixed_dim": "#80d5cb",
+                "surface": "#f7f9fb",
+                "surface_bright": "#f7f9fb",
+                "surface_container": "#eceef0",
+                "surface_container_high": "#e6e8ea",
+                "surface_container_highest": "#e0e3e5",
+                "surface_container_low": "#f2f4f6",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#d8dadc",
+                "surface_tint": "#0053db",
+                "surface_variant": "#e0e3e5",
+                "tertiary": "#4e5566",
+                "tertiary_container": "#666d7f",
+                "tertiary_fixed": "#dce2f7",
+                "tertiary_fixed_dim": "#c0c6db"
+              },
+              "overrideNeutralColor": "#f8fafc",
+              "overridePrimaryColor": "#2563eb",
+              "overrideSecondaryColor": "#0f766e",
+              "overrideTertiaryColor": "#111827",
+              "roundness": "ROUND_FOUR",
+              "spacing": {
+                "container-margin": "32px",
+                "element-padding-lg": "24px",
+                "element-padding-md": "16px",
+                "element-padding-sm": "8px",
+                "grid-gutter": "24px",
+                "section-gap": "72px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "18px",
+                  "fontWeight": "400",
+                  "lineHeight": "28px"
+                },
+                "body-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "24px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "48px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "40px"
+                },
+                "headline-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "600",
+                  "lineHeight": "40px"
+                },
+                "headline-sm": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "24px",
+                  "fontWeight": "600",
+                  "lineHeight": "32px"
+                },
+                "label-mono-allcaps": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "12px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0.05em",
+                  "lineHeight": "16px"
+                },
+                "label-mono-sm": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "11px",
+                  "fontWeight": "400",
+                  "lineHeight": "14px"
+                }
+              }
+            },
+            "title": "Home | OrbitFoundry Robotics",
+            "width": "2560"
+          },
+          {
+            "designSystem": {
+              "designSystem": {
+                "displayName": "Precision Industrial Intelligence",
+                "styleGuidelines": "## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                "theme": {
+                  "bodyFont": "HANKEN_GROTESK",
+                  "bodyFontFamily": "Hanken Grotesk",
+                  "colorMode": "LIGHT",
+                  "colorVariant": "FIDELITY",
+                  "customColor": "#2563eb",
+                  "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                  "font": "HANKEN_GROTESK",
+                  "headlineFont": "HANKEN_GROTESK",
+                  "headlineFontFamily": "Hanken Grotesk",
+                  "labelFont": "JETBRAINS_MONO",
+                  "labelFontFamily": "Jetbrains Mono",
+                  "namedColors": {
+                    "background": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "error_container": "#ffdad6",
+                    "inverse_on_surface": "#eff1f3",
+                    "inverse_primary": "#b4c5ff",
+                    "inverse_surface": "#2d3133",
+                    "on_background": "#191c1e",
+                    "on_error": "#ffffff",
+                    "on_error_container": "#93000a",
+                    "on_primary": "#ffffff",
+                    "on_primary_container": "#eeefff",
+                    "on_primary_fixed": "#00174b",
+                    "on_primary_fixed_variant": "#003ea8",
+                    "on_secondary": "#ffffff",
+                    "on_secondary_container": "#006f67",
+                    "on_secondary_fixed": "#00201d",
+                    "on_secondary_fixed_variant": "#00504a",
+                    "on_surface": "#191c1e",
+                    "on_surface_variant": "#434655",
+                    "on_tertiary": "#ffffff",
+                    "on_tertiary_container": "#ecf0ff",
+                    "on_tertiary_fixed": "#141b2b",
+                    "on_tertiary_fixed_variant": "#404758",
+                    "outline": "#737686",
+                    "outline_variant": "#c3c6d7",
+                    "primary": "#004ac6",
+                    "primary_container": "#2563eb",
+                    "primary_fixed": "#dbe1ff",
+                    "primary_fixed_dim": "#b4c5ff",
+                    "secondary": "#006a63",
+                    "secondary_container": "#99efe5",
+                    "secondary_fixed": "#9cf2e8",
+                    "secondary_fixed_dim": "#80d5cb",
+                    "surface": "#f7f9fb",
+                    "surface_bright": "#f7f9fb",
+                    "surface_container": "#eceef0",
+                    "surface_container_high": "#e6e8ea",
+                    "surface_container_highest": "#e0e3e5",
+                    "surface_container_low": "#f2f4f6",
+                    "surface_container_lowest": "#ffffff",
+                    "surface_dim": "#d8dadc",
+                    "surface_tint": "#0053db",
+                    "surface_variant": "#e0e3e5",
+                    "tertiary": "#4e5566",
+                    "tertiary_container": "#666d7f",
+                    "tertiary_fixed": "#dce2f7",
+                    "tertiary_fixed_dim": "#c0c6db"
+                  },
+                  "overrideNeutralColor": "#f8fafc",
+                  "overridePrimaryColor": "#2563eb",
+                  "overrideSecondaryColor": "#0f766e",
+                  "overrideTertiaryColor": "#111827",
+                  "roundness": "ROUND_FOUR",
+                  "spacing": {
+                    "container-margin": "32px",
+                    "element-padding-lg": "24px",
+                    "element-padding-md": "16px",
+                    "element-padding-sm": "8px",
+                    "grid-gutter": "24px",
+                    "section-gap": "72px"
+                  },
+                  "spacingScale": 2,
+                  "typography": {
+                    "body-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "body-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg-mobile": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-allcaps": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    }
+                  }
+                }
+              },
+              "name": "assets/e3ffbb9b15374872a065ed19e006e1ca",
+              "version": "1"
+            },
+            "deviceType": "DESKTOP",
+            "generatedBy": "figaro_agent",
+            "height": "3310",
+            "htmlCode": {
+              "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+              "mimeType": "text/html",
+              "name": "projects/697502691238751967/files/e69cfd68023843d98962e983c1ef16d0"
+            },
+            "id": "10741ec0bfb9470ab26c447efeb01fba",
+            "name": "projects/697502691238751967/screens/10741ec0bfb9470ab26c447efeb01fba",
+            "prompt": "Robotics Network Page for OrbitFoundry Robotics. \nFocus: The physical network of 3PL warehouses. \nSections: \n1. Interactive Map: Visualization of a robotics fleet across multiple nodes. \n2. Fleet Telemetry: Real-time metrics grid (Throughput, Latency, Uptime). \n3. Case Studies/Proof: Cinematic shots of robots in warehouse grids with result metrics. \nHeadline: 'Built for the mid-market fulfillment network.'",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "DESIGN",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuClf_5L9e6fjPCFWFqyPaYXdT6VSZJ0QgV2ZWo25WwnOJgWZ08tqlP2sEkC1Kbqur6GtnApzDdrygMbK_Ps7pE_t1oDwSdaEUvVWmNeJx0Vl7fn2KPNkd9l23wPlmYlJvaiOdMYgVcDA2qAug_x0GV99LQ97OmcmoW2UznXNL07cv_qB5yNTow5-nLkwBgZ961y4Ont7aTFnBD2bdrFyrV6D2aCV60jfP5Cj4OE9gyISpZk5YDA-BJZg",
+              "name": "projects/697502691238751967/files/9c77b762cbdd431297878f8fa503bea2"
+            },
+            "theme": {
+              "bodyFont": "HANKEN_GROTESK",
+              "bodyFontFamily": "Hanken Grotesk",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#2563eb",
+              "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+              "font": "HANKEN_GROTESK",
+              "headlineFont": "HANKEN_GROTESK",
+              "headlineFontFamily": "Hanken Grotesk",
+              "labelFont": "JETBRAINS_MONO",
+              "labelFontFamily": "Jetbrains Mono",
+              "namedColors": {
+                "background": "#f7f9fb",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#eff1f3",
+                "inverse_primary": "#b4c5ff",
+                "inverse_surface": "#2d3133",
+                "on_background": "#191c1e",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#eeefff",
+                "on_primary_fixed": "#00174b",
+                "on_primary_fixed_variant": "#003ea8",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#006f67",
+                "on_secondary_fixed": "#00201d",
+                "on_secondary_fixed_variant": "#00504a",
+                "on_surface": "#191c1e",
+                "on_surface_variant": "#434655",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#ecf0ff",
+                "on_tertiary_fixed": "#141b2b",
+                "on_tertiary_fixed_variant": "#404758",
+                "outline": "#737686",
+                "outline_variant": "#c3c6d7",
+                "primary": "#004ac6",
+                "primary_container": "#2563eb",
+                "primary_fixed": "#dbe1ff",
+                "primary_fixed_dim": "#b4c5ff",
+                "secondary": "#006a63",
+                "secondary_container": "#99efe5",
+                "secondary_fixed": "#9cf2e8",
+                "secondary_fixed_dim": "#80d5cb",
+                "surface": "#f7f9fb",
+                "surface_bright": "#f7f9fb",
+                "surface_container": "#eceef0",
+                "surface_container_high": "#e6e8ea",
+                "surface_container_highest": "#e0e3e5",
+                "surface_container_low": "#f2f4f6",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#d8dadc",
+                "surface_tint": "#0053db",
+                "surface_variant": "#e0e3e5",
+                "tertiary": "#4e5566",
+                "tertiary_container": "#666d7f",
+                "tertiary_fixed": "#dce2f7",
+                "tertiary_fixed_dim": "#c0c6db"
+              },
+              "overrideNeutralColor": "#f8fafc",
+              "overridePrimaryColor": "#2563eb",
+              "overrideSecondaryColor": "#0f766e",
+              "overrideTertiaryColor": "#111827",
+              "roundness": "ROUND_FOUR",
+              "spacing": {
+                "container-margin": "32px",
+                "element-padding-lg": "24px",
+                "element-padding-md": "16px",
+                "element-padding-sm": "8px",
+                "grid-gutter": "24px",
+                "section-gap": "72px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "18px",
+                  "fontWeight": "400",
+                  "lineHeight": "28px"
+                },
+                "body-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "24px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "48px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "40px"
+                },
+                "headline-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "600",
+                  "lineHeight": "40px"
+                },
+                "headline-sm": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "24px",
+                  "fontWeight": "600",
+                  "lineHeight": "32px"
+                },
+                "label-mono-allcaps": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "12px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0.05em",
+                  "lineHeight": "16px"
+                },
+                "label-mono-sm": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "11px",
+                  "fontWeight": "400",
+                  "lineHeight": "14px"
+                }
+              }
+            },
+            "title": "Robotics Network | OrbitFoundry Robotics",
+            "width": "2560"
+          },
+          {
+            "designSystem": {
+              "designSystem": {
+                "displayName": "Precision Industrial Intelligence",
+                "styleGuidelines": "## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                "theme": {
+                  "bodyFont": "HANKEN_GROTESK",
+                  "bodyFontFamily": "Hanken Grotesk",
+                  "colorMode": "LIGHT",
+                  "colorVariant": "FIDELITY",
+                  "customColor": "#2563eb",
+                  "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                  "font": "HANKEN_GROTESK",
+                  "headlineFont": "HANKEN_GROTESK",
+                  "headlineFontFamily": "Hanken Grotesk",
+                  "labelFont": "JETBRAINS_MONO",
+                  "labelFontFamily": "Jetbrains Mono",
+                  "namedColors": {
+                    "background": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "error_container": "#ffdad6",
+                    "inverse_on_surface": "#eff1f3",
+                    "inverse_primary": "#b4c5ff",
+                    "inverse_surface": "#2d3133",
+                    "on_background": "#191c1e",
+                    "on_error": "#ffffff",
+                    "on_error_container": "#93000a",
+                    "on_primary": "#ffffff",
+                    "on_primary_container": "#eeefff",
+                    "on_primary_fixed": "#00174b",
+                    "on_primary_fixed_variant": "#003ea8",
+                    "on_secondary": "#ffffff",
+                    "on_secondary_container": "#006f67",
+                    "on_secondary_fixed": "#00201d",
+                    "on_secondary_fixed_variant": "#00504a",
+                    "on_surface": "#191c1e",
+                    "on_surface_variant": "#434655",
+                    "on_tertiary": "#ffffff",
+                    "on_tertiary_container": "#ecf0ff",
+                    "on_tertiary_fixed": "#141b2b",
+                    "on_tertiary_fixed_variant": "#404758",
+                    "outline": "#737686",
+                    "outline_variant": "#c3c6d7",
+                    "primary": "#004ac6",
+                    "primary_container": "#2563eb",
+                    "primary_fixed": "#dbe1ff",
+                    "primary_fixed_dim": "#b4c5ff",
+                    "secondary": "#006a63",
+                    "secondary_container": "#99efe5",
+                    "secondary_fixed": "#9cf2e8",
+                    "secondary_fixed_dim": "#80d5cb",
+                    "surface": "#f7f9fb",
+                    "surface_bright": "#f7f9fb",
+                    "surface_container": "#eceef0",
+                    "surface_container_high": "#e6e8ea",
+                    "surface_container_highest": "#e0e3e5",
+                    "surface_container_low": "#f2f4f6",
+                    "surface_container_lowest": "#ffffff",
+                    "surface_dim": "#d8dadc",
+                    "surface_tint": "#0053db",
+                    "surface_variant": "#e0e3e5",
+                    "tertiary": "#4e5566",
+                    "tertiary_container": "#666d7f",
+                    "tertiary_fixed": "#dce2f7",
+                    "tertiary_fixed_dim": "#c0c6db"
+                  },
+                  "overrideNeutralColor": "#f8fafc",
+                  "overridePrimaryColor": "#2563eb",
+                  "overrideSecondaryColor": "#0f766e",
+                  "overrideTertiaryColor": "#111827",
+                  "roundness": "ROUND_FOUR",
+                  "spacing": {
+                    "container-margin": "32px",
+                    "element-padding-lg": "24px",
+                    "element-padding-md": "16px",
+                    "element-padding-sm": "8px",
+                    "grid-gutter": "24px",
+                    "section-gap": "72px"
+                  },
+                  "spacingScale": 2,
+                  "typography": {
+                    "body-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "body-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg-mobile": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-allcaps": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    }
+                  }
+                }
+              },
+              "name": "assets/e3ffbb9b15374872a065ed19e006e1ca",
+              "version": "1"
+            },
+            "deviceType": "DESKTOP",
+            "generatedBy": "figaro_agent",
+            "height": "2282",
+            "htmlCode": {
+              "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+              "mimeType": "text/html",
+              "name": "projects/697502691238751967/files/e42ccd99e94f4d6f808b8bc0b5b62ddc"
+            },
+            "id": "4a19464aae4b47a9ad9c4634b2f7695a",
+            "name": "projects/697502691238751967/screens/4a19464aae4b47a9ad9c4634b2f7695a",
+            "prompt": "Platform Page for OrbitFoundry Robotics. \nFocus: Orchestration software capabilities. \nSections: \n1. Technical Hero: Architecture diagram showing modules and deploy paths. \n2. Workflow Control: Interactive-style panels for 'Route Optimization' and 'Exception Handling'. \n3. Integration Depth: Detailed view of database and CRM connectors. \n4. Trust boundaries: Visualizing the security layer and human-in-the-loop controls. \nHeadline: 'Orchestrate the edge with absolute precision.'",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "DESIGN",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLv045ehrvvZNp4ORLSS4Y1SnTkFCGlOoMwvGAhDXxCZVFl-04v0WbYg1VJVsfBiddDndjBPVTxJGBVDkL_NQ4wzoV8SoB5O9ziD7T4-EXvMbLOT7x_lFkSCKc1NvkgAlRZg7ktNkNg_q5DfvYybXI7MYxTjKAzoGlBj_KE0FU4GFHLR_Yrecpdf02pe7xMADvlYM2kEhdwZSpvq6NgS7gnbGW8rcfyL60Be8M_AWjxZgfyt7OOLnUC45Q",
+              "name": "projects/697502691238751967/files/5936ec8259584feeb88cbd4468bdb226"
+            },
+            "theme": {
+              "bodyFont": "HANKEN_GROTESK",
+              "bodyFontFamily": "Hanken Grotesk",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#2563eb",
+              "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+              "font": "HANKEN_GROTESK",
+              "headlineFont": "HANKEN_GROTESK",
+              "headlineFontFamily": "Hanken Grotesk",
+              "labelFont": "JETBRAINS_MONO",
+              "labelFontFamily": "Jetbrains Mono",
+              "namedColors": {
+                "background": "#f7f9fb",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#eff1f3",
+                "inverse_primary": "#b4c5ff",
+                "inverse_surface": "#2d3133",
+                "on_background": "#191c1e",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#eeefff",
+                "on_primary_fixed": "#00174b",
+                "on_primary_fixed_variant": "#003ea8",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#006f67",
+                "on_secondary_fixed": "#00201d",
+                "on_secondary_fixed_variant": "#00504a",
+                "on_surface": "#191c1e",
+                "on_surface_variant": "#434655",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#ecf0ff",
+                "on_tertiary_fixed": "#141b2b",
+                "on_tertiary_fixed_variant": "#404758",
+                "outline": "#737686",
+                "outline_variant": "#c3c6d7",
+                "primary": "#004ac6",
+                "primary_container": "#2563eb",
+                "primary_fixed": "#dbe1ff",
+                "primary_fixed_dim": "#b4c5ff",
+                "secondary": "#006a63",
+                "secondary_container": "#99efe5",
+                "secondary_fixed": "#9cf2e8",
+                "secondary_fixed_dim": "#80d5cb",
+                "surface": "#f7f9fb",
+                "surface_bright": "#f7f9fb",
+                "surface_container": "#eceef0",
+                "surface_container_high": "#e6e8ea",
+                "surface_container_highest": "#e0e3e5",
+                "surface_container_low": "#f2f4f6",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#d8dadc",
+                "surface_tint": "#0053db",
+                "surface_variant": "#e0e3e5",
+                "tertiary": "#4e5566",
+                "tertiary_container": "#666d7f",
+                "tertiary_fixed": "#dce2f7",
+                "tertiary_fixed_dim": "#c0c6db"
+              },
+              "overrideNeutralColor": "#f8fafc",
+              "overridePrimaryColor": "#2563eb",
+              "overrideSecondaryColor": "#0f766e",
+              "overrideTertiaryColor": "#111827",
+              "roundness": "ROUND_FOUR",
+              "spacing": {
+                "container-margin": "32px",
+                "element-padding-lg": "24px",
+                "element-padding-md": "16px",
+                "element-padding-sm": "8px",
+                "grid-gutter": "24px",
+                "section-gap": "72px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "18px",
+                  "fontWeight": "400",
+                  "lineHeight": "28px"
+                },
+                "body-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "24px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "48px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "40px"
+                },
+                "headline-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "600",
+                  "lineHeight": "40px"
+                },
+                "headline-sm": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "24px",
+                  "fontWeight": "600",
+                  "lineHeight": "32px"
+                },
+                "label-mono-allcaps": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "12px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0.05em",
+                  "lineHeight": "16px"
+                },
+                "label-mono-sm": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "11px",
+                  "fontWeight": "400",
+                  "lineHeight": "14px"
+                }
+              }
+            },
+            "title": "Platform | OrbitFoundry Robotics",
+            "width": "2560"
+          },
+          {
+            "designSystem": {
+              "designSystem": {
+                "displayName": "Precision Industrial Intelligence",
+                "styleGuidelines": "## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                "theme": {
+                  "bodyFont": "HANKEN_GROTESK",
+                  "bodyFontFamily": "Hanken Grotesk",
+                  "colorMode": "LIGHT",
+                  "colorVariant": "FIDELITY",
+                  "customColor": "#2563eb",
+                  "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+                  "font": "HANKEN_GROTESK",
+                  "headlineFont": "HANKEN_GROTESK",
+                  "headlineFontFamily": "Hanken Grotesk",
+                  "labelFont": "JETBRAINS_MONO",
+                  "labelFontFamily": "Jetbrains Mono",
+                  "namedColors": {
+                    "background": "#f7f9fb",
+                    "error": "#ba1a1a",
+                    "error_container": "#ffdad6",
+                    "inverse_on_surface": "#eff1f3",
+                    "inverse_primary": "#b4c5ff",
+                    "inverse_surface": "#2d3133",
+                    "on_background": "#191c1e",
+                    "on_error": "#ffffff",
+                    "on_error_container": "#93000a",
+                    "on_primary": "#ffffff",
+                    "on_primary_container": "#eeefff",
+                    "on_primary_fixed": "#00174b",
+                    "on_primary_fixed_variant": "#003ea8",
+                    "on_secondary": "#ffffff",
+                    "on_secondary_container": "#006f67",
+                    "on_secondary_fixed": "#00201d",
+                    "on_secondary_fixed_variant": "#00504a",
+                    "on_surface": "#191c1e",
+                    "on_surface_variant": "#434655",
+                    "on_tertiary": "#ffffff",
+                    "on_tertiary_container": "#ecf0ff",
+                    "on_tertiary_fixed": "#141b2b",
+                    "on_tertiary_fixed_variant": "#404758",
+                    "outline": "#737686",
+                    "outline_variant": "#c3c6d7",
+                    "primary": "#004ac6",
+                    "primary_container": "#2563eb",
+                    "primary_fixed": "#dbe1ff",
+                    "primary_fixed_dim": "#b4c5ff",
+                    "secondary": "#006a63",
+                    "secondary_container": "#99efe5",
+                    "secondary_fixed": "#9cf2e8",
+                    "secondary_fixed_dim": "#80d5cb",
+                    "surface": "#f7f9fb",
+                    "surface_bright": "#f7f9fb",
+                    "surface_container": "#eceef0",
+                    "surface_container_high": "#e6e8ea",
+                    "surface_container_highest": "#e0e3e5",
+                    "surface_container_low": "#f2f4f6",
+                    "surface_container_lowest": "#ffffff",
+                    "surface_dim": "#d8dadc",
+                    "surface_tint": "#0053db",
+                    "surface_variant": "#e0e3e5",
+                    "tertiary": "#4e5566",
+                    "tertiary_container": "#666d7f",
+                    "tertiary_fixed": "#dce2f7",
+                    "tertiary_fixed_dim": "#c0c6db"
+                  },
+                  "overrideNeutralColor": "#f8fafc",
+                  "overridePrimaryColor": "#2563eb",
+                  "overrideSecondaryColor": "#0f766e",
+                  "overrideTertiaryColor": "#111827",
+                  "roundness": "ROUND_FOUR",
+                  "spacing": {
+                    "container-margin": "32px",
+                    "element-padding-lg": "24px",
+                    "element-padding-md": "16px",
+                    "element-padding-sm": "8px",
+                    "grid-gutter": "24px",
+                    "section-gap": "72px"
+                  },
+                  "spacingScale": 2,
+                  "typography": {
+                    "body-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "body-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-lg-mobile": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-md": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "headline-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-allcaps": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "letterSpacing": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    },
+                    "label-mono-sm": {
+                      "fontFamily": "[depth-limit]",
+                      "fontSize": "[depth-limit]",
+                      "fontWeight": "[depth-limit]",
+                      "lineHeight": "[depth-limit]"
+                    }
+                  }
+                }
+              },
+              "name": "assets/e3ffbb9b15374872a065ed19e006e1ca",
+              "version": "1"
+            },
+            "deviceType": "DESKTOP",
+            "generatedBy": "figaro_agent",
+            "height": "3490",
+            "htmlCode": {
+              "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+              "mimeType": "text/html",
+              "name": "projects/697502691238751967/files/82d7b65718444e3791e3a9e7d2be85db"
+            },
+            "id": "8b57dde58bb64014b52457ca2a4842e9",
+            "name": "projects/697502691238751967/screens/8b57dde58bb64014b52457ca2a4842e9",
+            "prompt": "Contact Page for OrbitFoundry Robotics. \nFocus: High-trust inquiry and demo scheduling. \nSections: \n1. Inquiry Form: Clean, industrial-style form with technical labels. \n2. Support Metrics: 'Response Promise' (e.g., <2 hours) and 'Success Support' details. \n3. Global Offices: Grid of warehouse-friendly locations. \nHeadline: 'Ready for production-quality automation?'",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "DESIGN",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLt3QoMdyVhL-RMQggtmP_kTKjXFisGkeZ6YJ56abhDjR1Ui-gv2qmwL2lZulKieyGy1f1S1Xq7d_TeVZKqINFkNiJosyN9iq7uIJ24BMsGnUDD9SHlgybijfEz0COdQwyyUFr1BXVLmigqS91O0HGZKH_py9dKHUhbIRMwPdy_1XzpOAz5XWMRmCjvizp8gIbJpXrMwq54vAI1kFc-liuwKCoAIIb-EpRQipgm4o7FeKjjl7cQnBuugPw",
+              "name": "projects/697502691238751967/files/f604557e66364c75b080758bd7897dc9"
+            },
+            "theme": {
+              "bodyFont": "HANKEN_GROTESK",
+              "bodyFontFamily": "Hanken Grotesk",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#2563eb",
+              "designMd": "---\nname: Precision Industrial Intelligence\ncolors:\n  surface: '#f7f9fb'\n  surface-dim: '#d8dadc'\n  surface-bright: '#f7f9fb'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f4f6'\n  surface-container: '#eceef0'\n  surface-container-high: '#e6e8ea'\n  surface-container-highest: '#e0e3e5'\n  on-surface: '#191c1e'\n  on-surface-variant: '#434655'\n  inverse-surface: '#2d3133'\n  inverse-on-surface: '#eff1f3'\n  outline: '#737686'\n  outline-variant: '#c3c6d7'\n  surface-tint: '#0053db'\n  primary: '#004ac6'\n  on-primary: '#ffffff'\n  primary-container: '#2563eb'\n  on-primary-container: '#eeefff'\n  inverse-primary: '#b4c5ff'\n  secondary: '#006a63'\n  on-secondary: '#ffffff'\n  secondary-container: '#99efe5'\n  on-secondary-container: '#006f67'\n  tertiary: '#4e5566'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#666d7f'\n  on-tertiary-container: '#ecf0ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#dbe1ff'\n  primary-fixed-dim: '#b4c5ff'\n  on-primary-fixed: '#00174b'\n  on-primary-fixed-variant: '#003ea8'\n  secondary-fixed: '#9cf2e8'\n  secondary-fixed-dim: '#80d5cb'\n  on-secondary-fixed: '#00201d'\n  on-secondary-fixed-variant: '#00504a'\n  tertiary-fixed: '#dce2f7'\n  tertiary-fixed-dim: '#c0c6db'\n  on-tertiary-fixed: '#141b2b'\n  on-tertiary-fixed-variant: '#404758'\n  background: '#f7f9fb'\n  on-background: '#191c1e'\n  surface-variant: '#e0e3e5'\ntypography:\n  headline-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n  headline-sm:\n    fontFamily: Hanken Grotesk\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-mono-allcaps:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.05em\n  label-mono-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  section-gap: 72px\n  grid-gutter: 24px\n  container-margin: 32px\n  element-padding-sm: 8px\n  element-padding-md: 16px\n  element-padding-lg: 24px\n---\n\n## Brand & Style\n\nThe design system is engineered for OrbitFoundry Robotics, a leader in premium industrial automation. The brand personality is **Intelligent, Calm, and Capable**. It prioritizes trust through transparency, eschewing \"black box\" AI tropes in favor of visible workflow logic and human-in-the-loop control.\n\nThe visual style is **Corporate / Modern** with a **Tactile** industrial influence. It draws from warehouse-grid systems and high-end hardware interfaces. The aesthetic avoids ephemeral gradients and \"magic\" UI, opting instead for structural clarity, cinematic framing, and technical precision. The UI should feel like a high-end telemetry suite—authoritative, reliable, and indestructible.\n\n## Colors\n\nThe palette is anchored in industrial reliability and technical clarity.\n\n- **Primary Background (#f8fafc):** A clean, expansive neutral that provides a sterile, professional canvas for hardware visualization.\n- **Surface (#ffffff):** Used for elevated UI components and workspace modules to maintain high contrast.\n- **Deep Surface (#111827):** Represents the \"Industrial\" core. Used for sidebar navigation, header bars, or terminal-style telemetry logs to ground the interface.\n- **Intelligence Blue (#2563eb):** The primary action color. It signifies active intelligence, connectivity, and human intent.\n- **Teal Depth (#0f766e):** A secondary accent used for successful system states, robotic health indicators, and secondary data visualizations.\n\n## Typography\n\nThis design system utilizes a dual-font strategy to balance human-centric clarity with technical depth.\n\n**Hanken Grotesk** serves as the primary typeface. It is sharp, contemporary, and exudes professional precision. It is used for all narrative, navigational, and structural headings.\n\n**JetBrains Mono** is the technical utility font. It is reserved for telemetry data, audit logs, coordinate systems, and robot serial numbers. Using a monospaced font for data ensures that fluctuating values (like battery percentages or load weights) do not cause layout shifts and remain highly legible in high-density tables.\n\n## Layout & Spacing\n\nThe layout is governed by a **Fixed Grid** philosophy that mimics industrial architectural plans. \n\n- **Macro-spacing:** Use a generous 72px vertical gap between major sections to provide the \"cinematic\" breathing room required for a premium brand.\n- **The Grid:** A 12-column grid system on desktop (8 on tablet, 4 on mobile) with a 24px gutter. All modules must align strictly to the grid edges—avoiding soft \"centered\" layouts in favor of structured, edge-to-edge modularity.\n- **Telemetry Densities:** While page layouts are spacious, internal components (like robot status cards) should use tight 8px and 16px increments to reflect the data-rich environment of an industrial control room.\n\n## Elevation & Depth\n\nDepth in the design system is communicated through **Tonal Layers** and **Low-Contrast Outlines** rather than aggressive shadows. \n\n1. **Base Layer:** The light-grey background (#f8fafc) acts as the floor.\n2. **Module Layer:** White surfaces (#ffffff) sit on the base with a subtle 1px border (#e2e8f0).\n3. **Interactive Layer:** Active components use a very slight, diffused ambient shadow (4px blur, 5% opacity) to indicate hover states, suggesting they have been \"unlocked\" from the grid.\n4. **Overlay Layer:** Modal dialogs and command palettes use a dark-tinted backdrop blur to maintain focus on the task while keeping the industrial environment visible in the periphery.\n\n## Shapes\n\nThe shape language is **Soft (Level 1)**. Elements use a 4px (0.25rem) corner radius. This choice reflects \"industrial-grade\" design: not sharp enough to be dangerous, but not so rounded as to feel consumer-grade or playful. \n\n- **Standard Elements:** 4px radius (Buttons, Input Fields).\n- **Large Containers:** 8px radius (Cards, Workspace Modules).\n- **Status Indicators:** Icons and small badges may use a circular (pill) shape to distinguish them from structural UI.\n\n## Components\n\n- **Buttons:** High-contrast blocks. Primary buttons use #2563eb with white text. Secondary buttons use a transparent background with a 1px #111827 border. Use Hanken Grotesk Medium for labels.\n- **Telemetry Chips:** Small status indicators using JetBrains Mono. Use #0f766e backgrounds for \"Operational\" and #2563eb for \"In Progress.\"\n- **Data Tables:** High-density grids with JetBrains Mono values. Rows should have a subtle hover effect (background: #f1f5f9) and 1px horizontal dividers.\n- **Input Fields:** 1px #cbd5e1 borders that turn #2563eb on focus. Use JetBrains Mono for placeholder text to signal \"system input.\"\n- **The Fleet Card:** A specialized component containing a robot's 3D render, its ID (Mono), and a health bar. It uses the Surface White background with an 8px radius.\n- **Breadcrumbs & Logs:** Always use JetBrains Mono for navigation trails and system-generated audit logs to maintain the \"audit-trail\" aesthetic.",
+              "font": "HANKEN_GROTESK",
+              "headlineFont": "HANKEN_GROTESK",
+              "headlineFontFamily": "Hanken Grotesk",
+              "labelFont": "JETBRAINS_MONO",
+              "labelFontFamily": "Jetbrains Mono",
+              "namedColors": {
+                "background": "#f7f9fb",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#eff1f3",
+                "inverse_primary": "#b4c5ff",
+                "inverse_surface": "#2d3133",
+                "on_background": "#191c1e",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#eeefff",
+                "on_primary_fixed": "#00174b",
+                "on_primary_fixed_variant": "#003ea8",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#006f67",
+                "on_secondary_fixed": "#00201d",
+                "on_secondary_fixed_variant": "#00504a",
+                "on_surface": "#191c1e",
+                "on_surface_variant": "#434655",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#ecf0ff",
+                "on_tertiary_fixed": "#141b2b",
+                "on_tertiary_fixed_variant": "#404758",
+                "outline": "#737686",
+                "outline_variant": "#c3c6d7",
+                "primary": "#004ac6",
+                "primary_container": "#2563eb",
+                "primary_fixed": "#dbe1ff",
+                "primary_fixed_dim": "#b4c5ff",
+                "secondary": "#006a63",
+                "secondary_container": "#99efe5",
+                "secondary_fixed": "#9cf2e8",
+                "secondary_fixed_dim": "#80d5cb",
+                "surface": "#f7f9fb",
+                "surface_bright": "#f7f9fb",
+                "surface_container": "#eceef0",
+                "surface_container_high": "#e6e8ea",
+                "surface_container_highest": "#e0e3e5",
+                "surface_container_low": "#f2f4f6",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#d8dadc",
+                "surface_tint": "#0053db",
+                "surface_variant": "#e0e3e5",
+                "tertiary": "#4e5566",
+                "tertiary_container": "#666d7f",
+                "tertiary_fixed": "#dce2f7",
+                "tertiary_fixed_dim": "#c0c6db"
+              },
+              "overrideNeutralColor": "#f8fafc",
+              "overridePrimaryColor": "#2563eb",
+              "overrideSecondaryColor": "#0f766e",
+              "overrideTertiaryColor": "#111827",
+              "roundness": "ROUND_FOUR",
+              "spacing": {
+                "container-margin": "32px",
+                "element-padding-lg": "24px",
+                "element-padding-md": "16px",
+                "element-padding-sm": "8px",
+                "grid-gutter": "24px",
+                "section-gap": "72px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "18px",
+                  "fontWeight": "400",
+                  "lineHeight": "28px"
+                },
+                "body-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "24px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "48px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "40px"
+                },
+                "headline-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "32px",
+                  "fontWeight": "600",
+                  "lineHeight": "40px"
+                },
+                "headline-sm": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "24px",
+                  "fontWeight": "600",
+                  "lineHeight": "32px"
+                },
+                "label-mono-allcaps": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "12px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0.05em",
+                  "lineHeight": "16px"
+                },
+                "label-mono-sm": {
+                  "fontFamily": "JetBrains Mono",
+                  "fontSize": "11px",
+                  "fontWeight": "400",
+                  "lineHeight": "14px"
+                }
+              }
+            },
+            "title": "Contact | OrbitFoundry Robotics",
+            "width": "2560"
+          }
+        ],
+        "theme": {}
+      }
+    },
+    {
+      "text": "I've designed the production-ready 4-page website for OrbitFoundry Robotics, centered on a \"Cinematic Scroll\" experience that balances industrial power with human control.\n\n### Design Highlights:\n- **Home Page**: Features a full-bleed cinematic hero and a transparent \"Agent Trace\" panel, immediately proving the product's value through workflow visibility rather than just \"AI magic.\"\n- **Platform Page**: Uses an Architecture Diagram archetype to detail orchestration, routing, and exception handling for technical buyers.\n- **Robotics Network**: Visualizes the physical fleet across warehouses with real-time telemetry markers and throughput proof.\n- **Contact Page**: A conversion-focused inquiry center with clear support SLAs and global operation hubs.\n\n### Visual Grammar:\n- **Telemetry Bar**: A persistent status bar at the top provides a live-system feel.\n- **Industrial Palette**: A clean neutral base with a \"Intelligence Blue\" accent and technical monospaced labels for all fleet data.\n- **Workflow Proof**: Every page prioritizes real UI previews and data visualizations over generic stock imagery.\n\nThe design is built with semantic sections ready for a high-fidelity Next.js implementation. Would you like to refine the agent trace animations or explore the dark-mode industrial variants?"
+    },
+    {
+      "suggestion": "Refine the Agent Trace animation on Home"
+    },
+    {
+      "suggestion": "Show me a dark-mode version of the Platform page"
+    },
+    {
+      "suggestion": "Add more technical specs to the Network map"
+    }
+  ],
+  "projectId": "697502691238751967",
+  "sessionId": "10697353134978722769"
+}

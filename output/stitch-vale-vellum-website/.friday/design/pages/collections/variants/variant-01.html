@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Collections | Vale &amp; Vellum</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Inter:wght@100..900&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed": "#1a1c1a",
+                      "surface-tint": "#5e5f5c",
+                      "surface": "#fcf8f7",
+                      "on-tertiary-fixed": "#2f1311",
+                      "on-primary-fixed-variant": "#464745",
+                      "on-background": "#1c1b1b",
+                      "primary-fixed-dim": "#c7c6c4",
+                      "inverse-on-surface": "#f4f0ef",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#c7c6c4",
+                      "surface-variant": "#e5e2e1",
+                      "on-tertiary-fixed-variant": "#623d3a",
+                      "outline": "#757874",
+                      "tertiary-fixed-dim": "#eebab5",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#fcf8f7",
+                      "surface-container-low": "#f7f3f2",
+                      "surface-container-high": "#ebe7e6",
+                      "on-error": "#ffffff",
+                      "on-surface": "#1c1b1b",
+                      "error-container": "#ffdad6",
+                      "outline-variant": "#c5c7c3",
+                      "on-secondary-container": "#636262",
+                      "secondary-fixed-dim": "#c8c6c5",
+                      "on-primary-container": "#717270",
+                      "primary-fixed": "#e3e2e0",
+                      "primary": "#5e5f5c",
+                      "surface-container-highest": "#e5e2e1",
+                      "secondary-fixed": "#e5e2e1",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary-container": "#fff6f5",
+                      "on-error-container": "#93000a",
+                      "on-surface-variant": "#444844",
+                      "secondary-container": "#e2dfde",
+                      "on-tertiary-container": "#916763",
+                      "surface-container": "#f1edec",
+                      "surface-dim": "#ddd9d8",
+                      "error": "#ba1a1a",
+                      "on-secondary-fixed-variant": "#474746",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "inverse-surface": "#313030",
+                      "on-primary": "#ffffff",
+                      "secondary": "#5f5e5e",
+                      "tertiary-fixed": "#ffdad6",
+                      "background": "#fcf8f7",
+                      "primary-container": "#f9f8f5",
+                      "tertiary": "#7c5450"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "32px",
+                      "section-gap": "128px",
+                      "margin-page": "64px",
+                      "unit": "8px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "EB Garamond"
+                      ],
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "cta": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "EB Garamond"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "cta": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.0",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.15em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        /* Custom Utilities for Tactile Editorial Style */
+        .inner-shadow-impression {
+            box-shadow: inset 0 2px 4px 0 rgba(28, 27, 27, 0.05);
+        }
+        .hairline-border {
+            border-width: 0.5px;
+        }
+        .vellum-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .film-grain {
+            position: relative;
+        }
+        .film-grain::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased selection:bg-tertiary-container selection:text-tertiary">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 transition-all duration-700 ease-in-out">
+<div class="flex justify-between items-center w-full px-margin-page py-6 max-w-none">
+<div class="hidden md:flex gap-8">
+<a class="font-cta text-cta uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-500" href="/conceptually-home">Home</a>
+<a class="font-cta text-cta uppercase tracking-widest text-on-surface border-b border-on-surface pb-1 hover:text-on-surface transition-colors duration-500" href="/collections">Collections</a>
+</div>
+<div class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+                Vale &amp; Vellum
+            </div>
+<div class="hidden md:flex gap-8">
+<a class="font-cta text-cta uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-500" href="/process">Process</a>
+<a class="font-cta text-cta uppercase tracking-widest text-on-surface-variant hover:text-on-surface transition-colors duration-500" href="/inquiry">Inquiry</a>
+</div>
+<div class="md:hidden flex items-center">
+<button class="text-on-surface hover:text-on-surface-variant transition-colors duration-500">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative w-full min-h-screen flex items-end pb-section-gap px-margin-page pt-32">
+<div class="absolute inset-0 z-0 film-grain">
+<img alt="A quieter standard of luxury, made visible." class="w-full h-full object-cover object-center opacity-90 saturate-50 mix-blend-multiply" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOEWRtyMkWP_nEzJ2dbsu2ic0yppNJQw0mU-SfBl5HEC14MeNJ5uAYtxXKamZ--XGMkFEjpluO1Hhv5TVU_RLNYprc9sR7m_5_irYmLVuKR3Bg9j9BbCy7bsG2NFl2H2s0dHWnkQ5of-srWD0DQapO7MnCs4_NOL8G8MpuA8BK71ZR3f_r_VnrMab_l9no5vZ8Ta2PrsX7APtSVljx57YS89PND6PoSaFBLGhGsgxL-l4Ysei3E3EOYy4RAgc1-J5hZvnvzCR0Z2U"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-4xl grid grid-cols-1 md:grid-cols-12 gap-gutter items-end">
+<div class="md:col-span-8 md:col-start-1 space-y-8">
+<h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface tracking-tight leading-none drop-shadow-sm">
+                        A quieter standard of luxury, made visible.
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                        Hand-crafted provenance. Every suite is an archival artifact, born from deep letterpress impressions and heritage paper stocks.
+                    </p>
+<div class="pt-4">
+<a class="inline-flex items-center gap-2 font-cta text-cta uppercase tracking-widest text-on-surface border-b border-on-surface pb-1 hover:text-tertiary hover:border-tertiary transition-colors duration-500" href="#collections">
+                            View the Collection
+                            <span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">arrow_downward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Letterpress Divider -->
+<div class="w-full flex justify-center py-16 opacity-50">
+<div class="w-px h-24 bg-gradient-to-b from-transparent via-tertiary to-transparent"></div>
+</div>
+<!-- Provenance Section -->
+<section class="px-margin-page py-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 md:col-start-2 space-y-6 order-2 md:order-1 mt-12 md:mt-0">
+<span class="font-label-caps text-label-caps text-tertiary uppercase flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span> The Atelier Detail
+                    </span>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+                        Material Provenance
+                    </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                        Our work rejects the disposable. We source 600gsm cotton stock, hand-mix custom inks, and apply deep bronze foil stamps. Each piece is a tactile experience, designed to be kept, felt, and remembered long after the event concludes.
+                    </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<span class="font-label-caps text-label-caps text-on-surface flex items-center gap-1"><span class="text-tertiary">•</span> 600gsm Cotton</span>
+<span class="font-label-caps text-label-caps text-on-surface flex items-center gap-1"><span class="text-tertiary">•</span> Hand-Mixed Inks</span>
+<span class="font-label-caps text-label-caps text-on-surface flex items-center gap-1"><span class="text-tertiary">•</span> Custom Bronze Foil</span>
+</div>
+</div>
+<div class="md:col-span-6 order-1 md:order-2 film-grain">
+<img alt="Macro detail of material provenance" class="w-full h-auto object-cover grayscale-[20%] sepia-[10%] inner-shadow-impression border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfC5FOmwE41BjedTQhQeypkyPouaFVC7NEh-LlDXhHHgHuB5XfA1uKgokwTF1Rr60b-Td6uLmz7Xe49DO8ZxIq3JBC07cc_iw-XZ1RaWl4o56IwWaTS7Sv77Je4lyE483MPo1QpU4MAsdVBU2wxNb_h8F-laVDSLJ_HNQ7FPsK3rw5iTO1V5fRYEbvOnTFPZruV5MvCsFE2bN8WIQ-odwh3l0O2XxrAljlrdiuIltArwnmjaBegvM2OI8Dbz2oMSbu1Y4NGqAzGUA"/>
+</div>
+</div>
+</section>
+<!-- Collections Grid -->
+<section class="px-margin-page py-section-gap bg-surface-container-low border-y border-outline-variant/20" id="collections">
+<div class="max-w-7xl mx-auto space-y-24">
+<div class="text-center space-y-4 max-w-2xl mx-auto">
+<h2 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface">Curated Suites</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">An exploration of texture and typography, carefully balanced for discerning occasions.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-gutter gap-y-24">
+<!-- Suite 1 -->
+<article class="group cursor-pointer">
+<div class="aspect-[4/5] overflow-hidden mb-8 film-grain bg-surface-variant inner-shadow-impression">
+<div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1586075010923-2dd4570fb338?auto=format&amp;fit=crop&amp;q=80')] bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 saturate-50" data-alt="A minimalist flat lay of a luxury wedding invitation suite on a textured stone surface. The suite features crisp sans-serif typography, deep charcoal ink debossed into thick, off-white cotton paper. Subtle shadows create a sense of depth and elegance. The lighting is soft and diffused, emphasizing the sophisticated, modern aesthetic of the stationery."></div>
+</div>
+<div class="space-y-4">
+<span class="font-label-caps text-label-caps text-tertiary uppercase">01 — The Signature</span>
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface group-hover:text-tertiary transition-colors duration-500">Minimalist Permanence</h3>
+<p class="font-body-md text-body-md text-on-surface-variant border-t hairline-border border-outline-variant/50 pt-4">
+                                Crisp letterpress impression on heavy ivory stock, accented with translucent vellum wraps.
+                            </p>
+</div>
+</article>
+<!-- Suite 2 (Offset) -->
+<article class="group cursor-pointer md:mt-32">
+<div class="aspect-[4/5] overflow-hidden mb-8 film-grain bg-surface-variant inner-shadow-impression">
+<div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1522030164627-6f81ce5b5b99?auto=format&amp;fit=crop&amp;q=80')] bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 saturate-50" data-alt="Close-up of a handmade paper envelope with a custom bronze wax seal and delicate silk ribbon. The texture of the rough, deckled edges of the paper is prominent against a dark, moody background. Warm, directional lighting highlights the metallic sheen of the seal and the soft weave of the ribbon. A highly tactile and romantic stationery composition."></div>
+</div>
+<div class="space-y-4">
+<span class="font-label-caps text-label-caps text-tertiary uppercase">02 — Weekend Details</span>
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface group-hover:text-tertiary transition-colors duration-500">Narrative Itineraries</h3>
+<p class="font-body-md text-body-md text-on-surface-variant border-t hairline-border border-outline-variant/50 pt-4">
+                                Deckled edges and intricate map illustrations, guiding guests through multi-day celebrations.
+                            </p>
+</div>
+</article>
+<!-- Suite 3 -->
+<article class="group cursor-pointer md:col-span-2 md:w-3/4 mx-auto mt-12 md:mt-0">
+<div class="aspect-[16/9] overflow-hidden mb-8 film-grain bg-surface-variant inner-shadow-impression">
+<div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1606322867088-75b28b7e28aa?auto=format&amp;fit=crop&amp;q=80')] bg-cover bg-center transition-transform duration-1000 group-hover:scale-105 saturate-50" data-alt="An expansive, asymmetrical flat lay of a bespoke editorial wedding suite. Several pieces of stationery, including menus, place cards, and invitations, are arranged thoughtfully on a draped linen cloth. Highlights of muted rose watercolor washes and intricate gold foil stamping are visible. The scene is lit with bright, natural light creating a soft, ethereal mood characteristic of high-end wedding editorial photography."></div>
+</div>
+<div class="space-y-4 text-center max-w-2xl mx-auto">
+<span class="font-label-caps text-label-caps text-tertiary uppercase">03 — Bespoke Editorial</span>
+<h3 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface group-hover:text-tertiary transition-colors duration-500">Fully Custom Commissions</h3>
+<p class="font-body-md text-body-md text-on-surface-variant border-t hairline-border border-outline-variant/50 pt-4">
+                                From hand-drawn crests to custom dye-cut folios. An entirely unique visual identity for your event.
+                            </p>
+</div>
+</article>
+</div>
+</div>
+</section>
+<!-- Planner Concierge -->
+<section class="px-margin-page py-section-gap">
+<div class="max-w-4xl mx-auto border border-outline-variant/50 p-12 md:p-24 relative bg-surface inner-shadow-impression">
+<div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-surface px-6 font-label-caps text-label-caps text-tertiary tracking-widest uppercase">
+                    White-Glove Service
+                </div>
+<div class="text-center space-y-8">
+<h2 class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Planner Concierge</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+                        Dedicated support for event planners and private clients requiring discreet, high-touch execution.
+                    </p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t hairline-border border-outline-variant/30 text-left">
+<div>
+<h4 class="font-cta text-cta text-on-surface uppercase mb-2">Rush Availability</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Expedited timelines for bespoke production when necessary.</p>
+</div>
+<div>
+<h4 class="font-cta text-cta text-on-surface uppercase mb-2">Sample Kits</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Curated portfolios of our papers, foils, and printing methods sent directly to your studio.</p>
+</div>
+<div>
+<h4 class="font-cta text-cta text-on-surface uppercase mb-2">White-Glove Assembly</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Meticulous stuffing, sealing, and vintage postage curation.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Inquiry Form Section -->
+<section class="px-margin-page py-section-gap bg-surface-container-low border-t border-outline-variant/20">
+<div class="max-w-3xl mx-auto">
+<div class="text-center mb-16 space-y-4">
+<h2 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface">Private Appointment</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Begin the commission process by sharing the initial details of your event.</p>
+</div>
+<form class="space-y-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-gutter gap-y-12">
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-2" for="name">Name</label>
+<input class="w-full bg-transparent border-0 border-b border-on-surface/30 px-0 py-2 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:border-tertiary transition-colors" id="name" placeholder="Your full name" type="text"/>
+</div>
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-2" for="email">Email</label>
+<input class="w-full bg-transparent border-0 border-b border-on-surface/30 px-0 py-2 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:border-tertiary transition-colors" id="email" placeholder="hello@example.com" type="email"/>
+</div>
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-2" for="date">Event Date</label>
+<input class="w-full bg-transparent border-0 border-b border-on-surface/30 px-0 py-2 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:border-tertiary transition-colors" id="date" placeholder="MM / DD / YYYY" type="text"/>
+</div>
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-2" for="guests">Estimated Guest Count</label>
+<input class="w-full bg-transparent border-0 border-b border-on-surface/30 px-0 py-2 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:border-tertiary transition-colors" id="guests" placeholder="e.g. 150" type="text"/>
+</div>
+</div>
+<div class="relative">
+<label class="block font-label-caps text-label-caps text-on-surface-variant uppercase mb-2" for="materials">Material Preferences &amp; Notes</label>
+<textarea class="w-full bg-transparent border-0 border-b border-on-surface/30 px-0 py-2 font-body-lg text-body-lg text-on-surface focus:ring-0 focus:border-tertiary transition-colors resize-none" id="materials" placeholder="Tell us about the textures and colors you envision..." rows="3"></textarea>
+</div>
+<div class="pt-8 text-center md:text-left">
+<button class="inline-block border border-on-surface px-8 py-4 font-cta text-cta uppercase tracking-widest text-on-surface hover:bg-on-surface hover:text-surface transition-all duration-300" type="submit">
+                            Submit Inquiry
+                        </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full mt-section-gap bg-surface-container-low border-t border-outline-variant/50 grid grid-cols-1 md:grid-cols-3 gap-gutter px-margin-page py-section-gap ease-out duration-500">
+<div class="font-display-lg text-headline-lg-mobile md:text-headline-lg text-on-surface md:col-span-1">
+            Vale &amp; Vellum
+        </div>
+<div class="md:col-span-1 flex flex-col gap-4">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-opacity duration-300" href="#">Newsletter Signup</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-opacity duration-300" href="#">Studio Locations</a>
+</div>
+<div class="md:col-span-1 flex flex-col gap-4">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-opacity duration-300" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-opacity duration-300" href="#">Terms of Service</a>
+</div>
+<div class="md:col-span-3 mt-8 pt-8 border-t border-outline-variant/30 font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+            © 2024 Vale &amp; Vellum Atelier. All Rights Reserved. Material Provenance Guaranteed.
+        </div>
+</footer>
+<script>
+        // Subtle scroll effect for the nav
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('py-4');
+                nav.classList.remove('py-6');
+                nav.classList.add('shadow-sm');
+            } else {
+                nav.classList.add('py-6');
+                nav.classList.remove('py-4');
+                nav.classList.remove('shadow-sm');
+            }
+        });
+    </script>
+</body></html>

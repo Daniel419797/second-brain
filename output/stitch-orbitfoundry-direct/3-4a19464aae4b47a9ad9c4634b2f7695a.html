@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OrbitFoundry Platform - Orchestrate the Edge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#004ac6",
+                        "on-background": "#191c1e",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#c0c6db",
+                        "background": "#f7f9fb",
+                        "on-tertiary-fixed": "#141b2b",
+                        "outline": "#737686",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#80d5cb",
+                        "on-primary-fixed": "#00174b",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#434655",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#ecf0ff",
+                        "on-secondary-container": "#006f67",
+                        "surface-container-low": "#f2f4f6",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-fixed": "#dbe1ff",
+                        "tertiary-container": "#666d7f",
+                        "surface": "#f7f9fb",
+                        "error-container": "#ffdad6",
+                        "tertiary-fixed": "#dce2f7",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#00201d",
+                        "on-primary-container": "#eeefff",
+                        "inverse-surface": "#2d3133",
+                        "surface-variant": "#e0e3e5",
+                        "secondary": "#006a63",
+                        "tertiary": "#4e5566",
+                        "primary-container": "#2563eb",
+                        "surface-container-high": "#e6e8ea",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-tint": "#0053db",
+                        "on-tertiary-fixed-variant": "#404758",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#00504a",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#99efe5",
+                        "on-error": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "secondary-fixed": "#9cf2e8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "element-padding-md": "16px",
+                        "section-gap": "72px",
+                        "element-padding-lg": "24px",
+                        "element-padding-sm": "8px",
+                        "grid-gutter": "24px",
+                        "container-margin": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-mono-sm": ["JetBrains Mono"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-mono-allcaps": ["JetBrains Mono"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-mono-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}],
+                        "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                        "label-mono-allcaps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .telemetry-grid {
+            background-image:
+                linear-gradient(to right, #e2e8f0 1px, transparent 1px),
+                linear-gradient(to bottom, #e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .data-flow-line {
+            stroke-dasharray: 4;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -1000; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col pt-28">
+<!-- Telemetry Bar -->
+<div class="fixed top-0 w-full z-[60] h-8 flex items-center justify-center gap-4 px-4 bg-on-tertiary-fixed text-tertiary-fixed font-label-mono-sm text-label-mono-sm cursor-default">
+<span class="material-symbols-outlined text-[14px]">sensors</span>
+<span>Fleet Status: Online • Optimizing Route 4 • Latency: 12ms</span>
+</div>
+<!-- TopAppBar -->
+<nav class="fixed top-8 w-full z-50 flex justify-between items-center px-grid-gutter h-20 bg-surface/90 backdrop-blur-md border-b border-outline-variant transition-all">
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">
+            OrbitFoundry
+        </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-on-surface-variant hover:text-primary transition-colors py-2" href="#">Home</a>
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-primary border-b-2 border-primary pb-1 py-2" href="#">Platform</a>
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-on-surface-variant hover:text-primary transition-colors py-2" href="#">Robotics Network</a>
+<a class="font-label-mono-allcaps text-label-mono-allcaps text-on-surface-variant hover:text-primary transition-colors py-2" href="#">Contact</a>
+</div>
+<div class="flex gap-4">
+<button class="hidden md:block font-label-mono-allcaps text-label-mono-allcaps text-on-surface border border-outline px-element-padding-md py-element-padding-sm hover:bg-surface-container-low transition-all">See Services</button>
+<button class="font-label-mono-allcaps text-label-mono-allcaps bg-primary text-on-primary px-element-padding-md py-element-padding-sm hover:opacity-90 transition-opacity">Start Inquiry</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col gap-section-gap px-container-margin pb-section-gap">
+<!-- 1. Technical Hero -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-grid-gutter items-center min-h-[716px]">
+<div class="col-span-1 md:col-span-5 flex flex-col gap-6">
+<h1 class="font-headline-lg text-headline-lg md:text-headline-lg text-on-surface tracking-tight">Orchestrate the edge with absolute precision.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Deploy modular control systems across your facility. OrbitFoundry's platform provides deterministic routing, real-time exception handling, and seamless ERP integration without black-box ambiguity.
+                </p>
+<div class="flex gap-4 mt-4">
+<button class="font-label-mono-allcaps text-label-mono-allcaps bg-primary text-on-primary px-element-padding-lg py-element-padding-md hover:bg-primary-container transition-colors shadow-sm">View Architecture Specs</button>
+</div>
+</div>
+<div class="col-span-1 md:col-span-7 h-full min-h-[500px] bg-surface-container-lowest border border-outline-variant relative overflow-hidden flex items-center justify-center p-8">
+<div class="absolute inset-0 telemetry-grid opacity-50"></div>
+<!-- Architecture Diagram Mockup -->
+<div class="relative z-10 w-full h-full flex flex-col justify-between max-w-2xl mx-auto">
+<!-- Cloud Layer -->
+<div class="bg-surface border border-outline-variant p-4 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">cloud</span>
+<span class="font-label-mono-sm text-label-mono-sm text-on-surface-variant">ORBIT CLOUD CONTROLLER</span>
+</div>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-surface-container-low border border-outline-variant font-label-mono-sm text-label-mono-sm">API: ONLINE</span>
+<span class="px-2 py-1 bg-surface-container-low border border-outline-variant font-label-mono-sm text-label-mono-sm">LATENCY: 8ms</span>
+</div>
+</div>
+<!-- Data Flow svg -->
+<svg class="absolute top-1/4 left-1/2 -translate-x-1/2 w-8 h-32" fill="none" viewbox="0 0 24 100">
+<line class="data-flow-line" stroke="#004ac6" stroke-width="2" x1="12" x2="12" y1="0" y2="100"></line>
+</svg>
+<!-- Edge Layer -->
+<div class="grid grid-cols-3 gap-4 mt-auto">
+<div class="bg-surface border border-outline-variant p-4 flex flex-col gap-2 shadow-sm hover:shadow-md transition-shadow">
+<span class="material-symbols-outlined text-secondary">memory</span>
+<span class="font-label-mono-sm text-label-mono-sm">EDGE NODE ALPHA</span>
+<div class="h-1 w-full bg-secondary-container"><div class="h-full bg-secondary w-3/4"></div></div>
+</div>
+<div class="bg-surface border border-outline-variant p-4 flex flex-col gap-2 shadow-sm hover:shadow-md transition-shadow">
+<span class="material-symbols-outlined text-secondary">memory</span>
+<span class="font-label-mono-sm text-label-mono-sm">EDGE NODE BETA</span>
+<div class="h-1 w-full bg-secondary-container"><div class="h-full bg-secondary w-[90%]"></div></div>
+</div>
+<div class="bg-surface border border-outline-variant p-4 flex flex-col gap-2 shadow-sm hover:shadow-md transition-shadow">
+<span class="material-symbols-outlined text-tertiary">router</span>
+<span class="font-label-mono-sm text-label-mono-sm">LOCAL GATEWAY</span>
+<div class="h-1 w-full bg-tertiary-container"><div class="h-full bg-tertiary w-full"></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-section-gap px-container-margin grid grid-cols-1 md:grid-cols-4 gap-grid-gutter bg-surface-container-highest border-t border-outline-variant mt-auto">
+<div class="flex flex-col gap-4">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">OrbitFoundry</span>
+<p class="font-body-md text-body-md text-on-surface-variant">© 2024 OrbitFoundry Robotics. All systems operational.</p>
+</div>
+<div class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200" href="#">Resources</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200" href="#">Documentation</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200" href="#">API Reference</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200" href="#">Status</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200" href="#">Privacy Policy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-all duration-200" href="#">Terms of Service</a>
+</div>
+</footer>
+</body></html>

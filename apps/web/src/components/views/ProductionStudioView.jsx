@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, ExternalLink, Loader2, Play, RefreshCw, Rocket, ShieldCheck, XCircle } from "lucide-react";
+import { CheckCircle2, ExternalLink, FileText, FolderOpen, Loader2, Palette, Play, RefreshCw, Rocket, ShieldCheck, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 
@@ -15,14 +15,32 @@ const APPROVALS = [
 export function ProductionStudioView() {
   const { api, data, refresh } = useDashboard();
   const production = data.productionReadiness || {};
+  const centralProductionRuns = (data.fridayRuns?.runs || []).filter((run) => run?.kind === "production_readiness");
   const [runs, setRuns] = useState(() => production.runs || []);
   const [selectedId, setSelectedId] = useState(production.latest?.id || runs[0]?.id || 0);
   const [form, setForm] = useState({ request: "", root: "", target: "", production_profile: "auto", risk_level: "medium" });
   const [busy, setBusy] = useState("");
   const [status, setStatus] = useState("");
+  const [designPipeline, setDesignPipeline] = useState(null);
+  const [designImport, setDesignImport] = useState(null);
+  const [designImportForm, setDesignImportForm] = useState({
+    source_type: "raw_html",
+    product_name: "",
+    project_slug: "",
+    source: "",
+    source_path: "",
+    source_url: "",
+    verify: true,
+    install: true,
+    tests: true,
+    browser: true,
+    preview: true
+  });
+  const [artifact, setArtifact] = useState(null);
 
-  const mergedRuns = useMemo(() => dedupeRuns([...(runs || []), ...(production.runs || [])]), [runs, production.runs]);
-  const selected = mergedRuns.find((run) => Number(run.id) === Number(selectedId)) || mergedRuns[0] || production.latest || null;
+  const mergedRuns = useMemo(() => dedupeRuns([...(runs || []), ...centralProductionRuns, ...(production.runs || [])]), [runs, centralProductionRuns, production.runs]);
+  const selectedRun = mergedRuns.find((run) => Number(run.id) === Number(selectedId)) || mergedRuns[0] || production.latest || null;
+  const selected = unwrapProductionRun(selectedRun);
   const gates = selected?.gate_results?.gates || [];
   const gaps = selected?.gaps || [];
 
@@ -34,7 +52,7 @@ export function ProductionStudioView() {
     try {
       const run = await api("/coding/production/start", {
         method: "POST",
-        body: JSON.stringify({ ...form, max_fix_attempts: 0 })
+        body: JSON.stringify({ ...form, max_fix_attempts: 0, background: true })
       });
       setRuns((items) => [run, ...items]);
       setSelectedId(run.id);
@@ -49,6 +67,10 @@ export function ProductionStudioView() {
 
   async function rerunGates(failedOnly = true) {
     if (!selected?.id) return;
+    if (selectedRun?.kind === "production_readiness" && !selectedRun?.output?.id) {
+      setStatus("This production run is still executing. Refresh the run before rerunning gates.");
+      return;
+    }
     setBusy("rerun");
     setStatus("");
     try {
@@ -68,6 +90,10 @@ export function ProductionStudioView() {
 
   async function approve(action) {
     if (!selected?.id) return;
+    if (selectedRun?.kind === "production_readiness" && !selectedRun?.output?.id) {
+      setStatus("This production run is still executing. Refresh the run before approving launch actions.");
+      return;
+    }
     setBusy(action);
     setStatus("");
     try {
@@ -80,6 +106,126 @@ export function ProductionStudioView() {
       await refresh();
     } catch (err) {
       setStatus(err.message || "Approval failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function runDesignPipeline({ dryRun = true, applyToSource = false, runBrowser = false } = {}) {
+    const requestText = selected?.request || form.request;
+    if (!requestText?.trim()) return;
+    setBusy(runBrowser ? "design-verify" : dryRun ? "design-plan" : "design-run");
+    setStatus("");
+    try {
+      const result = await api("/design/pipeline/run", {
+        method: "POST",
+        body: JSON.stringify({
+          request: requestText,
+          root: selected?.root || form.root,
+          product_name: selected?.product_studio?.product_name || selected?.product_name || "",
+          stack: selected?.stack || {},
+          variant_count: 3,
+          dry_run: dryRun,
+          apply_to_source: applyToSource,
+          run_browser: runBrowser,
+          max_fix_attempts: runBrowser ? 1 : 0
+        })
+      });
+      setDesignPipeline(result);
+      setStatus(result.summary || "Design pipeline updated.");
+      if (!dryRun) await refresh();
+    } catch (err) {
+      setStatus(err.message || "Design pipeline failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function importExternalDesign(event) {
+    event.preventDefault();
+    const requestText = form.request || selected?.request || designImportForm.product_name || "External design import";
+    const hasSource = designImportForm.source.trim() || designImportForm.source_path.trim() || designImportForm.source_url.trim();
+    if (!hasSource) return;
+    setBusy("design-import");
+    setStatus("");
+    try {
+      const result = await api("/design/import/implement", {
+        method: "POST",
+        body: JSON.stringify({
+          request: requestText,
+          root: form.root || selected?.root || "",
+          product_name: designImportForm.product_name || selected?.product_studio?.product_name || selected?.product_name || "",
+          project_slug: designImportForm.project_slug,
+          source_type: designImportForm.source_type,
+          source: designImportForm.source,
+          source_path: designImportForm.source_path,
+          source_url: designImportForm.source_url,
+          verify: designImportForm.verify,
+          install: designImportForm.install,
+          tests: designImportForm.tests,
+          browser: designImportForm.browser,
+          preview: designImportForm.preview
+        })
+      });
+      setDesignImport(result);
+      setStatus(result.summary || "External design imported and implemented.");
+      await refresh();
+    } catch (err) {
+      setStatus(err.message || "External design import failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function refreshSelectedRun() {
+    if (!selectedRun?.id || !selectedRun?.kind) {
+      await refresh();
+      return;
+    }
+    setBusy("refresh-run");
+    setStatus("");
+    try {
+      const run = await api(`/friday-runs/${selectedRun.id}`);
+      setRuns((items) => replaceRun(items, run));
+      setStatus(run.summary || "Run refreshed.");
+      await refresh();
+    } catch (err) {
+      setStatus(err.message || "Run refresh failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function openArtifact(path, options = {}) {
+    if (!path) return;
+    setBusy(`artifact:${path}`);
+    setStatus("");
+    try {
+      const endpoint = selectedRun?.kind && options.run !== false
+        ? `/friday-runs/${selectedRun.id}/artifact?path=${encodeURIComponent(path)}`
+        : `/friday-os/artifact?path=${encodeURIComponent(path)}${selected?.id ? `&run_id=${encodeURIComponent(selected.id)}` : ""}`;
+      const result = await api(endpoint);
+      setArtifact(result);
+    } catch (err) {
+      setStatus(err.message || "Could not open artifact.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function openFolder(path) {
+    const target = path || selected?.root || selectedRun?.root;
+    if (!target) return;
+    setBusy("open-folder");
+    setStatus("");
+    try {
+      await api("/friday-os/open-folder", {
+        method: "POST",
+        body: JSON.stringify({ path: target, run_id: Number(selectedRun?.kind ? selectedRun.id : selected?.id || 0) })
+      });
+      setStatus("Folder open request sent.");
+    } catch (err) {
+      setStatus(err.message || "Could not open folder.");
     } finally {
       setBusy("");
     }
@@ -123,6 +269,48 @@ export function ProductionStudioView() {
             </Panel>
 
             <Panel>
+              <h2 className="mb-3 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[#cbd7e6]">Import Design</h2>
+              <form className="grid gap-3" onSubmit={importExternalDesign}>
+                <div className="grid grid-cols-2 gap-2">
+                  <select className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[13px] text-white outline-none focus:border-friday-accent" value={designImportForm.source_type} onChange={(event) => setDesignImportForm((current) => ({ ...current, source_type: event.target.value }))}>
+                    <option value="raw_html">Raw HTML</option>
+                    <option value="stitch_output">Stitch Output</option>
+                    <option value="v0_output">v0 Output</option>
+                    <option value="ai_design">Other AI Design</option>
+                    <option value="screenshot">Screenshot/Image</option>
+                    <option value="figma_export">Figma Export</option>
+                    <option value="uploaded_file">Uploaded File</option>
+                    <option value="design_brief">Design Brief</option>
+                    <option value="existing_url">Existing URL</option>
+                  </select>
+                  <input className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[13px] text-white outline-none focus:border-friday-accent" value={designImportForm.project_slug} onChange={(event) => setDesignImportForm((current) => ({ ...current, project_slug: event.target.value }))} placeholder="Project slug" />
+                </div>
+                <input className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[13px] text-white outline-none focus:border-friday-accent" value={designImportForm.product_name} onChange={(event) => setDesignImportForm((current) => ({ ...current, product_name: event.target.value }))} placeholder="Product or company name" />
+                <textarea className="min-h-[120px] resize-y border border-friday-line bg-[#0c1218] px-3 py-2 text-[12px] text-white outline-none focus:border-friday-accent" value={designImportForm.source} onChange={(event) => setDesignImportForm((current) => ({ ...current, source: event.target.value }))} placeholder="Paste HTML, v0/Stitch output, design brief, or URL" />
+                <input className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[12px] text-white outline-none focus:border-friday-accent" value={designImportForm.source_path} onChange={(event) => setDesignImportForm((current) => ({ ...current, source_path: event.target.value }))} placeholder="Optional local design file path" />
+                <input className="min-h-10 border border-friday-line bg-[#0c1218] px-3 text-[12px] text-white outline-none focus:border-friday-accent" value={designImportForm.source_url} onChange={(event) => setDesignImportForm((current) => ({ ...current, source_url: event.target.value }))} placeholder="Optional design URL" />
+                <div className="grid grid-cols-2 gap-2 font-mono text-[10px] text-[#cbd7e6]">
+                  {[
+                    ["verify", "Verify"],
+                    ["install", "Install"],
+                    ["tests", "Build/Test"],
+                    ["browser", "Browser"],
+                    ["preview", "Preview"]
+                  ].map(([key, label]) => (
+                    <label className="flex min-h-8 items-center gap-2 border border-friday-line bg-[#10161d] px-2" key={key}>
+                      <input type="checkbox" checked={Boolean(designImportForm[key])} onChange={(event) => setDesignImportForm((current) => ({ ...current, [key]: event.target.checked }))} />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+                <button className="inline-flex min-h-10 items-center justify-center gap-2 border border-[#7a574d] bg-[#271916] font-mono text-[12px] font-bold text-[#ffd3c6] hover:border-[#ff9e7c] disabled:opacity-50" type="submit" disabled={busy === "design-import" || !(designImportForm.source.trim() || designImportForm.source_path.trim() || designImportForm.source_url.trim())}>
+                  {busy === "design-import" ? <Loader2 className="animate-spin" size={14} /> : <FileText size={14} />}
+                  Implement Source Design
+                </button>
+              </form>
+            </Panel>
+
+            <Panel>
               <h2 className="mb-3 font-mono text-[11px] font-bold uppercase tracking-[.12em] text-[#cbd7e6]">Runs</h2>
               <div className="grid gap-2">
                 {mergedRuns.length ? mergedRuns.map((run) => (
@@ -147,16 +335,38 @@ export function ProductionStudioView() {
                   <p className="mt-2 break-words font-mono text-[11px] text-friday-muted">{selected?.root || "No root recorded"}</p>
                 </div>
                 <div className="flex flex-wrap items-start gap-2">
+                  <button className="inline-flex min-h-9 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#dfe9f6] hover:border-friday-accent disabled:opacity-50" type="button" onClick={refreshSelectedRun} disabled={!selectedRun || busy === "refresh-run"}>
+                    {busy === "refresh-run" ? <Loader2 className="animate-spin" size={13} /> : <RefreshCw size={13} />}
+                    Refresh Run
+                  </button>
                   <button className="inline-flex min-h-9 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#dfe9f6] hover:border-friday-accent disabled:opacity-50" type="button" onClick={() => rerunGates(true)} disabled={!selected || busy === "rerun"}>
                     {busy === "rerun" ? <Loader2 className="animate-spin" size={13} /> : <RefreshCw size={13} />}
                     Rerun Failed
                   </button>
+                  {selected?.root || selectedRun?.root ? (
+                    <button className="inline-flex min-h-9 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#dfe9f6] hover:border-friday-accent disabled:opacity-50" type="button" onClick={() => openFolder(selected?.root || selectedRun?.root)} disabled={busy === "open-folder"}>
+                      {busy === "open-folder" ? <Loader2 className="animate-spin" size={13} /> : <FolderOpen size={13} />}
+                      Folder
+                    </button>
+                  ) : null}
                   {selected?.preview_url ? (
                     <a className="inline-flex min-h-9 items-center gap-2 border border-friday-blue bg-friday-blue px-3 font-mono text-[11px] font-bold text-[#061420]" href={selected.preview_url} target="_blank" rel="noreferrer">
                       <ExternalLink size={13} />
                       Preview
                     </a>
                   ) : null}
+                  <button className="inline-flex min-h-9 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#dfe9f6] hover:border-friday-accent disabled:opacity-50" type="button" onClick={() => runDesignPipeline({ dryRun: true })} disabled={busy === "design-plan" || (!selected && !form.request.trim())}>
+                    {busy === "design-plan" ? <Loader2 className="animate-spin" size={13} /> : <Palette size={13} />}
+                    Plan Design
+                  </button>
+                  <button className="inline-flex min-h-9 items-center gap-2 border border-[#5d4a22] bg-[#211b11] px-3 font-mono text-[11px] text-[#ffd99a] hover:border-[#ffb56d] disabled:opacity-50" type="button" onClick={() => runDesignPipeline({ dryRun: false, applyToSource: true })} disabled={busy === "design-run" || (!selected && !form.request.trim())}>
+                    {busy === "design-run" ? <Loader2 className="animate-spin" size={13} /> : <Palette size={13} />}
+                    Run + Apply
+                  </button>
+                  <button className="inline-flex min-h-9 items-center gap-2 border border-[#275f67] bg-[#10272d] px-3 font-mono text-[11px] text-[#9eeaf2] hover:border-[#65dce8] disabled:opacity-50" type="button" onClick={() => runDesignPipeline({ dryRun: false, applyToSource: true, runBrowser: true })} disabled={busy === "design-verify" || (!selected && !form.request.trim())}>
+                    {busy === "design-verify" ? <Loader2 className="animate-spin" size={13} /> : <Palette size={13} />}
+                    Verify UI
+                  </button>
                 </div>
               </div>
             </Panel>
@@ -175,9 +385,62 @@ export function ProductionStudioView() {
             </Panel>
 
             <Panel>
+              <PanelTitle title="Design Pipeline" />
+              <div className="mt-3 grid gap-3 lg:grid-cols-[240px_minmax(0,1fr)]">
+                <div className="grid gap-2">
+                  <StatusRow label="Pipeline status" status={designPipeline?.status || selected?.product_studio?.final_proof_report?.evidence?.design_pipeline?.status || "planned"} />
+                  <StatusRow label="Frontend handoff" status={designPipeline?.frontend_handoff_allowed ? "verified" : "blocked"} />
+                  <StatusRow label="Applied source" status={designPipeline?.applied_to_source ? "verified" : "planned"} />
+                  <StatusRow label="Browser proof" status={designPipeline?.browser_verified ? "verified" : "planned"} />
+                </div>
+                <div className="grid gap-2">
+                  <p className="m-0 text-[12px] text-[#dce7f4]">{designPipeline?.summary || selected?.product_studio?.final_proof_report?.evidence?.design_pipeline?.summary || "Brief, research, direction, tokens, page contracts, variants, critique, implementation, browser verification, fix loop, and final proof."}</p>
+                  {designPipeline?.selected_variant ? <p className="m-0 font-mono text-[11px] text-friday-accent">Selected: {designPipeline.selected_variant.label || designPipeline.selected_variant.id} / {designPipeline.selected_variant.score}/100</p> : null}
+                  <DesignStageList stages={designPipeline?.stages || []} />
+                  <ArtifactList items={(designPipeline?.artifacts || []).slice(-8)} empty="No design pipeline artifact opened in this session." onOpen={openArtifact} />
+                </div>
+              </div>
+            </Panel>
+
+            <Panel>
+              <PanelTitle title="External Design Import" />
+              <div className="mt-3 grid gap-3 lg:grid-cols-[260px_minmax(0,1fr)]">
+                <div className="grid gap-2">
+                  <StatusRow label="Import status" status={designImport?.status || "planned"} />
+                  <StatusRow label="Pages" status={designImport?.page_count ? `${designImport.page_count} imported` : "planned"} />
+                  <StatusRow label="Verification" status={designImport?.gate_results?.status || (designImport ? "recorded" : "planned")} />
+                  {designImport?.preview_url ? (
+                    <a className="inline-flex min-h-9 items-center justify-center gap-2 border border-friday-blue bg-friday-blue px-3 font-mono text-[11px] font-bold text-[#061420]" href={designImport.preview_url} target="_blank" rel="noreferrer">
+                      <ExternalLink size={13} />
+                      Preview
+                    </a>
+                  ) : null}
+                </div>
+                <div className="grid gap-2">
+                  <p className="m-0 break-words text-[12px] text-[#dce7f4]">{designImport?.summary || "Paste HTML, a Stitch/v0 export, screenshot path, Figma export, design brief, URL, or another AI design. Friday will save the source, create frontend-handoff.json, implement Next.js, and attach verification proof."}</p>
+                  {designImport?.project_root ? <p className="m-0 font-mono text-[11px] text-friday-accent">{designImport.project_root}</p> : null}
+                  {designImport?.pages?.length ? (
+                    <div className="grid gap-2 md:grid-cols-2">
+                      {designImport.pages.map((page) => (
+                        <div className="border border-friday-line bg-[#10161d] p-2" key={page.id}>
+                          <div className="flex items-center gap-2">
+                            <strong className="text-[12px] text-white">{page.label}</strong>
+                            <span className="ml-auto font-mono text-[10px] text-friday-muted">{page.route}</span>
+                          </div>
+                          <p className="m-0 mt-1 font-mono text-[10px] text-[#9fb0c5]">{page.source_type} / {page.fidelity}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                  <ArtifactList items={[...(designImport?.screenshots || []), ...(designImport?.artifacts || [])].slice(-10)} empty="No imported design artifact has been recorded in this session." onOpen={(path) => openArtifact(path, { run: false })} />
+                </div>
+              </div>
+            </Panel>
+
+            <Panel>
               <PanelTitle title="Executable Gates" />
               <div className="mt-3 grid gap-2 lg:grid-cols-2">
-                {gates.length ? gates.map((gate, index) => <GateRow gate={gate} key={`${index}-${gate.id}`} />) : <p className="text-[12px] text-friday-muted">No gate result is attached.</p>}
+                {gates.length ? gates.map((gate, index) => <GateRow gate={gate} key={`${index}-${gate.id}`} onOpenArtifact={openArtifact} />) : <p className="text-[12px] text-friday-muted">No gate result is attached.</p>}
               </div>
             </Panel>
 
@@ -201,10 +464,16 @@ export function ProductionStudioView() {
                 <PanelTitle title="Gaps And Artifacts" />
                 <div className="mt-3 grid gap-3">
                   <ChipList items={gaps.slice(0, 10)} empty="No readiness gaps recorded." />
-                  <ChipList items={(selected?.artifacts || []).slice(-10)} empty="No artifacts recorded." />
+                  <ArtifactList items={(selected?.artifacts || selectedRun?.artifacts || []).slice(-10)} empty="No artifacts recorded." onOpen={openArtifact} />
                 </div>
               </Panel>
             </div>
+            <Panel>
+              <PanelTitle title="Artifact Viewer" />
+              <div className="mt-3 min-h-40 border border-friday-line bg-[#10161d] p-3">
+                {artifact ? artifact.binary ? <img alt={artifact.path} className="max-h-[520px] max-w-full border border-friday-line" src={`data:${imageMime(artifact.path)};base64,${artifact.base64}`} /> : <pre className="friday-scroll max-h-[520px] overflow-auto whitespace-pre-wrap text-[11px] text-[#dfe9f6]">{artifact.content}</pre> : <p className="text-[12px] text-friday-muted">Open a log, screenshot, or proof report to inspect evidence.</p>}
+              </div>
+            </Panel>
           </main>
         </div>
         {status ? <div className="fixed bottom-5 right-5 z-20 max-w-[420px] border border-[#45678c] bg-[#9fcaff] px-4 py-3 text-[13px] font-semibold text-[#07111d] shadow-[0_16px_40px_rgba(0,0,0,.32)]">{status}</div> : null}
@@ -254,7 +523,8 @@ function StatusRow({ label, status }) {
   );
 }
 
-function GateRow({ gate }) {
+function GateRow({ gate, onOpenArtifact }) {
+  const proofPaths = [gate.screenshot, gate.log_path, ...(gate.evidence || []).filter((item) => looksLikePath(item))].filter(Boolean);
   return (
     <div className="grid gap-1 border border-friday-line bg-[#10161d] p-3">
       <div className="grid grid-cols-[1fr_auto] gap-2 font-mono text-[10px]">
@@ -262,8 +532,24 @@ function GateRow({ gate }) {
         <span className={gate.status === "passed" ? "text-friday-accent" : gate.status === "failed" || gate.status === "blocked" || gate.status === "timeout" ? "text-[#ffaaa0]" : "text-[#ffb56d]"}>{gate.status || "unknown"}</span>
       </div>
       <p className="m-0 line-clamp-2 text-[11px] text-friday-muted">{gate.summary || gate.command || "No summary recorded."}</p>
-      {gate.screenshot ? <p className="m-0 truncate font-mono text-[10px] text-[#dce7f4]">Screenshot: {gate.screenshot}</p> : null}
-      {gate.log_path ? <p className="m-0 truncate font-mono text-[10px] text-[#dce7f4]">Log: {gate.log_path}</p> : null}
+      {proofPaths.length ? <ArtifactList items={proofPaths.slice(0, 4)} empty="" onOpen={onOpenArtifact} /> : null}
+    </div>
+  );
+}
+
+function DesignStageList({ stages }) {
+  const rows = (stages || []).filter(Boolean);
+  if (!rows.length) {
+    return <p className="m-0 text-[12px] text-friday-muted">No design pipeline stages have run in this session.</p>;
+  }
+  return (
+    <div className="grid gap-1 md:grid-cols-2">
+      {rows.map((stage) => (
+        <div className="grid min-h-10 grid-cols-[1fr_auto] gap-2 border border-friday-line bg-[#10161d] p-2 font-mono text-[10px]" key={stage.id}>
+          <span className="truncate text-[#dce7f4]" title={stage.summary || stage.id}>{labelize(stage.id)}</span>
+          <span className={stage.status === "completed" || stage.status === "passed" || stage.status === "verified" ? "text-friday-accent" : stage.status === "blocked" || stage.status === "failed" || stage.status === "needs_revision" ? "text-[#ffaaa0]" : "text-[#ffb56d]"}>{stage.status || "planned"}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -273,6 +559,20 @@ function ChipList({ items, empty }) {
   return (
     <div className="flex flex-wrap gap-2">
       {rows.length ? rows.map((item, index) => <span className="max-w-full truncate border border-friday-line bg-[#151b22] px-2 py-1 font-mono text-[10px]" key={`${index}-${item}`}>{item}</span>) : <span className="text-[12px] text-friday-muted">{empty}</span>}
+    </div>
+  );
+}
+
+function ArtifactList({ items, empty, onOpen }) {
+  const rows = (items || []).filter(Boolean);
+  return (
+    <div className="flex flex-wrap gap-2">
+      {rows.length ? rows.map((item, index) => (
+        <button className="inline-flex max-w-full items-center gap-1 truncate border border-friday-line bg-[#151b22] px-2 py-1 font-mono text-[10px] text-[#dfe9f6] hover:border-friday-accent" type="button" key={`${index}-${item}`} onClick={() => onOpen?.(item)} title={item}>
+          <FileText size={11} />
+          <span className="truncate">{shortPath(item)}</span>
+        </button>
+      )) : <span className="text-[12px] text-friday-muted">{empty}</span>}
     </div>
   );
 }
@@ -291,6 +591,31 @@ function replaceRun(items, run) {
   return replaced.some((item) => item.id === run.id) ? replaced : [run, ...replaced];
 }
 
+function unwrapProductionRun(run) {
+  if (!run) return null;
+  if (run.kind === "production_readiness" && run.output?.id) return run.output;
+  return run;
+}
+
 function labelize(value) {
   return String(value || "").replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function shortPath(value) {
+  const text = String(value || "");
+  const parts = text.split(/[\\/]/).filter(Boolean);
+  return parts.slice(-3).join("/") || text;
+}
+
+function looksLikePath(value) {
+  const text = String(value || "");
+  return Boolean(text) && !/^https?:\/\//i.test(text) && (text.includes("/") || text.includes("\\") || /\.[a-z0-9]+$/i.test(text));
+}
+
+function imageMime(path) {
+  const lower = String(path || "").toLowerCase();
+  if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) return "image/jpeg";
+  if (lower.endsWith(".webp")) return "image/webp";
+  if (lower.endsWith(".gif")) return "image/gif";
+  return "image/png";
 }

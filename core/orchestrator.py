@@ -82,6 +82,7 @@ ROUTER_BUILD = "2026-05-22-logo-image-routing-v1"
 DESTRUCTIVE = {"send_email", "delete_file"}
 PRE_DIRECT_INTENTS = {
     "start_coding_project",
+    "project_ideas",
     "create_agent_task",
     "create_reminder",
     "generate_image",
@@ -872,6 +873,10 @@ def _handle_direct_command(user_text: str) -> str:
         return reply
 
     reply = _direct_quick_knowledge(text)
+    if reply:
+        return reply
+
+    reply = _direct_project_ideas(text)
     if reply:
         return reply
 
@@ -2666,6 +2671,36 @@ def _direct_draft(text: str) -> str:
     return _voice_tool_result(draft or "I could not draft that right now.")
 
 
+def _direct_project_ideas(text: str) -> str:
+    lowered = text.lower()
+    if not re.search(r"\b(?:idea|ideas|what\s+to\s+build|build\s+next|project\s+to\s+build|app\s+idea|startup\s+idea)\b", lowered):
+        return ""
+    patterns = (
+        r"(?:what\s+should\s+i\s+build\s+next|what\s+to\s+build\s+next)(?:\s+(?:for|about|around)\s+(?P<context>.+))?",
+        r"(?:give\s+me\s+an?\s+idea\s+on\s+what\s+to\s+build\s+next)(?:\s+(?:for|about|around)\s+(?P<context>.+))?",
+        r"(?:give\s+me|suggest|recommend|find|research|look\s+for)\s+(?:some\s+|an?\s+|the\s+)?(?:project\s+|app\s+|startup\s+|software\s+)?ideas?(?:\s+(?:on|for|about|around)\s+(?P<context>.+))?",
+    )
+    for pattern in patterns:
+        match = re.fullmatch(pattern, text, flags=re.IGNORECASE)
+        if not match:
+            continue
+        context = _clean_text((match.groupdict().get("context") or "AI-assisted everyday tools for individuals, small teams, and SMBs"))
+        if context.lower() in {"what to build next", "what i should build next"}:
+            context = "AI-assisted everyday tools for individuals, small teams, and SMBs"
+        result = _power(
+            {
+                "action": "project_ideas_research",
+                "context": context,
+                "audience": "individuals, small teams, and SMBs",
+                "root": str(resolve_coding_root()),
+                "limit": 5,
+                "max_sources": 8,
+            }
+        )
+        return _voice_tool_result(result)
+    return ""
+
+
 def _direct_build_request(text: str) -> str:
     cleaned = text.strip()
     if not cleaned:
@@ -2682,8 +2717,25 @@ def _direct_build_request(text: str) -> str:
         return "Tell me what you want built, and I will turn it into a guarded coding task instead of opening an app."
     if not _looks_like_software_build_request(request):
         return ""
-    result = _power({"action": "autonomous_coding", "request": request, "root": str(resolve_coding_root()), "risk_level": "medium"})
+    result = _power({"action": "autonomous_coding", "request": _normalize_build_request(request), "root": str(resolve_coding_root()), "risk_level": "medium"})
     return _voice_tool_result(result)
+
+
+def _normalize_build_request(request: str) -> str:
+    cleaned = _clean_text(request)
+    if not cleaned:
+        return ""
+    lowered = cleaned.lower()
+    if re.match(r"^(?:build|create|make|develop|scaffold|spin\s+up|implement|code|program|put\s+together|set\s+up)\b", lowered):
+        return cleaned
+    subject = re.sub(r"^(?:an?|the)\s+", "", cleaned, flags=re.IGNORECASE).strip() or cleaned
+    if re.search(r"\b(?:dashboard|portal|website|site|frontend)\b", lowered) and not re.search(r"\b(?:web[-\s]?app|next(?:\.js|js)?)\b", lowered):
+        return f"Build a web-app for {subject}"
+    if re.search(r"\b(?:mobile|flutter|android|ios)\b", lowered) and not re.search(r"\b(?:screenshot|screenshots|viewport|viewports|responsive|browser|desktop\s+and\s+mobile|mobile\s+and\s+desktop)\b", lowered):
+        return f"Build a mobile app for {subject}"
+    if re.search(r"\b(?:backend|api|server|service|microservice)\b", lowered):
+        return f"Build a backend for {subject}"
+    return f"Build {cleaned}"
 
 
 def _looks_like_software_build_request(text: str) -> bool:

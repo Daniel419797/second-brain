@@ -41,6 +41,16 @@ def test_task_queue_reassigns_and_requeues_active_task(monkeypatch, tmp_path):
     assert task["started_at"] == ""
 
 
+def test_task_queue_does_not_claim_already_active_task(monkeypatch, tmp_path):
+    monkeypatch.setattr(task_queue, "DB_PATH", tmp_path / "tasks.sqlite3")
+    task_id = task_queue.create_task("Autonomous coding direct run", agent_id="senior_developer", status="active")
+
+    assert task_queue.claim_next_task(agent_ids=["senior_developer"]) is None
+    task = task_queue.get_task(task_id)
+    assert task["status"] == "active"
+    assert task["started_at"]
+
+
 def test_task_queue_skips_future_scheduled_tasks(monkeypatch, tmp_path):
     monkeypatch.setattr(task_queue, "DB_PATH", tmp_path / "tasks.sqlite3")
     future = dt.datetime.now(dt.timezone.utc).astimezone() + dt.timedelta(days=1)

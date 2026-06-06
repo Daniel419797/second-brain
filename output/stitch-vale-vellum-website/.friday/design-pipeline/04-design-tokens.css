@@ -1,0 +1,6 @@
+/* Friday design pipeline tokens. Use as implementation guidance, not an automatic override. */
+:root {
+  --friday-brand-primary: #111827;
+  --friday-brand-accent: #f97316;
+  --friday-radius: 0px to 6px; editorial, not pill-heavy;
+}

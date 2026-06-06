@@ -34,6 +34,7 @@ def status(*, probe: bool = False, root: str | Path = "") -> dict[str, Any]:
     providers = {
         "search": _search_status(),
         "image_generation": _image_status(probe=probe),
+        "design_generation": _design_status(probe=probe, root=root),
         "text_to_3d": _text_to_3d_status(),
         "model_3d": _model_3d_status(),
     }
@@ -135,6 +136,21 @@ def _image_status(*, probe: bool) -> dict[str, Any]:
     }
 
 
+def _design_status(*, probe: bool, root: str | Path = "") -> dict[str, Any]:
+    from core import design_providers
+
+    payload = design_providers.status(probe=probe, root=root)
+    return {
+        "ready": bool(payload.get("ok")),
+        "provider_order": payload.get("provider_order", []),
+        "selected": payload.get("selected", {}),
+        "providers": payload.get("providers", {}),
+        "missing": payload.get("missing", []),
+        "setup_hint": "Set STITCH_API_KEY and install the Stitch SDK for UI design generation; v0 remains free-only unless verified.",
+        "summary": payload.get("summary", ""),
+    }
+
+
 def _text_to_3d_status() -> dict[str, Any]:
     from core import text_to_3d
 
@@ -168,6 +184,11 @@ def _missing_provider_steps(providers: dict[str, Any]) -> list[str]:
         missing.append("Configure at least one dedicated search API key.")
     if not providers["image_generation"].get("ready"):
         missing.append("Configure an image backend: Stable Diffusion, Hugging Face, or Pollinations.")
+    design = providers.get("design_generation") or {}
+    design_providers = design.get("providers") if isinstance(design.get("providers"), dict) else {}
+    stitch = design_providers.get("stitch") if isinstance(design_providers.get("stitch"), dict) else {}
+    if stitch and not stitch.get("ready"):
+        missing.append("Configure Stitch SDK for AI UI design generation, or continue with local style memory only.")
     if not providers["text_to_3d"].get("ready"):
         missing.append("Configure Meshy, Tripo, or a local text-to-3D command.")
     if not providers["model_3d"].get("blender_available"):

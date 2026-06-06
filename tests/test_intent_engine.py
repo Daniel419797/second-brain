@@ -12,9 +12,28 @@ def test_rule_classifier_materializes_coding_project_under_coding_root(monkeypat
     assert result.tool_name == "power_center"
     assert result.tool_input == {
         "action": "autonomous_coding",
-        "request": "a web app that tracks invoices",
+        "request": "Build a web app that tracks invoices",
         "root": str(tmp_path),
         "risk_level": "medium",
+    }
+
+
+def test_rule_classifier_routes_project_idea_requests_to_research(monkeypatch, tmp_path):
+    monkeypatch.setattr(intent_engine, "resolve_coding_root", lambda root="": tmp_path)
+
+    result = intent_engine.classify("give me an idea on what to build next")
+
+    assert result.actionable
+    assert result.intent == "project_ideas"
+    assert result.source == "rules"
+    assert result.tool_name == "power_center"
+    assert result.tool_input == {
+        "action": "project_ideas_research",
+        "context": "AI-assisted everyday tools for individuals, small teams, and SMBs",
+        "root": str(tmp_path),
+        "limit": 5,
+        "max_sources": 8,
+        "audience": "individuals, small teams, and SMBs",
     }
 
 
@@ -149,8 +168,23 @@ def test_semantic_classifier_handles_non_hardcoded_action(monkeypatch, tmp_path)
     assert result.actionable
     assert result.intent == "start_coding_project"
     assert result.source == "llm"
-    assert result.tool_input["request"] == "invoice portal for a small shop"
+    assert result.tool_input["request"] == "Build a web-app for invoice portal for a small shop"
     assert result.tool_input["root"] == str(tmp_path)
+
+
+def test_semantic_classifier_keeps_website_with_mobile_screenshots_as_web(monkeypatch, tmp_path):
+    monkeypatch.setattr(intent_engine, "_RULE_CLASSIFIERS", ())
+    monkeypatch.setattr(intent_engine, "resolve_coding_root", lambda root="": tmp_path)
+    monkeypatch.setattr(
+        intent_engine.llm,
+        "ask_simple",
+        lambda prompt, retries=1: '{"intent":"start_coding_project","confidence":0.91,"slots":{"request":"construction company website with desktop and mobile screenshots"},"reason":"software build request"}',
+    )
+
+    result = intent_engine.classify("make that site and verify desktop and mobile", allow_llm=True)
+
+    assert result.actionable
+    assert result.tool_input["request"] == "Build a web-app for construction company website with desktop and mobile screenshots"
 
 
 def test_semantic_classifier_skips_general_questions(monkeypatch):

@@ -1,0 +1,27 @@
+{
+  "acceptance_criteria": [
+    "Design must match the product/domain instead of generic SaaS scaffolding.",
+    "The first viewport must follow the selected composition archetype and avoid accidental split-hero repetition.",
+    "Copy must be specific, coherent, and appropriate to the category voice.",
+    "Rejected variants cannot be used as implementation source.",
+    "Browser/taste evidence is required before UI-ready claims when verification is enabled."
+  ],
+  "industry": "luxury",
+  "page_scope": "home",
+  "product_goal": "Help visitors understand Vale & Vellum, trust the offer, compare the value, and take the next step without generic filler or oversized brochure sections.",
+  "product_name": "Vale & Vellum",
+  "provider_policy": {
+    "frontend_agent": "local_style_memory",
+    "style_memory": "local_style_memory",
+    "ui_design_agent": "stitch"
+  },
+  "request": "Build a website design for Vale & Vellum, a boutique stationery and wedding invitation studio for couples, planners, and small luxury events. Use Friday's design-only workflow. Do not implement frontend code. Do not create a Next.js app. Save the Stitch design artifacts so the user can inspect the UI directly. Project goals: - Present Vale & Vellum as an elegant but modern paper studio, not a generic SaaS or template website. - Sell custom wedding invitation suites, event stationery, menus, place cards, wax seals, and concierge design packages. - Make the first viewport feel tactile, editorial, romantic, and premium without becoming beige and boring. - The site should support four pages conceptually: Home, Collections, Process, Inquiry. Generate the main website/homepage UI with enough content depth to imply the full site direction. Design direction: - Category: luxury / fashion-adjacent / editorial commerce. - Emotional feel: quiet romance, craft, ceremony, intimacy, precision, warm confidence. - Composition archetype: full-bleed editorial hero or image-led asymmetric editorial layout. Avoid the standard left-text/right-card SaaS hero. - Visual grammar: macro paper texture, foil impression, invitation stack, handwritten proof marks, refined serif headline, crisp sans labels, generous whitespace, tactile product details, restrained accent color. - Copy voice: specific, sensory, polished, never generic. Use language about paper stock, foil, letterpress, vellum wraps, hand assembly, planner deadlines, guest count, proof rounds, and concierge delivery. Required sections for the generated UI: 1. Hero with strong product signal: invitation suite / paper stack / tactile detail. It must not be hero-only; it should lead into content. 2. Collection preview: Signature Suites, Weekend Details, Bespoke Editorial, Planner Concierge. 3. Process: consultation, material direction, proofing, production, delivery. 4. Proof/credibility: production timelines, sample kit, planner-friendly deliverables, rush option. 5. Inquiry CTA with guest count / event date / package path. Rejection rules: - Reject generic SaaS dashboard cards, vague startup copy, empty dark sections, washed/blurry images, giant text that cuts off, one-section pages, placeholder menu labels like Home 1, Service 2, or lorem ipsum. - Do not use oversized rounded cards or a split hero with a fake analytics panel. - Do not make it dominated by beige alone; use a richer palette with ivory, ink, muted rose, deep olive, and foil/bronze accents.",
+  "surface": "marketing_website",
+  "target_audience": [
+    "first-time visitors deciding whether to trust the product",
+    "high-intent private clients",
+    "collectors",
+    "concierge buyers",
+    "brand loyalists"
+  ]
+}

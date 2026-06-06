@@ -154,3 +154,31 @@ def test_missing_dedicated_keys_reports_setup_hint(monkeypatch, tmp_path: Path):
     assert payload["ok"] is False
     assert "No dedicated search API keys" in payload["message"]
     assert "brave" in payload["providers_skipped"][0]["provider"]
+
+
+def test_default_chain_adds_duckduckgo_fallback_without_api_keys(monkeypatch, tmp_path: Path):
+    for key in ["BRAVE_SEARCH_API_KEY", "GOOGLE_SEARCH_API_KEY", "GOOGLE_SEARCH_CX", "TAVILY_API_KEY", "SERPAPI_API_KEY"]:
+        monkeypatch.delenv(key, raising=False)
+
+    class FakeDDGS:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def text(self, query, max_results=1):
+            return [{"title": "Forum pain point", "href": "https://example.com/forum", "body": "Small teams need automation."}]
+
+    monkeypatch.setattr(search_broker, "DB_PATH", tmp_path / "search.sqlite3")
+    monkeypatch.setattr(search_broker, "DDGS", FakeDDGS)
+    monkeypatch.setattr(search_broker, "config_value", _config({"search_broker_auto_legacy_fallback": True}))
+
+    payload = search_broker.search("small team pain point", limit=2)
+
+    assert payload["ok"] is True
+    assert payload["providers_succeeded"] == ["duckduckgo"]
+    assert payload["results"][0]["provider"] == "duckduckgo"

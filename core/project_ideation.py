@@ -40,6 +40,36 @@ DEMAND_TERMS = (
 )
 
 SIGNALS = {
+    "higher_ed_operations": {
+        "keywords": ("university", "higher ed", "campus", "registrar", "enrollment", "admissions", "faculty", "lecturer", "student records", "course"),
+        "title": "Campus Operations Dashboard",
+        "problem": "University administrators lose time coordinating student records, course approvals, enrollment issues, fees, and faculty workflows across disconnected systems.",
+        "wedge": "Role-based dashboards for registrar, finance, faculty, and student-services teams with approval queues, alerts, and source-backed admin summaries.",
+    },
+    "higher_ed_scheduling": {
+        "keywords": ("scheduler", "scheduling", "timetable", "class schedule", "room allocation", "academic calendar", "course planning"),
+        "title": "Academic Scheduling Copilot",
+        "problem": "Universities struggle with timetable conflicts, room allocation, academic-calendar changes, and slow schedule communication.",
+        "wedge": "Conflict detection, room/course timetable planning, approval workflows, and change notifications for staff and students.",
+    },
+    "higher_ed_it_consolidation": {
+        "keywords": ("integrated system", "silo", "silos", "student information system", "administrative system", "higher ed it", "data integration"),
+        "title": "Higher-Ed Workflow Integration Desk",
+        "problem": "Higher-education teams work across fragmented systems, making reporting, approvals, and student support slower than they should be.",
+        "wedge": "Connect SIS, finance, forms, email, and spreadsheets into one operations layer with searchable records and tracked handoffs.",
+    },
+    "higher_ed_reporting": {
+        "keywords": ("reporting", "manual reporting", "data collection", "analysis software", "power bi", "banner", "metrics", "student populations"),
+        "title": "University Reporting Automation Desk",
+        "problem": "University staff spend too much time collecting, cleaning, and reporting operational data from disconnected student, finance, and academic systems.",
+        "wedge": "Automated dashboards, recurring report generation, anomaly flags, and plain-English summaries for administrators.",
+    },
+    "higher_ed_admin_load": {
+        "keywords": ("administrative bloat", "administrative staff", "burnout", "efficiency", "reduce costs", "managed services", "student-centered"),
+        "title": "Administrative Load Reducer",
+        "problem": "Administrative teams face rising workload, email overload, burnout, and pressure to reduce costs while keeping student services responsive.",
+        "wedge": "Queue triage, task routing, approval reminders, workload visibility, and AI-written status updates for admin teams.",
+    },
     "customer_support": {
         "keywords": ("support", "customer", "ticket", "reply", "inbox", "faq", "complaint"),
         "title": "Customer Reply Copilot",

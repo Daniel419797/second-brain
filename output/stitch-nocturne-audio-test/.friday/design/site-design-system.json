@@ -1,0 +1,97 @@
+{
+  "brand_system": {
+    "accessibility": [
+      "AA contrast for body text",
+      "visible focus states",
+      "tap targets at least 44px on mobile"
+    ],
+    "brand_name": "Nocturne Audio",
+    "color_tokens": {
+      "accent": "#9f6b3e",
+      "accent_2": "#2f2924",
+      "bg": "#f7f1e8",
+      "border": "#ded2c3",
+      "danger": "#9f1239",
+      "muted": "#71675e",
+      "success": "#3f6f53",
+      "surface": "#fffaf3",
+      "surface_2": "#14110f",
+      "text": "#17120d",
+      "warning": "#b7791f"
+    },
+    "do_not_render": [
+      "internal style profile names",
+      "raw prompt labels",
+      "provider/debug labels"
+    ],
+    "icon_style": "minimal marks; use icons sparingly",
+    "imagery_direction": "macro product details, craftsmanship, architecture, human service moments",
+    "logo_direction": "quiet wordmark for Nocturne Audio; refined spacing, no loud badge",
+    "motion_style": "slow, restrained reveals; no bouncy UI",
+    "radius": "0px to 6px; editorial, not pill-heavy",
+    "radius_system": "0px to 6px; editorial, not pill-heavy",
+    "spacing_scale": {
+      "lg": "24px",
+      "md": "16px",
+      "section": "72px desktop / 44px mobile",
+      "sm": "8px",
+      "xl": "40px",
+      "xs": "4px"
+    },
+    "tokens": {
+      "accent": "#9f6b3e",
+      "accent_2": "#2f2924",
+      "bg": "#f7f1e8",
+      "border": "#ded2c3",
+      "danger": "#9f1239",
+      "muted": "#71675e",
+      "success": "#3f6f53",
+      "surface": "#fffaf3",
+      "surface_2": "#14110f",
+      "text": "#17120d",
+      "warning": "#b7791f"
+    },
+    "typography": {
+      "body": "clean readable sans",
+      "display": "editorial serif or high-contrast display",
+      "mono": "not primary"
+    }
+  },
+  "global_visual_language": {
+    "direction": "quiet luxury with editorial restraint and tactile detail",
+    "imagery": "macro product details, craftsmanship, architecture, human service moments",
+    "layout_signature": "immersive hero, provenance story, product/editorial modules, appointment or concierge path",
+    "palette": "warm ivory, ink, charcoal, metallic or jewel accent used sparingly",
+    "typography": "refined serif or high-contrast display paired with quiet readable body type"
+  },
+  "industry": "luxury",
+  "navigation": [
+    "Atelier",
+    "Collections",
+    "Process",
+    "Concierge"
+  ],
+  "pages": [
+    {
+      "focus": "complete product landing page with hero, proof/status strip, capabilities, how it works, architecture/security proof, plugin or ecosystem story, and conversion call to action",
+      "id": "home",
+      "label": "Home",
+      "navigation": "Home (/)",
+      "route": "/"
+    }
+  ],
+  "product_name": "Nocturne Audio",
+  "shared_components": [
+    "full-bleed scene/canvas surface",
+    "scene fallback poster/content",
+    "reduced-motion controls",
+    "editorial hero",
+    "material image field",
+    "provenance cards",
+    "lookbook modules",
+    "concierge inquiry form"
+  ],
+  "style_profile_id": "nexus_forge_nextjs",
+  "surface": "marketing_website",
+  "version": "site_design_system_v1"
+}

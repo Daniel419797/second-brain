@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import os
+import sqlite3
+import threading
+import datetime as dt
 from pathlib import Path
 from typing import Any
 
-from core.config import config_value, default_coding_root, resolve_coding_root
+from core.config import DATA_DIR, config_value, default_coding_root, ensure_runtime_dirs, resolve_coding_root
 
-MODES = {"manual", "supervised", "full"}
+MODES = {"manual", "supervised", "full", "full_access"}
+AUTHORITY_MODES = {"approval_gated", "full_access"}
+DB_PATH = DATA_DIR / "autonomy_control.sqlite3"
+_LOCK = threading.Lock()
 
 LOCAL_PROJECT_KEYS = {
     "power_center.agent_scheduler_apply",
@@ -64,6 +70,7 @@ DEFAULT_HARD_STOP_KEYS = {
     "power_center.privacy_firewall_pro",
     "power_center.privacy_vault",
     "power_center.security_guardian_pro",
+    "power_center.security_lab",
     "send_email.send_email",
 }
 
@@ -85,11 +92,96 @@ PATH_FIELDS = {
 }
 
 
+def init_db() -> None:
+    ensure_runtime_dirs()
+    with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS autonomy_settings (
+                key TEXT PRIMARY KEY,
+                value TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                updated_by TEXT NOT NULL
+            )
+            """
+        )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS autonomy_events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                event_type TEXT NOT NULL,
+                summary TEXT NOT NULL,
+                metadata_json TEXT NOT NULL DEFAULT '{}'
+            )
+            """
+        )
+
+
+def set_authority_mode(authority_mode: str, *, actor: str = "user") -> dict[str, Any]:
+    """Persist the one-click Friday authority mode exposed in Studio."""
+
+    normalized = normalize_authority_mode(authority_mode)
+    internal = "full_access" if normalized == "full_access" else "supervised"
+    init_db()
+    now = _now()
+    with _LOCK, sqlite3.connect(DB_PATH, timeout=10) as conn:
+        conn.execute(
+            """
+            INSERT INTO autonomy_settings(key, value, updated_at, updated_by)
+            VALUES ('authority_mode', ?, ?, ?)
+            ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=excluded.updated_at, updated_by=excluded.updated_by
+            """,
+            (normalized, now, str(actor or "user")[:120]),
+        )
+        conn.execute(
+            """
+            INSERT INTO autonomy_events(timestamp, event_type, summary, metadata_json)
+            VALUES (?, 'authority_mode_changed', ?, ?)
+            """,
+            (
+                now,
+                f"Authority mode set to {normalized}.",
+                f'{{"authority_mode":"{normalized}","internal_mode":"{internal}"}}',
+            ),
+        )
+    return status()
+
+
+def normalize_authority_mode(authority_mode: str) -> str:
+    value = str(authority_mode or "").strip().lower().replace("-", "_")
+    if value in {"full", "full_autonomy", "autonomous", "no_babysitting", "ungated"}:
+        return "full_access"
+    if value in {"approval", "approval_gated", "gated", "supervised", "ask", "manual"}:
+        return "approval_gated"
+    return value if value in AUTHORITY_MODES else "approval_gated"
+
+
+def authority_mode() -> str:
+    raw_env = os.getenv("FRIDAY_AUTHORITY_MODE")
+    if raw_env:
+        return normalize_authority_mode(raw_env)
+    raw_autonomy_env = os.getenv("FRIDAY_AUTONOMY_MODE")
+    if raw_autonomy_env and raw_autonomy_env.strip().lower().replace("-", "_") in {"off", "disabled", "false", "0", "manual"}:
+        return "approval_gated"
+    stored = _stored_value("authority_mode")
+    if stored:
+        return normalize_authority_mode(stored)
+    raw = raw_autonomy_env or str(config_value("autonomy_mode", "supervised") or "supervised")
+    normalized = raw.strip().lower().replace("-", "_")
+    if normalized in {"full_access", "ungated"}:
+        return "full_access"
+    return "approval_gated"
+
+
 def mode() -> str:
     raw = os.getenv("FRIDAY_AUTONOMY_MODE") or str(config_value("autonomy_mode", "supervised") or "supervised")
     normalized = raw.strip().lower().replace("-", "_")
     if normalized in {"off", "disabled", "false", "0"}:
         return "manual"
+    stored_authority = authority_mode()
+    if stored_authority == "full_access":
+        return "full_access"
     if normalized in {"auto", "autonomous", "full_autonomy", "no_babysitting"}:
         return "full"
     return normalized if normalized in MODES else "supervised"
@@ -100,7 +192,11 @@ def enabled() -> bool:
 
 
 def full_autonomy_enabled() -> bool:
-    return enabled() and mode() == "full"
+    return enabled() and mode() in {"full", "full_access"}
+
+
+def full_access_enabled() -> bool:
+    return enabled() and authority_mode() == "full_access"
 
 
 def full_autonomy_for_scope(tool_input: dict[str, Any] | None = None) -> bool:
@@ -138,6 +234,11 @@ def override_decision(
     if key in hard_stops:
         if mode == "block":
             return None
+        if full_access_enabled():
+            bypass = _allow_if_trusted(key, tool_input, "Full-access authority mode.")
+            if bypass:
+                bypass["autonomy_hard_stop_bypassed"] = True
+                return bypass
         return {
             "mode": "ask",
             "allowed": False,
@@ -149,6 +250,9 @@ def override_decision(
 
     if mode != "ask" or not full_autonomy_enabled():
         return None
+
+    if full_access_enabled():
+        return _allow_if_trusted(key, tool_input, "Full-access authority mode.")
 
     if key == "power_center.git_write" and not _bool_config("autonomy_preapprove_git_writes", True):
         return None
@@ -164,18 +268,58 @@ def override_decision(
 
 
 def status() -> dict[str, Any]:
+    authority = authority_mode()
     return {
         "mode": mode(),
+        "authority_mode": authority,
         "enabled": enabled(),
         "full_autonomy": full_autonomy_enabled(),
+        "full_access": authority == "full_access" and enabled(),
+        "approval_gated": authority != "full_access" or not enabled(),
+        "available_modes": [
+            {
+                "id": "approval_gated",
+                "label": "Approval gated",
+                "description": "Friday pauses at ask-first rules and approval gates before acting.",
+            },
+            {
+                "id": "full_access",
+                "label": "Full access",
+                "description": "Friday can run trusted work without ask-first approvals; block rules still stop execution.",
+            },
+        ],
         "trusted_roots": [str(path) for path in trusted_roots()],
         "preapproved_local_keys": sorted(LOCAL_PROJECT_KEYS),
         "preapproved_remote_keys": sorted(REMOTE_WRITE_KEYS),
         "preapproved_deployment_keys": sorted(DEPLOYMENT_KEYS),
         "preapproved_self_update_keys": sorted(SELF_UPDATE_KEYS),
         "hard_stop_keys": sorted(hard_stop_keys()),
+        "events": recent_events(limit=8),
         "summary": _summary(),
     }
+
+
+def recent_events(limit: int = 20) -> list[dict[str, Any]]:
+    try:
+        init_db()
+        with sqlite3.connect(DB_PATH, timeout=10) as conn:
+            conn.row_factory = sqlite3.Row
+            rows = conn.execute(
+                "SELECT * FROM autonomy_events ORDER BY id DESC LIMIT ?",
+                (max(1, min(100, int(limit))),),
+            ).fetchall()
+    except Exception:
+        return []
+    return [
+        {
+            "id": int(row["id"]),
+            "timestamp": str(row["timestamp"]),
+            "event_type": str(row["event_type"]),
+            "summary": str(row["summary"]),
+            "metadata": str(row["metadata_json"] or "{}"),
+        }
+        for row in rows
+    ]
 
 
 def trusted_roots() -> list[Path]:
@@ -342,6 +486,22 @@ def _truthy(value: Any, default: bool = False) -> bool:
 def _summary() -> str:
     if not enabled():
         return "Autonomy control is disabled."
+    if full_access_enabled():
+        return "Full access is enabled for trusted project scopes; block rules still stop execution."
     if full_autonomy_enabled():
         return "Full autonomy is enabled for trusted Desktop/project scopes; hard-stop actions still require approval."
     return "Supervised autonomy is enabled; ask-first rules remain active."
+
+
+def _stored_value(key: str) -> str:
+    try:
+        init_db()
+        with sqlite3.connect(DB_PATH, timeout=10) as conn:
+            row = conn.execute("SELECT value FROM autonomy_settings WHERE key = ?", (key,)).fetchone()
+    except Exception:
+        return ""
+    return str(row[0]) if row else ""
+
+
+def _now() -> str:
+    return dt.datetime.now(dt.timezone.utc).astimezone().isoformat(timespec="seconds")

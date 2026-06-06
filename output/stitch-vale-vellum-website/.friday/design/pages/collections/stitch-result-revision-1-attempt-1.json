@@ -1,0 +1,538 @@
+{
+  "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzdkZjkyY2MyMzY2ODRkM2JhNzFiN2Q2OTIyZjNjYzA1EgsSBxDuxJTq7RkYAZIBIwoKcHJvamVjdF9pZBIVQhM1MTk4MzQ0ODYzMzM5MDE3NTE0&filename=&opi=96797242",
+  "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvPiCKabkCyejylForgjbUnxj1M32YoywqoRXJH5wk3D_zGugD4-4jCxCOXJ2skDjEH_d9-U1nkhGNHNAkJ32gPuBpXNKOSJKRJ7_5Srkv6UWLkBgd8XmOW5LzS-XYe6O1XxT78CtnnfT1knCVjOn_G2s_pEirDEioux7NWbXamqS6N3p_EuxGtIOZs01wvPc7RrLh8wOno2gSMb-3dInENg30F5Km1TmZjEIRS4s5QOi4BsmRV38NNlw",
+  "modelId": "GEMINI_3_1_PRO",
+  "ok": true,
+  "partialProviderResult": false,
+  "projectId": "5198344863339017514",
+  "projectionPathsTried": [
+    "outputComponents[0].design.screens",
+    "outputComponents[0].design.screen",
+    "outputComponents[0].screens",
+    "outputComponents[0].screen",
+    "outputComponents[0].payload.design.screens",
+    "outputComponents[0].data.design.screens",
+    "outputComponents[1].design.screens",
+    "outputComponents[1].design.screen",
+    "outputComponents[1].screens",
+    "outputComponents[1].screen",
+    "outputComponents[1].payload.design.screens",
+    "outputComponents[1].data.design.screens",
+    "outputComponents[2].design.screens",
+    "outputComponents[2].design.screen",
+    "outputComponents[2].screens",
+    "outputComponents[2].screen",
+    "outputComponents[2].payload.design.screens",
+    "outputComponents[2].data.design.screens",
+    "outputComponents[3].design.screens",
+    "outputComponents[3].design.screen",
+    "outputComponents[3].screens",
+    "outputComponents[3].screen",
+    "outputComponents[3].payload.design.screens",
+    "outputComponents[3].data.design.screens",
+    "outputComponents[4].design.screens",
+    "outputComponents[4].design.screen",
+    "outputComponents[4].screens",
+    "outputComponents[4].screen",
+    "outputComponents[4].payload.design.screens",
+    "outputComponents[4].data.design.screens",
+    "outputComponents[5].design.screens",
+    "outputComponents[5].design.screen",
+    "outputComponents[5].screens",
+    "outputComponents[5].screen",
+    "outputComponents[5].payload.design.screens",
+    "outputComponents[5].data.design.screens",
+    "design.screens",
+    "screens",
+    "screen",
+    "generatedScreen",
+    "generated_screen",
+    "$.outputComponents[1].design.screens[0]",
+    "$.outputComponents[1].design.screens[1]",
+    "$.outputComponents[1].design.screens[2]"
+  ],
+  "provider": "stitch",
+  "rawFallbackGenerations": [],
+  "rawGenerate": {
+    "outputComponents": [
+      {
+        "designSystem": {
+          "designSystem": {
+            "displayName": "Vale & Vellum",
+            "styleGuidelines": "## Brand & Style\n\nThe design system is rooted in the \"Tactile Editorial\" movement, blending the heritage of traditional letterpress with modern digital precision. It targets a discerning clientele seeking bespoke artistry, evoking an emotional response of quiet luxury, intentionality, and sensory depth.\n\nThe aesthetic rejects the \"disposable\" feel of modern software in favor of a permanent, archival quality. The UI mimics the physical experience of a high-end atelier: heavy paper stocks, deep ink impressions, and the subtle glint of metallic foil.\n\n**Key Design Principles:**\n- **Material Provenance:** Use macro-photography of paper grains and deckled edges to provide grounding textures.\n- **Asymmetric Balance:** Eschew perfect symmetry for more dynamic, art-directed layouts that feel like a curated magazine spread.\n- **Sensorial Interaction:** Micro-interactions should feel weighted; transitions should be slow and graceful, mimicking the turning of a heavy page.\n\n## Layout & Spacing\n\nThis design system utilizes a **Fixed Grid** for desktop to maintain the integrity of white space, transitioning to a flexible container for mobile.\n\n- **The \"Breath\":** Large section gaps (128px+) are required between distinct content blocks to prevent the UI from feeling cluttered.\n- **Asymmetry:** Content should not always span the full 12-column grid. Use \"pull quotes\" or images that occupy 5 columns with a 1-column offset to create a rhythmic, magazine-like flow.\n- **Margins:** Oversized page margins (64px) act as a frame for the content, emphasizing the \"limited edition\" nature of the products.\n\n## Elevation & Depth\n\nDepth is conveyed through **Physical Impression** rather than elevation shadows.\n\n- **Letterpress Effect:** Instead of shadows, use subtle \"inner shadows\" or 1px darker borders on input fields and containers to simulate an impression into the paper.\n- **Tonal Layering:** Use the Ivory base for the background and slightly darker or textured containers (Muted Rose at 5% opacity) to define functional areas.\n- **The \"Vellum\" Overlay:** For modals and navigation drawers, use a semi-transparent Ivory backdrop with a high-intensity background blur (20px+) to mimic the translucency of vellum paper.\n- **Outlines:** Use 0.5pt to 1pt solid lines in Deep Ink or Bronze to define structural boundaries.\n\n## Components\n\n### Buttons\nPrimary buttons are rectangular with a 1px Deep Ink border. The hover state fills the button with Deep Ink and flips typography to Ivory. \"Tertiary\" buttons are simple text links in Bronze with a 1px underline that expands on hover.\n\n### Input Fields\nInputs are minimalist, consisting of only a bottom border (1px Deep Ink). Labels sit above in `label-caps`. Focus states change the border to Bronze.\n\n### Cards\nCards for product listings should have no background or shadow. They rely on the `display-lg` typography and generous padding to separate them. Use a \"Bronze\" hairline divider (0.5px) between stacked items.\n\n### Chips & Tags\nUsed for material types (e.g., \"Handmade Paper,\" \"Gold Leaf\"). These are styled as small, text-only elements with a Bronze dot prefix, rather than enclosed pills.\n\n### Letterpress Dividers\nInstead of generic HR tags, use a centered Bronze ornament or a subtle 1px line that fades out at the edges to separate major narrative sections.\n\n### Imagery\nImages should always include a \"Macro\" version showing the texture of the paper or the height of the ink. All photos should have a slightly desaturated, warm film-grain finish.",
+            "theme": {
+              "bodyFont": "EB_GARAMOND",
+              "bodyFontFamily": "Eb Garamond",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#f9f8f5",
+              "designMd": "---\nname: Vale & Vellum\ncolors:\n  surface: '#fcf8f7'\n  surface-dim: '#ddd9d8'\n  surface-bright: '#fcf8f7'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f7f3f2'\n  surface-container: '#f1edec'\n  surface-container-high: '#ebe7e6'\n  surface-container-highest: '#e5e2e1'\n  on-surface: '#1c1b1b'\n  on-surface-variant: '#444844'\n  inverse-surface: '#313030'\n  inverse-on-surface: '#f4f0ef'\n  outline: '#757874'\n  outline-variant: '#c5c7c3'\n  surface-tint: '#5e5f5c'\n  primary: '#5e5f5c'\n  on-primary: '#ffffff'\n  primary-container: '#f9f8f5'\n  on-primary-container: '#717270'\n  inverse-primary: '#c7c6c4'\n  secondary: '#5f5e5e'\n  on-secondary: '#ffffff'\n  secondary-container: '#e2dfde'\n  on-secondary-container: '#636262'\n  tertiary: '#7c5450'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#fff6f5'\n  on-tertiary-container: '#916763'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e3e2e0'\n  primary-fixed-dim: '#c7c6c4'\n  on-primary-fixed: '#1a1c1a'\n  on-primary-fixed-variant: '#464745'\n  secondary-fixed: '#e5e2e1'\n  secondary-fixed-dim: '#c8c6c5'\n  on-secondary-fixed: '#1c1b1b'\n  on-secondary-fixed-variant: '#474746'\n  tertiary-fixed: '#ffdad6'\n  tertiary-fixed-dim: '#eebab5'\n  on-tertiary-fixed: '#2f1311'\n  on-tertiary-fixed-variant: '#623d3a'\n  background: '#fcf8f7'\n  on-background: '#1c1b1b'\n  surface-variant: '#e5e2e1'\ntypography:\n  display-lg:\n    fontFamily: Playfair Display\n    fontSize: 64px\n    fontWeight: '700'\n    lineHeight: '1.1'\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Playfair Display\n    fontSize: 40px\n    fontWeight: '600'\n    lineHeight: '1.2'\n    letterSpacing: 0em\n  headline-lg-mobile:\n    fontFamily: Playfair Display\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: '1.2'\n  body-lg:\n    fontFamily: EB Garamond\n    fontSize: 20px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  body-md:\n    fontFamily: EB Garamond\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  label-caps:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: '1.2'\n    letterSpacing: 0.15em\n  cta:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: '1.0'\n    letterSpacing: 0.05em\nspacing:\n  unit: 8px\n  margin-page: 64px\n  gutter: 32px\n  section-gap: 128px\n---\n\n## Brand & Style\n\nThe design system is rooted in the \"Tactile Editorial\" movement, blending the heritage of traditional letterpress with modern digital precision. It targets a discerning clientele seeking bespoke artistry, evoking an emotional response of quiet luxury, intentionality, and sensory depth.\n\nThe aesthetic rejects the \"disposable\" feel of modern software in favor of a permanent, archival quality. The UI mimics the physical experience of a high-end atelier: heavy paper stocks, deep ink impressions, and the subtle glint of metallic foil.\n\n**Key Design Principles:**\n- **Material Provenance:** Use macro-photography of paper grains and deckled edges to provide grounding textures.\n- **Asymmetric Balance:** Eschew perfect symmetry for more dynamic, art-directed layouts that feel like a curated magazine spread.\n- **Sensorial Interaction:** Micro-interactions should feel weighted; transitions should be slow and graceful, mimicking the turning of a heavy page.\n\n## Colors\n\nThe palette is inspired by natural pigments and raw materials used in traditional invitation design.\n\n- **Ivory (#F9F8F5):** The \"Paper\" base. This is the primary surface color, providing a warm, organic alternative to pure white.\n- **Deep Ink (#1A1A1A):** Used for primary typography and borders, mimicking the depth of freshly dried letterpress ink.\n- **Muted Rose (#D4A39E):** An accent for romantic highlights and subtle call-to-actions.\n- **Deep Olive (#4A5D4E):** A grounding tone for secondary elements and naturalistic motifs.\n- **Bronze (#A68966):** Reserved for \"Foil\" accents\u00e2\u20ac\u201dinteractive states, thin dividers, and premium badges.\n\n**Usage Note:** Avoid gradients. If depth is required, use solid color overlays or grain textures rather than color ramps.\n\n## Typography\n\nTypography is the cornerstone of this design system, prioritizing legibility and historical grace.\n\n- **Headlines:** Use **Playfair Display**. It provides the high-contrast \"editorial\" look essential for luxury. Headlines should often be center-aligned or offset to create visual interest.\n- **Body Text:** Use **EB Garamond**. Its classical proportions ensure long-form content feels scholarly and premium.\n- **UI & Labels:** Use **Inter**. This provides a functional, modern counterpoint to the serif fonts, ensuring that navigation and technical details remain crisp and legible.\n\n**Styling Rule:** All labels and navigation items should be set in uppercase with generous letter spacing to evoke the feeling of a bespoke brand mark.\n\n## Layout & Spacing\n\nThis design system utilizes a **Fixed Grid** for desktop to maintain the integrity of white space, transitioning to a flexible container for mobile.\n\n- **The \"Breath\":** Large section gaps (128px+) are required between distinct content blocks to prevent the UI from feeling cluttered.\n- **Asymmetry:** Content should not always span the full 12-column grid. Use \"pull quotes\" or images that occupy 5 columns with a 1-column offset to create a rhythmic, magazine-like flow.\n- **Margins:** Oversized page margins (64px) act as a frame for the content, emphasizing the \"limited edition\" nature of the products.\n\n## Elevation & Depth\n\nDepth is conveyed through **Physical Impression** rather than elevation shadows.\n\n- **Letterpress Effect:** Instead of shadows, use subtle \"inner shadows\" or 1px darker borders on input fields and containers to simulate an impression into the paper.\n- **Tonal Layering:** Use the Ivory base for the background and slightly darker or textured containers (Muted Rose at 5% opacity) to define functional areas.\n- **The \"Vellum\" Overlay:** For modals and navigation drawers, use a semi-transparent Ivory backdrop with a high-intensity background blur (20px+) to mimic the translucency of vellum paper.\n- **Outlines:** Use 0.5pt to 1pt solid lines in Deep Ink or Bronze to define structural boundaries.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0px)**. \n\nLuxury stationery is defined by the precision of a paper cutter. Rounded corners are avoided to maintain a sophisticated, architectural feel. \n\n**Exceptions:** \n- Only use organic, \"deckled\" edge masks for image containers to simulate hand-torn paper.\n- Circular shapes are reserved strictly for decorative seals or wax-stamp icon backgrounds.\n\n## Components\n\n### Buttons\nPrimary buttons are rectangular with a 1px Deep Ink border. The hover state fills the button with Deep Ink and flips typography to Ivory. \"Tertiary\" buttons are simple text links in Bronze with a 1px underline that expands on hover.\n\n### Input Fields\nInputs are minimalist, consisting of only a bottom border (1px Deep Ink). Labels sit above in `label-caps`. Focus states change the border to Bronze.\n\n### Cards\nCards for product listings should have no background or shadow. They rely on the `display-lg` typography and generous padding to separate them. Use a \"Bronze\" hairline divider (0.5px) between stacked items.\n\n### Chips & Tags\nUsed for material types (e.g., \"Handmade Paper,\" \"Gold Leaf\"). These are styled as small, text-only elements with a Bronze dot prefix, rather than enclosed pills.\n\n### Letterpress Dividers\nInstead of generic HR tags, use a centered Bronze ornament or a subtle 1px line that fades out at the edges to separate major narrative sections.\n\n### Imagery\nImages should always include a \"Macro\" version showing the texture of the paper or the height of the ink. All photos should have a slightly desaturated, warm film-grain finish.",
+              "font": "PLAYFAIR_DISPLAY",
+              "headlineFont": "PLAYFAIR_DISPLAY",
+              "headlineFontFamily": "Playfair Display",
+              "labelFont": "INTER",
+              "labelFontFamily": "Inter",
+              "namedColors": {
+                "background": "#fcf8f7",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#f4f0ef",
+                "inverse_primary": "#c7c6c4",
+                "inverse_surface": "#313030",
+                "on_background": "#1c1b1b",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#717270",
+                "on_primary_fixed": "#1a1c1a",
+                "on_primary_fixed_variant": "#464745",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#636262",
+                "on_secondary_fixed": "#1c1b1b",
+                "on_secondary_fixed_variant": "#474746",
+                "on_surface": "#1c1b1b",
+                "on_surface_variant": "#444844",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#916763",
+                "on_tertiary_fixed": "#2f1311",
+                "on_tertiary_fixed_variant": "#623d3a",
+                "outline": "#757874",
+                "outline_variant": "#c5c7c3",
+                "primary": "#5e5f5c",
+                "primary_container": "#f9f8f5",
+                "primary_fixed": "#e3e2e0",
+                "primary_fixed_dim": "#c7c6c4",
+                "secondary": "#5f5e5e",
+                "secondary_container": "#e2dfde",
+                "secondary_fixed": "#e5e2e1",
+                "secondary_fixed_dim": "#c8c6c5",
+                "surface": "#fcf8f7",
+                "surface_bright": "#fcf8f7",
+                "surface_container": "#f1edec",
+                "surface_container_high": "#ebe7e6",
+                "surface_container_highest": "#e5e2e1",
+                "surface_container_low": "#f7f3f2",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#ddd9d8",
+                "surface_tint": "#5e5f5c",
+                "surface_variant": "#e5e2e1",
+                "tertiary": "#7c5450",
+                "tertiary_container": "#fff6f5",
+                "tertiary_fixed": "#ffdad6",
+                "tertiary_fixed_dim": "#eebab5"
+              },
+              "overridePrimaryColor": "#f9f8f5",
+              "overrideSecondaryColor": "#1a1a1a",
+              "overrideTertiaryColor": "#d4a39e",
+              "spacing": {
+                "gutter": "32px",
+                "margin-page": "64px",
+                "section-gap": "128px",
+                "unit": "8px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "EB Garamond",
+                  "fontSize": "20px",
+                  "fontWeight": "400",
+                  "lineHeight": "1.6"
+                },
+                "body-md": {
+                  "fontFamily": "EB Garamond",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "1.6"
+                },
+                "cta": {
+                  "fontFamily": "Inter",
+                  "fontSize": "14px",
+                  "fontWeight": "400",
+                  "letterSpacing": "0.05em",
+                  "lineHeight": "1.0"
+                },
+                "display-lg": {
+                  "fontFamily": "Playfair Display",
+                  "fontSize": "64px",
+                  "fontWeight": "700",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "1.1"
+                },
+                "headline-lg": {
+                  "fontFamily": "Playfair Display",
+                  "fontSize": "40px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0em",
+                  "lineHeight": "1.2"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Playfair Display",
+                  "fontSize": "32px",
+                  "fontWeight": "600",
+                  "lineHeight": "1.2"
+                },
+                "label-caps": {
+                  "fontFamily": "Inter",
+                  "fontSize": "12px",
+                  "fontWeight": "500",
+                  "letterSpacing": "0.15em",
+                  "lineHeight": "1.2"
+                }
+              }
+            }
+          },
+          "name": "assets/59f7e5328cf04a458cfc0adf01cdb825",
+          "version": "1"
+        }
+      },
+      {
+        "design": {
+          "screens": [
+            {
+              "generatedBy": "interactive_ui_controller",
+              "height": "896",
+              "id": "8e71c88e643546a0bd5824373acc0afb",
+              "name": "projects/5198344863339017514/screens/8e71c88e643546a0bd5824373acc0afb",
+              "prompt": "Macro detail of a hand-assembled wedding menu on heavy handmade paper with deckled edges. Close-up on bronze foil stamping details and a delicate velvet ribbon. High-end stationery studio aesthetic. Shallow depth of field. Soft, warm lighting.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "IMAGE",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvbFqS6X6TgO0d8oW4EoDuEXqHf40JjfpOEB8afC1MrkhOIT0D3DJv0aYlIkfvMYa61DjdVFy5RD_fL8jGPFNMeZWlCmlsVHTzP9ZsG_rnWHA7-n-LH6v_mysOV6ffATm3MRMBa2L5jKA5liy8VB3EkH5xgOAoi6zIt72o1W7tYabeBzyNMAe8DrMCrZSOZ-R__9AebW0Fn5d85ruia00bqtoM-ONbRucTw_6bQtlCVDd5rPj2WLm34ji8",
+                "name": "projects/5198344863339017514/files/e7e9a2a9f3c44be0ac9edc0b84461a09"
+              },
+              "theme": {},
+              "title": "Macro detail of a hand-assembled wedding menu on heavy handmade paper with deckled edges. Close-up on bronze foil stamping details and a delicate velvet ribbon. High-end stationery studio aesthetic. Shallow depth of field. Soft, warm lighting.",
+              "width": "1200"
+            },
+            {
+              "generatedBy": "interactive_ui_controller",
+              "height": "768",
+              "id": "29c3e1dc6fc446aa83800266bb3e6857",
+              "name": "projects/5198344863339017514/screens/29c3e1dc6fc446aa83800266bb3e6857",
+              "prompt": "Editorial photography of a luxury wedding invitation suite. Close-up macro shot showing tactile paper texture, debossed letterpress typography, a gold foil wax seal, and a translucent vellum wrap. Soft, romantic natural lighting with elegant shadows. Muted tones of ivory, ink, and a hint of dusty rose. Asymmetric composition. Professional studio lighting.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "IMAGE",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsC4VGuLBUbmp6JBlJHcuHNh14qWTQvqEjjtvmGxx_XzbZru_f4a3_swaUDarJzrfPQu3FGxfzpcs-dsBupnfSLNc5Vk5gMCDatJqR04oHzK0BpLrFVF28_DX2chydBf83WZGMJSIGftWyXpSf1qHS3lEfGkScbHDqQL8coKn-n-4N6FevmQ7hora2g4vIx61-zQu_NPjVUkLAyU62-DHB-yR_VXW8q3RKPqbKfZkk1LRAJim8EVcV06MQ",
+                "name": "projects/5198344863339017514/files/1cc92585186f4cc0b7d1024b45fc33c5"
+              },
+              "theme": {},
+              "title": "Editorial photography of a luxury wedding invitation suite. Close-up macro shot showing tactile paper texture, debossed letterpress typography, a gold foil wax seal, and a translucent vellum wrap. Soft, romantic natural lighting with elegant shadows. Muted tones of ivory, ink, and a hint of dusty rose. Asymmetric composition. Professional studio lighting.",
+              "width": "1376"
+            },
+            {
+              "designSystem": {
+                "designSystem": {
+                  "displayName": "Vale & Vellum",
+                  "styleGuidelines": "## Brand & Style\n\nThe design system is rooted in the \"Tactile Editorial\" movement, blending the heritage of traditional letterpress with modern digital precision. It targets a discerning clientele seeking bespoke artistry, evoking an emotional response of quiet luxury, intentionality, and sensory depth.\n\nThe aesthetic rejects the \"disposable\" feel of modern software in favor of a permanent, archival quality. The UI mimics the physical experience of a high-end atelier: heavy paper stocks, deep ink impressions, and the subtle glint of metallic foil.\n\n**Key Design Principles:**\n- **Material Provenance:** Use macro-photography of paper grains and deckled edges to provide grounding textures.\n- **Asymmetric Balance:** Eschew perfect symmetry for more dynamic, art-directed layouts that feel like a curated magazine spread.\n- **Sensorial Interaction:** Micro-interactions should feel weighted; transitions should be slow and graceful, mimicking the turning of a heavy page.\n\n## Layout & Spacing\n\nThis design system utilizes a **Fixed Grid** for desktop to maintain the integrity of white space, transitioning to a flexible container for mobile.\n\n- **The \"Breath\":** Large section gaps (128px+) are required between distinct content blocks to prevent the UI from feeling cluttered.\n- **Asymmetry:** Content should not always span the full 12-column grid. Use \"pull quotes\" or images that occupy 5 columns with a 1-column offset to create a rhythmic, magazine-like flow.\n- **Margins:** Oversized page margins (64px) act as a frame for the content, emphasizing the \"limited edition\" nature of the products.\n\n## Elevation & Depth\n\nDepth is conveyed through **Physical Impression** rather than elevation shadows.\n\n- **Letterpress Effect:** Instead of shadows, use subtle \"inner shadows\" or 1px darker borders on input fields and containers to simulate an impression into the paper.\n- **Tonal Layering:** Use the Ivory base for the background and slightly darker or textured containers (Muted Rose at 5% opacity) to define functional areas.\n- **The \"Vellum\" Overlay:** For modals and navigation drawers, use a semi-transparent Ivory backdrop with a high-intensity background blur (20px+) to mimic the translucency of vellum paper.\n- **Outlines:** Use 0.5pt to 1pt solid lines in Deep Ink or Bronze to define structural boundaries.\n\n## Components\n\n### Buttons\nPrimary buttons are rectangular with a 1px Deep Ink border. The hover state fills the button with Deep Ink and flips typography to Ivory. \"Tertiary\" buttons are simple text links in Bronze with a 1px underline that expands on hover.\n\n### Input Fields\nInputs are minimalist, consisting of only a bottom border (1px Deep Ink). Labels sit above in `label-caps`. Focus states change the border to Bronze.\n\n### Cards\nCards for product listings should have no background or shadow. They rely on the `display-lg` typography and generous padding to separate them. Use a \"Bronze\" hairline divider (0.5px) between stacked items.\n\n### Chips & Tags\nUsed for material types (e.g., \"Handmade Paper,\" \"Gold Leaf\"). These are styled as small, text-only elements with a Bronze dot prefix, rather than enclosed pills.\n\n### Letterpress Dividers\nInstead of generic HR tags, use a centered Bronze ornament or a subtle 1px line that fades out at the edges to separate major narrative sections.\n\n### Imagery\nImages should always include a \"Macro\" version showing the texture of the paper or the height of the ink. All photos should have a slightly desaturated, warm film-grain finish.",
+                  "theme": {
+                    "bodyFont": "EB_GARAMOND",
+                    "bodyFontFamily": "Eb Garamond",
+                    "colorMode": "LIGHT",
+                    "colorVariant": "FIDELITY",
+                    "customColor": "#f9f8f5",
+                    "designMd": "---\nname: Vale & Vellum\ncolors:\n  surface: '#fcf8f7'\n  surface-dim: '#ddd9d8'\n  surface-bright: '#fcf8f7'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f7f3f2'\n  surface-container: '#f1edec'\n  surface-container-high: '#ebe7e6'\n  surface-container-highest: '#e5e2e1'\n  on-surface: '#1c1b1b'\n  on-surface-variant: '#444844'\n  inverse-surface: '#313030'\n  inverse-on-surface: '#f4f0ef'\n  outline: '#757874'\n  outline-variant: '#c5c7c3'\n  surface-tint: '#5e5f5c'\n  primary: '#5e5f5c'\n  on-primary: '#ffffff'\n  primary-container: '#f9f8f5'\n  on-primary-container: '#717270'\n  inverse-primary: '#c7c6c4'\n  secondary: '#5f5e5e'\n  on-secondary: '#ffffff'\n  secondary-container: '#e2dfde'\n  on-secondary-container: '#636262'\n  tertiary: '#7c5450'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#fff6f5'\n  on-tertiary-container: '#916763'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e3e2e0'\n  primary-fixed-dim: '#c7c6c4'\n  on-primary-fixed: '#1a1c1a'\n  on-primary-fixed-variant: '#464745'\n  secondary-fixed: '#e5e2e1'\n  secondary-fixed-dim: '#c8c6c5'\n  on-secondary-fixed: '#1c1b1b'\n  on-secondary-fixed-variant: '#474746'\n  tertiary-fixed: '#ffdad6'\n  tertiary-fixed-dim: '#eebab5'\n  on-tertiary-fixed: '#2f1311'\n  on-tertiary-fixed-variant: '#623d3a'\n  background: '#fcf8f7'\n  on-background: '#1c1b1b'\n  surface-variant: '#e5e2e1'\ntypography:\n  display-lg:\n    fontFamily: Playfair Display\n    fontSize: 64px\n    fontWeight: '700'\n    lineHeight: '1.1'\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Playfair Display\n    fontSize: 40px\n    fontWeight: '600'\n    lineHeight: '1.2'\n    letterSpacing: 0em\n  headline-lg-mobile:\n    fontFamily: Playfair Display\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: '1.2'\n  body-lg:\n    fontFamily: EB Garamond\n    fontSize: 20px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  body-md:\n    fontFamily: EB Garamond\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  label-caps:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: '1.2'\n    letterSpacing: 0.15em\n  cta:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: '1.0'\n    letterSpacing: 0.05em\nspacing:\n  unit: 8px\n  margin-page: 64px\n  gutter: 32px\n  section-gap: 128px\n---\n\n## Brand & Style\n\nThe design system is rooted in the \"Tactile Editorial\" movement, blending the heritage of traditional letterpress with modern digital precision. It targets a discerning clientele seeking bespoke artistry, evoking an emotional response of quiet luxury, intentionality, and sensory depth.\n\nThe aesthetic rejects the \"disposable\" feel of modern software in favor of a permanent, archival quality. The UI mimics the physical experience of a high-end atelier: heavy paper stocks, deep ink impressions, and the subtle glint of metallic foil.\n\n**Key Design Principles:**\n- **Material Provenance:** Use macro-photography of paper grains and deckled edges to provide grounding textures.\n- **Asymmetric Balance:** Eschew perfect symmetry for more dynamic, art-directed layouts that feel like a curated magazine spread.\n- **Sensorial Interaction:** Micro-interactions should feel weighted; transitions should be slow and graceful, mimicking the turning of a heavy page.\n\n## Colors\n\nThe palette is inspired by natural pigments and raw materials used in traditional invitation design.\n\n- **Ivory (#F9F8F5):** The \"Paper\" base. This is the primary surface color, providing a warm, organic alternative to pure white.\n- **Deep Ink (#1A1A1A):** Used for primary typography and borders, mimicking the depth of freshly dried letterpress ink.\n- **Muted Rose (#D4A39E):** An accent for romantic highlights and subtle call-to-actions.\n- **Deep Olive (#4A5D4E):** A grounding tone for secondary elements and naturalistic motifs.\n- **Bronze (#A68966):** Reserved for \"Foil\" accents\u00e2\u20ac\u201dinteractive states, thin dividers, and premium badges.\n\n**Usage Note:** Avoid gradients. If depth is required, use solid color overlays or grain textures rather than color ramps.\n\n## Typography\n\nTypography is the cornerstone of this design system, prioritizing legibility and historical grace.\n\n- **Headlines:** Use **Playfair Display**. It provides the high-contrast \"editorial\" look essential for luxury. Headlines should often be center-aligned or offset to create visual interest.\n- **Body Text:** Use **EB Garamond**. Its classical proportions ensure long-form content feels scholarly and premium.\n- **UI & Labels:** Use **Inter**. This provides a functional, modern counterpoint to the serif fonts, ensuring that navigation and technical details remain crisp and legible.\n\n**Styling Rule:** All labels and navigation items should be set in uppercase with generous letter spacing to evoke the feeling of a bespoke brand mark.\n\n## Layout & Spacing\n\nThis design system utilizes a **Fixed Grid** for desktop to maintain the integrity of white space, transitioning to a flexible container for mobile.\n\n- **The \"Breath\":** Large section gaps (128px+) are required between distinct content blocks to prevent the UI from feeling cluttered.\n- **Asymmetry:** Content should not always span the full 12-column grid. Use \"pull quotes\" or images that occupy 5 columns with a 1-column offset to create a rhythmic, magazine-like flow.\n- **Margins:** Oversized page margins (64px) act as a frame for the content, emphasizing the \"limited edition\" nature of the products.\n\n## Elevation & Depth\n\nDepth is conveyed through **Physical Impression** rather than elevation shadows.\n\n- **Letterpress Effect:** Instead of shadows, use subtle \"inner shadows\" or 1px darker borders on input fields and containers to simulate an impression into the paper.\n- **Tonal Layering:** Use the Ivory base for the background and slightly darker or textured containers (Muted Rose at 5% opacity) to define functional areas.\n- **The \"Vellum\" Overlay:** For modals and navigation drawers, use a semi-transparent Ivory backdrop with a high-intensity background blur (20px+) to mimic the translucency of vellum paper.\n- **Outlines:** Use 0.5pt to 1pt solid lines in Deep Ink or Bronze to define structural boundaries.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0px)**. \n\nLuxury stationery is defined by the precision of a paper cutter. Rounded corners are avoided to maintain a sophisticated, architectural feel. \n\n**Exceptions:** \n- Only use organic, \"deckled\" edge masks for image containers to simulate hand-torn paper.\n- Circular shapes are reserved strictly for decorative seals or wax-stamp icon backgrounds.\n\n## Components\n\n### Buttons\nPrimary buttons are rectangular with a 1px Deep Ink border. The hover state fills the button with Deep Ink and flips typography to Ivory. \"Tertiary\" buttons are simple text links in Bronze with a 1px underline that expands on hover.\n\n### Input Fields\nInputs are minimalist, consisting of only a bottom border (1px Deep Ink). Labels sit above in `label-caps`. Focus states change the border to Bronze.\n\n### Cards\nCards for product listings should have no background or shadow. They rely on the `display-lg` typography and generous padding to separate them. Use a \"Bronze\" hairline divider (0.5px) between stacked items.\n\n### Chips & Tags\nUsed for material types (e.g., \"Handmade Paper,\" \"Gold Leaf\"). These are styled as small, text-only elements with a Bronze dot prefix, rather than enclosed pills.\n\n### Letterpress Dividers\nInstead of generic HR tags, use a centered Bronze ornament or a subtle 1px line that fades out at the edges to separate major narrative sections.\n\n### Imagery\nImages should always include a \"Macro\" version showing the texture of the paper or the height of the ink. All photos should have a slightly desaturated, warm film-grain finish.",
+                    "font": "PLAYFAIR_DISPLAY",
+                    "headlineFont": "PLAYFAIR_DISPLAY",
+                    "headlineFontFamily": "Playfair Display",
+                    "labelFont": "INTER",
+                    "labelFontFamily": "Inter",
+                    "namedColors": {
+                      "background": "#fcf8f7",
+                      "error": "#ba1a1a",
+                      "error_container": "#ffdad6",
+                      "inverse_on_surface": "#f4f0ef",
+                      "inverse_primary": "#c7c6c4",
+                      "inverse_surface": "#313030",
+                      "on_background": "#1c1b1b",
+                      "on_error": "#ffffff",
+                      "on_error_container": "#93000a",
+                      "on_primary": "#ffffff",
+                      "on_primary_container": "#717270",
+                      "on_primary_fixed": "#1a1c1a",
+                      "on_primary_fixed_variant": "#464745",
+                      "on_secondary": "#ffffff",
+                      "on_secondary_container": "#636262",
+                      "on_secondary_fixed": "#1c1b1b",
+                      "on_secondary_fixed_variant": "#474746",
+                      "on_surface": "#1c1b1b",
+                      "on_surface_variant": "#444844",
+                      "on_tertiary": "#ffffff",
+                      "on_tertiary_container": "#916763",
+                      "on_tertiary_fixed": "#2f1311",
+                      "on_tertiary_fixed_variant": "#623d3a",
+                      "outline": "#757874",
+                      "outline_variant": "#c5c7c3",
+                      "primary": "#5e5f5c",
+                      "primary_container": "#f9f8f5",
+                      "primary_fixed": "#e3e2e0",
+                      "primary_fixed_dim": "#c7c6c4",
+                      "secondary": "#5f5e5e",
+                      "secondary_container": "#e2dfde",
+                      "secondary_fixed": "#e5e2e1",
+                      "secondary_fixed_dim": "#c8c6c5",
+                      "surface": "#fcf8f7",
+                      "surface_bright": "#fcf8f7",
+                      "surface_container": "#f1edec",
+                      "surface_container_high": "#ebe7e6",
+                      "surface_container_highest": "#e5e2e1",
+                      "surface_container_low": "#f7f3f2",
+                      "surface_container_lowest": "#ffffff",
+                      "surface_dim": "#ddd9d8",
+                      "surface_tint": "#5e5f5c",
+                      "surface_variant": "#e5e2e1",
+                      "tertiary": "#7c5450",
+                      "tertiary_container": "#fff6f5",
+                      "tertiary_fixed": "#ffdad6",
+                      "tertiary_fixed_dim": "#eebab5"
+                    },
+                    "overridePrimaryColor": "#f9f8f5",
+                    "overrideSecondaryColor": "#1a1a1a",
+                    "overrideTertiaryColor": "#d4a39e",
+                    "spacing": {
+                      "gutter": "32px",
+                      "margin-page": "64px",
+                      "section-gap": "128px",
+                      "unit": "8px"
+                    },
+                    "spacingScale": 2,
+                    "typography": {
+                      "body-lg": {
+                        "fontFamily": "EB Garamond",
+                        "fontSize": "20px",
+                        "fontWeight": "400",
+                        "lineHeight": "1.6"
+                      },
+                      "body-md": {
+                        "fontFamily": "EB Garamond",
+                        "fontSize": "16px",
+                        "fontWeight": "400",
+                        "lineHeight": "1.6"
+                      },
+                      "cta": {
+                        "fontFamily": "Inter",
+                        "fontSize": "14px",
+                        "fontWeight": "400",
+                        "letterSpacing": "0.05em",
+                        "lineHeight": "1.0"
+                      },
+                      "display-lg": {
+                        "fontFamily": "Playfair Display",
+                        "fontSize": "64px",
+                        "fontWeight": "700",
+                        "letterSpacing": "-0.02em",
+                        "lineHeight": "1.1"
+                      },
+                      "headline-lg": {
+                        "fontFamily": "Playfair Display",
+                        "fontSize": "40px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0em",
+                        "lineHeight": "1.2"
+                      },
+                      "headline-lg-mobile": {
+                        "fontFamily": "Playfair Display",
+                        "fontSize": "32px",
+                        "fontWeight": "600",
+                        "lineHeight": "1.2"
+                      },
+                      "label-caps": {
+                        "fontFamily": "Inter",
+                        "fontSize": "12px",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.15em",
+                        "lineHeight": "1.2"
+                      }
+                    }
+                  }
+                },
+                "name": "assets/59f7e5328cf04a458cfc0adf01cdb825",
+                "version": "1"
+              },
+              "deviceType": "DESKTOP",
+              "generatedBy": "figaro_agent",
+              "height": "12892",
+              "htmlCode": {
+                "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+                "mimeType": "text/html",
+                "name": "projects/5198344863339017514/files/dee340117564450fbc9fbc98ac16cc18"
+              },
+              "id": "0fb2f1bc0db54973bcacf7a5b6909e76",
+              "name": "projects/5198344863339017514/screens/0fb2f1bc0db54973bcacf7a5b6909e76",
+              "prompt": "Design the 'Collections' page for Vale & Vellum. \n\nLayout: Full-Bleed Media Hero leading into an asymmetric editorial layout with large negative space.\n\nSections:\n1. Hero: Use {{DATA:IMAGE:IMAGE_3}} with a headline like 'A quieter standard of luxury, made visible.' and a subheadline about hand-crafted provenance. Use a discreet 'View the Collection' CTA.\n2. Provenance: A story-driven section titled 'The Atelier Detail'. Focus on material provenance: 600gsm cotton stock, hand-mixed inks, and custom bronze foil stamps. Use {{DATA:IMAGE:IMAGE_2}} as a macro detail visual.\n3. Collections Lookbook: A sophisticated grid of suites (Signature, Weekend Details, Bespoke Editorial). Use copy that emphasizes sensory details like 'Deckled Edges', 'Letterpress Impression', and 'Vellum Wraps'.\n4. Planner Concierge: A section highlighting high-touch service for planners and private clients. Mention rush options, sample kits, and white-glove assembly.\n5. Inquiry Path: A refined 'Private Appointment' form requesting event date, guest count, and material preferences.\n\nVisual Grammar: Deep Ink text on Ivory background, Muted Rose and Bronze accents. Use Playfair Display for headlines and a crisp sans-serif for labels. Ensure a slow reveal feel with generous whitespace.\n\nBrand: Vale & Vellum. Links: Home (/conceptually-home), Collections (/collections), Process (/process), Inquiry (/inquiry).\n## Available Images\nYou MUST include the following images in this design. You must reference them\nby putting their exact placeholder IDs in `src` attributes or CSS\n`background-image` rules. Do NOT use external URLs or generate new\nplaceholders. Preserve these IDs exactly as written. Read each image's\nDescription to understand its subject, intended section, and visual role.\n\n- {{DATA:IMAGE:IMAGE_2}}\n  Alt Text: Macro detail of a hand-assembled wedding menu on heavy handmade paper with deckled edges. Close-up on bronze foil stamping details and a delicate velvet ribbon. High-end stationery studio aesthetic. Shallow depth of field. Soft, warm lighting.\n  Description: Macro detail of a hand-assembled wedding menu on heavy handmade paper with deckled edges. Close-up on bronze foil stamping details and a delicate velvet ribbon. High-end stationery studio aesthetic. Shallow depth of field. Soft, warm lighting.\n  Dimensions: 1200x896\n  Aspect Ratio: 1.34\n- {{DATA:IMAGE:IMAGE_3}}\n  Alt Text: Editorial photography of a luxury wedding invitation suite. Close-up macro shot showing tactile paper texture, debossed letterpress typography, a gold foil wax seal, and a translucent vellum wrap. Soft, romantic natural lighting with elegant shadows. Muted tones of ivory, ink, and a hint of dusty rose. Asymmetric composition. Professional studio lighting.\n  Description: Editorial photography of a luxury wedding invitation suite. Close-up macro shot showing tactile paper texture, debossed letterpress typography, a gold foil wax seal, and a translucent vellum wrap. Soft, romantic natural lighting with elegant shadows. Muted tones of ivory, ink, and a hint of dusty rose. Asymmetric composition. Professional studio lighting.\n  Dimensions: 1376x768\n  Aspect Ratio: 1.79\n",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "DESIGN",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvPiCKabkCyejylForgjbUnxj1M32YoywqoRXJH5wk3D_zGugD4-4jCxCOXJ2skDjEH_d9-U1nkhGNHNAkJ32gPuBpXNKOSJKRJ7_5Srkv6UWLkBgd8XmOW5LzS-XYe6O1XxT78CtnnfT1knCVjOn_G2s_pEirDEioux7NWbXamqS6N3p_EuxGtIOZs01wvPc7RrLh8wOno2gSMb-3dInENg30F5Km1TmZjEIRS4s5QOi4BsmRV38NNlw",
+                "name": "projects/5198344863339017514/files/1b71829693a2406b9ca43fd1ef3a1763"
+              },
+              "theme": {
+                "bodyFont": "EB_GARAMOND",
+                "bodyFontFamily": "Eb Garamond",
+                "colorMode": "LIGHT",
+                "colorVariant": "FIDELITY",
+                "customColor": "#f9f8f5",
+                "designMd": "---\nname: Vale & Vellum\ncolors:\n  surface: '#fcf8f7'\n  surface-dim: '#ddd9d8'\n  surface-bright: '#fcf8f7'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f7f3f2'\n  surface-container: '#f1edec'\n  surface-container-high: '#ebe7e6'\n  surface-container-highest: '#e5e2e1'\n  on-surface: '#1c1b1b'\n  on-surface-variant: '#444844'\n  inverse-surface: '#313030'\n  inverse-on-surface: '#f4f0ef'\n  outline: '#757874'\n  outline-variant: '#c5c7c3'\n  surface-tint: '#5e5f5c'\n  primary: '#5e5f5c'\n  on-primary: '#ffffff'\n  primary-container: '#f9f8f5'\n  on-primary-container: '#717270'\n  inverse-primary: '#c7c6c4'\n  secondary: '#5f5e5e'\n  on-secondary: '#ffffff'\n  secondary-container: '#e2dfde'\n  on-secondary-container: '#636262'\n  tertiary: '#7c5450'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#fff6f5'\n  on-tertiary-container: '#916763'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e3e2e0'\n  primary-fixed-dim: '#c7c6c4'\n  on-primary-fixed: '#1a1c1a'\n  on-primary-fixed-variant: '#464745'\n  secondary-fixed: '#e5e2e1'\n  secondary-fixed-dim: '#c8c6c5'\n  on-secondary-fixed: '#1c1b1b'\n  on-secondary-fixed-variant: '#474746'\n  tertiary-fixed: '#ffdad6'\n  tertiary-fixed-dim: '#eebab5'\n  on-tertiary-fixed: '#2f1311'\n  on-tertiary-fixed-variant: '#623d3a'\n  background: '#fcf8f7'\n  on-background: '#1c1b1b'\n  surface-variant: '#e5e2e1'\ntypography:\n  display-lg:\n    fontFamily: Playfair Display\n    fontSize: 64px\n    fontWeight: '700'\n    lineHeight: '1.1'\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Playfair Display\n    fontSize: 40px\n    fontWeight: '600'\n    lineHeight: '1.2'\n    letterSpacing: 0em\n  headline-lg-mobile:\n    fontFamily: Playfair Display\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: '1.2'\n  body-lg:\n    fontFamily: EB Garamond\n    fontSize: 20px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  body-md:\n    fontFamily: EB Garamond\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: '1.6'\n  label-caps:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: '1.2'\n    letterSpacing: 0.15em\n  cta:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: '1.0'\n    letterSpacing: 0.05em\nspacing:\n  unit: 8px\n  margin-page: 64px\n  gutter: 32px\n  section-gap: 128px\n---\n\n## Brand & Style\n\nThe design system is rooted in the \"Tactile Editorial\" movement, blending the heritage of traditional letterpress with modern digital precision. It targets a discerning clientele seeking bespoke artistry, evoking an emotional response of quiet luxury, intentionality, and sensory depth.\n\nThe aesthetic rejects the \"disposable\" feel of modern software in favor of a permanent, archival quality. The UI mimics the physical experience of a high-end atelier: heavy paper stocks, deep ink impressions, and the subtle glint of metallic foil.\n\n**Key Design Principles:**\n- **Material Provenance:** Use macro-photography of paper grains and deckled edges to provide grounding textures.\n- **Asymmetric Balance:** Eschew perfect symmetry for more dynamic, art-directed layouts that feel like a curated magazine spread.\n- **Sensorial Interaction:** Micro-interactions should feel weighted; transitions should be slow and graceful, mimicking the turning of a heavy page.\n\n## Colors\n\nThe palette is inspired by natural pigments and raw materials used in traditional invitation design.\n\n- **Ivory (#F9F8F5):** The \"Paper\" base. This is the primary surface color, providing a warm, organic alternative to pure white.\n- **Deep Ink (#1A1A1A):** Used for primary typography and borders, mimicking the depth of freshly dried letterpress ink.\n- **Muted Rose (#D4A39E):** An accent for romantic highlights and subtle call-to-actions.\n- **Deep Olive (#4A5D4E):** A grounding tone for secondary elements and naturalistic motifs.\n- **Bronze (#A68966):** Reserved for \"Foil\" accents\u00e2\u20ac\u201dinteractive states, thin dividers, and premium badges.\n\n**Usage Note:** Avoid gradients. If depth is required, use solid color overlays or grain textures rather than color ramps.\n\n## Typography\n\nTypography is the cornerstone of this design system, prioritizing legibility and historical grace.\n\n- **Headlines:** Use **Playfair Display**. It provides the high-contrast \"editorial\" look essential for luxury. Headlines should often be center-aligned or offset to create visual interest.\n- **Body Text:** Use **EB Garamond**. Its classical proportions ensure long-form content feels scholarly and premium.\n- **UI & Labels:** Use **Inter**. This provides a functional, modern counterpoint to the serif fonts, ensuring that navigation and technical details remain crisp and legible.\n\n**Styling Rule:** All labels and navigation items should be set in uppercase with generous letter spacing to evoke the feeling of a bespoke brand mark.\n\n## Layout & Spacing\n\nThis design system utilizes a **Fixed Grid** for desktop to maintain the integrity of white space, transitioning to a flexible container for mobile.\n\n- **The \"Breath\":** Large section gaps (128px+) are required between distinct content blocks to prevent the UI from feeling cluttered.\n- **Asymmetry:** Content should not always span the full 12-column grid. Use \"pull quotes\" or images that occupy 5 columns with a 1-column offset to create a rhythmic, magazine-like flow.\n- **Margins:** Oversized page margins (64px) act as a frame for the content, emphasizing the \"limited edition\" nature of the products.\n\n## Elevation & Depth\n\nDepth is conveyed through **Physical Impression** rather than elevation shadows.\n\n- **Letterpress Effect:** Instead of shadows, use subtle \"inner shadows\" or 1px darker borders on input fields and containers to simulate an impression into the paper.\n- **Tonal Layering:** Use the Ivory base for the background and slightly darker or textured containers (Muted Rose at 5% opacity) to define functional areas.\n- **The \"Vellum\" Overlay:** For modals and navigation drawers, use a semi-transparent Ivory backdrop with a high-intensity background blur (20px+) to mimic the translucency of vellum paper.\n- **Outlines:** Use 0.5pt to 1pt solid lines in Deep Ink or Bronze to define structural boundaries.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0px)**. \n\nLuxury stationery is defined by the precision of a paper cutter. Rounded corners are avoided to maintain a sophisticated, architectural feel. \n\n**Exceptions:** \n- Only use organic, \"deckled\" edge masks for image containers to simulate hand-torn paper.\n- Circular shapes are reserved strictly for decorative seals or wax-stamp icon backgrounds.\n\n## Components\n\n### Buttons\nPrimary buttons are rectangular with a 1px Deep Ink border. The hover state fills the button with Deep Ink and flips typography to Ivory. \"Tertiary\" buttons are simple text links in Bronze with a 1px underline that expands on hover.\n\n### Input Fields\nInputs are minimalist, consisting of only a bottom border (1px Deep Ink). Labels sit above in `label-caps`. Focus states change the border to Bronze.\n\n### Cards\nCards for product listings should have no background or shadow. They rely on the `display-lg` typography and generous padding to separate them. Use a \"Bronze\" hairline divider (0.5px) between stacked items.\n\n### Chips & Tags\nUsed for material types (e.g., \"Handmade Paper,\" \"Gold Leaf\"). These are styled as small, text-only elements with a Bronze dot prefix, rather than enclosed pills.\n\n### Letterpress Dividers\nInstead of generic HR tags, use a centered Bronze ornament or a subtle 1px line that fades out at the edges to separate major narrative sections.\n\n### Imagery\nImages should always include a \"Macro\" version showing the texture of the paper or the height of the ink. All photos should have a slightly desaturated, warm film-grain finish.",
+                "font": "PLAYFAIR_DISPLAY",
+                "headlineFont": "PLAYFAIR_DISPLAY",
+                "headlineFontFamily": "Playfair Display",
+                "labelFont": "INTER",
+                "labelFontFamily": "Inter",
+                "namedColors": {
+                  "background": "#fcf8f7",
+                  "error": "#ba1a1a",
+                  "error_container": "#ffdad6",
+                  "inverse_on_surface": "#f4f0ef",
+                  "inverse_primary": "#c7c6c4",
+                  "inverse_surface": "#313030",
+                  "on_background": "#1c1b1b",
+                  "on_error": "#ffffff",
+                  "on_error_container": "#93000a",
+                  "on_primary": "#ffffff",
+                  "on_primary_container": "#717270",
+                  "on_primary_fixed": "#1a1c1a",
+                  "on_primary_fixed_variant": "#464745",
+                  "on_secondary": "#ffffff",
+                  "on_secondary_container": "#636262",
+                  "on_secondary_fixed": "#1c1b1b",
+                  "on_secondary_fixed_variant": "#474746",
+                  "on_surface": "#1c1b1b",
+                  "on_surface_variant": "#444844",
+                  "on_tertiary": "#ffffff",
+                  "on_tertiary_container": "#916763",
+                  "on_tertiary_fixed": "#2f1311",
+                  "on_tertiary_fixed_variant": "#623d3a",
+                  "outline": "#757874",
+                  "outline_variant": "#c5c7c3",
+                  "primary": "#5e5f5c",
+                  "primary_container": "#f9f8f5",
+                  "primary_fixed": "#e3e2e0",
+                  "primary_fixed_dim": "#c7c6c4",
+                  "secondary": "#5f5e5e",
+                  "secondary_container": "#e2dfde",
+                  "secondary_fixed": "#e5e2e1",
+                  "secondary_fixed_dim": "#c8c6c5",
+                  "surface": "#fcf8f7",
+                  "surface_bright": "#fcf8f7",
+                  "surface_container": "#f1edec",
+                  "surface_container_high": "#ebe7e6",
+                  "surface_container_highest": "#e5e2e1",
+                  "surface_container_low": "#f7f3f2",
+                  "surface_container_lowest": "#ffffff",
+                  "surface_dim": "#ddd9d8",
+                  "surface_tint": "#5e5f5c",
+                  "surface_variant": "#e5e2e1",
+                  "tertiary": "#7c5450",
+                  "tertiary_container": "#fff6f5",
+                  "tertiary_fixed": "#ffdad6",
+                  "tertiary_fixed_dim": "#eebab5"
+                },
+                "overridePrimaryColor": "#f9f8f5",
+                "overrideSecondaryColor": "#1a1a1a",
+                "overrideTertiaryColor": "#d4a39e",
+                "spacing": {
+                  "gutter": "32px",
+                  "margin-page": "64px",
+                  "section-gap": "128px",
+                  "unit": "8px"
+                },
+                "spacingScale": 2,
+                "typography": {
+                  "body-lg": {
+                    "fontFamily": "EB Garamond",
+                    "fontSize": "20px",
+                    "fontWeight": "400",
+                    "lineHeight": "1.6"
+                  },
+                  "body-md": {
+                    "fontFamily": "EB Garamond",
+                    "fontSize": "16px",
+                    "fontWeight": "400",
+                    "lineHeight": "1.6"
+                  },
+                  "cta": {
+                    "fontFamily": "Inter",
+                    "fontSize": "14px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.05em",
+                    "lineHeight": "1.0"
+                  },
+                  "display-lg": {
+                    "fontFamily": "Playfair Display",
+                    "fontSize": "64px",
+                    "fontWeight": "700",
+                    "letterSpacing": "-0.02em",
+                    "lineHeight": "1.1"
+                  },
+                  "headline-lg": {
+                    "fontFamily": "Playfair Display",
+                    "fontSize": "40px",
+                    "fontWeight": "600",
+                    "letterSpacing": "0em",
+                    "lineHeight": "1.2"
+                  },
+                  "headline-lg-mobile": {
+                    "fontFamily": "Playfair Display",
+                    "fontSize": "32px",
+                    "fontWeight": "600",
+                    "lineHeight": "1.2"
+                  },
+                  "label-caps": {
+                    "fontFamily": "Inter",
+                    "fontSize": "12px",
+                    "fontWeight": "500",
+                    "letterSpacing": "0.15em",
+                    "lineHeight": "1.2"
+                  }
+                }
+              },
+              "title": "Collections | Vale & Vellum",
+              "width": "2560"
+            }
+          ],
+          "theme": {}
+        }
+      },
+      {
+        "text": "I have designed the **Collections** page for **Vale & Vellum**, establishing a high-end editorial luxury aesthetic that prioritizes tactile craft and sensory detail.\n\n### Design Highlights:\n*   **Tactile Hero Experience:** A full-bleed editorial hero featuring a macro shot of an invitation suite, immediately communicating the brand's focus on material quality and quiet romance.\n*   **Material Provenance:** Dedicated sections like \"The Atelier Detail\" emphasize the \"why\" behind the craft\u00e2\u20ac\u201dhighlighting 600gsm cotton stocks, hand-mixed inks, and custom bronze foils to justify the brand's exclusivity.\n*   **Editorial Layout:** I utilized an asymmetric grid with generous negative space to create a \"slow reveal\" experience, encouraging users to linger on the details rather than rushing to a conversion.\n*   **Concierge Inquiry:** Instead of a generic contact form, the \"Private Appointment\" section treats every inquiry as a high-touch consultation, requesting specific event details to reinforce the concierge nature of the studio.\n*   **Refined Palette:** The visual language uses an ivory and ink base with muted rose and bronze accents, moving away from generic minimalist templates toward a more intimate, sensorial brand identity.\n\nThe design system and components have been established to ensure consistency as you expand to the Home, Process, and Inquiry pages."
+      },
+      {
+        "suggestion": "Add a scrolling parallax effect to the material detail sections."
+      },
+      {
+        "suggestion": "Create the 'Process' page with a step-by-step editorial timeline."
+      },
+      {
+        "suggestion": "Refine the inquiry form with more specific material selection options."
+      }
+    ],
+    "projectId": "5198344863339017514",
+    "sessionId": "10743307793743428340"
+  },
+  "rawGetScreens": [],
+  "rawVariants": null,
+  "screenId": "0fb2f1bc0db54973bcacf7a5b6909e76",
+  "status": "generated",
+  "variants": [
+    {
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzdkZjkyY2MyMzY2ODRkM2JhNzFiN2Q2OTIyZjNjYzA1EgsSBxDuxJTq7RkYAZIBIwoKcHJvamVjdF9pZBIVQhM1MTk4MzQ0ODYzMzM5MDE3NTE0&filename=&opi=96797242",
+      "id": "0fb2f1bc0db54973bcacf7a5b6909e76",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvPiCKabkCyejylForgjbUnxj1M32YoywqoRXJH5wk3D_zGugD4-4jCxCOXJ2skDjEH_d9-U1nkhGNHNAkJ32gPuBpXNKOSJKRJ7_5Srkv6UWLkBgd8XmOW5LzS-XYe6O1XxT78CtnnfT1knCVjOn_G2s_pEirDEioux7NWbXamqS6N3p_EuxGtIOZs01wvPc7RrLh8wOno2gSMb-3dInENg30F5Km1TmZjEIRS4s5QOi4BsmRV38NNlw",
+      "label": "Base direction",
+      "projectId": "5198344863339017514",
+      "screenId": "0fb2f1bc0db54973bcacf7a5b6909e76",
+      "sourcePath": "outputComponents[1].design.screens[2]",
+      "title": "Collections | Vale & Vellum"
+    }
+  ],
+  "warnings": []
+}

@@ -14,6 +14,9 @@ const APPROVALS = [
 
 const TABS = [
   ["runs", "Operating Runs"],
+  ["spine", "Execution Spine"],
+  ["providers", "Provider Debug"],
+  ["autoeval", "AutoEval"],
   ["ideas", "Ideas"],
   ["judgment", "Judgment"],
   ["gates", "Gate Results"],
@@ -21,6 +24,7 @@ const TABS = [
   ["memory", "Memory"],
   ["styles", "Style Profiles"],
   ["integrations", "Integrations"],
+  ["authority", "Authority"],
   ["approvals", "Approvals"],
   ["launch", "Launch"]
 ];
@@ -34,6 +38,11 @@ export function FridayStudioView() {
   const fridayOs = data.fridayOs || {};
   const judgment = data.judgment || {};
   const projectIdeas = data.projectIdeas || {};
+  const autoeval = data.autoeval || {};
+  const toolRegistry = data.toolRegistry || {};
+  const traceState = data.traces || {};
+  const modelGateway = data.modelGateway || {};
+  const autonomyControl = data.autonomyControl || {};
   const [runs, setRuns] = useState(() => fridayOs.runs || []);
   const mergedRuns = useMemo(() => dedupeRuns([...(runs || []), ...(fridayOs.runs || [])]), [runs, fridayOs.runs]);
   const [selectedId, setSelectedId] = useState(fridayOs.latest?.id || mergedRuns[0]?.id || 0);
@@ -42,11 +51,28 @@ export function FridayStudioView() {
   const [busy, setBusy] = useState("");
   const [status, setStatus] = useState("");
   const [artifact, setArtifact] = useState(null);
+  const [traceDetail, setTraceDetail] = useState(null);
+  const [toolResult, setToolResult] = useState(null);
+  const [contractResult, setContractResult] = useState(null);
+  const [providerDebug, setProviderDebug] = useState(null);
   const [judgmentResult, setJudgmentResult] = useState(null);
   const [ideaResult, setIdeaResult] = useState(projectIdeas.latest || null);
   const [form, setForm] = useState({ request: "", root: "", target: "", production_profile: "auto", risk_level: "medium", max_fix_attempts: 0 });
+  const [toolForm, setToolForm] = useState({ name: "documents.read", payload: "{\n  \"path\": \"\"\n}" });
+  const [contractForm, setContractForm] = useState({ kind: "agent_result", payload: "{\n  \"summary\": \"Verified with evidence.\",\n  \"status\": \"done\"\n}" });
   const [styleForm, setStyleForm] = useState({ name: "", framework: "nextjs", description: "", required_paths: "src/app\nsrc/components\nsrc/services\nsrc/store\nsrc/hooks\nsrc/lib\nsrc/types", rules: "" });
   const [ideaForm, setIdeaForm] = useState({ context: "", audience: "individuals, small teams, and SMBs", limit: 5, max_sources: 8 });
+  const [autoevalForm, setAutoevalForm] = useState({
+    root: "",
+    request: "",
+    mode: "product_quality",
+    target_files: "src/app/page.tsx\nsrc/app/globals.css",
+    experiment_command: "",
+    min_delta: 1,
+    apply_fixes: false,
+    run_gates: false
+  });
+  const [autoevalResult, setAutoevalResult] = useState(autoeval.latest || null);
   const [judgmentForm, setJudgmentForm] = useState({
     text: "",
     result: "",
@@ -70,6 +96,20 @@ export function FridayStudioView() {
       await refresh();
     } catch (err) {
       setStatus(err.message || "Friday OS run failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function setAuthorityMode(mode) {
+    setBusy(`authority:${mode}`);
+    setStatus("");
+    try {
+      const result = await api("/autonomy-control/mode", { method: "PUT", body: JSON.stringify({ mode }) });
+      setStatus(result.summary || `Authority mode set to ${labelize(mode)}.`);
+      await refresh();
+    } catch (err) {
+      setStatus(err.message || "Authority mode update failed.");
     } finally {
       setBusy("");
     }
@@ -104,6 +144,77 @@ export function FridayStudioView() {
       setTab("proof");
     } catch (err) {
       setStatus(err.message || "Could not open artifact.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function openTrace(traceId) {
+    const id = String(traceId || "").trim();
+    if (!id) return;
+    setBusy(`trace:${id}`);
+    setStatus("");
+    try {
+      const result = await api(`/traces/${encodeURIComponent(id)}`);
+      setTraceDetail(result);
+      setTab("spine");
+    } catch (err) {
+      setStatus(err.message || "Could not open trace.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function refreshProviderDebug() {
+    const root = selected?.root || form.root || "";
+    setBusy("provider-debug");
+    setStatus("");
+    try {
+      const result = await api(`/design/stitch/debug?root=${encodeURIComponent(root)}&limit=12`);
+      setProviderDebug(result);
+      setTab("providers");
+      setStatus(result.summary || "Stitch provider debug loaded.");
+    } catch (err) {
+      setStatus(err.message || "Could not load Stitch provider debug.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function executeSharedTool(event) {
+    event.preventDefault();
+    setBusy("tool-execute");
+    setStatus("");
+    try {
+      const payload = parseResult(toolForm.payload);
+      const result = await api("/tools/execute", {
+        method: "POST",
+        body: JSON.stringify({ name: toolForm.name, payload })
+      });
+      setToolResult(result);
+      if (result.trace_id) await openTrace(result.trace_id);
+      setStatus(result.summary || "Tool execution recorded.");
+      await refresh();
+    } catch (err) {
+      setStatus(err.message || "Tool execution failed.");
+    } finally {
+      setBusy("");
+    }
+  }
+
+  async function validateContract(event) {
+    event.preventDefault();
+    setBusy("contract-validate");
+    setStatus("");
+    try {
+      const result = await api("/structured-output/validate", {
+        method: "POST",
+        body: JSON.stringify({ kind: contractForm.kind, payload: parseResult(contractForm.payload) })
+      });
+      setContractResult(result);
+      setStatus(result.ok ? "Structured output contract passed." : "Structured output contract failed.");
+    } catch (err) {
+      setStatus(err.message || "Structured output validation failed.");
     } finally {
       setBusy("");
     }
@@ -210,6 +321,32 @@ export function FridayStudioView() {
     }
   }
 
+  async function runAutoEval(action) {
+    setBusy(`autoeval-${action}`);
+    setStatus("");
+    const payload = {
+      ...autoevalForm,
+      root: autoevalForm.root || selected?.root || form.root,
+      request: autoevalForm.request || selected?.request || form.request || "Improve this project using objective AutoEval evidence.",
+      target_files: lines(autoevalForm.target_files),
+      min_delta: Number(autoevalForm.min_delta || 0),
+      stack: selected?.stack || selected?.architecture?.stack || {},
+      timeout: 180
+    };
+    try {
+      const endpoint = action === "program" ? "/autoeval/program" : action === "score" ? "/autoeval/score" : "/autoeval/run";
+      const result = await api(endpoint, { method: "POST", body: JSON.stringify(payload) });
+      setAutoevalResult(result);
+      setTab("autoeval");
+      setStatus(result.summary || `AutoEval ${action} complete.`);
+      await refresh();
+    } catch (err) {
+      setStatus(err.message || `AutoEval ${action} failed.`);
+    } finally {
+      setBusy("");
+    }
+  }
+
   function judgmentPayload() {
     return {
       text: judgmentForm.text,
@@ -294,6 +431,7 @@ export function FridayStudioView() {
                   <button className={ACTION_SECONDARY} type="button" onClick={() => runAction("pause", { note: "Paused from Friday Studio" })} disabled={!selected || Boolean(busy)}><Pause size={13} /> Pause</button>
                   <button className={ACTION_SECONDARY} type="button" onClick={() => runAction("resume")} disabled={!selected || Boolean(busy)}><Play size={13} /> Resume</button>
                   <button className={ACTION_SECONDARY} type="button" onClick={() => runAction("rerun-gates", { failed_only: true })} disabled={!selected || Boolean(busy)}><RefreshCw size={13} /> Rerun Failed</button>
+                  {selected?.metadata?.trace_id ? <button className={ACTION_SECONDARY} type="button" onClick={() => openTrace(selected.metadata.trace_id)} disabled={Boolean(busy)}><GitBranch size={13} /> Trace</button> : null}
                   {selected?.preview_url ? <a className={ACTION_PRIMARY} href={selected.preview_url} target="_blank" rel="noreferrer"><ExternalLink size={13} /> Preview</a> : null}
                 </div>
               </div>
@@ -315,6 +453,9 @@ export function FridayStudioView() {
             </nav>
 
             {tab === "runs" ? <RunSteps run={selected} /> : null}
+            {tab === "spine" ? <ExecutionSpineCenter modelGateway={modelGateway} toolRegistry={toolRegistry} traceState={traceState} traceDetail={traceDetail} toolForm={toolForm} setToolForm={setToolForm} toolResult={toolResult} contractForm={contractForm} setContractForm={setContractForm} contractResult={contractResult} onExecuteTool={executeSharedTool} onValidateContract={validateContract} onOpenTrace={openTrace} busy={busy} /> : null}
+            {tab === "providers" ? <ProviderDebugCenter debug={providerDebug} selected={selected} onRefresh={refreshProviderDebug} onOpenArtifact={openArtifact} busy={busy} /> : null}
+            {tab === "autoeval" ? <AutoEvalCenter autoeval={autoeval} form={autoevalForm} setForm={setAutoevalForm} result={autoevalResult} onRun={runAutoEval} onOpenArtifact={openArtifact} busy={busy} /> : null}
             {tab === "ideas" ? <ProjectIdeasCenter projectIdeas={projectIdeas} form={ideaForm} setForm={setIdeaForm} result={ideaResult} onResearch={researchIdeas} onOpenArtifact={openArtifact} busy={busy} /> : null}
             {tab === "judgment" ? <JudgmentCenter judgment={judgment} form={judgmentForm} setForm={setJudgmentForm} result={judgmentResult} onReview={reviewOutput} onChallenge={challengeClaim} onSelfReview={runSelfReview} onDebug={debugFailure} onSaveLesson={saveLesson} busy={busy} /> : null}
             {tab === "gates" ? <GateResults gates={gates} /> : null}
@@ -322,6 +463,7 @@ export function FridayStudioView() {
             {tab === "memory" ? <MemoryCenter memory={memory} /> : null}
             {tab === "styles" ? <StyleProfiles profiles={profiles} form={styleForm} setForm={setStyleForm} onSave={saveStyleProfile} onApply={applyStyle} busy={busy} /> : null}
             {tab === "integrations" ? <IntegrationCenter integrations={integrations} /> : null}
+            {tab === "authority" ? <AuthorityCenter control={autonomyControl} onSetMode={setAuthorityMode} busy={busy} /> : null}
             {tab === "approvals" ? <ApprovalCenter approvals={approvals} onApprove={approve} busy={busy} /> : null}
             {tab === "launch" ? <LaunchCenter run={selected} /> : null}
           </main>
@@ -410,6 +552,301 @@ function ProjectIdeasCenter({ projectIdeas, form, setForm, result, onResearch, o
               </div>
             ))}
             {!sources.length ? <p className="text-[12px] text-friday-muted">No sources collected yet.</p> : null}
+          </div>
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
+function AutoEvalCenter({ autoeval, form, setForm, result, onRun, onOpenArtifact, busy }) {
+  const latest = result || autoeval?.latest || {};
+  const recent = autoeval?.recent || [];
+  const artifacts = [latest.program_path, latest.config_path, ...(latest.artifacts || [])].filter(Boolean);
+  return (
+    <div className="grid gap-3 xl:grid-cols-[420px_minmax(0,1fr)]">
+      <div className="grid content-start gap-3">
+        <Panel title="AutoEval Lab" icon={Brain}>
+          <div className="grid gap-3">
+            <textarea className={`${FIELD_CLASS} min-h-24 resize-y`} value={form.request} onChange={(event) => setForm((current) => ({ ...current, request: event.target.value }))} placeholder="Objective for the experiment or score run" />
+            <input className={FIELD_CLASS} value={form.root} onChange={(event) => setForm((current) => ({ ...current, root: event.target.value }))} placeholder="Project root; selected run root is used when blank" />
+            <select className={FIELD_CLASS} value={form.mode} onChange={(event) => setForm((current) => ({ ...current, mode: event.target.value }))}>
+              <option value="product_quality">Product Quality</option>
+              <option value="design_quality">Design Quality</option>
+              <option value="frontend_quality">Frontend Quality</option>
+              <option value="coding_quality">Coding Quality</option>
+            </select>
+            <textarea className={`${FIELD_CLASS} min-h-20 resize-y font-mono`} value={form.target_files} onChange={(event) => setForm((current) => ({ ...current, target_files: event.target.value }))} placeholder="Constrained files, one per line" />
+            <input className={FIELD_CLASS} value={form.experiment_command} onChange={(event) => setForm((current) => ({ ...current, experiment_command: event.target.value }))} placeholder="Optional safe command, e.g. python improve.py" />
+            <div className="grid grid-cols-3 gap-2">
+              <input className={FIELD_CLASS} type="number" min="0" max="100" step="0.5" value={form.min_delta} onChange={(event) => setForm((current) => ({ ...current, min_delta: event.target.value }))} title="Minimum improvement" />
+              <label className="flex min-h-10 items-center gap-2 border border-friday-line bg-[#10161d] px-3 font-mono text-[11px] text-[#dfe9f6]">
+                <input type="checkbox" checked={Boolean(form.apply_fixes)} onChange={(event) => setForm((current) => ({ ...current, apply_fixes: event.target.checked }))} />
+                Fixes
+              </label>
+              <label className="flex min-h-10 items-center gap-2 border border-friday-line bg-[#10161d] px-3 font-mono text-[11px] text-[#dfe9f6]">
+                <input type="checkbox" checked={Boolean(form.run_gates)} onChange={(event) => setForm((current) => ({ ...current, run_gates: event.target.checked }))} />
+                Gates
+              </label>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button className={ACTION_SECONDARY} type="button" onClick={() => onRun("program")} disabled={busy === "autoeval-program"}>{busy === "autoeval-program" ? <Loader2 className="animate-spin" size={14} /> : <FileText size={14} />} Program</button>
+              <button className={ACTION_SECONDARY} type="button" onClick={() => onRun("score")} disabled={busy === "autoeval-score"}>{busy === "autoeval-score" ? <Loader2 className="animate-spin" size={14} /> : <ClipboardCheck size={14} />} Score</button>
+              <button className={ACTION_PRIMARY} type="button" onClick={() => onRun("run")} disabled={busy === "autoeval-run"}>{busy === "autoeval-run" ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} />} Run Experiment</button>
+            </div>
+          </div>
+        </Panel>
+        <Panel title="Recent Runs" icon={GitBranch}>
+          <div className="grid gap-2">
+            {recent.length ? recent.map((item) => (
+              <div className="border border-friday-line bg-[#10161d] p-3" key={item.id || item.run_key || item.timestamp}>
+                <div className="flex items-center gap-2">
+                  <Badge>{item.status || "recorded"}</Badge>
+                  <span className="font-mono text-[10px] text-friday-muted">{item.timestamp}</span>
+                </div>
+                <p className="mt-2 text-[12px] text-[#dfe9f6]">{item.summary}</p>
+              </div>
+            )) : <p className="text-[12px] text-friday-muted">No AutoEval runs yet.</p>}
+          </div>
+        </Panel>
+      </div>
+      <div className="grid content-start gap-3">
+        <Panel title="Latest Result" icon={ClipboardCheck}>
+          <div className="grid gap-3 md:grid-cols-4">
+            <Metric label="Status" value={latest.status || "none"} warn={latest.status === "reverted"} />
+            <Metric label="Baseline" value={scoreLabel(latest.baseline_score ?? latest.baseline?.score)} warn={false} />
+            <Metric label="Final" value={scoreLabel(latest.final_score ?? latest.score ?? latest.final?.score)} warn={false} />
+            <Metric label="Delta" value={scoreDelta(latest.improvement)} warn={Number(latest.improvement || 0) < 0} />
+          </div>
+          <p className="mt-3 text-[13px] text-[#dfe9f6]">{latest.summary || autoeval?.summary || "Create an AutoEval program or score a project to start."}</p>
+        </Panel>
+        <Panel title="Score Breakdown" icon={SlidersHorizontal}>
+          <pre className="max-h-[360px] overflow-auto whitespace-pre-wrap border border-friday-line bg-[#080d12] p-3 font-mono text-[11px] text-[#dfe9f6]">{JSON.stringify(latest.breakdown || latest.final?.breakdown || latest.scores || {}, null, 2)}</pre>
+        </Panel>
+        <Panel title="Artifacts" icon={FileText}>
+          <div className="flex flex-wrap gap-2">
+            {artifacts.length ? artifacts.map((path) => (
+              <button className="flex min-h-10 items-center gap-2 border border-friday-line bg-[#10161d] px-3 text-left font-mono text-[10px] text-[#dfe9f6] hover:border-friday-accent" key={path} type="button" onClick={() => onOpenArtifact(path)} disabled={busy === path}>
+                <FileText size={13} />
+                <span className="max-w-[260px] truncate">{path}</span>
+              </button>
+            )) : <p className="text-[12px] text-friday-muted">No AutoEval artifacts yet.</p>}
+          </div>
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
+function scoreLabel(value) {
+  if (value === undefined || value === null || value === "") return "n/a";
+  return `${Number(value).toFixed(1)}`;
+}
+
+function scoreDelta(value) {
+  const numeric = Number(value || 0);
+  return `${numeric >= 0 ? "+" : ""}${numeric.toFixed(1)}`;
+}
+
+function ProviderDebugCenter({ debug, selected, onRefresh, onOpenArtifact, busy }) {
+  const latest = debug?.latest || {};
+  const provider = debug?.provider_status || {};
+  const reports = debug?.reports || [];
+  const attempts = debug?.attempts || [];
+  const rawManifests = debug?.raw_manifests || [];
+  const artifactItems = [
+    ...reports.map((item) => item.path),
+    ...attempts.map((item) => item.path),
+    ...rawManifests.map((item) => item.path),
+    ...((latest?.artifacts || []).filter(Boolean))
+  ];
+  return (
+    <div className="grid gap-3 xl:grid-cols-[420px_minmax(0,1fr)]">
+      <div className="grid content-start gap-3">
+        <Panel title="Stitch Health" icon={SlidersHorizontal}>
+          <div className="grid gap-3">
+            <button className={ACTION_PRIMARY} type="button" onClick={onRefresh} disabled={busy === "provider-debug"}>
+              {busy === "provider-debug" ? <Loader2 className="animate-spin" size={14} /> : <RefreshCw size={14} />}
+              Refresh Stitch Debug
+            </button>
+            <InfoBlock label="Selected Root" value={debug?.root || selected?.root || "No root selected."} />
+            <InfoBlock label="Configured" value={provider?.ready ? "ready" : provider?.reason || "unknown"} />
+            <InfoBlock label="Fallback Policy" value={debug?.fallback_policy || "not loaded"} />
+            <InfoBlock label="Summary" value={debug?.summary || "Refresh to inspect Stitch timing, raw responses, and fallback state."} />
+          </div>
+        </Panel>
+
+        <Panel title="Latest Provider Result" icon={ClipboardCheck}>
+          <div className="grid gap-3">
+            <Metric label="Status" value={latest?.status || "none"} warn={!latest?.ok} />
+            <Metric label="Attempts" value={String(latest?.attempt_count || 0)} warn={Number(latest?.attempt_count || 0) > 1 || !latest?.attempt_count} />
+            <InfoBlock label="Source" value={latest?.ok ? "Google Stitch" : latest?.failure_reason ? "Stitch failed or returned unusable output" : "No run recorded"} />
+            <InfoBlock label="Model" value={latest?.model_id || provider?.model || "unknown"} />
+            <InfoBlock label="Project ID" value={latest?.project_id || "not returned"} />
+            <InfoBlock label="Screen ID" value={latest?.screen_id || "not returned"} />
+            <InfoBlock label="Failure Reason" value={latest?.failure_reason || "none"} />
+          </div>
+        </Panel>
+      </div>
+
+      <div className="grid content-start gap-3">
+        <Panel title="Attempt Timeline" icon={GitBranch}>
+          <div className="grid gap-2">
+            {(latest?.attempts || attempts.map((item) => item.data) || []).map((attempt, index) => (
+              <StatusRow
+                key={`${attempt?.attempt || index}-${attempt?.status || "attempt"}`}
+                label={`Attempt ${attempt?.attempt || index + 1}: ${attempt?.purpose || "base"}`}
+                status={attempt?.status || "recorded"}
+                summary={`${attempt?.summary || attempt?.failure_reason || "No summary."} ${attempt?.duration_ms ? `(${attempt.duration_ms}ms)` : ""}`}
+              />
+            ))}
+            {!latest?.attempts?.length && !attempts.length ? <p className="text-[12px] text-friday-muted">No Stitch attempts recorded for this root yet.</p> : null}
+          </div>
+        </Panel>
+
+        <Panel title="Provider Artifacts" icon={FileText}>
+          <div className="grid gap-2">
+            {dedupeStrings(artifactItems).slice(0, 32).map((path) => (
+              <button className="flex min-h-10 items-center gap-2 border border-friday-line bg-[#10161d] px-3 text-left font-mono text-[10px] text-[#dfe9f6] hover:border-friday-accent" key={path} type="button" onClick={() => onOpenArtifact(path)} disabled={busy === path}>
+                {busy === path ? <Loader2 className="animate-spin" size={13} /> : <FileText size={13} />}
+                <span className="truncate">{path}</span>
+              </button>
+            ))}
+            {!artifactItems.length ? <p className="text-[12px] text-friday-muted">No Stitch debug artifacts found yet.</p> : null}
+          </div>
+        </Panel>
+
+        <Panel title="Raw Debug Payload" icon={Database}>
+          <JsonBlock value={debug || {}} />
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
+function ExecutionSpineCenter({
+  modelGateway,
+  toolRegistry,
+  traceState,
+  traceDetail,
+  toolForm,
+  setToolForm,
+  toolResult,
+  contractForm,
+  setContractForm,
+  contractResult,
+  onExecuteTool,
+  onValidateContract,
+  onOpenTrace,
+  busy
+}) {
+  const tools = toolRegistry?.tools || [];
+  const traces = traceState?.traces || [];
+  const nativeProviders = Object.entries(modelGateway?.native_gateway?.provider_limits || {});
+  const adapters = Object.values(modelGateway?.langchain_adapters?.adapters || {});
+  return (
+    <div className="grid gap-3 xl:grid-cols-[420px_minmax(0,1fr)]">
+      <div className="grid content-start gap-3">
+        <Panel title="Model Gateway" icon={Brain}>
+          <div className="grid gap-3">
+            <InfoBlock label="Active Layer" value={modelGateway?.layer || "friday_internal_model_gateway"} />
+            <InfoBlock label="Decision" value={modelGateway?.summary || "Friday uses its native model gateway, with LangChain adapters only where useful."} />
+            <div className="grid gap-2">
+              {(modelGateway?.architecture || []).map((item, index) => (
+                <StatusRow key={`${index}-${item}`} label={`${index + 1}. ${item}`} status={index < 2 ? "passed" : "planned"} summary={index === 1 ? "Provider routing, fallback, approval, logs, and traces stay custom." : ""} />
+              ))}
+            </div>
+          </div>
+        </Panel>
+
+        <Panel title="Shared Tool Executor" icon={SlidersHorizontal}>
+          <form className="grid gap-2" onSubmit={onExecuteTool}>
+            <select className={FIELD_CLASS} value={toolForm.name} onChange={(event) => setToolForm((current) => ({ ...current, name: event.target.value }))}>
+              {tools.map((tool) => <option key={tool.name} value={tool.name}>{tool.name}</option>)}
+              {!tools.length ? <option value="documents.read">documents.read</option> : null}
+            </select>
+            <textarea className={`${FIELD_CLASS} min-h-28 resize-y font-mono`} value={toolForm.payload} onChange={(event) => setToolForm((current) => ({ ...current, payload: event.target.value }))} />
+            <button className={ACTION_PRIMARY} type="submit" disabled={busy === "tool-execute"}>
+              {busy === "tool-execute" ? <Loader2 className="animate-spin" size={14} /> : <Play size={14} />}
+              Execute Tool
+            </button>
+          </form>
+          {toolResult ? <JsonBlock value={toolResult} /> : null}
+        </Panel>
+
+        <Panel title="Structured Output Contract" icon={ClipboardCheck}>
+          <form className="grid gap-2" onSubmit={onValidateContract}>
+            <select className={FIELD_CLASS} value={contractForm.kind} onChange={(event) => setContractForm((current) => ({ ...current, kind: event.target.value }))}>
+              <option value="agent_result">agent_result</option>
+              <option value="design_brief">design_brief</option>
+              <option value="gate_report">gate_report</option>
+              <option value="fix_plan">fix_plan</option>
+            </select>
+            <textarea className={`${FIELD_CLASS} min-h-28 resize-y font-mono`} value={contractForm.payload} onChange={(event) => setContractForm((current) => ({ ...current, payload: event.target.value }))} />
+            <button className={ACTION_SECONDARY} type="submit" disabled={busy === "contract-validate"}>
+              {busy === "contract-validate" ? <Loader2 className="animate-spin" size={14} /> : <ShieldCheck size={14} />}
+              Validate
+            </button>
+          </form>
+          {contractResult ? <JsonBlock value={contractResult} /> : null}
+        </Panel>
+      </div>
+
+      <div className="grid content-start gap-3">
+        <Panel title="Provider Routing" icon={GitBranch}>
+          <div className="grid gap-2 md:grid-cols-2">
+            {nativeProviders.map(([provider, payload]) => (
+              <ProviderCard key={provider} provider={provider} payload={payload} />
+            ))}
+            {!nativeProviders.length ? <p className="text-[12px] text-friday-muted">No provider routing snapshot loaded.</p> : null}
+          </div>
+        </Panel>
+
+        <Panel title="LangChain Adapter Layer" icon={Database}>
+          <div className="mb-3 grid gap-3 md:grid-cols-2">
+            <InfoBlock label="Ready" value={String(Boolean(modelGateway?.langchain_adapters?.ready))} />
+            <InfoBlock label="Core" value={modelGateway?.langchain_adapters?.langchain_core_available ? "installed" : "not installed"} />
+          </div>
+          <div className="grid gap-2 md:grid-cols-2">
+            {adapters.map((adapter) => (
+              <div className="border border-friday-line bg-[#10161d] p-3" key={adapter.provider}>
+                <div className="flex items-center gap-2">
+                  <strong className="text-[12px]">{adapter.provider}</strong>
+                  <Badge>{adapter.ready ? "ready" : "blocked"}</Badge>
+                </div>
+                <p className="mt-2 text-[12px] text-friday-muted">{adapter.reason}</p>
+                <p className="mt-2 font-mono text-[10px] text-friday-muted">{adapter.package} / {adapter.model}</p>
+              </div>
+            ))}
+            {!adapters.length ? <p className="text-[12px] text-friday-muted">No LangChain adapter status loaded.</p> : null}
+          </div>
+        </Panel>
+
+        <Panel title="Trace Explorer" icon={Search}>
+          <div className="grid gap-2 lg:grid-cols-[280px_minmax(0,1fr)]">
+            <div className="grid content-start gap-2">
+              {traces.map((trace) => (
+                <button className="grid gap-1 border border-friday-line bg-[#10161d] p-3 text-left hover:border-friday-accent" key={trace.trace_id} type="button" onClick={() => onOpenTrace(trace.trace_id)} disabled={busy === `trace:${trace.trace_id}`}>
+                  <span className="truncate font-mono text-[10px] text-friday-accent">{trace.trace_id}</span>
+                  <strong className="line-clamp-2 text-[12px]">{trace.title || trace.kind}</strong>
+                  <span className="font-mono text-[10px] text-friday-muted">{trace.kind}</span>
+                </button>
+              ))}
+              {!traces.length ? <p className="text-[12px] text-friday-muted">No traces recorded yet.</p> : null}
+            </div>
+            <div className="min-w-0 border border-friday-line bg-[#10161d] p-3">
+              {traceDetail ? (
+                <div className="grid gap-3">
+                  <InfoBlock label="Trace" value={traceDetail.trace_id} />
+                  <InfoBlock label="Root" value={traceDetail.root || "No root recorded."} />
+                  <div className="grid gap-2">
+                    {(traceDetail.events || []).map((event) => (
+                      <StatusRow key={event.id} label={`${event.event_type}: ${event.title}`} status={event.status || "recorded"} summary={event.summary} />
+                    ))}
+                  </div>
+                </div>
+              ) : <p className="text-[12px] text-friday-muted">Open a trace to inspect phase, tool, approval, and proof events.</p>}
+            </div>
           </div>
         </Panel>
       </div>
@@ -612,6 +1049,81 @@ function IntegrationCenter({ integrations }) {
   );
 }
 
+function AuthorityCenter({ control, onSetMode, busy }) {
+  const current = control?.authority_mode || "approval_gated";
+  const modes = control?.available_modes?.length ? control.available_modes : [
+    { id: "approval_gated", label: "Approval gated", description: "Friday pauses at approval gates before acting." },
+    { id: "full_access", label: "Full access", description: "Friday can run trusted work without ask-first approvals." }
+  ];
+  const trustedRoots = control?.trusted_roots || [];
+  const recent = control?.events || [];
+  return (
+    <div className="grid gap-3 xl:grid-cols-[420px_minmax(0,1fr)]">
+      <div className="grid content-start gap-3">
+        <Panel title="Authority Mode" icon={ShieldCheck}>
+          <div className="grid gap-3">
+            <Metric label="Current Mode" value={labelize(current)} warn={current !== "full_access"} />
+            <InfoBlock label="Summary" value={control?.summary || "Authority control is not loaded yet."} />
+            <div className="grid gap-2">
+              {modes.map((mode) => {
+                const active = current === mode.id;
+                return (
+                  <button
+                    className={`grid min-h-[92px] gap-2 border p-3 text-left ${active ? "border-friday-accent bg-[#202832]" : "border-friday-line bg-[#10161d] hover:border-friday-accent"}`}
+                    key={mode.id}
+                    type="button"
+                    onClick={() => onSetMode(mode.id)}
+                    disabled={busy === `authority:${mode.id}` || active}
+                  >
+                    <span className="flex items-center gap-2">
+                      {busy === `authority:${mode.id}` ? <Loader2 className="animate-spin text-friday-accent" size={15} /> : mode.id === "full_access" ? <KeyRound className="text-friday-accent" size={15} /> : <ShieldCheck className="text-friday-accent" size={15} />}
+                      <strong className="text-[13px]">{mode.label}</strong>
+                      {active ? <Badge>active</Badge> : null}
+                    </span>
+                    <span className="text-[12px] text-friday-muted">{mode.description}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </Panel>
+
+        <Panel title="Trusted Scope" icon={Database}>
+          <div className="grid gap-2">
+            {trustedRoots.map((root) => <InfoBlock key={root} label="Root" value={root} />)}
+            {!trustedRoots.length ? <p className="text-[12px] text-friday-muted">No trusted roots reported.</p> : null}
+          </div>
+        </Panel>
+      </div>
+
+      <div className="grid content-start gap-3">
+        <Panel title="Authority Facts" icon={ClipboardCheck}>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Metric label="Enabled" value={control?.enabled ? "yes" : "no"} warn={!control?.enabled} />
+            <Metric label="Full Access" value={control?.full_access ? "on" : "off"} warn={!control?.full_access} />
+            <Metric label="Hard Stops" value={String((control?.hard_stop_keys || []).length)} warn={false} />
+          </div>
+          <p className="mt-3 text-[12px] text-friday-muted">Block rules remain absolute. Full access only bypasses ask-first gates inside trusted project scopes.</p>
+        </Panel>
+
+        <Panel title="Ask-First Keys" icon={AlertTriangle}>
+          <div className="grid gap-2 md:grid-cols-2">
+            {(control?.hard_stop_keys || []).slice(0, 16).map((key) => <StatusRow key={key} label={key} status={control?.full_access ? "verified" : "blocked"} summary={control?.full_access ? "Ask gate can be bypassed in trusted full-access scope unless the permission rule is block." : "Approval-gated mode keeps this ask-first."} />)}
+            {!(control?.hard_stop_keys || []).length ? <p className="text-[12px] text-friday-muted">No hard-stop keys reported.</p> : null}
+          </div>
+        </Panel>
+
+        <Panel title="Mode Events" icon={GitBranch}>
+          <div className="grid gap-2">
+            {recent.map((event) => <StatusRow key={event.id} label={event.event_type || "authority event"} status="verified" summary={`${event.summary || ""} ${event.timestamp || ""}`} />)}
+            {!recent.length ? <p className="text-[12px] text-friday-muted">No authority mode changes recorded yet.</p> : null}
+          </div>
+        </Panel>
+      </div>
+    </div>
+  );
+}
+
 function ApprovalCenter({ approvals, onApprove, busy }) {
   return (
     <Panel title="Approval Center" icon={CheckCircle2}>
@@ -657,6 +1169,25 @@ function Panel({ title, icon: Icon, children }) {
 
 function Metric({ label, value, warn }) {
   return <section className="border border-friday-line bg-[#1a2028] p-3"><span className="font-mono text-[10px] uppercase tracking-[.08em] text-friday-muted">{label}</span><strong className={`mt-1 block text-[18px] ${warn ? "text-[#ffb56d]" : "text-friday-accent"}`}>{value}</strong></section>;
+}
+
+function ProviderCard({ provider, payload }) {
+  const blocked = !payload?.configured || Number(payload?.backoff_seconds || 0) > 0;
+  return (
+    <div className="border border-friday-line bg-[#10161d] p-3">
+      <div className="flex items-center gap-2">
+        <strong className="text-[12px]">{provider}</strong>
+        <Badge>{payload?.online ? "online" : "local"}</Badge>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2 text-[11px]">
+        <InfoBlock label="Configured" value={payload?.configured ? "yes" : "no"} />
+        <InfoBlock label="Backoff" value={`${payload?.backoff_seconds || 0}s`} />
+        <InfoBlock label="Concurrency" value={String(payload?.max_concurrency || 0)} />
+        <InfoBlock label="Failures" value={String(payload?.failure_streak || 0)} />
+      </div>
+      {blocked ? <p className="mt-2 text-[11px] text-[#ffb56d]">Provider is not currently a clean first choice.</p> : null}
+    </div>
+  );
 }
 
 function GateRow({ gate }) {
@@ -721,6 +1252,10 @@ function labelize(value) {
 
 function lines(value) {
   return String(value || "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+}
+
+function dedupeStrings(items) {
+  return Array.from(new Set((items || []).map((item) => String(item || "").trim()).filter(Boolean)));
 }
 
 function parseResult(value, fallbackText = "") {
