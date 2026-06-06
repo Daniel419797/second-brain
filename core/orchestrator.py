@@ -82,6 +82,7 @@ ROUTER_BUILD = "2026-05-22-logo-image-routing-v1"
 DESTRUCTIVE = {"send_email", "delete_file"}
 PRE_DIRECT_INTENTS = {
     "start_coding_project",
+    "project_ideas",
     "create_agent_task",
     "create_reminder",
     "generate_image",
@@ -759,6 +760,9 @@ def _conversation_messages(user_text: str, facts: list[str]) -> list[dict[str, A
     messages = memory.get_messages()[-max_messages:]
     if not messages or messages[-1].get("content") != user_text:
         messages.append({"role": "user", "content": user_text})
+    style = _conversation_style_context(user_text)
+    if style:
+        messages = [{"role": "user", "content": style}] + messages
     context = memory.build_context(user_text, facts=facts)
     if context:
         messages = [{"role": "user", "content": "Relevant context:\n" + context}] + messages
@@ -766,6 +770,26 @@ def _conversation_messages(user_text: str, facts: list[str]) -> list[dict[str, A
     if cognitive:
         messages = [{"role": "user", "content": cognitive}] + messages
     return messages
+
+
+def _conversation_style_context(user_text: str) -> str:
+    if not bool(config_value("conversation_style_context_enabled", True)):
+        return ""
+    lines = [
+        "Conversation style for this turn:",
+        "- Treat this as an ongoing chat, not a stateless command.",
+        "- Respond to the user's actual wording; a brief acknowledgement is okay when it makes the reply feel more human.",
+        "- Keep the useful answer close to the top, and use recent messages for continuity.",
+        "- If the user is asking for an action, execute or route the action first, then summarize plainly.",
+        "- Avoid canned closers, generic reassurance, and repeated status-bot phrasing.",
+    ]
+    try:
+        guidance = emotion_tone.response_guidance(user_text)
+        if guidance.get("should_adjust_reply"):
+            lines.append(f"- Tone guidance: {guidance.get('need')}")
+    except Exception:
+        pass
+    return "\n".join(lines)
 
 
 def _cognitive_context_for(user_text: str) -> str:
@@ -852,6 +876,10 @@ def _handle_direct_command(user_text: str) -> str:
     if reply:
         return reply
 
+    reply = _direct_project_ideas(text)
+    if reply:
+        return reply
+
     reply = _direct_agent_team(text)
     if reply:
         return reply
@@ -928,12 +956,13 @@ def _direct_personal_command_memory(text: str) -> str:
 def _direct_small_talk(text: str) -> str:
     lowered = text.lower()
     addressed = _strip_assistant_names(lowered)
-    if lowered in {"hello", "hi", "hey", "hey jarvis", "jarvis"}:
-        return "I'm here."
+    if addressed in {"hello", "hi", "hey"} or lowered in {"hey jarvis", "jarvis"}:
+        name = _remembered_name()
+        return f"Hey {name}. What are we getting into today?" if name else "Hey. What are we getting into today?"
     if re.fullmatch(r"(?:thanks|thank you|thank you very much|appreciate it)", addressed):
         return "You're welcome."
     if re.fullmatch(r"(?:how are you|how are you doing|how are you doing today|how's it going)", addressed):
-        return "I'm doing well. Ready when you are."
+        return "I'm good. What are you thinking through?"
     if re.fullmatch(
         r"(?:what are you doing|what're you doing|what are you working on|what're you working on|what are you up to|are you doing anything)",
         addressed,
@@ -2642,6 +2671,36 @@ def _direct_draft(text: str) -> str:
     return _voice_tool_result(draft or "I could not draft that right now.")
 
 
+def _direct_project_ideas(text: str) -> str:
+    lowered = text.lower()
+    if not re.search(r"\b(?:idea|ideas|what\s+to\s+build|build\s+next|project\s+to\s+build|app\s+idea|startup\s+idea)\b", lowered):
+        return ""
+    patterns = (
+        r"(?:what\s+should\s+i\s+build\s+next|what\s+to\s+build\s+next)(?:\s+(?:for|about|around)\s+(?P<context>.+))?",
+        r"(?:give\s+me\s+an?\s+idea\s+on\s+what\s+to\s+build\s+next)(?:\s+(?:for|about|around)\s+(?P<context>.+))?",
+        r"(?:give\s+me|suggest|recommend|find|research|look\s+for)\s+(?:some\s+|an?\s+|the\s+)?(?:project\s+|app\s+|startup\s+|software\s+)?ideas?(?:\s+(?:on|for|about|around)\s+(?P<context>.+))?",
+    )
+    for pattern in patterns:
+        match = re.fullmatch(pattern, text, flags=re.IGNORECASE)
+        if not match:
+            continue
+        context = _clean_text((match.groupdict().get("context") or "AI-assisted everyday tools for individuals, small teams, and SMBs"))
+        if context.lower() in {"what to build next", "what i should build next"}:
+            context = "AI-assisted everyday tools for individuals, small teams, and SMBs"
+        result = _power(
+            {
+                "action": "project_ideas_research",
+                "context": context,
+                "audience": "individuals, small teams, and SMBs",
+                "root": str(resolve_coding_root()),
+                "limit": 5,
+                "max_sources": 8,
+            }
+        )
+        return _voice_tool_result(result)
+    return ""
+
+
 def _direct_build_request(text: str) -> str:
     cleaned = text.strip()
     if not cleaned:
@@ -2658,8 +2717,25 @@ def _direct_build_request(text: str) -> str:
         return "Tell me what you want built, and I will turn it into a guarded coding task instead of opening an app."
     if not _looks_like_software_build_request(request):
         return ""
-    result = _power({"action": "autonomous_coding", "request": request, "root": str(resolve_coding_root()), "risk_level": "medium"})
+    result = _power({"action": "autonomous_coding", "request": _normalize_build_request(request), "root": str(resolve_coding_root()), "risk_level": "medium"})
     return _voice_tool_result(result)
+
+
+def _normalize_build_request(request: str) -> str:
+    cleaned = _clean_text(request)
+    if not cleaned:
+        return ""
+    lowered = cleaned.lower()
+    if re.match(r"^(?:build|create|make|develop|scaffold|spin\s+up|implement|code|program|put\s+together|set\s+up)\b", lowered):
+        return cleaned
+    subject = re.sub(r"^(?:an?|the)\s+", "", cleaned, flags=re.IGNORECASE).strip() or cleaned
+    if re.search(r"\b(?:dashboard|portal|website|site|frontend)\b", lowered) and not re.search(r"\b(?:web[-\s]?app|next(?:\.js|js)?)\b", lowered):
+        return f"Build a web-app for {subject}"
+    if re.search(r"\b(?:mobile|flutter|android|ios)\b", lowered) and not re.search(r"\b(?:screenshot|screenshots|viewport|viewports|responsive|browser|desktop\s+and\s+mobile|mobile\s+and\s+desktop)\b", lowered):
+        return f"Build a mobile app for {subject}"
+    if re.search(r"\b(?:backend|api|server|service|microservice)\b", lowered):
+        return f"Build a backend for {subject}"
+    return f"Build {cleaned}"
 
 
 def _looks_like_software_build_request(text: str) -> bool:

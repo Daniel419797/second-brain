@@ -320,16 +320,22 @@ def _search_serpapi(query: str, limit: int) -> list[dict[str, Any]]:
 
 
 def _search_duckduckgo(query: str, limit: int) -> list[dict[str, Any]]:
-    if not bool(config_value("search_broker_allow_legacy_fallback", False)):
+    if not _legacy_search_allowed():
         raise SearchProviderError("legacy DuckDuckGo fallback is disabled")
-    if DDGS is None:
-        raise SearchProviderError("duckduckgo-search is not installed")
-    try:
-        ddgs_context = DDGS(timeout=_clamp_int(config_value("research_search_timeout", 8), 1, 60))
-    except TypeError:
-        ddgs_context = DDGS()
-    with ddgs_context as ddgs:
-        items = list(ddgs.text(query, max_results=max(1, limit)))
+    if DDGS is not None:
+        try:
+            try:
+                ddgs_context = DDGS(timeout=_clamp_int(config_value("research_search_timeout", 8), 1, 60))
+            except TypeError:
+                ddgs_context = DDGS()
+            with ddgs_context as ddgs:
+                items = list(ddgs.text(query, max_results=max(1, limit)))
+        except Exception:
+            items = []
+    else:
+        items = []
+    if not items:
+        return _search_duckduckgo_html(query, limit)
     results = []
     for rank, item in enumerate(items, start=1):
         results.append(
@@ -337,6 +343,46 @@ def _search_duckduckgo(query: str, limit: int) -> list[dict[str, Any]]:
                 title=item.get("title"),
                 url=item.get("href") or item.get("url"),
                 snippet=item.get("body"),
+                provider="duckduckgo",
+                rank=rank,
+            )
+        )
+    return [item for item in results if item["url"]]
+
+
+def _search_duckduckgo_html(query: str, limit: int) -> list[dict[str, Any]]:
+    if _requests is None:
+        raise SearchProviderError("requests is not installed")
+    timeout = _clamp_int(config_value("search_broker_request_timeout_seconds", 12), 1, 120)
+    try:
+        response = _requests.post(
+            "https://html.duckduckgo.com/html/",
+            data={"q": query},
+            headers={"User-Agent": "Friday/0.2 (+local research broker)"},
+            timeout=timeout,
+        )
+        status_code = int(getattr(response, "status_code", 200) or 200)
+        if status_code >= 400:
+            raise SearchProviderError(f"HTTP {status_code}")
+        html_text = str(getattr(response, "text", "") or "")
+    except Exception as exc:
+        raise SearchProviderError(f"duckduckgo html fallback failed: {_short(str(exc), 180)}") from exc
+    anchors = re.findall(
+        r'<a[^>]+class=["\'][^"\']*result__a[^"\']*["\'][^>]+href=["\'](?P<href>[^"\']+)["\'][^>]*>(?P<title>.*?)</a>',
+        html_text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    results = []
+    for rank, match in enumerate(anchors[: max(1, limit)], start=1):
+        href, title_html = match
+        url = _duckduckgo_result_url(href)
+        if not url:
+            continue
+        results.append(
+            _result(
+                title=_strip_html(title_html),
+                url=url,
+                snippet=_duckduckgo_snippet_near(html_text, href),
                 provider="duckduckgo",
                 rank=rank,
             )
@@ -372,6 +418,7 @@ def _request_json(
 
 def _provider_chain(providers: str | list[str] | None) -> list[str]:
     raw = providers
+    explicit = raw is not None and raw != ""
     if raw is None or raw == "":
         raw = str(config_value("search_broker_provider_chain", "brave>google_cse>tavily>serpapi"))
     if isinstance(raw, str):
@@ -383,6 +430,8 @@ def _provider_chain(providers: str | list[str] | None) -> list[str]:
         name = PROVIDER_ALIASES.get(piece.strip().lower(), piece.strip().lower())
         if name and name not in output:
             output.append(name)
+    if not explicit and bool(config_value("search_broker_auto_legacy_fallback", True)) and "duckduckgo" not in output:
+        output.append("duckduckgo")
     return [item for item in output if item in _provider_functions()]
 
 
@@ -400,10 +449,14 @@ def _provider_available(provider: str) -> tuple[bool, str]:
     if provider == "serpapi":
         return _has_env_key("search_broker_serpapi_api_key_env", "SERPAPI_API_KEY")
     if provider == "duckduckgo":
-        if not bool(config_value("search_broker_allow_legacy_fallback", False)):
+        if not _legacy_search_allowed():
             return False, "legacy fallback disabled"
         return (DDGS is not None, "configured" if DDGS is not None else "duckduckgo-search not installed")
     return False, "unknown provider"
+
+
+def _legacy_search_allowed() -> bool:
+    return bool(config_value("search_broker_allow_legacy_fallback", False)) or bool(config_value("search_broker_auto_legacy_fallback", True))
 
 
 def _has_env_key(config_key: str, default_env: str) -> tuple[bool, str]:
@@ -630,6 +683,42 @@ def _clean_url(value: Any) -> str:
     if not parsed.scheme:
         text = "https://" + text
     return text
+
+
+def _duckduckgo_result_url(href: str) -> str:
+    raw = html.unescape(str(href or "").strip())
+    if not raw:
+        return ""
+    if raw.startswith("//"):
+        raw = "https:" + raw
+    elif raw.startswith("/"):
+        raw = "https://duckduckgo.com" + raw
+    parsed = urlparse(raw)
+    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    return query.get("uddg") or raw
+
+
+def _duckduckgo_snippet_near(html_text: str, href: str) -> str:
+    index = html_text.find(href)
+    if index < 0:
+        return ""
+    window = html_text[index : index + 1800]
+    snippet = re.search(
+        r'<a[^>]+class=["\'][^"\']*result__snippet[^"\']*["\'][^>]*>(?P<text>.*?)</a>',
+        window,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    if not snippet:
+        snippet = re.search(
+            r'<div[^>]+class=["\'][^"\']*result__snippet[^"\']*["\'][^>]*>(?P<text>.*?)</div>',
+            window,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+    return _strip_html(snippet.group("text")) if snippet else ""
+
+
+def _strip_html(value: str) -> str:
+    return _clean(value)
 
 
 def _domain(url: str) -> str:

@@ -1,0 +1,17 @@
+name: Friday Production Readiness
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run readiness gates
+        run: |
+          npm install
+          npm run typecheck
+          npm test
+          npm run build
+          npm audit --audit-level=moderate

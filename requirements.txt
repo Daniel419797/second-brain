@@ -19,6 +19,8 @@ APScheduler==3.11.2
 pypdf==6.11.0
 beautifulsoup4==4.14.3
 youtube-transcript-api==1.2.4
+langgraph==1.2.3
+llama-index==0.14.22
 fastapi==0.136.1
 PyJWT==2.12.1
 uvicorn==0.47.0

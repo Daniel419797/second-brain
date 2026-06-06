@@ -74,10 +74,12 @@ DEFAULT_RULES: list[dict[str, str]] = [
     {"key": "capability_center.security_scope", "label": "Manage security scopes", "category": "Security Lab", "mode": "ask", "description": "Create or verify authorized security scopes."},
     {"key": "capability_center.security_scan", "label": "Defensive security scans", "category": "Security Lab", "mode": "ask", "description": "Run scoped local/owned defensive security checks such as port and dependency scans."},
     {"key": "capability_center.hardening", "label": "Security hardening plans", "category": "Security Lab", "mode": "allow", "description": "Generate defensive hardening recommendations and reports."},
+    {"key": "power_center.security_lab", "label": "Security Lab tool runs", "category": "Security Lab", "mode": "ask", "description": "Run scoped authorized security tools such as Semgrep, Bandit, Gitleaks, Trivy, Nmap, Nuclei, and OWASP ZAP."},
     {"key": "power_center.skills", "label": "Skill/plugin library", "category": "Power Center", "mode": "allow", "description": "Install, enable, disable, and read local reusable skills."},
     {"key": "power_center.workspace", "label": "Workspace brain", "category": "Power Center", "mode": "allow", "description": "Analyze local code/project structure, TODOs, tests, dependencies, and docs."},
     {"key": "power_center.app_operator", "label": "App-specific operators", "category": "Power Center", "mode": "allow", "description": "Start specialist app operation sessions for VS Code, Chrome, Figma, Gmail, WhatsApp, Discord, and File Explorer."},
     {"key": "power_center.autonomous_coding", "label": "Autonomous coding mode", "category": "Power Center", "mode": "ask", "description": "Create and kick off guarded coding tasks with contracts, tests, approval, and rollback requirements."},
+    {"key": "power_center.project_ideas", "label": "Project idea research", "category": "Research", "mode": "allow", "description": "Run source-backed read-only research before recommending project ideas."},
     {"key": "power_center.git_read", "label": "Git repository reads", "category": "Developer Tools", "mode": "allow", "description": "Read Git status, branches, logs, diffs, and GitHub CLI status."},
     {"key": "power_center.git_write", "label": "Git repository changes", "category": "Developer Tools", "mode": "ask", "description": "Clone repositories, pull changes, checkout branches, stage files, and create commits."},
     {"key": "power_center.git_push", "label": "Git push", "category": "Developer Tools", "mode": "ask", "description": "Push local commits to a configured remote repository."},
@@ -428,6 +430,8 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             return "power_center.app_operator"
         if action in {"autonomous_coding"}:
             return "power_center.autonomous_coding"
+        if action in {"project_ideas_research"}:
+            return "power_center.project_ideas"
         if action in {"git_status", "git_branches", "git_log", "git_diff", "github_status", "github_pr_list"}:
             return "power_center.git_read"
         if action in {"git_clone", "git_checkout", "git_pull", "git_add", "git_commit"}:
@@ -657,6 +661,8 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
             return "power_center.life_os"
         if action in {"security_guardian_pro"}:
             return "power_center.security_guardian_pro"
+        if action in {"security_lab", "security_lab_run", "security_lab_scan", "nmap", "nuclei", "zap", "semgrep", "bandit", "gitleaks", "trivy"}:
+            return "power_center.security_lab"
         if action in {"cloud_worker", "cloud_worker_submit"}:
             return "power_center.cloud_worker"
         if action in {"autonomy_engine", "autonomy_status"}:

@@ -38,11 +38,28 @@ FALLBACK_SYSTEM_PROMPT = (
     "Prefer tool use over text for actionable commands."
 )
 
+DEFAULT_CONVERSATION_STYLE_PROMPT = (
+    "Conversational style: Treat typed chat as an ongoing conversation, not a command line. "
+    "Sound present, warm, and specific; acknowledge the user's actual wording when useful, then answer or act. "
+    "For greetings and casual check-ins, answer naturally in one or two sentences and invite the next thought without listing capabilities. "
+    "Use recent context naturally, vary phrasing, and avoid canned status-bot lines. "
+    "For simple asks, be concise; for planning, debugging, or building, use a few short paragraphs if that is clearer. "
+    "Do not add generic cheerleading, apology loops, or 'let me know if you need anything else' filler. "
+    "Do not say 'command', 'system online', or narrate internal routing unless the user asks about internals. "
+    "For voice interactions, stay brief but still natural."
+)
+
 
 def _system_prompt() -> str:
     cfg = load_config()
     prompt = cfg.get("system_prompt") or FALLBACK_SYSTEM_PROMPT
-    return prompt + f"\nToday's date and time: {_dt.datetime.now().isoformat(timespec='seconds')}. User name: {cfg.get('user_name', 'User')}."
+    pieces = [str(prompt).strip()]
+    if bool(cfg.get("conversation_style_prompt_enabled", True)):
+        style_prompt = str(cfg.get("conversation_style_prompt") or DEFAULT_CONVERSATION_STYLE_PROMPT).strip()
+        if style_prompt and style_prompt not in pieces[0]:
+            pieces.append(style_prompt)
+    pieces.append(f"Today's date and time: {_dt.datetime.now().isoformat(timespec='seconds')}. User name: {cfg.get('user_name', 'User')}.")
+    return "\n".join(part for part in pieces if part)
 
 
 SYSTEM_PROMPT = _system_prompt()
@@ -1085,6 +1102,60 @@ def provider_limit_status() -> dict[str, Any]:
             }
             for provider in providers
         }
+
+
+def model_gateway_status() -> dict[str, Any]:
+    """Describe Friday's model-call architecture without exposing secrets."""
+
+    try:
+        from core import langchain_model_adapters
+
+        adapter_payload = langchain_model_adapters.capabilities()
+    except Exception as exc:
+        adapter_payload = {
+            "layer": "optional_langchain_adapter",
+            "ready": False,
+            "summary": f"LangChain adapter status unavailable: {exc}",
+            "adapters": {},
+        }
+    default_chain = provider_sequence(
+        str(config_value("v2_api_agent_online_providers", "nvidia>gemini>openrouter>anthropic") or "")
+        + ">ollama"
+    )
+    return {
+        "layer": "friday_internal_model_gateway",
+        "architecture": [
+            "Friday Product Brain",
+            "Friday Model Gateway",
+            "Optional LangChain/provider adapters",
+            "Actual AI providers",
+        ],
+        "native_gateway": {
+            "default_chain": default_chain,
+            "online_providers": sorted(ONLINE_PROVIDERS),
+            "tool_contract_source": "core.llm TOOL_DEFINITIONS plus core.friday_tool_registry for shared tools",
+            "provider_limits": provider_limit_status(),
+        },
+        "langchain_adapters": adapter_payload,
+        "decision": {
+            "keep_core_llm": True,
+            "use_langchain_for": [
+                "standardized tool contracts",
+                "structured agent flows",
+                "provider interoperability",
+                "integrations where LangChain saves time",
+            ],
+            "keep_friday_custom_for": [
+                "strict provider routing",
+                "local fallback",
+                "custom approval rules",
+                "logging and traces",
+                "low-level control",
+                "free/cheap provider preference",
+            ],
+        },
+        "summary": "Friday uses its native model gateway for normal model calls, with optional LangChain adapters underneath for interoperability.",
+    }
 
 
 def ask_with_provider_chain(

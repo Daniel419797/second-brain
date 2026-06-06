@@ -90,6 +90,7 @@ def summary() -> dict[str, Any]:
         "provider_limits": status,
         "routes": _routes(),
         "recent": recent_events(limit=10),
+        "model_gateway": llm.model_gateway_status(),
         "summary": "Model router is choosing online free/cheap providers first, with Ollama as local fallback.",
     }
 

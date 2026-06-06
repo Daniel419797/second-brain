@@ -6,7 +6,7 @@ from typing import Any
 
 from fastapi import FastAPI
 
-from api.routers import core, media, ops, realtime
+from api.routers import core, friday_runs, media, ops, realtime
 
 
 def register_domain_routers(app: FastAPI, ctx: Any) -> None:
@@ -17,6 +17,7 @@ def register_domain_routers(app: FastAPI, ctx: Any) -> None:
     """
 
     core.register_routes(app, ctx)
+    friday_runs.register_routes(app, ctx)
     media.register_routes(app, ctx)
     ops.register_routes(app, ctx)
     realtime.register_routes(app, ctx)

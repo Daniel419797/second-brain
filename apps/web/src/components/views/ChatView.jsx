@@ -1,6 +1,23 @@
 "use client";
 
-import { Bot, FileText, HelpCircle, Image as ImageIcon, Loader2, Mic, Plus, RotateCcw, Send, Terminal, Trash2, UserRound, Wrench, X } from "lucide-react";
+import {
+  Bot,
+  Check,
+  Copy,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Mic,
+  MoreHorizontal,
+  Plus,
+  RefreshCw,
+  Send,
+  Sparkles,
+  ThumbsDown,
+  ThumbsUp,
+  Trash2,
+  X
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
@@ -23,6 +40,8 @@ const ATTACHMENT_ACCEPT = [
   ".ppt",
   ".pptx"
 ].join(",");
+
+const CHAT_MODES = ["Normal", "Focused", "Teacher", "Debugger", "Silent Operator"];
 
 export function ChatView({ messages, onSend, onClear, busy }) {
   const { api, data, interfaceFor } = useDashboard();
@@ -136,36 +155,39 @@ export function ChatView({ messages, onSend, onClear, busy }) {
   }
 
   return (
-    <section className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-friday-bg text-white">
-      <header className="flex min-h-[54px] items-center justify-between gap-3 border-b border-friday-line bg-[#0f141a] px-5">
-        <div className="min-w-0">
-          <h1 className="truncate text-[16px] font-extrabold leading-none">{copy?.title || "Friday Chat"}</h1>
-          <p className="mt-1 truncate font-mono text-[11px] text-friday-muted">
-            {copy?.subtitle || `Real orchestrator conversation / ${messageCount} message${messageCount === 1 ? "" : "s"} saved locally`}
-          </p>
+    <section className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden bg-[#1f1f1f] text-[#ececec]">
+      <header className="flex min-h-16 items-center justify-between gap-3 px-5 sm:px-7">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#3b3b3b] bg-[#262626] text-[#f3f3f3]">
+            <Sparkles size={17} />
+          </div>
+          <div className="min-w-0">
+            <h1 className="truncate text-[18px] font-semibold leading-tight tracking-[-0.01em]">{copy?.title || "Friday"}</h1>
+            <p className="truncate text-[12px] text-[#a6a6a6]">{threadSubtitle(messageCount, data)}</p>
+          </div>
         </div>
         <button
-          className="inline-flex min-h-8 shrink-0 items-center gap-2 border border-friday-line bg-[#151b22] px-3 font-mono text-[11px] text-[#dfe9f6] transition-colors hover:border-friday-accent disabled:opacity-50"
+          className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full border border-[#3b3b3b] bg-[#2b2b2b] px-3 text-[13px] font-medium text-[#ededed] transition-colors hover:bg-[#343434] disabled:opacity-40"
           type="button"
           onClick={onClear}
           disabled={!messageCount || busy}
         >
-          <Trash2 size={14} />
-          {copy?.empty?.messages ? "New Thread" : "New Chat"}
+          <Trash2 size={15} />
+          New chat
         </button>
       </header>
 
-      <div className="friday-scroll min-h-0 overflow-y-auto overflow-x-hidden px-4 py-5">
-        <div className="mx-auto grid max-w-[860px] gap-6">
+      <div className="friday-scroll min-h-0 overflow-y-auto overflow-x-hidden px-4 pb-5 pt-2">
+        <div className="mx-auto grid min-h-full max-w-[960px] content-end gap-6">
           {!messages.length ? <EmptyConversation data={data} onQuickAsk={quickAsk} /> : null}
           {grouped.map((group) => (
-            <section className="grid gap-4" key={group.day}>
-              <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
-                <span className="h-px bg-friday-line" />
-                <span className="font-mono text-[10px] uppercase tracking-[.16em] text-friday-muted">{group.day}</span>
-                <span className="h-px bg-friday-line" />
+            <section className="grid gap-7" key={group.day}>
+              <div className="flex items-center justify-center">
+                <span className="rounded-full bg-[#292929] px-3 py-1 text-[11px] font-medium text-[#9f9f9f]">{group.day}</span>
               </div>
-              {group.items.map((message, index) => <ChatMessage message={message} onQuickAsk={quickAsk} key={message.id || `${group.day}-${index}-${message.role}`} />)}
+              {group.items.map((message, index) => (
+                <ChatMessage message={message} onQuickAsk={quickAsk} key={message.id || `${group.day}-${index}-${message.role}`} />
+              ))}
             </section>
           ))}
           {busy ? <ThinkingRow /> : null}
@@ -173,31 +195,17 @@ export function ChatView({ messages, onSend, onClear, busy }) {
         </div>
       </div>
 
-      <form className="border-t border-friday-line bg-[#0f141a] px-5 py-4" onSubmit={submit}>
-        <div className="mx-auto max-w-[860px]">
-          <div className="mb-3 flex min-w-0 flex-wrap items-center gap-2 text-[12px]">
-            <span className="font-mono uppercase tracking-[.12em] text-white">Mode:</span>
-            {["Normal", "Focused", "Teacher", "Debugger", "Silent Operator"].map((item, index) => (
-              <button
-                className={`min-h-7 border px-3 text-[12px] ${mode === item ? "border-[#45678c] bg-[#1a2a3d] text-friday-accent" : "border-transparent bg-transparent text-[#d8e2ee] hover:border-friday-line"}`}
-                key={item}
-                type="button"
-                onClick={() => setMode(item)}
-                aria-pressed={mode === item}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
+      <form className="px-4 pb-4 sm:pb-5" onSubmit={submit}>
+        <div className="mx-auto max-w-[960px]">
           {attachments.length ? (
-            <div className="mb-3 flex min-w-0 flex-wrap gap-2">
+            <div className="mb-2 flex min-w-0 flex-wrap gap-2 px-2">
               {attachments.map((item) => (
                 <AttachmentChip item={item} onRemove={() => removeAttachment(item.id)} key={item.id} />
               ))}
             </div>
           ) : null}
 
-          <div className="grid min-h-[72px] grid-cols-[40px_minmax(0,1fr)_auto_auto] items-center gap-3 border border-friday-line bg-[#151b22] px-4">
+          <div className="rounded-[28px] border border-[#474747] bg-[#2b2b2b] p-3 shadow-[0_16px_52px_rgba(0,0,0,0.28)]">
             <input
               className="sr-only"
               ref={fileInputRef}
@@ -206,49 +214,81 @@ export function ChatView({ messages, onSend, onClear, busy }) {
               accept={ATTACHMENT_ACCEPT}
               onChange={handleFilesSelected}
             />
-            <button
-              className="grid h-10 w-10 place-items-center border border-friday-line bg-[#10161d] text-friday-accent transition-colors hover:border-friday-accent hover:bg-[#172334] disabled:cursor-not-allowed disabled:opacity-45"
-              type="button"
-              aria-label="Attach images or files"
-              title="Attach images or files"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={busy || uploading || attachments.length >= MAX_ATTACHMENTS}
-            >
-              <Plus size={19} />
-            </button>
             <textarea
-              className="h-[48px] resize-none border-0 bg-transparent py-3 font-mono text-[14px] text-white outline-none placeholder:text-[#99a8bb]"
+              className="block max-h-[180px] min-h-[56px] w-full resize-none border-0 bg-transparent px-3 py-2 text-[16px] leading-relaxed text-[#f2f2f2] outline-none placeholder:text-[#9b9b9b]"
               value={text}
               onChange={(event) => setText(event.target.value)}
               onKeyDown={handleKeyDown}
               maxLength={4000}
               rows={2}
-              placeholder={copy?.labels?.ask || "Message Friday..."}
+              placeholder={copy?.labels?.ask || "Ask anything"}
             />
-            <Link
-              className="grid h-10 w-10 place-items-center border border-transparent text-[#d8e4f2] transition-colors hover:border-friday-line hover:text-friday-accent"
-              href="/voice-mode"
-              aria-label="Open Voice Mode"
-              title="Open Voice Mode"
-            >
-              <Mic size={18} />
-            </Link>
-            <button className="grid h-11 w-11 place-items-center border border-friday-blue bg-[#97c8f8] text-[#061420] transition-transform hover:scale-105 active:scale-95 disabled:opacity-50" type="submit" disabled={busy || uploading || (!text.trim() && !attachments.length)}>
-              {uploading ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
-            </button>
+            <div className="flex min-w-0 items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <button
+                  className="grid h-10 w-10 place-items-center rounded-full text-[#f1f1f1] transition-colors hover:bg-[#3a3a3a] disabled:cursor-not-allowed disabled:opacity-40"
+                  type="button"
+                  aria-label="Attach files"
+                  title="Attach files"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={busy || uploading || attachments.length >= MAX_ATTACHMENTS}
+                >
+                  <Plus size={22} />
+                </button>
+                <ModePicker mode={mode} onChange={setMode} />
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  className="grid h-10 w-10 place-items-center rounded-full text-[#f1f1f1] transition-colors hover:bg-[#3a3a3a]"
+                  href="/voice-mode"
+                  aria-label="Open voice mode"
+                  title="Open voice mode"
+                >
+                  <Mic size={19} />
+                </Link>
+                <button
+                  className="grid h-11 w-11 place-items-center rounded-full bg-[#f4f4f4] text-[#161616] transition-transform hover:scale-[1.03] active:scale-95 disabled:bg-[#5a5a5a] disabled:text-[#9c9c9c]"
+                  type="submit"
+                  aria-label="Send message"
+                  title="Send message"
+                  disabled={busy || uploading || (!text.trim() && !attachments.length)}
+                >
+                  {uploading ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
+                </button>
+              </div>
+            </div>
           </div>
-          {attachmentStatus ? <p className="mt-2 text-[11px] text-[#ffbf7b]">{attachmentStatus}</p> : null}
-          <p className="mt-2 text-[11px] text-friday-muted">Enter to send / Shift + Enter for newline</p>
+          {attachmentStatus ? <p className="mt-2 px-3 text-[12px] text-[#ffbf7b]">{attachmentStatus}</p> : null}
         </div>
       </form>
     </section>
   );
 }
 
+function ModePicker({ mode, onChange }) {
+  return (
+    <label className="hidden min-h-9 items-center rounded-full bg-[#242424] px-3 text-[12px] font-medium text-[#d4d4d4] transition-colors hover:bg-[#323232] sm:inline-flex">
+      <span className="sr-only">Conversation mode</span>
+      <select
+        className="max-w-[150px] appearance-none bg-transparent pr-2 text-current outline-none"
+        value={mode}
+        onChange={(event) => onChange(event.target.value)}
+        aria-label="Conversation mode"
+      >
+        {CHAT_MODES.map((item) => (
+          <option className="bg-[#242424] text-[#f4f4f4]" key={item} value={item}>
+            {item}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function AttachmentChip({ item, onRemove }) {
   return (
-    <div className="grid max-w-full grid-cols-[36px_minmax(0,1fr)_28px] items-center gap-2 border border-friday-line bg-[#151b22] px-2 py-2 text-[12px] text-[#dfe9f6]">
-      <div className="grid h-9 w-9 place-items-center overflow-hidden border border-[#34475a] bg-[#10161d] text-friday-accent">
+    <div className="grid max-w-full grid-cols-[36px_minmax(0,1fr)_28px] items-center gap-2 rounded-[16px] border border-[#454545] bg-[#2b2b2b] px-2 py-2 text-[12px] text-[#ececec]">
+      <div className="grid h-9 w-9 place-items-center overflow-hidden rounded-[12px] bg-[#1f1f1f] text-[#dedede]">
         {item.previewUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img className="h-full w-full object-cover" src={item.previewUrl} alt="" />
@@ -259,11 +299,11 @@ function AttachmentChip({ item, onRemove }) {
         )}
       </div>
       <div className="min-w-0">
-        <p className="truncate font-mono text-[11px] text-white">{item.name}</p>
-        <p className="mt-0.5 text-[10px] text-friday-muted">{formatBytes(item.size)}</p>
+        <p className="truncate text-[12px] font-medium text-[#f1f1f1]">{item.name}</p>
+        <p className="mt-0.5 text-[11px] text-[#9c9c9c]">{formatBytes(item.size)}</p>
       </div>
       <button
-        className="grid h-7 w-7 place-items-center border border-transparent text-friday-muted transition-colors hover:border-friday-line hover:text-white"
+        className="grid h-7 w-7 place-items-center rounded-full text-[#a8a8a8] transition-colors hover:bg-[#3b3b3b] hover:text-white"
         type="button"
         aria-label={`Remove ${item.name}`}
         title={`Remove ${item.name}`}
@@ -297,7 +337,7 @@ function composeMessageWithAttachments(text, uploaded) {
     const size = formatBytes(item.size_bytes || 0);
     return `- ${item.filename} (${item.kind || "file"}, ${size}): ${item.path}`;
   });
-  const attachmentBlock = `\n\nAttached files uploaded from chat:\n${lines.join("\n")}`;
+  const attachmentBlock = `\n\nAttached files:\n${lines.join("\n")}`;
   const intro = text || "Please review the attached file(s).";
   const maxIntroLength = Math.max(0, 3900 - attachmentBlock.length);
   return `${intro.slice(0, maxIntroLength)}${attachmentBlock}`;
@@ -337,29 +377,34 @@ function cryptoRandom() {
 }
 
 function EmptyConversation({ data, onQuickAsk }) {
-  const status = data.status?.running ? `${data.status.workers || 0} background worker(s) online` : "background workers stopped";
+  const status = data.status?.running ? "Friday is awake" : "Friday is standing by";
   const prompts = [
-    "what are you doing?",
-    "what tools do you have?",
-    "generate an image of a cat",
-    "what failed recently?"
+    "help me think through an idea",
+    "what should I work on next?",
+    "review what failed recently",
+    "draft this into something cleaner"
   ];
   return (
-    <div className="mx-auto mt-8 grid max-w-[680px] gap-5 border border-friday-line bg-[#151b22] p-5">
-      <div className="flex items-center gap-2 font-mono text-[12px] uppercase tracking-[.12em] text-friday-accent">
-        <Bot size={16} />
-        Start a conversation
+    <div className="grid min-h-[56vh] content-center justify-items-center gap-8 py-10 text-center">
+      <div className="grid justify-items-center gap-4">
+        <div className="grid h-[52px] w-[52px] place-items-center rounded-full bg-[#2b2b2b] text-[#f1f1f1]">
+          <Sparkles size={25} />
+        </div>
+        <div>
+          <p className="mb-3 text-[13px] font-medium text-[#9f9f9f]">{status}</p>
+          <h2 className="max-w-[760px] text-[clamp(32px,5vw,58px)] font-semibold leading-[1.05] tracking-[-0.02em] text-[#e8e1d7]">
+            What shall we think through?
+          </h2>
+        </div>
       </div>
-      <div>
-        <h2 className="text-[22px] font-extrabold leading-tight">Ask Friday anything, then keep the thread.</h2>
-        <p className="mt-3 text-[13px] leading-relaxed text-[#d8e4f2]">
-          Messages go through the real <Code>/chat</Code> orchestrator. This page now keeps a ChatGPT-style local history instead of only showing the latest reply.
-        </p>
-        <p className="mt-3 font-mono text-[12px] text-friday-muted">Current agent state: {status}</p>
-      </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="flex max-w-[760px] flex-wrap justify-center gap-2">
         {prompts.map((prompt) => (
-          <button className="min-h-10 border border-friday-line bg-[#10161d] px-3 text-left text-[12px] text-[#dfe9f6] hover:border-friday-accent" type="button" onClick={() => onQuickAsk(prompt)} key={prompt}>
+          <button
+            className="min-h-10 rounded-full bg-[#303030] px-4 text-[14px] font-medium text-[#ececec] transition-colors hover:bg-[#3a3a3a]"
+            type="button"
+            onClick={() => onQuickAsk(prompt)}
+            key={prompt}
+          >
             {prompt}
           </button>
         ))}
@@ -370,45 +415,80 @@ function EmptyConversation({ data, onQuickAsk }) {
 
 function ChatMessage({ message, onQuickAsk }) {
   const role = message.role === "user" ? "user" : message.role === "system" ? "system" : "friday";
-  const isUser = role === "user";
+  if (role === "system") {
+    return <SystemMessage text={message.text} timestamp={message.timestamp} />;
+  }
+  return role === "user" ? <UserMessage message={message} /> : <AssistantMessage message={message} onQuickAsk={onQuickAsk} />;
+}
+
+function UserMessage({ message }) {
   return (
-    <article className={`grid min-w-0 gap-3 ${isUser ? "justify-items-end" : "grid-cols-[36px_minmax(0,1fr)]"}`}>
-      {!isUser ? (
-        <div className={`grid h-9 w-9 place-items-center border ${role === "system" ? "border-[#7a4a25] bg-[#22180f] text-[#ffbf7b]" : "border-[#526174] bg-[#17202a] text-friday-accent"}`}>
-          <Bot size={17} />
-        </div>
-      ) : null}
-      <div className={`min-w-0 ${isUser ? "max-w-[70%]" : "max-w-full"}`}>
-        <div className={`mb-2 flex flex-wrap items-center gap-3 font-mono text-[11px] ${isUser ? "justify-end" : ""}`}>
-          <span className={`inline-flex items-center gap-1 border px-2 py-1 ${isUser ? "border-[#45617c] bg-[#1a2835] text-[#eef6ff]" : "border-[#31587f] bg-[#132031] text-friday-accent"}`}>
-            {isUser ? <UserRound size={13} /> : <Wrench size={13} />}
-            {isUser ? "You" : role === "system" ? "System" : "Friday"}
-          </span>
-          <span className="text-friday-muted">{formatTime(message.timestamp)}</span>
-        </div>
-        <div className={`border px-5 py-4 text-[14px] leading-relaxed ${isUser ? "border-[#45617c] bg-[#1a2835] text-[#eef6ff]" : "border-friday-line bg-[#171d24] text-[#eef6ff]"}`}>
-          <p className="m-0 whitespace-pre-wrap break-words">{message.text}</p>
-        </div>
-        {!isUser && role !== "system" ? (
-          <div className="mt-3 flex flex-wrap gap-2">
-            <ActionButton icon={<HelpCircle size={14} />} label="Why did you say that?" onClick={() => onQuickAsk("why did you say that?")} />
-            <ActionButton icon={<Terminal size={14} />} label="What tools do you have?" onClick={() => onQuickAsk("what tools do you have?")} />
-            <ActionButton icon={<RotateCcw size={14} />} label="What failed recently?" onClick={() => onQuickAsk("what failed recently?")} />
-          </div>
-        ) : null}
+    <article className="flex justify-end">
+      <div className="max-w-[74%] rounded-[24px] bg-[#303030] px-5 py-3 text-[15px] leading-relaxed text-[#f4f4f4] sm:max-w-[720px]">
+        <p className="m-0 whitespace-pre-wrap break-words">{message.text}</p>
       </div>
     </article>
   );
 }
 
-function ThinkingRow() {
+function AssistantMessage({ message, onQuickAsk }) {
   return (
-    <div className="grid grid-cols-[36px_minmax(0,1fr)] gap-3">
-      <div className="grid h-9 w-9 place-items-center border border-[#526174] bg-[#17202a] text-friday-accent">
+    <article className="grid max-w-[820px] grid-cols-[32px_minmax(0,1fr)] gap-4">
+      <div className="mt-1 grid h-8 w-8 place-items-center rounded-full bg-[#2d2d2d] text-[#f1f1f1]">
         <Bot size={17} />
       </div>
-      <div className="max-w-[220px] border border-friday-line bg-[#171d24] px-4 py-3 font-mono text-[12px] text-friday-muted">
-        Friday is thinking...
+      <div className="min-w-0">
+        <div className="max-w-none text-[16px] leading-8 text-[#f2f2f2]">
+          <p className="m-0 whitespace-pre-wrap break-words">{message.text}</p>
+        </div>
+        <div className="mt-3 flex items-center gap-1.5 text-[#9b9b9b]">
+          <IconAction icon={<Copy size={17} />} label="Copy response" />
+          <IconAction icon={<ThumbsUp size={17} />} label="Good response" />
+          <IconAction icon={<ThumbsDown size={17} />} label="Bad response" />
+          <IconAction icon={<RefreshCw size={17} />} label="Ask again" onClick={() => onQuickAsk("try that again, but make it more natural")} />
+          <IconAction icon={<MoreHorizontal size={18} />} label="More actions" />
+          <span className="ml-2 text-[12px] text-[#787878]">{formatTime(message.timestamp)}</span>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SystemMessage({ text, timestamp }) {
+  return (
+    <article className="flex justify-center">
+      <div className="inline-flex max-w-[760px] items-center gap-2 rounded-full bg-[#2c241b] px-3 py-1.5 text-[12px] text-[#f0c48d]">
+        <Check size={14} />
+        <span className="truncate">{text}</span>
+        <span className="text-[#9c7850]">{formatTime(timestamp)}</span>
+      </div>
+    </article>
+  );
+}
+
+function IconAction({ icon, label, onClick }) {
+  return (
+    <button
+      className="grid h-8 w-8 place-items-center rounded-full transition-colors hover:bg-[#303030] hover:text-[#f2f2f2]"
+      type="button"
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+    >
+      {icon}
+    </button>
+  );
+}
+
+function ThinkingRow() {
+  return (
+    <div className="grid max-w-[820px] grid-cols-[32px_minmax(0,1fr)] gap-4">
+      <div className="grid h-8 w-8 place-items-center rounded-full bg-[#2d2d2d] text-[#f1f1f1]">
+        <Sparkles className="animate-spin" size={17} />
+      </div>
+      <div className="flex items-center gap-2 py-1 text-[14px] text-[#a8a8a8]">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-[#a8a8a8]" />
+        Friday is thinking
       </div>
     </div>
   );
@@ -427,6 +507,13 @@ function groupMessages(messages) {
   }, []);
 }
 
+function threadSubtitle(messageCount, data) {
+  if (!messageCount) return "New conversation";
+  const active = data.missions?.find((mission) => ["active", "running", "in_progress"].includes(String(mission.status || "").toLowerCase()));
+  if (active?.title) return active.title;
+  return `${messageCount} message${messageCount === 1 ? "" : "s"}`;
+}
+
 function formatDay(value) {
   const date = value ? new Date(value) : new Date();
   if (Number.isNaN(date.getTime())) return "Today";
@@ -439,17 +526,4 @@ function formatTime(value) {
   const date = value ? new Date(value) : new Date();
   if (Number.isNaN(date.getTime())) return "";
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-}
-
-function Code({ children }) {
-  return <code className="bg-[#2b313a] px-1.5 py-0.5 font-mono">{children}</code>;
-}
-
-function ActionButton({ icon, label, onClick }) {
-  return (
-    <button className="inline-flex min-h-8 items-center gap-1.5 border border-friday-line bg-[#151b22] px-3 text-[12px] text-white transition-colors hover:border-friday-accent" type="button" onClick={onClick}>
-      {icon}
-      {label}
-    </button>
-  );
 }

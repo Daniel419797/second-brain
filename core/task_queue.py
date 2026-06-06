@@ -88,30 +88,37 @@ def create_task(
     input_data: dict[str, Any] | None = None,
     parent_id: int | None = None,
     scheduled_at: Any | None = None,
+    status: str = "pending",
 ) -> int:
     init_db()
     title = _clean(title) or "Untitled task"
     description = _clean(description or title)
+    initial_status = _clean(status).lower()
+    if initial_status not in ACTIVE_STATUSES:
+        initial_status = "pending"
     now = _now()
+    started_at = now if initial_status == "active" else None
     with _LOCK, sqlite3.connect(DB_PATH) as conn:
         cursor = conn.execute(
             """
             INSERT INTO tasks (
                 title, description, agent_id, status, priority, input_json,
-                output_json, parent_id, scheduled_at, created_at, updated_at
+                output_json, parent_id, scheduled_at, created_at, updated_at, started_at
             )
-            VALUES (?, ?, ?, 'pending', ?, ?, '{}', ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, '{}', ?, ?, ?, ?, ?)
             """,
             (
                 title,
                 description,
                 _clean(agent_id) or "research_analyst",
+                initial_status,
                 int(priority),
                 _json_dumps(input_data or {}),
                 parent_id,
                 _normalize_when(scheduled_at),
                 now,
                 now,
+                started_at,
             ),
         )
         task_id = int(cursor.lastrowid)
@@ -136,10 +143,12 @@ def claim_next_task(agent_ids: list[str] | None = None) -> dict[str, Any] | None
         if row is None:
             return None
         now = _now()
-        conn.execute(
-            "UPDATE tasks SET status='active', started_at=COALESCE(started_at, ?), updated_at=? WHERE id=?",
+        cursor = conn.execute(
+            "UPDATE tasks SET status='active', started_at=COALESCE(started_at, ?), updated_at=? WHERE id=? AND status='pending'",
             (now, now, int(row["id"])),
         )
+        if cursor.rowcount <= 0:
+            return None
         task = _row_to_task(row)
         task["status"] = "active"
         task["started_at"] = task.get("started_at") or now

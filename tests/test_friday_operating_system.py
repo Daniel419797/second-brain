@@ -73,6 +73,127 @@ def test_style_profile_rejects_messy_nextjs_blob(tmp_path):
     assert any("forbidden" in gap.lower() or "flat blob" in gap.lower() for gap in result["gaps"])
 
 
+def test_style_profile_allows_single_landing_without_app_shell_layers(tmp_path):
+    root = tmp_path / "landing"
+    (root / "src/app").mkdir(parents=True)
+    (root / "src/components/Landing").mkdir(parents=True)
+    (root / "src/components/ui").mkdir(parents=True)
+    (root / "src/lib").mkdir(parents=True)
+    (root / "src/types").mkdir(parents=True)
+    (root / "src/test").mkdir(parents=True)
+    (root / "src/app/page.tsx").write_text(
+        "import { SingleLandingPage } from '@/components/Landing/SingleLandingPage';\nexport default function Page(){ return <SingleLandingPage />; }\n",
+        encoding="utf-8",
+    )
+    (root / "src/components/Landing/SingleLandingPage.tsx").write_text("export function SingleLandingPage(){ return <main>Nexus Forge</main>; }\n", encoding="utf-8")
+    (root / "src/lib/landingContent.ts").write_text("export const landingContent = { brand: 'Nexus Forge' } as const;\n", encoding="utf-8")
+    (root / "components.json").write_text('{"aliases":{"components":"@/components","lib":"@/lib","hooks":"@/hooks"}}\n', encoding="utf-8")
+    (root / "vitest.config.ts").write_text("export default {};\n", encoding="utf-8")
+
+    result = style_profiles.evaluate_project(root, "nexus_forge_nextjs")
+
+    assert result["ok"] is True
+    assert not any("src/services" in gap or "src/store" in gap or "src/hooks" in gap for gap in result["gaps"])
+
+
+def test_style_profile_allows_native_single_landing_after_design_handoff(tmp_path):
+    root = tmp_path / "native-landing"
+    (root / "src/app").mkdir(parents=True)
+    (root / "src/components/Stitch").mkdir(parents=True)
+    (root / "src/components/ui").mkdir(parents=True)
+    (root / "src/lib").mkdir(parents=True)
+    (root / "src/types").mkdir(parents=True)
+    (root / "src/test").mkdir(parents=True)
+    (root / "src/app/page.tsx").write_text(
+        "import { StitchPageSurface } from '@/components/Stitch/StitchPageSurface';\nexport default function Page(){ return <StitchPageSurface page=\"home\" />; }\n",
+        encoding="utf-8",
+    )
+    (root / "src/components/Stitch/StitchNativePage.tsx").write_text("export function StitchNativePage(){ return <main>Nexus Forge</main>; }\n", encoding="utf-8")
+    (root / "src/components/Stitch/StitchPageSurface.tsx").write_text("export function StitchPageSurface(){ return <main>Nexus Forge</main>; }\n", encoding="utf-8")
+    (root / "src/lib/stitchNativeContent.ts").write_text("export const stitchNativeContent = { meta: { productName: 'Nexus Forge' }, pages: { home: {} } } as const;\n", encoding="utf-8")
+    (root / "components.json").write_text('{"aliases":{"components":"@/components","lib":"@/lib","hooks":"@/hooks"}}\n', encoding="utf-8")
+    (root / "vitest.config.ts").write_text("export default {};\n", encoding="utf-8")
+
+    result = style_profiles.evaluate_project(root, "nexus_forge_nextjs")
+
+    assert result["ok"] is True
+    assert not any("src/services" in gap or "src/store" in gap or "src/hooks" in gap for gap in result["gaps"])
+
+
+def test_style_profile_allows_stitch_native_multipage_without_fake_app_shell_layers(tmp_path):
+    root = tmp_path / "native-multipage"
+    for relative in (
+        "src/app",
+        "src/app/platform",
+        "src/app/case-studies",
+        "src/app/contact",
+        "src/components/Stitch",
+        "src/components/ui",
+        "src/lib",
+        "src/types",
+        "src/test",
+    ):
+        (root / relative).mkdir(parents=True)
+    for route, page_id in (
+        ("src/app/page.tsx", "website_home"),
+        ("src/app/platform/page.tsx", "platform"),
+        ("src/app/case-studies/page.tsx", "case_studies"),
+        ("src/app/contact/page.tsx", "contact"),
+    ):
+        (root / route).write_text(
+            f"import {{ StitchPageSurface }} from '@/components/Stitch/StitchPageSurface';\nexport default function Page(){{ return <StitchPageSurface page=\"{page_id}\" />; }}\n",
+            encoding="utf-8",
+        )
+    (root / "src/components/Stitch/StitchNativePage.tsx").write_text("export function StitchNativePage(){ return <main>KineticGrid Energy</main>; }\n", encoding="utf-8")
+    (root / "src/components/Stitch/StitchPageSurface.tsx").write_text("export function StitchPageSurface(){ return <main>KineticGrid Energy</main>; }\n", encoding="utf-8")
+    (root / "src/lib/stitchNativeContent.ts").write_text(
+        "export const stitchNativeContent = { meta: { productName: 'KineticGrid Energy' }, pages: { website_home: {}, platform: {}, case_studies: {}, contact: {} } } as const;\n",
+        encoding="utf-8",
+    )
+    (root / "components.json").write_text('{"aliases":{"components":"@/components","lib":"@/lib","hooks":"@/hooks"}}\n', encoding="utf-8")
+    (root / "vitest.config.ts").write_text("export default {};\n", encoding="utf-8")
+
+    result = style_profiles.evaluate_project(root, "nexus_forge_nextjs")
+
+    assert result["ok"] is True
+    assert not any("src/components/layout" in gap for gap in result["gaps"])
+    assert not any("src/services" in gap or "src/store" in gap or "src/hooks" in gap for gap in result["gaps"])
+
+
+def test_style_profile_allows_web_contract_dashboard_without_legacy_layout_folder(tmp_path):
+    root = tmp_path / "contract-dashboard"
+    for relative in (
+        "src/app",
+        "src/components/WebContract",
+        "src/components/ui",
+        "src/services",
+        "src/store",
+        "src/hooks",
+        "src/lib",
+        "src/types",
+        "src/test",
+    ):
+        (root / relative).mkdir(parents=True)
+    (root / "src/app/page.tsx").write_text(
+        "import { DashboardPreviewPage } from '@/components/WebContract/DashboardPreviewPage';\nexport default function Page(){ return <DashboardPreviewPage />; }\n",
+        encoding="utf-8",
+    )
+    (root / "src/components/WebContract/ContractShell.tsx").write_text("export function ContractShell(){ return <main />; }\n", encoding="utf-8")
+    (root / "src/components/WebContract/WebContractPage.tsx").write_text("export function WebContractPage(){ return <main />; }\n", encoding="utf-8")
+    (root / "src/components/WebContract/DashboardPreviewPage.tsx").write_text("export function DashboardPreviewPage(){ return <main />; }\n", encoding="utf-8")
+    (root / "src/lib/webProjectContract.ts").write_text("export const webProjectContract = { product_name: 'Permitflow' } as const;\n", encoding="utf-8")
+    (root / "src/services/contractService.ts").write_text("export const service = {};\n", encoding="utf-8")
+    (root / "src/store/contractStore.ts").write_text("export const store = {};\n", encoding="utf-8")
+    (root / "src/hooks/useContract.ts").write_text("export function useContract(){ return {}; }\n", encoding="utf-8")
+    (root / "components.json").write_text('{"aliases":{"components":"@/components","lib":"@/lib","hooks":"@/hooks"}}\n', encoding="utf-8")
+    (root / "vitest.config.ts").write_text("export default {};\n", encoding="utf-8")
+
+    result = style_profiles.evaluate_project(root, "nexus_forge_nextjs")
+
+    assert result["ok"] is True
+    assert not any("src/components/layout" in gap for gap in result["gaps"])
+
+
 def test_execution_contract_requires_inspection_and_proof():
     result = execution_contracts.validate_run_evidence(
         {

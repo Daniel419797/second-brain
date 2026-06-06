@@ -18,11 +18,17 @@ import wave
 
 try:
     import numpy as np
-    import sounddevice as sd
-    import whisper
 except Exception:  # pragma: no cover - optional in scaffold tests
     np = None
+
+try:
+    import sounddevice as sd
+except Exception:  # pragma: no cover - optional in scaffold tests
     sd = None
+
+try:
+    import whisper
+except Exception:  # pragma: no cover - optional in scaffold tests
     whisper = None
 
 try:
@@ -455,10 +461,15 @@ def transcribe_best_effort(audio_bytes: bytes, model: Any = None, strip_wake: bo
     if not fallback_model:
         return text
     fallback_backend, fallback_name = _split_backend_model(fallback_model)
-    resolved_fallback_backend, resolved_fallback_name = _resolve_backend_and_model(
-        fallback_backend or active_backend,
-        fallback_name if fallback_backend else fallback_model,
-    )
+    try:
+        resolved_fallback_backend, resolved_fallback_name = _resolve_backend_and_model(
+            fallback_backend or active_backend,
+            fallback_name if fallback_backend else fallback_model,
+        )
+    except Exception as exc:
+        _log("WARNING", f"[STT] fallback backend is not installed ({exc}); trying configured fallback anyway.")
+        resolved_fallback_backend = fallback_backend or active_backend
+        resolved_fallback_name = fallback_name if fallback_backend else fallback_model
     if resolved_fallback_backend == active_backend and resolved_fallback_name == active_name:
         return text
     try:

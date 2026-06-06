@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from core import agent_blackboard, agent_lifecycle, agent_memory, agent_quality_manager, agent_thought_bus, competence, llm, memory, research, skill_library, task_contracts, task_queue
+from core import agent_blackboard, agent_lifecycle, agent_memory, agent_quality_manager, agent_thought_bus, competence, design_providers, llm, memory, research, skill_library, task_contracts, task_queue
 from core.config import config_value
 
 
@@ -23,7 +23,7 @@ ROSTER: tuple[AgentProfile, ...] = (
     AgentProfile("ceo", "CEO / Friday Core", "Goal decomposition and coordination.", ("goal", "plan", "coordinate", "strategy")),
     AgentProfile("strategist", "Strategist", "Market positioning, offers, risk framing, and decision memos.", ("strategy", "positioning", "offer", "market", "memo")),
     AgentProfile("sales_agent", "Sales Agent", "Lead qualification, outreach preparation, and pipeline follow-up.", ("lead", "prospect", "sales", "outreach", "client")),
-    AgentProfile("lead_researcher", "Lead Researcher", "Prospect research, source checking, and opportunity discovery.", ("lead", "research", "prospect", "source", "company")),
+    AgentProfile("lead_researcher", "Lead Researcher", "Prospect research, source checking, and opportunity discovery.", ("lead research", "prospect", "source", "company", "opportunity")),
     AgentProfile("proposal_writer", "Proposal Writer", "Proposals, scopes, contracts, project plans, and client-facing drafts.", ("proposal", "contract", "scope", "brief", "project plan")),
     AgentProfile("product_manager", "Product Manager", "Requirements, roadmap, and prioritization.", ("requirements", "roadmap", "feature", "product")),
     AgentProfile("project_manager", "Project Manager", "Task tracking, blockers, schedules, and progress reports.", ("schedule", "deadline", "status", "blocker", "sprint")),
@@ -190,6 +190,7 @@ def run_task(task: dict[str, Any]) -> dict[str, Any]:
     contract_note = _contract_note(task)
     blackboard_note = agent_blackboard.task_context(int(task.get("id") or 0), limit=int(config_value("agent_blackboard_prompt_limit", 5))) if task.get("id") else ""
     research_note = _research_note(agent, task, task_text)
+    design_provider_note = design_providers.agent_context(agent.id, task_text)
     prompt = _agent_prompt(
         agent,
         title,
@@ -201,6 +202,7 @@ def run_task(task: dict[str, Any]) -> dict[str, Any]:
         contract_note=contract_note,
         blackboard_note=blackboard_note,
         research_note=research_note,
+        design_provider_note=design_provider_note,
         peer_note=_agent_directory_note(agent.id),
     )
     output = ""
@@ -226,12 +228,24 @@ def run_task(task: dict[str, Any]) -> dict[str, Any]:
         "agent_name": agent.name,
         "summary": output.strip(),
         "mode": "llm" if used_llm else "local",
+        "capability": _agent_capability(agent.id),
         "provider_chain": provider_chain if used_llm else [],
         "topics": topics,
         "researched": bool(research_note),
         "spawned_subtasks": spawned_subtasks,
         "structured_feedback": structured_feedback,
     }
+
+
+def _agent_capability(agent_id: str) -> dict[str, Any]:
+    if str(agent_id or "") == "senior_developer":
+        return {
+            "execution": "text_only_unless_autonomous_coding_routed",
+            "can_write_files": False,
+            "coding_executor": "core.autonomous_coding",
+            "summary": "Senior developer chat tasks produce analysis unless routed through the autonomous coding executor.",
+        }
+    return {"execution": "text_only", "can_write_files": False}
 
 
 def format_roster() -> str:
@@ -284,9 +298,10 @@ def _agent_prompt(
     contract_note: str = "",
     blackboard_note: str = "",
     research_note: str = "",
+    design_provider_note: str = "",
     peer_note: str = "",
 ) -> str:
-    context = "\n".join(line for line in [competence_note, skill_note, notebook_note, thought_note, contract_note, blackboard_note, research_note, peer_note] if line)
+    context = "\n".join(line for line in [competence_note, skill_note, notebook_note, thought_note, contract_note, blackboard_note, research_note, design_provider_note, peer_note] if line)
     if context:
         context += "\n\n"
     review_instruction = ""

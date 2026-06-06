@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-friday-bg: #080d11;
-  --color-friday-rail: #1a2028;
-  --color-friday-top: #0f141a;
-  --color-friday-panel: #151c24;
-  --color-friday-panel-2: #202731;
-  --color-friday-line: #33404d;
-  --color-friday-muted: #9aa8ba;
-  --color-friday-accent: #9fcaff;
-  --color-friday-blue: #2498ee;
+  --color-friday-bg: #1f1f1f;
+  --color-friday-rail: #171717;
+  --color-friday-top: #202020;
+  --color-friday-panel: #2b2b2b;
+  --color-friday-panel-2: #333333;
+  --color-friday-line: #3f3f3f;
+  --color-friday-muted: #a6a6a6;
+  --color-friday-accent: #f1f1f1;
+  --color-friday-blue: #f4f4f4;
   --color-friday-ok: #38e0a0;
   --color-friday-warn: #f0a14a;
   --color-friday-danger: #ff737a;
@@ -18,8 +18,8 @@
 html,
 body {
   min-height: 100%;
-  background: #080d11;
-  color: #eef5ff;
+  background: #1f1f1f;
+  color: #ececec;
 }
 
 body {
@@ -33,7 +33,7 @@ body {
 
 .friday-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #405063 #0b1117;
+  scrollbar-color: #555 #1f1f1f;
 }
 
 .friday-scroll::-webkit-scrollbar {
@@ -42,12 +42,12 @@ body {
 }
 
 .friday-scroll::-webkit-scrollbar-track {
-  background: #0b1117;
+  background: #1f1f1f;
 }
 
 .friday-scroll::-webkit-scrollbar-thumb {
-  background: #405063;
-  border-radius: 0;
+  background: #555;
+  border-radius: 999px;
 }
 
 @keyframes friday-fade-in {

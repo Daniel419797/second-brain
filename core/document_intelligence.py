@@ -8,7 +8,7 @@ import zipfile
 from pathlib import Path
 from typing import Any
 
-from core import document_exports
+from core import document_exports, document_knowledge
 from core.config import resolve_coding_root
 
 READABLE_EXTENSIONS = {".md", ".markdown", ".txt", ".pdf", ".docx"}
@@ -19,6 +19,7 @@ def capabilities() -> dict[str, Any]:
     return {
         "read": sorted(READABLE_EXTENSIONS),
         "generate": sorted(GENERATABLE_FORMATS),
+        "knowledge": document_knowledge.capabilities(),
         "summary": "Friday can read Markdown/text, DOCX, and PDF documents, and generate Markdown, DOCX, and PDF from Markdown content.",
     }
 
@@ -71,6 +72,29 @@ def generate_document(
         "formats": export.get("formats") or [],
         "summary": export.get("summary") or "Document generation complete.",
     }
+
+
+def index_documents(
+    paths: list[str] | tuple[str, ...],
+    *,
+    root: str | Path = "",
+    query: str = "",
+    max_chars: int = 60000,
+) -> dict[str, Any]:
+    documents = []
+    failures = []
+    for item in paths:
+        result = read_document(item, max_chars=max_chars)
+        if result.get("ok"):
+            documents.append(result)
+        else:
+            failures.append({"path": str(item), "summary": result.get("summary") or "Document could not be read."})
+    indexed = document_knowledge.index_texts(documents, root=root, query=query)
+    indexed["failures"] = failures
+    indexed["paths"] = [str(item) for item in paths]
+    if failures:
+        indexed["summary"] = f"{indexed['summary']} {len(failures)} document(s) could not be indexed."
+    return indexed
 
 
 def _read_text(path: Path, *, max_chars: int) -> str:

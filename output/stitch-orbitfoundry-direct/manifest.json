@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "elapsedMs": 216310,
+  "promptPath": "C:/Users/HomePC/Desktop/friday-projects/orbitfoundry-robotics-site-friday-test-1/.friday/design/pages/home/stitch-prompt.md",
+  "outputDir": "C:/Users/HomePC/Desktop/second-brain/output/stitch-orbitfoundry-direct",
+  "projectId": "697502691238751967",
+  "screenCount": 4,
+  "extracted": [
+    {
+      "index": 1,
+      "id": "5d0b7e3a94ba4f8dbb41a5dd73901b5e",
+      "title": "Home | OrbitFoundry Robotics",
+      "sourcePath": "$.outputComponents[1].design.screens[0]",
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ6Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpZCiVodG1sXzllMzI2NzJiNzgxNTQ1OGY5ZGFjMjM5Yzc3MWUyMDlhEgsSBxDuxJTq7RkYAZIBIgoKcHJvamVjdF9pZBIUQhI2OTc1MDI2OTEyMzg3NTE5Njc&filename=&opi=96797242",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvlbtxXHJvWI3l5yCz6jLnAUx4GQbqWc2o19F738DDTJdEL3N-jMFJ_vDRwTOPwY3zAZUH3-2AgeU63S52IFjoYgpcHpgt3o5I4mWj9YJYMhEKStL5fTTSFo2r8thE-xQTaNf3PyjPZwpNjXiLYcv-0EDVlcaV-dMeK_TRM3YwxoPpaG1nlqRvRmKxUosrrhpM7skAz3HBw_Pcr0r4cJwJonRhN2xqtj-A68tcXk_37OV6lZfBFkOcvdQ",
+      "htmlPath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\1-5d0b7e3a94ba4f8dbb41a5dd73901b5e.html",
+      "imagePath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\1-5d0b7e3a94ba4f8dbb41a5dd73901b5e.png"
+    },
+    {
+      "index": 2,
+      "id": "10741ec0bfb9470ab26c447efeb01fba",
+      "title": "Robotics Network | OrbitFoundry Robotics",
+      "sourcePath": "$.outputComponents[1].design.screens[1]",
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ6Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpZCiVodG1sXzEyNTBjM2Q0MmRmMzQ1ODE5MmYwZjBjY2RhMjY5N2UzEgsSBxDuxJTq7RkYAZIBIgoKcHJvamVjdF9pZBIUQhI2OTc1MDI2OTEyMzg3NTE5Njc&filename=&opi=96797242",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLuClf_5L9e6fjPCFWFqyPaYXdT6VSZJ0QgV2ZWo25WwnOJgWZ08tqlP2sEkC1Kbqur6GtnApzDdrygMbK_Ps7pE_t1oDwSdaEUvVWmNeJx0Vl7fn2KPNkd9l23wPlmYlJvaiOdMYgVcDA2qAug_x0GV99LQ97OmcmoW2UznXNL07cv_qB5yNTow5-nLkwBgZ961y4Ont7aTFnBD2bdrFyrV6D2aCV60jfP5Cj4OE9gyISpZk5YDA-BJZg",
+      "htmlPath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\2-10741ec0bfb9470ab26c447efeb01fba.html",
+      "imagePath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\2-10741ec0bfb9470ab26c447efeb01fba.png"
+    },
+    {
+      "index": 3,
+      "id": "4a19464aae4b47a9ad9c4634b2f7695a",
+      "title": "Platform | OrbitFoundry Robotics",
+      "sourcePath": "$.outputComponents[1].design.screens[2]",
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ6Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpZCiVodG1sX2UxOWQ1YTU0ZTNkNzQzNWVhMDZiMWU5MGM5YzNkNDAzEgsSBxDuxJTq7RkYAZIBIgoKcHJvamVjdF9pZBIUQhI2OTc1MDI2OTEyMzg3NTE5Njc&filename=&opi=96797242",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLv045ehrvvZNp4ORLSS4Y1SnTkFCGlOoMwvGAhDXxCZVFl-04v0WbYg1VJVsfBiddDndjBPVTxJGBVDkL_NQ4wzoV8SoB5O9ziD7T4-EXvMbLOT7x_lFkSCKc1NvkgAlRZg7ktNkNg_q5DfvYybXI7MYxTjKAzoGlBj_KE0FU4GFHLR_Yrecpdf02pe7xMADvlYM2kEhdwZSpvq6NgS7gnbGW8rcfyL60Be8M_AWjxZgfyt7OOLnUC45Q",
+      "htmlPath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\3-4a19464aae4b47a9ad9c4634b2f7695a.html",
+      "imagePath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\3-4a19464aae4b47a9ad9c4634b2f7695a.png"
+    },
+    {
+      "index": 4,
+      "id": "8b57dde58bb64014b52457ca2a4842e9",
+      "title": "Contact | OrbitFoundry Robotics",
+      "sourcePath": "$.outputComponents[1].design.screens[3]",
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ6Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpZCiVodG1sXzAwMDM2YmMwNjJhYjQwNDE5ODQ5NDY4NjI5ZTI3YmE0EgsSBxDuxJTq7RkYAZIBIgoKcHJvamVjdF9pZBIUQhI2OTc1MDI2OTEyMzg3NTE5Njc&filename=&opi=96797242",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLt3QoMdyVhL-RMQggtmP_kTKjXFisGkeZ6YJ56abhDjR1Ui-gv2qmwL2lZulKieyGy1f1S1Xq7d_TeVZKqINFkNiJosyN9iq7uIJ24BMsGnUDD9SHlgybijfEz0COdQwyyUFr1BXVLmigqS91O0HGZKH_py9dKHUhbIRMwPdy_1XzpOAz5XWMRmCjvizp8gIbJpXrMwq54vAI1kFc-liuwKCoAIIb-EpRQipgm4o7FeKjjl7cQnBuugPw",
+      "htmlPath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\4-8b57dde58bb64014b52457ca2a4842e9.html",
+      "imagePath": "C:\\Users\\HomePC\\Desktop\\second-brain\\output\\stitch-orbitfoundry-direct\\4-8b57dde58bb64014b52457ca2a4842e9.png"
+    }
+  ]
+}

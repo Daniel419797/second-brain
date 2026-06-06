@@ -1,0 +1,34 @@
+[
+  {
+    "id": "brief",
+    "purpose": "product identity, user intent, research evidence, target audience"
+  },
+  {
+    "id": "art_direction",
+    "purpose": "composition archetype, emotional feel, visual grammar, tokens"
+  },
+  {
+    "id": "output_contract",
+    "purpose": "required sections, component inventory, copy bank, rejection rules"
+  },
+  {
+    "id": "page:conceptually-home",
+    "purpose": "page-scoped Stitch prompt for conceptually: Home route"
+  },
+  {
+    "id": "page:collections",
+    "purpose": "page-scoped Stitch prompt for Collections route"
+  },
+  {
+    "id": "page:process",
+    "purpose": "page-scoped Stitch prompt for Process route"
+  },
+  {
+    "id": "page:inquiry",
+    "purpose": "page-scoped Stitch prompt for Inquiry route"
+  },
+  {
+    "id": "revision",
+    "purpose": "browser/screenshot critique feedback prompt when the first handoff fails"
+  }
+]

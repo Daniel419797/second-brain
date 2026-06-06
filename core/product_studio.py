@@ -8,8 +8,8 @@ import re
 from pathlib import Path
 from typing import Any
 
-from core import product_studio_gates
-from core.config import resolve_coding_root
+from core import design_pipeline, design_providers, product_studio_gates
+from core.config import config_value, resolve_coding_root
 
 FRIDAY_DIR = ".friday"
 STUDIO_DIR = "product-studio"
@@ -48,9 +48,15 @@ def prepare_product_studio(
     changed_files: list[str] | None = None,
     test_commands: list[str] | None = None,
     create_files: bool = True,
+    run_live_design_critique: bool = False,
+    design_plan: dict[str, Any] | None = None,
+    design_critique: dict[str, Any] | None = None,
+    applied_design: dict[str, Any] | None = None,
+    design_pipeline_report: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     project_root = resolve_coding_root(root)
     name = _clean(product_name) or _product_name_from_root(project_root)
+    provided_critique = design_critique if isinstance(design_critique, dict) else None
     context = {
         "root": str(project_root),
         "request": _clean(request),
@@ -64,11 +70,31 @@ def prepare_product_studio(
         "standards": standards or {},
         "changed_files": changed_files or [],
         "test_commands": test_commands or [],
+        "live_design_critique_requested": bool(run_live_design_critique or (provided_critique and provided_critique.get("auto_run"))),
+        "applied_design": applied_design if isinstance(applied_design, dict) else {},
+        "design_pipeline": design_pipeline_report if isinstance(design_pipeline_report, dict) else {},
     }
     launch_assets = _launch_assets(name, request)
+    context["design_plan"] = design_plan if isinstance(design_plan, dict) else design_providers.design_brief(
+        request,
+        root=project_root,
+        product_name=name,
+        stack=stack or {},
+        create_files=False,
+    )
+    context["design_critique"] = provided_critique or _design_critique_for_run(
+        project_root,
+        request,
+        name,
+        stack or {},
+        context["design_plan"],
+        run_live=run_live_design_critique,
+    )
     phases = _phase_statuses(context, launch_assets)
     final_report = _final_report(project_root, name, phases, context, launch_assets)
     artifacts = _write_artifacts(project_root, context, phases, final_report, launch_assets) if create_files else []
+    artifacts.extend(str(item) for item in (context["design_critique"].get("artifacts") or []) if str(item).strip())
+    artifacts.extend(str(item) for item in ((context.get("applied_design") or {}).get("artifacts") or []) if str(item).strip())
     summary = _summary(name, phases, final_report)
     return {
         "product_name": name,
@@ -84,6 +110,67 @@ def prepare_product_studio(
     }
 
 
+def prepare_design_handoff(
+    root: str | Path,
+    request: str,
+    *,
+    product_name: str = "",
+    stack: dict[str, Any] | None = None,
+    run_live: bool = False,
+    apply_to_source: bool = True,
+) -> dict[str, Any]:
+    project_root = resolve_coding_root(root)
+    name = _clean(product_name) or _product_name_from_root(project_root)
+    if not bool(config_value("design_pipeline_enabled", True)):
+        return {
+            "ok": False,
+            "status": "disabled",
+            "summary": "Design pipeline is disabled; legacy design fallback is not used for Product Studio handoff.",
+            "frontend_handoff_allowed": False,
+            "design_plan": {},
+            "design_critique": {"status": "disabled", "frontend_handoff_allowed": False},
+            "applied_design": {},
+            "design_pipeline": {"status": "disabled"},
+            "artifacts": [],
+        }
+    try:
+        pipeline = design_pipeline.run(
+            request,
+            root=project_root,
+            product_name=name,
+            stack=stack or {},
+            dry_run=not run_live,
+            apply_to_source=bool(apply_to_source and run_live),
+            run_browser=bool(run_live and apply_to_source and config_value("design_pipeline_browser_required", True)),
+        )
+        applied = pipeline.get("applied_design") if isinstance(pipeline.get("applied_design"), dict) else {}
+        critique = pipeline.get("design_critique") if isinstance(pipeline.get("design_critique"), dict) else {}
+        visual_status = str(pipeline.get("design_visual_status") or "").lower()
+        visual_ready = visual_status == "passed" or (not visual_status and bool(pipeline.get("design_visual_ready")))
+        ok = bool(critique.get("frontend_handoff_allowed")) and (not apply_to_source or bool(applied.get("ok"))) and (not run_live or not apply_to_source or visual_ready)
+        return {
+            "ok": ok,
+            "status": "applied" if ok and apply_to_source and applied.get("ok") else "selected" if ok else str(pipeline.get("status") or critique.get("status") or "blocked"),
+            "summary": pipeline.get("summary") or critique.get("summary") or "Design pipeline completed.",
+            "frontend_handoff_allowed": bool(critique.get("frontend_handoff_allowed")),
+            "design_plan": pipeline.get("design_plan") if isinstance(pipeline.get("design_plan"), dict) else {},
+            "design_critique": critique,
+            "applied_design": applied,
+            "design_pipeline": pipeline,
+            "artifacts": pipeline.get("artifacts") or [],
+        }
+    except Exception as exc:
+        return {
+            "ok": False,
+            "status": "failed",
+            "summary": f"Design pipeline failed before handoff: {exc}",
+            "frontend_handoff_allowed": False,
+            "design_plan": {},
+            "design_critique": {"status": "failed", "summary": str(exc), "frontend_handoff_allowed": False},
+            "applied_design": {},
+            "design_pipeline": {"status": "failed", "summary": str(exc)},
+            "artifacts": [],
+        }
 def _phase_statuses(context: dict[str, Any], launch_assets: dict[str, Any]) -> list[dict[str, Any]]:
     verification = context["artifact_verification"]
     production = context["production_prep"]
@@ -109,6 +196,11 @@ def _phase_statuses(context: dict[str, Any], launch_assets: dict[str, Any]) -> l
     preview_gate = product_studio_gates.gate_status(gate_results, "deployment_preview")
     local_preview_gate = product_studio_gates.gate_status(gate_results, "local_preview")
     browser_screenshot = _browser_screenshot(gate_results)
+    design_plan = context.get("design_plan") if isinstance(context.get("design_plan"), dict) else {}
+    design_selected = (design_plan.get("provider_status") or {}).get("selected", {}) if isinstance(design_plan.get("provider_status"), dict) else {}
+    design_critique = context.get("design_critique") if isinstance(context.get("design_critique"), dict) else {}
+    design_required = _design_handoff_required(context)
+    design_ready = _design_ready(context)
 
     phase_map = {
         "requirements_acceptance": _phase(
@@ -149,9 +241,14 @@ def _phase_statuses(context: dict[str, Any], launch_assets: dict[str, Any]) -> l
         ),
         "ux_browser_verification": _phase(
             "ux_browser_verification",
-            "verified" if browser_gate == "passed" else "blocked" if browser_gate in {"failed", "blocked", "timeout"} else "planned",
-            ["UX/browser checklist artifact generated", browser_screenshot],
-            [] if browser_gate == "passed" else ["No passing browser screenshot, accessibility sweep, or e2e browser proof is attached yet"],
+            "verified" if browser_gate == "passed" and design_ready else "blocked" if browser_gate in {"failed", "blocked", "timeout"} or (design_required and not design_ready) else "planned",
+            [
+                "UX/browser checklist artifact generated",
+                f"Design provider: {design_selected.get('ui_design_agent') or 'local_style_memory'}",
+                f"Design critique: {design_critique.get('status') or 'planned'}",
+                browser_screenshot,
+            ],
+            [] if browser_gate == "passed" and design_ready else _ux_gaps(browser_gate, design_required, design_critique, context.get("applied_design") or {}),
         ),
         "data_privacy_compliance": _phase(
             "data_privacy_compliance",
@@ -202,6 +299,50 @@ def _phase_statuses(context: dict[str, Any], launch_assets: dict[str, Any]) -> l
     return phases
 
 
+def _design_critique_for_run(
+    root: Path,
+    request: str,
+    product_name: str,
+    stack: dict[str, Any],
+    design_plan: dict[str, Any],
+    *,
+    run_live: bool,
+) -> dict[str, Any]:
+    plan = design_providers.design_critique_plan(design_plan)
+    if not run_live:
+        return plan
+    stack_id = _clean(stack.get("stack") or stack.get("kind") or "").lower()
+    if stack_id not in {"nextjs", "web", "web-app", "frontend"}:
+        return {
+            **plan,
+            "auto_run": False,
+            "auto_run_skipped": "Live design critique is currently limited to web-app/frontend projects.",
+        }
+    if bool(config_value("design_external_calls_require_approval", True)) and not bool(config_value("autonomy_preapprove_design_preview", False)):
+        return {
+            **plan,
+            "auto_run": False,
+            "auto_run_skipped": "Live design critique requires approval or autonomy_preapprove_design_preview=true.",
+        }
+    try:
+        critique = design_providers.run_design_critique_loop(
+            request,
+            root=root,
+            product_name=product_name,
+            stack=stack,
+            dry_run=False,
+        )
+    except Exception as exc:
+        return {
+            **plan,
+            "status": "failed",
+            "summary": f"Live design critique failed before producing a selected handoff: {exc}",
+            "auto_run": True,
+            "frontend_handoff_allowed": False,
+        }
+    return {**critique, "auto_run": True}
+
+
 def _write_artifacts(
     root: Path,
     context: dict[str, Any],
@@ -220,6 +361,11 @@ def _write_artifacts(
         "ux-browser-verification.md": _ux_browser_md(context),
         "deployment-release.md": _deployment_md(context),
         "launch-assets.md": _launch_md(launch_assets),
+        "design-provider-plan.md": design_providers.markdown(context.get("design_plan") or {}),
+        "design-provider-status.json": json.dumps((context.get("design_plan") or {}).get("provider_status") or {}, ensure_ascii=True, indent=2, sort_keys=True, default=str) + "\n",
+        "design-critique-plan.md": _design_critique_md(context.get("design_critique") or {}),
+        "design-critique-plan.json": json.dumps(context.get("design_critique") or {}, ensure_ascii=True, indent=2, sort_keys=True, default=str) + "\n",
+        "design-pipeline-summary.json": json.dumps(context.get("design_pipeline") or {}, ensure_ascii=True, indent=2, sort_keys=True, default=str) + "\n",
         "operations-support.md": _operations_md(context),
         "proof-report.md": _proof_report_md(final_report),
         "studio-plan.json": json.dumps({"phases": phases, "final_proof_report": final_report, "launch_assets": launch_assets}, ensure_ascii=True, indent=2, sort_keys=True, default=str) + "\n",
@@ -245,11 +391,20 @@ def _final_report(
         gaps.extend(str(item) for item in phase.get("gaps") or [] if str(item).strip())
     gate_results = context.get("gate_results") if isinstance(context.get("gate_results"), dict) else {}
     gates_attempted = bool(gate_results.get("attempted"))
-    technical_ready = bool(gate_results.get("technical_ready"))
+    design_required = _design_handoff_required(context)
+    design_critique = context.get("design_critique") if isinstance(context.get("design_critique"), dict) else {}
+    applied_design = context.get("applied_design") if isinstance(context.get("applied_design"), dict) else {}
+    design_ready = _design_ready(context)
+    technical_ready = bool(gate_results.get("technical_ready")) and design_ready
     approval_gates_cleared = bool(gate_results.get("approval_gates_cleared"))
     gaps.extend(product_studio_gates.gate_gaps(gate_results))
     if not gates_attempted:
         gaps.append("Executable product-studio gates have not run yet")
+    if design_required and not design_ready:
+        if design_critique.get("frontend_handoff_allowed") and not applied_design.get("ok"):
+            gaps.append("Selected design handoff was not applied into frontend source before technical-ready claims")
+        else:
+            gaps.append("Configured design handoff requires a successful provider-selected design before technical-ready claims")
     critical_gaps = [
         gap
         for gap in gaps
@@ -290,6 +445,9 @@ def _final_report(
             "test_commands": context.get("test_commands") or [],
             "artifact_verification": context.get("artifact_verification") or {},
             "product_studio_gates": gate_results,
+            "design_critique": context.get("design_critique") or {},
+            "applied_design": context.get("applied_design") or {},
+            "design_pipeline": context.get("design_pipeline") or {},
         },
     }
 
@@ -351,6 +509,65 @@ def _security_gaps(high_findings: list[dict[str, Any]], *, gates_attempted: bool
     if high_findings:
         gaps.append(f"{len(high_findings)} high-severity codebase standard finding(s) need review")
     return gaps
+
+
+def _ux_gaps(browser_gate: str, design_required: bool, design_critique: dict[str, Any], applied_design: dict[str, Any]) -> list[str]:
+    gaps: list[str] = []
+    if browser_gate != "passed":
+        gaps.append("No passing browser screenshot, accessibility sweep, or e2e browser proof is attached yet")
+    if design_required and not design_critique.get("frontend_handoff_allowed"):
+        provider = "Google Stitch" if design_critique.get("stitch_required") else "the configured design provider"
+        gaps.append(f"{provider} design handoff is required before Friday can claim the UI is ready or convert the design into frontend code")
+    if design_required and design_critique.get("frontend_handoff_allowed") and not applied_design.get("ok"):
+        gaps.append("Selected Stitch design handoff exists, but Friday has not applied it to frontend source yet")
+    return gaps
+
+
+def _design_ready(context: dict[str, Any]) -> bool:
+    if not _design_handoff_required(context):
+        return True
+    if _rendered_design_fallback_ready(context):
+        return True
+    critique = context.get("design_critique") if isinstance(context.get("design_critique"), dict) else {}
+    if not critique.get("frontend_handoff_allowed"):
+        return False
+    applied = context.get("applied_design") if isinstance(context.get("applied_design"), dict) else {}
+    return bool(applied.get("ok"))
+
+
+def _is_marketing_website_request(request: str) -> bool:
+    checker = getattr(design_providers, "_is_marketing_website_request", None)
+    return bool(checker(request)) if callable(checker) else False
+
+
+def _is_multipage_website_request(request: str) -> bool:
+    checker = getattr(design_providers, "_is_multipage_website_request", None)
+    return bool(checker(request)) if callable(checker) else False
+
+
+def _design_handoff_required(context: dict[str, Any]) -> bool:
+    if not bool(config_value("design_frontend_handoff_required", True)):
+        return False
+    if not bool(context.get("live_design_critique_requested")):
+        return False
+    if _rendered_design_fallback_ready(context):
+        return False
+    stack = context.get("stack") if isinstance(context.get("stack"), dict) else {}
+    stack_id = _clean(stack.get("stack") or stack.get("kind") or "").lower()
+    return stack_id in {"nextjs", "web", "web-app", "frontend"}
+
+
+def _rendered_design_fallback_ready(context: dict[str, Any]) -> bool:
+    if bool(config_value("design_stitch_required_for_web", True)):
+        return False
+    gate_results = context.get("gate_results") if isinstance(context.get("gate_results"), dict) else {}
+    if not gate_results.get("attempted"):
+        return False
+    return (
+        product_studio_gates.gate_status(gate_results, "browser_visual_review") == "passed"
+        and product_studio_gates.gate_status(gate_results, "browser_quality") == "passed"
+        and product_studio_gates.gate_status(gate_results, "ux_copy_quality") == "passed"
+    )
 
 
 def _requirements_md(context: dict[str, Any], phases: list[dict[str, Any]]) -> str:
@@ -434,15 +651,39 @@ def _performance_reliability_md(context: dict[str, Any]) -> str:
 
 
 def _ux_browser_md(context: dict[str, Any]) -> str:
+    critique = context.get("design_critique") if isinstance(context.get("design_critique"), dict) else {}
     return _md(
         "UX, Accessibility, and Browser Verification",
         [
             "Required checks:",
             "- Desktop and mobile screenshot review.",
+            "- Generate 2-3 design variants, score them, reject weak directions, and hand off only the selected design.",
             "- Primary workflow click-through.",
             "- Keyboard and screen-reader basics.",
             "- No overlapping UI, unreadable text, dead buttons, or broken empty states.",
             "- Attach browser proof before claiming market-ready.",
+            "",
+            f"Design critique status: {critique.get('status') or 'planned'}",
+        ],
+    )
+
+
+def _design_critique_md(critique: dict[str, Any]) -> str:
+    return _md(
+        "Design Critique Loop",
+        [
+            f"Status: {critique.get('status') or 'planned'}",
+            f"Summary: {critique.get('summary') or 'Generate variants, score them, reject weak directions, and hand off the best accepted design.'}",
+            f"Variant count: {critique.get('variant_count') or 3}",
+            f"Score threshold: {critique.get('score_threshold') or 72}",
+            f"Frontend handoff allowed: {bool(critique.get('frontend_handoff_allowed'))}",
+            f"Frontend handoff required: {bool(critique.get('frontend_handoff_required', True))}",
+            "",
+            "Criteria:",
+            *[f"- {item}" for item in critique.get("criteria") or []],
+            "",
+            "Conversion rule:",
+            "- The frontend agent may convert only the selected design handoff. Rejected variants are evidence, not implementation source material.",
         ],
     )
 
@@ -524,6 +765,8 @@ def _summary(product_name: str, phases: list[dict[str, Any]], final_report: dict
 
 
 def _next_step(technical_ready: bool, approval_gates_cleared: bool, critical_gaps: list[str]) -> str:
+    if any("design handoff" in gap.lower() or "design-provider" in gap.lower() for gap in critical_gaps):
+        return "Fix the configured design-provider handoff, then rerun design critique and final readiness."
     if not technical_ready:
         return "Fix failed or blocked executable gates, then rerun install, tests, audit, browser, and preview checks."
     if not approval_gates_cleared:

@@ -23,6 +23,7 @@ export const NAV_ITEMS = [
   ["android", "Android", "/android"],
   ["memory", "Memory", "/memory"],
   ["safety", "Safety", "/safety"],
+  ["security-lab", "Security Lab", "/security-lab"],
   ["reliability", "Reliability", "/reliability"],
   ["integrations", "Integrations", "/integrations"],
   ["operators", "Operators", "/operators"]

@@ -1,0 +1,497 @@
+{
+  "outputComponents": [
+    {
+      "designSystem": {
+        "designSystem": {
+          "displayName": "Vale & Vellum Design System",
+          "styleGuidelines": "## Brand & Style\n\nThe design system is rooted in the intersection of traditional craftsmanship and modern editorial design. It serves a boutique studio specializing in high-end stationery, evoking the tactile sensation of heavy paper stock and the precision of letterpress. \n\nThe aesthetic is **Editorial Luxury**, characterized by generous negative space, intentional asymmetry, and a focus on high-contrast typography. The visual language avoids the \"busy\" clutter of standard e-commerce, opting instead for a quiet, confident romance. Every interface element should feel like a curated page in a high-fashion monograph\u00e2\u20ac\u201dminimalist but deeply textured and intentional. The emotional response is one of intimacy and warmth, suggesting a brand that values the \"unhurried\" process of creation.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **Fixed Grid** model for desktop, centered within a maximum width of 1440px. The system utilizes a 12-column grid with exceptionally wide margins (80px) to force focus toward the center and create \"breathing room.\"\n\nAsymmetry is encouraged. For example, imagery may span columns 1-7 while accompanying text is positioned in columns 9-11, leaving column 8 as a deliberate void. Spacing between sections is aggressive (128px) to signify a transition between different \"movements\" or collections. On mobile, margins reduce to 24px, and the layout collapses to a single column, but the vertical \"section-gap\" remains significant to preserve the sense of luxury.\n\n## Elevation & Depth\n\nTo honor the brand's tactile nature, the design system avoids digital-first shadow effects. Instead, it uses **Letterpress Depth** and **Tonal Layers**.\n\n1.  **Letterpress Depth:** Interactive elements like buttons or input fields should appear \"pressed\" into the surface. This is achieved using subtle, inner shadows or 1px inset borders in a slightly darker shade than the background ivory.\n2.  **Macro Texture:** Large background surfaces should utilize a very subtle, non-tiling paper grain texture to prevent the UI from feeling \"flat\" or clinical.\n3.  **Ghost Outlines:** Overlays and cards do not use drop shadows. Instead, they use thin (1px), low-opacity charcoal outlines or a slight shift in background color from Ivory to a slightly cooler parchment tone.\n\n## Components\n\n### Buttons\nPrimary buttons are solid Deep Charcoal Ink with White or Ivory text, using the `label-caps` typography. Secondary buttons are Ivory with a 1px Charcoal border. All buttons have a \"hover\" state that shifts the background to Bronze, simulating a foil stamp.\n\n### Input Fields\nInputs consist of a single 1px Charcoal baseline rather than a full box. Labels sit above the line in `label-caps`. This mimics the look of a formal RSVP card.\n\n### Cards\nCards are defined by their content and layout rather than a container. They use generous padding (48px) and a subtle 1px frame. Images within cards should have a slight \"inset\" feel, as if mounted on a mat board.\n\n### Chips/Tags\nUsed for material types (e.g., \"Hand-deckled\", \"100lb Cover\"). These are Ivory with a 1px Olive or Rose border, utilizing the smallest `label-sm` font size.\n\n### Lists\nLists are separated by thin, horizontal \"hairline\" dividers that do not span the full width of the container, leaving gaps on either side to maintain the editorial flow.",
+          "theme": {
+            "bodyFont": "LIBRE_FRANKLIN",
+            "bodyFontFamily": "Libre Franklin",
+            "colorMode": "LIGHT",
+            "colorVariant": "FIDELITY",
+            "customColor": "#1a1a1a",
+            "designMd": "---\nname: Vale & Vellum Design System\ncolors:\n  surface: '#fcf9f5'\n  surface-dim: '#dcdad6'\n  surface-bright: '#fcf9f5'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f6f3ef'\n  surface-container: '#f0ede9'\n  surface-container-high: '#eae8e4'\n  surface-container-highest: '#e5e2de'\n  on-surface: '#1c1c1a'\n  on-surface-variant: '#444748'\n  inverse-surface: '#31302e'\n  inverse-on-surface: '#f3f0ec'\n  outline: '#747878'\n  outline-variant: '#c4c7c7'\n  surface-tint: '#5f5e5e'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1b'\n  on-primary-container: '#858383'\n  inverse-primary: '#c8c6c5'\n  secondary: '#5e5f5c'\n  on-secondary: '#ffffff'\n  secondary-container: '#e0e0dd'\n  on-secondary-container: '#626361'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#271900'\n  on-tertiary-container: '#9a8051'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e2e1'\n  primary-fixed-dim: '#c8c6c5'\n  on-primary-fixed: '#1c1b1b'\n  on-primary-fixed-variant: '#474746'\n  secondary-fixed: '#e3e2e0'\n  secondary-fixed-dim: '#c7c6c4'\n  on-secondary-fixed: '#1a1c1a'\n  on-secondary-fixed-variant: '#464745'\n  tertiary-fixed: '#ffdea7'\n  tertiary-fixed-dim: '#e1c28e'\n  on-tertiary-fixed: '#271900'\n  on-tertiary-fixed-variant: '#58431a'\n  background: '#fcf9f5'\n  on-background: '#1c1c1a'\n  surface-variant: '#e5e2de'\ntypography:\n  display-lg:\n    fontFamily: Playfair Display\n    fontSize: 84px\n    fontWeight: '400'\n    lineHeight: 92px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Playfair Display\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 56px\n  headline-lg-mobile:\n    fontFamily: Playfair Display\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Libre Franklin\n    fontSize: 18px\n    fontWeight: '300'\n    lineHeight: 32px\n  body-md:\n    fontFamily: Libre Franklin\n    fontSize: 16px\n    fontWeight: '300'\n    lineHeight: 28px\n  label-caps:\n    fontFamily: Montserrat\n    fontSize: 11px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  label-sm:\n    fontFamily: Montserrat\n    fontSize: 13px\n    fontWeight: '400'\n    lineHeight: 18px\nspacing:\n  unit: 8px\n  container-max: 1440px\n  gutter: 32px\n  margin-desktop: 80px\n  margin-mobile: 24px\n  section-gap: 128px\n---\n\n## Brand & Style\n\nThe design system is rooted in the intersection of traditional craftsmanship and modern editorial design. It serves a boutique studio specializing in high-end stationery, evoking the tactile sensation of heavy paper stock and the precision of letterpress. \n\nThe aesthetic is **Editorial Luxury**, characterized by generous negative space, intentional asymmetry, and a focus on high-contrast typography. The visual language avoids the \"busy\" clutter of standard e-commerce, opting instead for a quiet, confident romance. Every interface element should feel like a curated page in a high-fashion monograph\u00e2\u20ac\u201dminimalist but deeply textured and intentional. The emotional response is one of intimacy and warmth, suggesting a brand that values the \"unhurried\" process of creation.\n\n## Colors\n\nThis color palette is inspired by the raw materials of the stationery trade. The foundation is **Rich Ivory (#F9F8F5)**, which serves as the canvas for the entire system, replacing pure white to provide a warmer, more organic feel. **Deep Charcoal Ink (#1A1A1A)** is used for high-contrast typography and structural elements, mimicking the density of fresh ink on paper.\n\n**Subtle Bronze (#A68B5B)** is used exclusively for accents, indicating premium features, call-to-actions, or foil-like details. **Muted Rose (#B89C94)** and **Deep Olive (#3D4435)** provide sophisticated secondary highlights for categories or state changes, maintaining an earth-toned, \"harvested\" aesthetic. All secondary colors should be used sparingly to ensure the ivory and charcoal remain the dominant visual narrative.\n\n## Typography\n\nThe typography system relies on a dramatic contrast between a sophisticated serif and a utilitarian sans-serif. **Playfair Display** handles all expressive roles, utilized for large headlines and display moments. Its high-contrast strokes evoke high fashion and formal invitations.\n\n**Libre Franklin** is chosen for body copy to ensure readability while maintaining a classic, slightly historic character. For metadata, navigation, and labels, **Montserrat** is used with increased letter spacing and uppercase styling to provide a crisp, modern counterpoint to the romantic headlines. \n\nEditorial \"pull quotes\" or emphasized text should use the light weights of the body font to maintain a sense of airiness. Vertical rhythm should be generous, particularly in the line height of body text, to reinforce the premium, uncrowded feel.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **Fixed Grid** model for desktop, centered within a maximum width of 1440px. The system utilizes a 12-column grid with exceptionally wide margins (80px) to force focus toward the center and create \"breathing room.\"\n\nAsymmetry is encouraged. For example, imagery may span columns 1-7 while accompanying text is positioned in columns 9-11, leaving column 8 as a deliberate void. Spacing between sections is aggressive (128px) to signify a transition between different \"movements\" or collections. On mobile, margins reduce to 24px, and the layout collapses to a single column, but the vertical \"section-gap\" remains significant to preserve the sense of luxury.\n\n## Elevation & Depth\n\nTo honor the brand's tactile nature, the design system avoids digital-first shadow effects. Instead, it uses **Letterpress Depth** and **Tonal Layers**.\n\n1.  **Letterpress Depth:** Interactive elements like buttons or input fields should appear \"pressed\" into the surface. This is achieved using subtle, inner shadows or 1px inset borders in a slightly darker shade than the background ivory.\n2.  **Macro Texture:** Large background surfaces should utilize a very subtle, non-tiling paper grain texture to prevent the UI from feeling \"flat\" or clinical.\n3.  **Ghost Outlines:** Overlays and cards do not use drop shadows. Instead, they use thin (1px), low-opacity charcoal outlines or a slight shift in background color from Ivory to a slightly cooler parchment tone.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0)**. There are no rounded corners in this design system. All containers, buttons, and image frames utilize 90-degree angles to mimic the clean cut of a paper guillotine. \n\nThe only exception to the geometric rigidity is the organic flow of the typography. This tension between the \"sharp\" container and the \"soft\" serif content is what gives the design its modern, architectural edge. Borders, when used, should be 1px wide to maintain a delicate, \"hairline\" aesthetic.\n\n## Components\n\n### Buttons\nPrimary buttons are solid Deep Charcoal Ink with White or Ivory text, using the `label-caps` typography. Secondary buttons are Ivory with a 1px Charcoal border. All buttons have a \"hover\" state that shifts the background to Bronze, simulating a foil stamp.\n\n### Input Fields\nInputs consist of a single 1px Charcoal baseline rather than a full box. Labels sit above the line in `label-caps`. This mimics the look of a formal RSVP card.\n\n### Cards\nCards are defined by their content and layout rather than a container. They use generous padding (48px) and a subtle 1px frame. Images within cards should have a slight \"inset\" feel, as if mounted on a mat board.\n\n### Chips/Tags\nUsed for material types (e.g., \"Hand-deckled\", \"100lb Cover\"). These are Ivory with a 1px Olive or Rose border, utilizing the smallest `label-sm` font size.\n\n### Lists\nLists are separated by thin, horizontal \"hairline\" dividers that do not span the full width of the container, leaving gaps on either side to maintain the editorial flow.",
+            "font": "PLAYFAIR_DISPLAY",
+            "headlineFont": "PLAYFAIR_DISPLAY",
+            "headlineFontFamily": "Playfair Display",
+            "labelFont": "MONTSERRAT",
+            "labelFontFamily": "Montserrat",
+            "namedColors": {
+              "background": "#fcf9f5",
+              "error": "#ba1a1a",
+              "error_container": "#ffdad6",
+              "inverse_on_surface": "#f3f0ec",
+              "inverse_primary": "#c8c6c5",
+              "inverse_surface": "#31302e",
+              "on_background": "#1c1c1a",
+              "on_error": "#ffffff",
+              "on_error_container": "#93000a",
+              "on_primary": "#ffffff",
+              "on_primary_container": "#858383",
+              "on_primary_fixed": "#1c1b1b",
+              "on_primary_fixed_variant": "#474746",
+              "on_secondary": "#ffffff",
+              "on_secondary_container": "#626361",
+              "on_secondary_fixed": "#1a1c1a",
+              "on_secondary_fixed_variant": "#464745",
+              "on_surface": "#1c1c1a",
+              "on_surface_variant": "#444748",
+              "on_tertiary": "#ffffff",
+              "on_tertiary_container": "#9a8051",
+              "on_tertiary_fixed": "#271900",
+              "on_tertiary_fixed_variant": "#58431a",
+              "outline": "#747878",
+              "outline_variant": "#c4c7c7",
+              "primary": "#000000",
+              "primary_container": "#1c1b1b",
+              "primary_fixed": "#e5e2e1",
+              "primary_fixed_dim": "#c8c6c5",
+              "secondary": "#5e5f5c",
+              "secondary_container": "#e0e0dd",
+              "secondary_fixed": "#e3e2e0",
+              "secondary_fixed_dim": "#c7c6c4",
+              "surface": "#fcf9f5",
+              "surface_bright": "#fcf9f5",
+              "surface_container": "#f0ede9",
+              "surface_container_high": "#eae8e4",
+              "surface_container_highest": "#e5e2de",
+              "surface_container_low": "#f6f3ef",
+              "surface_container_lowest": "#ffffff",
+              "surface_dim": "#dcdad6",
+              "surface_tint": "#5f5e5e",
+              "surface_variant": "#e5e2de",
+              "tertiary": "#000000",
+              "tertiary_container": "#271900",
+              "tertiary_fixed": "#ffdea7",
+              "tertiary_fixed_dim": "#e1c28e"
+            },
+            "overrideNeutralColor": "#706f6c",
+            "overridePrimaryColor": "#1a1a1a",
+            "overrideSecondaryColor": "#f9f8f5",
+            "overrideTertiaryColor": "#a68b5b",
+            "spacing": {
+              "container-max": "1440px",
+              "gutter": "32px",
+              "margin-desktop": "80px",
+              "margin-mobile": "24px",
+              "section-gap": "128px",
+              "unit": "8px"
+            },
+            "spacingScale": 2,
+            "typography": {
+              "body-lg": {
+                "fontFamily": "Libre Franklin",
+                "fontSize": "18px",
+                "fontWeight": "300",
+                "lineHeight": "32px"
+              },
+              "body-md": {
+                "fontFamily": "Libre Franklin",
+                "fontSize": "16px",
+                "fontWeight": "300",
+                "lineHeight": "28px"
+              },
+              "display-lg": {
+                "fontFamily": "Playfair Display",
+                "fontSize": "84px",
+                "fontWeight": "400",
+                "letterSpacing": "-0.02em",
+                "lineHeight": "92px"
+              },
+              "headline-lg": {
+                "fontFamily": "Playfair Display",
+                "fontSize": "48px",
+                "fontWeight": "400",
+                "lineHeight": "56px"
+              },
+              "headline-lg-mobile": {
+                "fontFamily": "Playfair Display",
+                "fontSize": "32px",
+                "fontWeight": "400",
+                "lineHeight": "40px"
+              },
+              "label-caps": {
+                "fontFamily": "Montserrat",
+                "fontSize": "11px",
+                "fontWeight": "500",
+                "letterSpacing": "0.15em",
+                "lineHeight": "16px"
+              },
+              "label-sm": {
+                "fontFamily": "Montserrat",
+                "fontSize": "13px",
+                "fontWeight": "400",
+                "lineHeight": "18px"
+              }
+            }
+          }
+        },
+        "name": "assets/1ec77634e5a44d8a97c0e9b82d0c0b1a",
+        "version": "1"
+      }
+    },
+    {
+      "design": {
+        "screens": [
+          {
+            "generatedBy": "interactive_ui_controller",
+            "height": "848",
+            "id": "09f967dbda3749418f9cb7e89c764519",
+            "name": "projects/11508722848667026732/screens/09f967dbda3749418f9cb7e89c764519",
+            "prompt": "A macro photograph of high-end stationery production. A close-up of a bronze foil stamp being pressed into deep charcoal cardstock. Visible texture of the paper fibers. Professional, artisanal atmosphere. The lighting highlights the metallic sheen and the depth of the impression. Warm, confident, and exclusive feel.",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "IMAGE",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvL7qHMnTg0Usr3-993kI86snKWy7v04awSTbjTvlrwc0Yf8iP-Raqmx4UobjjV6PtgATwBOTYR9rC5-GByurICyuECRP9ms0144TIUMqPTzAjT7_tcniYI2ePyxhKb2FQEjzCC8suMW-qGJMs9JLXtw0WMpc2rZIlcFS9AK1JAnxBIouy0N2W9UIBiTI6SySNf6-ktwPFq1sZdZIC5FRIwgvH6wyNPzrqgjIuT0qp-9p4N75ev22B3jkC1",
+              "name": "projects/11508722848667026732/files/2ed7437a1fb544da8fc40baecae133ec"
+            },
+            "theme": {},
+            "title": "A macro photograph of high-end stationery production. A close-up of a bronze foil stamp being pressed into deep charcoal cardstock. Visible texture of the paper fibers. Professional, artisanal atmosphere. The lighting highlights the metallic sheen and the depth of the impression. Warm, confident, and exclusive feel.",
+            "width": "1264"
+          },
+          {
+            "generatedBy": "interactive_ui_controller",
+            "height": "768",
+            "id": "b4d4f44d57224308935fe2f63cfb80e1",
+            "name": "projects/11508722848667026732/screens/b4d4f44d57224308935fe2f63cfb80e1",
+            "prompt": "A full-bleed editorial hero shot for a luxury stationery brand called Vale & Vellum. A tactile, macro close-up of a premium wedding invitation suite: thick ivory cotton paper with deep letterpress impression, a translucent vellum wrap, a muted rose silk ribbon, and a deep olive wax seal. The lighting is soft, natural, and intimate, casting gentle shadows. The composition is elegant and slightly asymmetric, suggesting a 'quiet romance' and high-end craft. Deep charcoal ink accents. No text.",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "IMAGE",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvoovR2yDB2Tgc3LVYT_515gPseyEZh6wSGnGqHrxdQXvkbt3NngoofKaOnnnFnRwDkBTKim00IOaCatcgKLrQZuKwBWPfDxSPnF5GV4HWf2TbOcenE8aK7M9Lnb6FXJxHb7gCxkdAN1NY4T-P7hn6M2GJhmy-yjCk-UY3-Pk1hqzHcYWH9XS9aIYLzpTiQcwpW0exWvyl78lWFaAr65IawkFi8-DuWRbf1EgYbByrulqcLN0IothrJSCp8",
+              "name": "projects/11508722848667026732/files/41fab9499cc7424db3473545c25a31ac"
+            },
+            "theme": {},
+            "title": "A full-bleed editorial hero shot for a luxury stationery brand called Vale & Vellum. A tactile, macro close-up of a premium wedding invitation suite: thick ivory cotton paper with deep letterpress impression, a translucent vellum wrap, a muted rose silk ribbon, and a deep olive wax seal. The lighting is soft, natural, and intimate, casting gentle shadows. The composition is elegant and slightly asymmetric, suggesting a 'quiet romance' and high-end craft. Deep charcoal ink accents. No text.",
+            "width": "1376"
+          },
+          {
+            "generatedBy": "interactive_ui_controller",
+            "height": "896",
+            "id": "916f2eea1fec4ffda6d6d595a435d85f",
+            "name": "projects/11508722848667026732/screens/916f2eea1fec4ffda6d6d595a435d85f",
+            "prompt": "A collection of stationery 'Weekend Details' for a luxury event. Minimalist menus, place cards with handwritten calligraphy, and elegant table numbers arranged on a textured linen surface with a sprig of dried olive leaves. Muted, sophisticated color palette of ivory, sage, and bronze. Soft, editorial lighting.",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "IMAGE",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLv1PtMUjk-d0mmQe9EX6o3yogDX-oFMEzTy-YEkgN8Zh2nAG11Ly6m34WgDwPTevCOLlRUZdFwWSO-XqpRvPWo-MHLfoiK93SEowP-yQlqTpy403TaphoT55peM7vdRyLwm-jGDR3F5VOLU-xViWMPTOtb311MBCOV4y-ZQ7AqRUeAFn1pYCt3PUKhxgdMtF9KnqgOt-u34D0nuPOMjFIX_EhdHSJ3Mcjvg0ZXeO5HXIOMbqK0rv1_jZyq_",
+              "name": "projects/11508722848667026732/files/1da2d24c10cd44ef905ec4ecf6dd6cea"
+            },
+            "theme": {},
+            "title": "A collection of stationery 'Weekend Details' for a luxury event. Minimalist menus, place cards with handwritten calligraphy, and elegant table numbers arranged on a textured linen surface with a sprig of dried olive leaves. Muted, sophisticated color palette of ivory, sage, and bronze. Soft, editorial lighting.",
+            "width": "1200"
+          },
+          {
+            "generatedBy": "interactive_ui_controller",
+            "height": "1024",
+            "id": "c31c437b2d7145afb69e7322b1d708f2",
+            "name": "projects/11508722848667026732/screens/c31c437b2d7145afb69e7322b1d708f2",
+            "prompt": "A portrait of a boutique stationery designer's workspace. A clean, organized oak desk with vintage drafting tools, a stack of vellum envelopes, and a small glass of deep olive ink. The atmosphere is quiet, focused, and creative. Natural light from a nearby window. Fine art photography style.",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "IMAGE",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvD6NLqUmp1gHl2LI_Eg58dNeLaUrSam6vTalj11NfN4IgYkaM1XmroVwnAWxZHR58k0XebV2b84a-urCCTpXhXRoldovZNEqpGrI9ZTN7ytjo3_Z9A69Bi3xG7NWGH0sFEk7Tirm6jp76NFk9KbcM22GnAKeBDtkFt6oLViautpqeaaeKHGI9gLw5-lCBaYNA6T6hEiGbo14Bs9cDemdGqefhmnoAD_ilTvNozK8LWGv0VEqlIQiz7wqQ",
+              "name": "projects/11508722848667026732/files/39487640e2dc427d80dbf3dec320fed9"
+            },
+            "theme": {},
+            "title": "A portrait of a boutique stationery designer's workspace. A clean, organized oak desk with vintage drafting tools, a stack of vellum envelopes, and a small glass of deep olive ink. The atmosphere is quiet, focused, and creative. Natural light from a nearby window. Fine art photography style.",
+            "width": "1024"
+          },
+          {
+            "designSystem": {
+              "designSystem": {
+                "displayName": "Vale & Vellum Design System",
+                "styleGuidelines": "## Brand & Style\n\nThe design system is rooted in the intersection of traditional craftsmanship and modern editorial design. It serves a boutique studio specializing in high-end stationery, evoking the tactile sensation of heavy paper stock and the precision of letterpress. \n\nThe aesthetic is **Editorial Luxury**, characterized by generous negative space, intentional asymmetry, and a focus on high-contrast typography. The visual language avoids the \"busy\" clutter of standard e-commerce, opting instead for a quiet, confident romance. Every interface element should feel like a curated page in a high-fashion monograph\u00e2\u20ac\u201dminimalist but deeply textured and intentional. The emotional response is one of intimacy and warmth, suggesting a brand that values the \"unhurried\" process of creation.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **Fixed Grid** model for desktop, centered within a maximum width of 1440px. The system utilizes a 12-column grid with exceptionally wide margins (80px) to force focus toward the center and create \"breathing room.\"\n\nAsymmetry is encouraged. For example, imagery may span columns 1-7 while accompanying text is positioned in columns 9-11, leaving column 8 as a deliberate void. Spacing between sections is aggressive (128px) to signify a transition between different \"movements\" or collections. On mobile, margins reduce to 24px, and the layout collapses to a single column, but the vertical \"section-gap\" remains significant to preserve the sense of luxury.\n\n## Elevation & Depth\n\nTo honor the brand's tactile nature, the design system avoids digital-first shadow effects. Instead, it uses **Letterpress Depth** and **Tonal Layers**.\n\n1.  **Letterpress Depth:** Interactive elements like buttons or input fields should appear \"pressed\" into the surface. This is achieved using subtle, inner shadows or 1px inset borders in a slightly darker shade than the background ivory.\n2.  **Macro Texture:** Large background surfaces should utilize a very subtle, non-tiling paper grain texture to prevent the UI from feeling \"flat\" or clinical.\n3.  **Ghost Outlines:** Overlays and cards do not use drop shadows. Instead, they use thin (1px), low-opacity charcoal outlines or a slight shift in background color from Ivory to a slightly cooler parchment tone.\n\n## Components\n\n### Buttons\nPrimary buttons are solid Deep Charcoal Ink with White or Ivory text, using the `label-caps` typography. Secondary buttons are Ivory with a 1px Charcoal border. All buttons have a \"hover\" state that shifts the background to Bronze, simulating a foil stamp.\n\n### Input Fields\nInputs consist of a single 1px Charcoal baseline rather than a full box. Labels sit above the line in `label-caps`. This mimics the look of a formal RSVP card.\n\n### Cards\nCards are defined by their content and layout rather than a container. They use generous padding (48px) and a subtle 1px frame. Images within cards should have a slight \"inset\" feel, as if mounted on a mat board.\n\n### Chips/Tags\nUsed for material types (e.g., \"Hand-deckled\", \"100lb Cover\"). These are Ivory with a 1px Olive or Rose border, utilizing the smallest `label-sm` font size.\n\n### Lists\nLists are separated by thin, horizontal \"hairline\" dividers that do not span the full width of the container, leaving gaps on either side to maintain the editorial flow.",
+                "theme": {
+                  "bodyFont": "LIBRE_FRANKLIN",
+                  "bodyFontFamily": "Libre Franklin",
+                  "colorMode": "LIGHT",
+                  "colorVariant": "FIDELITY",
+                  "customColor": "#1a1a1a",
+                  "designMd": "---\nname: Vale & Vellum Design System\ncolors:\n  surface: '#fcf9f5'\n  surface-dim: '#dcdad6'\n  surface-bright: '#fcf9f5'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f6f3ef'\n  surface-container: '#f0ede9'\n  surface-container-high: '#eae8e4'\n  surface-container-highest: '#e5e2de'\n  on-surface: '#1c1c1a'\n  on-surface-variant: '#444748'\n  inverse-surface: '#31302e'\n  inverse-on-surface: '#f3f0ec'\n  outline: '#747878'\n  outline-variant: '#c4c7c7'\n  surface-tint: '#5f5e5e'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1b'\n  on-primary-container: '#858383'\n  inverse-primary: '#c8c6c5'\n  secondary: '#5e5f5c'\n  on-secondary: '#ffffff'\n  secondary-container: '#e0e0dd'\n  on-secondary-container: '#626361'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#271900'\n  on-tertiary-container: '#9a8051'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e2e1'\n  primary-fixed-dim: '#c8c6c5'\n  on-primary-fixed: '#1c1b1b'\n  on-primary-fixed-variant: '#474746'\n  secondary-fixed: '#e3e2e0'\n  secondary-fixed-dim: '#c7c6c4'\n  on-secondary-fixed: '#1a1c1a'\n  on-secondary-fixed-variant: '#464745'\n  tertiary-fixed: '#ffdea7'\n  tertiary-fixed-dim: '#e1c28e'\n  on-tertiary-fixed: '#271900'\n  on-tertiary-fixed-variant: '#58431a'\n  background: '#fcf9f5'\n  on-background: '#1c1c1a'\n  surface-variant: '#e5e2de'\ntypography:\n  display-lg:\n    fontFamily: Playfair Display\n    fontSize: 84px\n    fontWeight: '400'\n    lineHeight: 92px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Playfair Display\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 56px\n  headline-lg-mobile:\n    fontFamily: Playfair Display\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Libre Franklin\n    fontSize: 18px\n    fontWeight: '300'\n    lineHeight: 32px\n  body-md:\n    fontFamily: Libre Franklin\n    fontSize: 16px\n    fontWeight: '300'\n    lineHeight: 28px\n  label-caps:\n    fontFamily: Montserrat\n    fontSize: 11px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  label-sm:\n    fontFamily: Montserrat\n    fontSize: 13px\n    fontWeight: '400'\n    lineHeight: 18px\nspacing:\n  unit: 8px\n  container-max: 1440px\n  gutter: 32px\n  margin-desktop: 80px\n  margin-mobile: 24px\n  section-gap: 128px\n---\n\n## Brand & Style\n\nThe design system is rooted in the intersection of traditional craftsmanship and modern editorial design. It serves a boutique studio specializing in high-end stationery, evoking the tactile sensation of heavy paper stock and the precision of letterpress. \n\nThe aesthetic is **Editorial Luxury**, characterized by generous negative space, intentional asymmetry, and a focus on high-contrast typography. The visual language avoids the \"busy\" clutter of standard e-commerce, opting instead for a quiet, confident romance. Every interface element should feel like a curated page in a high-fashion monograph\u00e2\u20ac\u201dminimalist but deeply textured and intentional. The emotional response is one of intimacy and warmth, suggesting a brand that values the \"unhurried\" process of creation.\n\n## Colors\n\nThis color palette is inspired by the raw materials of the stationery trade. The foundation is **Rich Ivory (#F9F8F5)**, which serves as the canvas for the entire system, replacing pure white to provide a warmer, more organic feel. **Deep Charcoal Ink (#1A1A1A)** is used for high-contrast typography and structural elements, mimicking the density of fresh ink on paper.\n\n**Subtle Bronze (#A68B5B)** is used exclusively for accents, indicating premium features, call-to-actions, or foil-like details. **Muted Rose (#B89C94)** and **Deep Olive (#3D4435)** provide sophisticated secondary highlights for categories or state changes, maintaining an earth-toned, \"harvested\" aesthetic. All secondary colors should be used sparingly to ensure the ivory and charcoal remain the dominant visual narrative.\n\n## Typography\n\nThe typography system relies on a dramatic contrast between a sophisticated serif and a utilitarian sans-serif. **Playfair Display** handles all expressive roles, utilized for large headlines and display moments. Its high-contrast strokes evoke high fashion and formal invitations.\n\n**Libre Franklin** is chosen for body copy to ensure readability while maintaining a classic, slightly historic character. For metadata, navigation, and labels, **Montserrat** is used with increased letter spacing and uppercase styling to provide a crisp, modern counterpoint to the romantic headlines. \n\nEditorial \"pull quotes\" or emphasized text should use the light weights of the body font to maintain a sense of airiness. Vertical rhythm should be generous, particularly in the line height of body text, to reinforce the premium, uncrowded feel.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **Fixed Grid** model for desktop, centered within a maximum width of 1440px. The system utilizes a 12-column grid with exceptionally wide margins (80px) to force focus toward the center and create \"breathing room.\"\n\nAsymmetry is encouraged. For example, imagery may span columns 1-7 while accompanying text is positioned in columns 9-11, leaving column 8 as a deliberate void. Spacing between sections is aggressive (128px) to signify a transition between different \"movements\" or collections. On mobile, margins reduce to 24px, and the layout collapses to a single column, but the vertical \"section-gap\" remains significant to preserve the sense of luxury.\n\n## Elevation & Depth\n\nTo honor the brand's tactile nature, the design system avoids digital-first shadow effects. Instead, it uses **Letterpress Depth** and **Tonal Layers**.\n\n1.  **Letterpress Depth:** Interactive elements like buttons or input fields should appear \"pressed\" into the surface. This is achieved using subtle, inner shadows or 1px inset borders in a slightly darker shade than the background ivory.\n2.  **Macro Texture:** Large background surfaces should utilize a very subtle, non-tiling paper grain texture to prevent the UI from feeling \"flat\" or clinical.\n3.  **Ghost Outlines:** Overlays and cards do not use drop shadows. Instead, they use thin (1px), low-opacity charcoal outlines or a slight shift in background color from Ivory to a slightly cooler parchment tone.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0)**. There are no rounded corners in this design system. All containers, buttons, and image frames utilize 90-degree angles to mimic the clean cut of a paper guillotine. \n\nThe only exception to the geometric rigidity is the organic flow of the typography. This tension between the \"sharp\" container and the \"soft\" serif content is what gives the design its modern, architectural edge. Borders, when used, should be 1px wide to maintain a delicate, \"hairline\" aesthetic.\n\n## Components\n\n### Buttons\nPrimary buttons are solid Deep Charcoal Ink with White or Ivory text, using the `label-caps` typography. Secondary buttons are Ivory with a 1px Charcoal border. All buttons have a \"hover\" state that shifts the background to Bronze, simulating a foil stamp.\n\n### Input Fields\nInputs consist of a single 1px Charcoal baseline rather than a full box. Labels sit above the line in `label-caps`. This mimics the look of a formal RSVP card.\n\n### Cards\nCards are defined by their content and layout rather than a container. They use generous padding (48px) and a subtle 1px frame. Images within cards should have a slight \"inset\" feel, as if mounted on a mat board.\n\n### Chips/Tags\nUsed for material types (e.g., \"Hand-deckled\", \"100lb Cover\"). These are Ivory with a 1px Olive or Rose border, utilizing the smallest `label-sm` font size.\n\n### Lists\nLists are separated by thin, horizontal \"hairline\" dividers that do not span the full width of the container, leaving gaps on either side to maintain the editorial flow.",
+                  "font": "PLAYFAIR_DISPLAY",
+                  "headlineFont": "PLAYFAIR_DISPLAY",
+                  "headlineFontFamily": "Playfair Display",
+                  "labelFont": "MONTSERRAT",
+                  "labelFontFamily": "Montserrat",
+                  "namedColors": {
+                    "background": "#fcf9f5",
+                    "error": "#ba1a1a",
+                    "error_container": "#ffdad6",
+                    "inverse_on_surface": "#f3f0ec",
+                    "inverse_primary": "#c8c6c5",
+                    "inverse_surface": "#31302e",
+                    "on_background": "#1c1c1a",
+                    "on_error": "#ffffff",
+                    "on_error_container": "#93000a",
+                    "on_primary": "#ffffff",
+                    "on_primary_container": "#858383",
+                    "on_primary_fixed": "#1c1b1b",
+                    "on_primary_fixed_variant": "#474746",
+                    "on_secondary": "#ffffff",
+                    "on_secondary_container": "#626361",
+                    "on_secondary_fixed": "#1a1c1a",
+                    "on_secondary_fixed_variant": "#464745",
+                    "on_surface": "#1c1c1a",
+                    "on_surface_variant": "#444748",
+                    "on_tertiary": "#ffffff",
+                    "on_tertiary_container": "#9a8051",
+                    "on_tertiary_fixed": "#271900",
+                    "on_tertiary_fixed_variant": "#58431a",
+                    "outline": "#747878",
+                    "outline_variant": "#c4c7c7",
+                    "primary": "#000000",
+                    "primary_container": "#1c1b1b",
+                    "primary_fixed": "#e5e2e1",
+                    "primary_fixed_dim": "#c8c6c5",
+                    "secondary": "#5e5f5c",
+                    "secondary_container": "#e0e0dd",
+                    "secondary_fixed": "#e3e2e0",
+                    "secondary_fixed_dim": "#c7c6c4",
+                    "surface": "#fcf9f5",
+                    "surface_bright": "#fcf9f5",
+                    "surface_container": "#f0ede9",
+                    "surface_container_high": "#eae8e4",
+                    "surface_container_highest": "#e5e2de",
+                    "surface_container_low": "#f6f3ef",
+                    "surface_container_lowest": "#ffffff",
+                    "surface_dim": "#dcdad6",
+                    "surface_tint": "#5f5e5e",
+                    "surface_variant": "#e5e2de",
+                    "tertiary": "#000000",
+                    "tertiary_container": "#271900",
+                    "tertiary_fixed": "#ffdea7",
+                    "tertiary_fixed_dim": "#e1c28e"
+                  },
+                  "overrideNeutralColor": "#706f6c",
+                  "overridePrimaryColor": "#1a1a1a",
+                  "overrideSecondaryColor": "#f9f8f5",
+                  "overrideTertiaryColor": "#a68b5b",
+                  "spacing": {
+                    "container-max": "1440px",
+                    "gutter": "32px",
+                    "margin-desktop": "80px",
+                    "margin-mobile": "24px",
+                    "section-gap": "128px",
+                    "unit": "8px"
+                  },
+                  "spacingScale": 2,
+                  "typography": {
+                    "body-lg": {
+                      "fontFamily": "Libre Franklin",
+                      "fontSize": "18px",
+                      "fontWeight": "300",
+                      "lineHeight": "32px"
+                    },
+                    "body-md": {
+                      "fontFamily": "Libre Franklin",
+                      "fontSize": "16px",
+                      "fontWeight": "300",
+                      "lineHeight": "28px"
+                    },
+                    "display-lg": {
+                      "fontFamily": "Playfair Display",
+                      "fontSize": "84px",
+                      "fontWeight": "400",
+                      "letterSpacing": "-0.02em",
+                      "lineHeight": "92px"
+                    },
+                    "headline-lg": {
+                      "fontFamily": "Playfair Display",
+                      "fontSize": "48px",
+                      "fontWeight": "400",
+                      "lineHeight": "56px"
+                    },
+                    "headline-lg-mobile": {
+                      "fontFamily": "Playfair Display",
+                      "fontSize": "32px",
+                      "fontWeight": "400",
+                      "lineHeight": "40px"
+                    },
+                    "label-caps": {
+                      "fontFamily": "Montserrat",
+                      "fontSize": "11px",
+                      "fontWeight": "500",
+                      "letterSpacing": "0.15em",
+                      "lineHeight": "16px"
+                    },
+                    "label-sm": {
+                      "fontFamily": "Montserrat",
+                      "fontSize": "13px",
+                      "fontWeight": "400",
+                      "lineHeight": "18px"
+                    }
+                  }
+                }
+              },
+              "name": "assets/1ec77634e5a44d8a97c0e9b82d0c0b1a",
+              "version": "1"
+            },
+            "deviceType": "DESKTOP",
+            "generatedBy": "figaro_agent",
+            "height": "10788",
+            "htmlCode": {
+              "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+              "mimeType": "text/html",
+              "name": "projects/11508722848667026732/files/d71b02bb325e4c2a833ee3f05b4c2661"
+            },
+            "id": "3fea75022c5a4b4fb5a3a3f8d465c4e7",
+            "name": "projects/11508722848667026732/screens/3fea75022c5a4b4fb5a3a3f8d465c4e7",
+            "prompt": "Design the Homepage for Vale & Vellum (/conceptually-home). \n\nLayout Strategy: \n- Full-bleed editorial hero using {{DATA:IMAGE:IMAGE_4}} as the primary visual. \n- Asymmetric content sections with generous white space.\n- Tactile product details and process steps.\n\nCopy & Sections:\n1. Hero: Headline: \"A quieter standard of luxury, made visible.\" Subhead: \"Boutique stationery and custom invitation suites for private clients who notice the difference.\" CTA: \"Request Concierge Access\".\n2. Provenance Section: Headline: \"The Art of the Impression.\" Copy about letterpress, paper stock selection, and hand-finished assembly. Use {{DATA:IMAGE:IMAGE_5}}.\n3. Collections Preview: Three cards with asymmetric layout: \n   - \"Signature Suites\" (Fine cotton, letterpress, vellum wraps)\n   - \"Weekend Details\" (Menus, place cards, guest itineraries) using {{DATA:IMAGE:IMAGE_3}}\n   - \"Bespoke Editorial\" (One-of-a-kind commissions)\n4. Process: A minimalist 5-step journey: Consultation, Material Direction, Proofing, Production, Concierge Delivery.\n5. Trust/Proof: \"Timeline & Delivery: 8-12 weeks for custom suites. Rush options available for private events. Sample kits available upon request.\" Use {{DATA:IMAGE:IMAGE_6}}.\n6. Inquiry CTA: A high-touch form area asking for Event Date, Guest Count, and Package Path (Bespoke vs. Signature). Headline: \"Secure Your Date.\"\n\nNavigation: Collections (/collections), Process (/process), Inquiry (/inquiry).\nFooter: Brand logo, studio notes sign-up, location, and links.\n\nVisual Tone: Ivory, ink, muted rose, deep olive. Elegant serif headlines, crisp sans labels. No generic SaaS elements. No giant clipped type. Tactile, editorial, romantic.",
+            "screenMetadata": {
+              "agentType": "PRO_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "DESIGN",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvhqU9T6ab3RPiPusq1Z1IfgwhkjoOAfNnq97F4EF9jJ_8jAKSwIiV9p8x6A4Nl-mOXzOaAMDku7fRnAbMn75zYogDMu5RF2KRra9BVqG8qWaA2jipra6A0JDYNv31U3WlXZnk0rX4o9k_eCeUUF70Y6NuaHJv5a0TDqoij_rt3RUoXi_O9pBBzLb4mGp4SJ3qNR0WbxswN8eaxZ6_-S5VDB-rhrN1Cf0dj-mRMXH25zBUrSIimXUKlcmuQ",
+              "name": "projects/11508722848667026732/files/da267cc2201949e7a517bf0e18adc6d0"
+            },
+            "theme": {
+              "bodyFont": "LIBRE_FRANKLIN",
+              "bodyFontFamily": "Libre Franklin",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#1a1a1a",
+              "designMd": "---\nname: Vale & Vellum Design System\ncolors:\n  surface: '#fcf9f5'\n  surface-dim: '#dcdad6'\n  surface-bright: '#fcf9f5'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f6f3ef'\n  surface-container: '#f0ede9'\n  surface-container-high: '#eae8e4'\n  surface-container-highest: '#e5e2de'\n  on-surface: '#1c1c1a'\n  on-surface-variant: '#444748'\n  inverse-surface: '#31302e'\n  inverse-on-surface: '#f3f0ec'\n  outline: '#747878'\n  outline-variant: '#c4c7c7'\n  surface-tint: '#5f5e5e'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1b'\n  on-primary-container: '#858383'\n  inverse-primary: '#c8c6c5'\n  secondary: '#5e5f5c'\n  on-secondary: '#ffffff'\n  secondary-container: '#e0e0dd'\n  on-secondary-container: '#626361'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#271900'\n  on-tertiary-container: '#9a8051'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e2e1'\n  primary-fixed-dim: '#c8c6c5'\n  on-primary-fixed: '#1c1b1b'\n  on-primary-fixed-variant: '#474746'\n  secondary-fixed: '#e3e2e0'\n  secondary-fixed-dim: '#c7c6c4'\n  on-secondary-fixed: '#1a1c1a'\n  on-secondary-fixed-variant: '#464745'\n  tertiary-fixed: '#ffdea7'\n  tertiary-fixed-dim: '#e1c28e'\n  on-tertiary-fixed: '#271900'\n  on-tertiary-fixed-variant: '#58431a'\n  background: '#fcf9f5'\n  on-background: '#1c1c1a'\n  surface-variant: '#e5e2de'\ntypography:\n  display-lg:\n    fontFamily: Playfair Display\n    fontSize: 84px\n    fontWeight: '400'\n    lineHeight: 92px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Playfair Display\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 56px\n  headline-lg-mobile:\n    fontFamily: Playfair Display\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Libre Franklin\n    fontSize: 18px\n    fontWeight: '300'\n    lineHeight: 32px\n  body-md:\n    fontFamily: Libre Franklin\n    fontSize: 16px\n    fontWeight: '300'\n    lineHeight: 28px\n  label-caps:\n    fontFamily: Montserrat\n    fontSize: 11px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  label-sm:\n    fontFamily: Montserrat\n    fontSize: 13px\n    fontWeight: '400'\n    lineHeight: 18px\nspacing:\n  unit: 8px\n  container-max: 1440px\n  gutter: 32px\n  margin-desktop: 80px\n  margin-mobile: 24px\n  section-gap: 128px\n---\n\n## Brand & Style\n\nThe design system is rooted in the intersection of traditional craftsmanship and modern editorial design. It serves a boutique studio specializing in high-end stationery, evoking the tactile sensation of heavy paper stock and the precision of letterpress. \n\nThe aesthetic is **Editorial Luxury**, characterized by generous negative space, intentional asymmetry, and a focus on high-contrast typography. The visual language avoids the \"busy\" clutter of standard e-commerce, opting instead for a quiet, confident romance. Every interface element should feel like a curated page in a high-fashion monograph\u00e2\u20ac\u201dminimalist but deeply textured and intentional. The emotional response is one of intimacy and warmth, suggesting a brand that values the \"unhurried\" process of creation.\n\n## Colors\n\nThis color palette is inspired by the raw materials of the stationery trade. The foundation is **Rich Ivory (#F9F8F5)**, which serves as the canvas for the entire system, replacing pure white to provide a warmer, more organic feel. **Deep Charcoal Ink (#1A1A1A)** is used for high-contrast typography and structural elements, mimicking the density of fresh ink on paper.\n\n**Subtle Bronze (#A68B5B)** is used exclusively for accents, indicating premium features, call-to-actions, or foil-like details. **Muted Rose (#B89C94)** and **Deep Olive (#3D4435)** provide sophisticated secondary highlights for categories or state changes, maintaining an earth-toned, \"harvested\" aesthetic. All secondary colors should be used sparingly to ensure the ivory and charcoal remain the dominant visual narrative.\n\n## Typography\n\nThe typography system relies on a dramatic contrast between a sophisticated serif and a utilitarian sans-serif. **Playfair Display** handles all expressive roles, utilized for large headlines and display moments. Its high-contrast strokes evoke high fashion and formal invitations.\n\n**Libre Franklin** is chosen for body copy to ensure readability while maintaining a classic, slightly historic character. For metadata, navigation, and labels, **Montserrat** is used with increased letter spacing and uppercase styling to provide a crisp, modern counterpoint to the romantic headlines. \n\nEditorial \"pull quotes\" or emphasized text should use the light weights of the body font to maintain a sense of airiness. Vertical rhythm should be generous, particularly in the line height of body text, to reinforce the premium, uncrowded feel.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **Fixed Grid** model for desktop, centered within a maximum width of 1440px. The system utilizes a 12-column grid with exceptionally wide margins (80px) to force focus toward the center and create \"breathing room.\"\n\nAsymmetry is encouraged. For example, imagery may span columns 1-7 while accompanying text is positioned in columns 9-11, leaving column 8 as a deliberate void. Spacing between sections is aggressive (128px) to signify a transition between different \"movements\" or collections. On mobile, margins reduce to 24px, and the layout collapses to a single column, but the vertical \"section-gap\" remains significant to preserve the sense of luxury.\n\n## Elevation & Depth\n\nTo honor the brand's tactile nature, the design system avoids digital-first shadow effects. Instead, it uses **Letterpress Depth** and **Tonal Layers**.\n\n1.  **Letterpress Depth:** Interactive elements like buttons or input fields should appear \"pressed\" into the surface. This is achieved using subtle, inner shadows or 1px inset borders in a slightly darker shade than the background ivory.\n2.  **Macro Texture:** Large background surfaces should utilize a very subtle, non-tiling paper grain texture to prevent the UI from feeling \"flat\" or clinical.\n3.  **Ghost Outlines:** Overlays and cards do not use drop shadows. Instead, they use thin (1px), low-opacity charcoal outlines or a slight shift in background color from Ivory to a slightly cooler parchment tone.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0)**. There are no rounded corners in this design system. All containers, buttons, and image frames utilize 90-degree angles to mimic the clean cut of a paper guillotine. \n\nThe only exception to the geometric rigidity is the organic flow of the typography. This tension between the \"sharp\" container and the \"soft\" serif content is what gives the design its modern, architectural edge. Borders, when used, should be 1px wide to maintain a delicate, \"hairline\" aesthetic.\n\n## Components\n\n### Buttons\nPrimary buttons are solid Deep Charcoal Ink with White or Ivory text, using the `label-caps` typography. Secondary buttons are Ivory with a 1px Charcoal border. All buttons have a \"hover\" state that shifts the background to Bronze, simulating a foil stamp.\n\n### Input Fields\nInputs consist of a single 1px Charcoal baseline rather than a full box. Labels sit above the line in `label-caps`. This mimics the look of a formal RSVP card.\n\n### Cards\nCards are defined by their content and layout rather than a container. They use generous padding (48px) and a subtle 1px frame. Images within cards should have a slight \"inset\" feel, as if mounted on a mat board.\n\n### Chips/Tags\nUsed for material types (e.g., \"Hand-deckled\", \"100lb Cover\"). These are Ivory with a 1px Olive or Rose border, utilizing the smallest `label-sm` font size.\n\n### Lists\nLists are separated by thin, horizontal \"hairline\" dividers that do not span the full width of the container, leaving gaps on either side to maintain the editorial flow.",
+              "font": "PLAYFAIR_DISPLAY",
+              "headlineFont": "PLAYFAIR_DISPLAY",
+              "headlineFontFamily": "Playfair Display",
+              "labelFont": "MONTSERRAT",
+              "labelFontFamily": "Montserrat",
+              "namedColors": {
+                "background": "#fcf9f5",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#f3f0ec",
+                "inverse_primary": "#c8c6c5",
+                "inverse_surface": "#31302e",
+                "on_background": "#1c1c1a",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#858383",
+                "on_primary_fixed": "#1c1b1b",
+                "on_primary_fixed_variant": "#474746",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#626361",
+                "on_secondary_fixed": "#1a1c1a",
+                "on_secondary_fixed_variant": "#464745",
+                "on_surface": "#1c1c1a",
+                "on_surface_variant": "#444748",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#9a8051",
+                "on_tertiary_fixed": "#271900",
+                "on_tertiary_fixed_variant": "#58431a",
+                "outline": "#747878",
+                "outline_variant": "#c4c7c7",
+                "primary": "#000000",
+                "primary_container": "#1c1b1b",
+                "primary_fixed": "#e5e2e1",
+                "primary_fixed_dim": "#c8c6c5",
+                "secondary": "#5e5f5c",
+                "secondary_container": "#e0e0dd",
+                "secondary_fixed": "#e3e2e0",
+                "secondary_fixed_dim": "#c7c6c4",
+                "surface": "#fcf9f5",
+                "surface_bright": "#fcf9f5",
+                "surface_container": "#f0ede9",
+                "surface_container_high": "#eae8e4",
+                "surface_container_highest": "#e5e2de",
+                "surface_container_low": "#f6f3ef",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#dcdad6",
+                "surface_tint": "#5f5e5e",
+                "surface_variant": "#e5e2de",
+                "tertiary": "#000000",
+                "tertiary_container": "#271900",
+                "tertiary_fixed": "#ffdea7",
+                "tertiary_fixed_dim": "#e1c28e"
+              },
+              "overrideNeutralColor": "#706f6c",
+              "overridePrimaryColor": "#1a1a1a",
+              "overrideSecondaryColor": "#f9f8f5",
+              "overrideTertiaryColor": "#a68b5b",
+              "spacing": {
+                "container-max": "1440px",
+                "gutter": "32px",
+                "margin-desktop": "80px",
+                "margin-mobile": "24px",
+                "section-gap": "128px",
+                "unit": "8px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Libre Franklin",
+                  "fontSize": "18px",
+                  "fontWeight": "300",
+                  "lineHeight": "32px"
+                },
+                "body-md": {
+                  "fontFamily": "Libre Franklin",
+                  "fontSize": "16px",
+                  "fontWeight": "300",
+                  "lineHeight": "28px"
+                },
+                "display-lg": {
+                  "fontFamily": "Playfair Display",
+                  "fontSize": "84px",
+                  "fontWeight": "400",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "92px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Playfair Display",
+                  "fontSize": "48px",
+                  "fontWeight": "400",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Playfair Display",
+                  "fontSize": "32px",
+                  "fontWeight": "400",
+                  "lineHeight": "40px"
+                },
+                "label-caps": {
+                  "fontFamily": "Montserrat",
+                  "fontSize": "11px",
+                  "fontWeight": "500",
+                  "letterSpacing": "0.15em",
+                  "lineHeight": "16px"
+                },
+                "label-sm": {
+                  "fontFamily": "Montserrat",
+                  "fontSize": "13px",
+                  "fontWeight": "400",
+                  "lineHeight": "18px"
+                }
+              }
+            },
+            "title": "Vale & Vellum Homepage",
+            "width": "2560"
+          }
+        ],
+        "theme": {}
+      }
+    },
+    {
+      "text": "Designing the digital presence for Vale & Vellum. I'm focusing on a tactile, editorial aesthetic that balances luxury with craft, using a palette of ink, deep olive, and muted rose to evoke 'quiet romance'."
+    }
+  ],
+  "projectId": "11508722848667026732",
+  "sessionId": "4870131124674581866"
+}

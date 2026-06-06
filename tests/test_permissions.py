@@ -153,6 +153,7 @@ def test_autonomous_agency_runtime_permissions(monkeypatch, tmp_path):
     memory = permissions.evaluate("power_center", {"action": "memory_governance_remember"})
     ad_draft = permissions.evaluate("power_center", {"action": "ad_campaign_draft"})
     ad_post = permissions.evaluate("power_center", {"action": "ad_campaign_post"})
+    project_ideas = permissions.evaluate("power_center", {"action": "project_ideas_research"})
 
     assert benchmark["allowed"] is True
     assert queue["allowed"] is True
@@ -162,3 +163,4 @@ def test_autonomous_agency_runtime_permissions(monkeypatch, tmp_path):
     assert memory["allowed"] is True
     assert ad_draft["allowed"] is True
     assert ad_post["requires_confirmation"] is True
+    assert project_ideas["allowed"] is True

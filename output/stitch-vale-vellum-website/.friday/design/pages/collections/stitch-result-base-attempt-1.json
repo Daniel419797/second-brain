@@ -1,0 +1,623 @@
+{
+  "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzIzM2JiMGM0NTg5ZDQ3NDg4OWQ5NzNmZDExOWI1MTdjEgsSBxDuxJTq7RkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzU4MTQzNDQzMjc2NTM1OTQ5NA&filename=&opi=96797242",
+  "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsFSyDHfAm43k_YBBeo6GTpu5bkLuaBrrYCMZHHLRyu8cxxScFqYSwKfUg1UlGu3i4d4TR94WEJPNdORoEfIZWwSNgws5fGmz9v8hnspdZ8tNs6CreIdQFSiqk-sC53OSRYK0MKfaEHFjTaPlCpHXUsMY2x-n6LPBe2LOAagjZQjx0Lj68IY6GFtFaRiEwKAnvF7lMumLdNQu5wkEvVAvaWe-U9LUtbMO-BwtnwIf8JqVHK_iNc0atq8To",
+  "modelId": "GEMINI_3_1_PRO",
+  "ok": true,
+  "partialProviderResult": false,
+  "projectId": "17581434432765359494",
+  "projectionPathsTried": [
+    "outputComponents[0].design.screens",
+    "outputComponents[0].design.screen",
+    "outputComponents[0].screens",
+    "outputComponents[0].screen",
+    "outputComponents[0].payload.design.screens",
+    "outputComponents[0].data.design.screens",
+    "outputComponents[1].design.screens",
+    "outputComponents[1].design.screen",
+    "outputComponents[1].screens",
+    "outputComponents[1].screen",
+    "outputComponents[1].payload.design.screens",
+    "outputComponents[1].data.design.screens",
+    "outputComponents[2].design.screens",
+    "outputComponents[2].design.screen",
+    "outputComponents[2].screens",
+    "outputComponents[2].screen",
+    "outputComponents[2].payload.design.screens",
+    "outputComponents[2].data.design.screens",
+    "outputComponents[3].design.screens",
+    "outputComponents[3].design.screen",
+    "outputComponents[3].screens",
+    "outputComponents[3].screen",
+    "outputComponents[3].payload.design.screens",
+    "outputComponents[3].data.design.screens",
+    "outputComponents[4].design.screens",
+    "outputComponents[4].design.screen",
+    "outputComponents[4].screens",
+    "outputComponents[4].screen",
+    "outputComponents[4].payload.design.screens",
+    "outputComponents[4].data.design.screens",
+    "outputComponents[5].design.screens",
+    "outputComponents[5].design.screen",
+    "outputComponents[5].screens",
+    "outputComponents[5].screen",
+    "outputComponents[5].payload.design.screens",
+    "outputComponents[5].data.design.screens",
+    "design.screens",
+    "screens",
+    "screen",
+    "generatedScreen",
+    "generated_screen",
+    "$.outputComponents[1].design.screens[0]",
+    "$.outputComponents[1].design.screens[1]",
+    "$.outputComponents[1].design.screens[2]",
+    "$.outputComponents[1].design.screens[3]",
+    "$.outputComponents[1].design.screens[4]"
+  ],
+  "provider": "stitch",
+  "rawFallbackGenerations": [],
+  "rawGenerate": {
+    "outputComponents": [
+      {
+        "designSystem": {
+          "designSystem": {
+            "displayName": "Atelier Editorial",
+            "styleGuidelines": "## Brand & Style\n\nThe visual identity is rooted in the \"Quiet Romance\" of artisanal craft. This design system bridges the gap between high-fashion editorial layouts and the tactile nature of premium stationery. It targets a discerning audience that values exclusivity, slow-living, and the permanence of ink on paper.\n\nThe aesthetic follows a **Minimalist / Modern Editorial** philosophy. It prioritizes the \"luxury of space,\" utilizing generous margins and deliberate asymmetry to guide the eye. Instead of digital-first trends, the UI mimics the physical properties of a high-end lookbook: crisp edges, flat surfaces, and high-contrast color pairings that evoke the feeling of fresh ink on heavy vellum.\n\n## Layout & Spacing\n\nThis design system employs a **Fixed Grid with Asymmetric Flex**. While content generally adheres to a 12-column grid, intentional \"break-outs\"\u00e2\u20ac\u201dwhere images or text blocks are offset from the grid\u00e2\u20ac\u201dare encouraged to mimic editorial page layouts.\n\n- **Vertical Rhythm:** Use massive section gaps (160px+) to allow the products to breathe. White space is treated as a physical material, not just a void.\n- **Desktop:** 12 columns, 32px gutters. Hero sections should often utilize a \"safe-center\" 8-column span to maintain readability and focus.\n- **Mobile:** 4 columns, 24px margins. Content should stack vertically but retain significant padding between blocks to prevent a \"cluttered\" mobile experience.\n\n## Elevation & Depth\n\nTo maintain a tactile, paper-based aesthetic, this design system avoids heavy shadows and traditional digital depth markers.\n\n- **Tonal Layering:** Depth is communicated through color. For example, a card might sit on a Deep Olive section using the Ivory color to pop forward.\n- **Inky Outlines:** Use 1px solid borders in Ink (#1A1A1A) with low opacity (10-20%) for subtle containment, or 100% opacity for bold, structural definition.\n- **Tactile Overlays:** For modal windows or high-touch areas, use a light \"Vellum\" effect: a subtle backdrop blur (4px) combined with an 85% opaque Ivory fill to simulate translucent paper.\n- **No Shadows:** Standard drop shadows are strictly avoided. If a \"lift\" is necessary, use a \"Hard Shadow\"\u00e2\u20ac\u201da solid 1px offset line in Bronze or Ink\u00e2\u20ac\u201dto keep the look graphic and flat.\n\n## Components\n\n### Buttons\nPrimary buttons are solid **Ink (#1A1A1A)** with **Ivory (#F9F7F2)** text, using the `label-caps` typography. Secondary buttons use a 1px Ink border with no fill. All buttons feature a \"hover\" state that shifts the background to Bronze (#B5935B) or adds a slight 4px horizontal offset to the text.\n\n### Editorial Product Cards\nCards feature a high-aspect-ratio image (e.g., 4:5) to showcase paper textures. Product names are set in small `label-caps` above the image, with the price in `body-md` below. No borders are used; the image itself defines the container.\n\n### Concierge Inquiry Form\nA minimalist, high-touch form. Inputs are designed as single horizontal lines (1px Ink) rather than boxes. Labels sit above the line in `micro-copy`. The \"Submit\" action is a text-link with a small Bronze arrow icon.\n\n### Navigation\nA \"Discreet\" top navigation bar. Links are widely spaced and set in `label-caps`. The brand mark is centered, with utility links (Search, Cart) right-aligned. The navigation background should be transparent, only becoming opaque Ivory on scroll.\n\n### Chips & Tags\nUsed for paper types or printing methods (e.g., \"Letterpress\", \"Hand-torn\"). These are small, 1px outlined rectangles with `micro-copy` text, ensuring they feel like small labels found on a swatch book.",
+            "theme": {
+              "bodyFont": "HANKEN_GROTESK",
+              "bodyFontFamily": "Hanken Grotesk",
+              "colorMode": "LIGHT",
+              "colorVariant": "FIDELITY",
+              "customColor": "#1a1a1a",
+              "designMd": "---\nname: Atelier Editorial\ncolors:\n  surface: '#f8fbe7'\n  surface-dim: '#d8dcc9'\n  surface-bright: '#f8fbe7'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f6e2'\n  surface-container: '#edf0dc'\n  surface-container-high: '#e7ead6'\n  surface-container-highest: '#e1e4d1'\n  on-surface: '#191d11'\n  on-surface-variant: '#444748'\n  inverse-surface: '#2e3225'\n  inverse-on-surface: '#eff3df'\n  outline: '#747878'\n  outline-variant: '#c4c7c7'\n  surface-tint: '#5f5e5e'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1b'\n  on-primary-container: '#858383'\n  inverse-primary: '#c8c6c5'\n  secondary: '#5e5e5b'\n  on-secondary: '#ffffff'\n  secondary-container: '#e1dfdb'\n  on-secondary-container: '#63635f'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#2f140e'\n  on-tertiary-container: '#a47a70'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e2e1'\n  primary-fixed-dim: '#c8c6c5'\n  on-primary-fixed: '#1c1b1b'\n  on-primary-fixed-variant: '#474746'\n  secondary-fixed: '#e4e2dd'\n  secondary-fixed-dim: '#c8c6c2'\n  on-secondary-fixed: '#1b1c19'\n  on-secondary-fixed-variant: '#474744'\n  tertiary-fixed: '#ffdad2'\n  tertiary-fixed-dim: '#ecbbb0'\n  on-tertiary-fixed: '#2f140e'\n  on-tertiary-fixed-variant: '#613e36'\n  background: '#f8fbe7'\n  on-background: '#191d11'\n  surface-variant: '#e1e4d1'\ntypography:\n  display-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 80px\n    fontWeight: '400'\n    lineHeight: 90px\n    letterSpacing: -0.02em\n  display-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 54px\n    letterSpacing: -0.01em\n  headline-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 56px\n  headline-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  headline-md:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-caps:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  micro-copy:\n    fontFamily: Hanken Grotesk\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\n    letterSpacing: 0.05em\nspacing:\n  unit: 8px\n  container-max: 1440px\n  gutter: 32px\n  margin-desktop: 80px\n  margin-mobile: 24px\n  section-gap: 160px\n---\n\n## Brand & Style\n\nThe visual identity is rooted in the \"Quiet Romance\" of artisanal craft. This design system bridges the gap between high-fashion editorial layouts and the tactile nature of premium stationery. It targets a discerning audience that values exclusivity, slow-living, and the permanence of ink on paper.\n\nThe aesthetic follows a **Minimalist / Modern Editorial** philosophy. It prioritizes the \"luxury of space,\" utilizing generous margins and deliberate asymmetry to guide the eye. Instead of digital-first trends, the UI mimics the physical properties of a high-end lookbook: crisp edges, flat surfaces, and high-contrast color pairings that evoke the feeling of fresh ink on heavy vellum.\n\n## Colors\n\nThe palette is designed to replicate the physical materials of a boutique studio.\n\n- **Ink (#1A1A1A):** The primary driver of hierarchy. Used for all core typography and structural borders to maintain a high-contrast, printed aesthetic.\n- **Ivory (#F9F7F2):** The universal background color. It provides a warmer, more sophisticated foundation than pure white, simulating premium paper stock.\n- **Muted Rose (#D4A59A):** A romantic accent used sparingly for highlights, hover states, or soft calligraphic elements.\n- **Deep Olive (#3E4234):** A grounding neutral used for secondary backgrounds or subtle text to add depth without breaking the high-contrast rhythm.\n- **Bronze (#B5935B):** Reserved for \"foil\" moments\u00e2\u20ac\u201dspecial buttons, icons, or micro-details that signify luxury and craft.\n\n## Typography\n\nTypography is the cornerstone of this design system. It utilizes a dramatic contrast between an elegant, high-contrast Serif and a technical, wide-spaced Sans-Serif.\n\n- **Headlines:** `Bodoni Moda` is used for all major headings. Its vertical stress and sharp serifs evoke classic fashion mastheads. It should be typeset with tight tracking for a confident, editorial look.\n- **Body & Micro-copy:** `Hanken Grotesk` provides a modern, neutral counterpoint. For labels and navigation items, use the `label-caps` style with significant letter-spacing (0.15em) to create an airy, premium feel.\n- **Hierarchy:** Maintain large scale differences between display text and body copy to reinforce the studio\u00e2\u20ac\u2122s boutique, high-end positioning.\n\n## Layout & Spacing\n\nThis design system employs a **Fixed Grid with Asymmetric Flex**. While content generally adheres to a 12-column grid, intentional \"break-outs\"\u00e2\u20ac\u201dwhere images or text blocks are offset from the grid\u00e2\u20ac\u201dare encouraged to mimic editorial page layouts.\n\n- **Vertical Rhythm:** Use massive section gaps (160px+) to allow the products to breathe. White space is treated as a physical material, not just a void.\n- **Desktop:** 12 columns, 32px gutters. Hero sections should often utilize a \"safe-center\" 8-column span to maintain readability and focus.\n- **Mobile:** 4 columns, 24px margins. Content should stack vertically but retain significant padding between blocks to prevent a \"cluttered\" mobile experience.\n\n## Elevation & Depth\n\nTo maintain a tactile, paper-based aesthetic, this design system avoids heavy shadows and traditional digital depth markers.\n\n- **Tonal Layering:** Depth is communicated through color. For example, a card might sit on a Deep Olive section using the Ivory color to pop forward.\n- **Inky Outlines:** Use 1px solid borders in Ink (#1A1A1A) with low opacity (10-20%) for subtle containment, or 100% opacity for bold, structural definition.\n- **Tactile Overlays:** For modal windows or high-touch areas, use a light \"Vellum\" effect: a subtle backdrop blur (4px) combined with an 85% opaque Ivory fill to simulate translucent paper.\n- **No Shadows:** Standard drop shadows are strictly avoided. If a \"lift\" is necessary, use a \"Hard Shadow\"\u00e2\u20ac\u201da solid 1px offset line in Bronze or Ink\u00e2\u20ac\u201dto keep the look graphic and flat.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0)**. \n\nEvery UI element\u00e2\u20ac\u201dfrom buttons and input fields to product images\u00e2\u20ac\u201dmust feature crisp, 90-degree corners. This reinforces the \"cut paper\" aesthetic of a stationery studio and aligns with high-end architectural and editorial design. Circles are only permitted for specific functional icons (like a \"Close\" button or a play button), where they act as a geometric counterpoint to the otherwise rigid grid.\n\n## Components\n\n### Buttons\nPrimary buttons are solid **Ink (#1A1A1A)** with **Ivory (#F9F7F2)** text, using the `label-caps` typography. Secondary buttons use a 1px Ink border with no fill. All buttons feature a \"hover\" state that shifts the background to Bronze (#B5935B) or adds a slight 4px horizontal offset to the text.\n\n### Editorial Product Cards\nCards feature a high-aspect-ratio image (e.g., 4:5) to showcase paper textures. Product names are set in small `label-caps` above the image, with the price in `body-md` below. No borders are used; the image itself defines the container.\n\n### Concierge Inquiry Form\nA minimalist, high-touch form. Inputs are designed as single horizontal lines (1px Ink) rather than boxes. Labels sit above the line in `micro-copy`. The \"Submit\" action is a text-link with a small Bronze arrow icon.\n\n### Navigation\nA \"Discreet\" top navigation bar. Links are widely spaced and set in `label-caps`. The brand mark is centered, with utility links (Search, Cart) right-aligned. The navigation background should be transparent, only becoming opaque Ivory on scroll.\n\n### Chips & Tags\nUsed for paper types or printing methods (e.g., \"Letterpress\", \"Hand-torn\"). These are small, 1px outlined rectangles with `micro-copy` text, ensuring they feel like small labels found on a swatch book.",
+              "font": "BODONI_MODA",
+              "headlineFont": "BODONI_MODA",
+              "headlineFontFamily": "Bodoni Moda",
+              "labelFont": "HANKEN_GROTESK",
+              "labelFontFamily": "Hanken Grotesk",
+              "namedColors": {
+                "background": "#f8fbe7",
+                "error": "#ba1a1a",
+                "error_container": "#ffdad6",
+                "inverse_on_surface": "#eff3df",
+                "inverse_primary": "#c8c6c5",
+                "inverse_surface": "#2e3225",
+                "on_background": "#191d11",
+                "on_error": "#ffffff",
+                "on_error_container": "#93000a",
+                "on_primary": "#ffffff",
+                "on_primary_container": "#858383",
+                "on_primary_fixed": "#1c1b1b",
+                "on_primary_fixed_variant": "#474746",
+                "on_secondary": "#ffffff",
+                "on_secondary_container": "#63635f",
+                "on_secondary_fixed": "#1b1c19",
+                "on_secondary_fixed_variant": "#474744",
+                "on_surface": "#191d11",
+                "on_surface_variant": "#444748",
+                "on_tertiary": "#ffffff",
+                "on_tertiary_container": "#a47a70",
+                "on_tertiary_fixed": "#2f140e",
+                "on_tertiary_fixed_variant": "#613e36",
+                "outline": "#747878",
+                "outline_variant": "#c4c7c7",
+                "primary": "#000000",
+                "primary_container": "#1c1b1b",
+                "primary_fixed": "#e5e2e1",
+                "primary_fixed_dim": "#c8c6c5",
+                "secondary": "#5e5e5b",
+                "secondary_container": "#e1dfdb",
+                "secondary_fixed": "#e4e2dd",
+                "secondary_fixed_dim": "#c8c6c2",
+                "surface": "#f8fbe7",
+                "surface_bright": "#f8fbe7",
+                "surface_container": "#edf0dc",
+                "surface_container_high": "#e7ead6",
+                "surface_container_highest": "#e1e4d1",
+                "surface_container_low": "#f2f6e2",
+                "surface_container_lowest": "#ffffff",
+                "surface_dim": "#d8dcc9",
+                "surface_tint": "#5f5e5e",
+                "surface_variant": "#e1e4d1",
+                "tertiary": "#000000",
+                "tertiary_container": "#2f140e",
+                "tertiary_fixed": "#ffdad2",
+                "tertiary_fixed_dim": "#ecbbb0"
+              },
+              "overrideNeutralColor": "#3e4234",
+              "overridePrimaryColor": "#1a1a1a",
+              "overrideSecondaryColor": "#f9f7f2",
+              "overrideTertiaryColor": "#d4a59a",
+              "spacing": {
+                "container-max": "1440px",
+                "gutter": "32px",
+                "margin-desktop": "80px",
+                "margin-mobile": "24px",
+                "section-gap": "160px",
+                "unit": "8px"
+              },
+              "spacingScale": 2,
+              "typography": {
+                "body-lg": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "18px",
+                  "fontWeight": "400",
+                  "lineHeight": "28px"
+                },
+                "body-md": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "16px",
+                  "fontWeight": "400",
+                  "lineHeight": "24px"
+                },
+                "display-lg": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "80px",
+                  "fontWeight": "400",
+                  "letterSpacing": "-0.02em",
+                  "lineHeight": "90px"
+                },
+                "display-lg-mobile": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "48px",
+                  "fontWeight": "400",
+                  "letterSpacing": "-0.01em",
+                  "lineHeight": "54px"
+                },
+                "headline-lg": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "48px",
+                  "fontWeight": "400",
+                  "lineHeight": "56px"
+                },
+                "headline-lg-mobile": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "32px",
+                  "fontWeight": "400",
+                  "lineHeight": "40px"
+                },
+                "headline-md": {
+                  "fontFamily": "Bodoni Moda",
+                  "fontSize": "32px",
+                  "fontWeight": "400",
+                  "lineHeight": "40px"
+                },
+                "label-caps": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "12px",
+                  "fontWeight": "600",
+                  "letterSpacing": "0.15em",
+                  "lineHeight": "16px"
+                },
+                "micro-copy": {
+                  "fontFamily": "Hanken Grotesk",
+                  "fontSize": "11px",
+                  "fontWeight": "400",
+                  "letterSpacing": "0.05em",
+                  "lineHeight": "14px"
+                }
+              }
+            }
+          },
+          "name": "assets/f5eef6c774eb44779eb55257d5771c81",
+          "version": "1"
+        }
+      },
+      {
+        "design": {
+          "screens": [
+            {
+              "generatedBy": "interactive_ui_controller",
+              "height": "768",
+              "id": "8435ce7656e744519766be8df4b4ba75",
+              "name": "projects/17581434432765359494/screens/8435ce7656e744519766be8df4b4ba75",
+              "prompt": "Macro editorial photography of a luxury wedding invitation suite on heavy ivory paper with deep ink letterpress, vellum wrap, and a bronze wax seal. Shallow depth of field, tactile paper texture, soft romantic lighting, premium stationery studio aesthetic. Dark olive and ivory tones.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "IMAGE",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLs1vRfQtQbecxJSeRr5jlQmgWZ74hTRIg6rL4jhji5Cu0iy63mjCKFTsbeGqq95jWCALlf9pbnj8UeZohQr4iQmw_aiRaMM_gf3PbisGu3k2d8JYSZWLa7_RfuViFTu8aNfFAnEuPEA0noQyg60ZJkfsV7yI8d_A3_v88FpQB9en5WnCRc2IQ3RlUK7mQ6zwPHPeYfdOnZRu1qL0XtBYs5dVx8oWZ2edIaAab-v5TcaccSdsx3iPromBvcS",
+                "name": "projects/17581434432765359494/files/2f9f687d18d64cd399120ebed45d8d5e"
+              },
+              "theme": {},
+              "title": "Macro editorial photography of a luxury wedding invitation suite on heavy ivory paper with deep ink letterpress, vellum wrap, and a bronze wax seal. Shallow depth of field, tactile paper texture, soft romantic lighting, premium stationery studio aesthetic. Dark olive and ivory tones.",
+              "width": "1376"
+            },
+            {
+              "generatedBy": "interactive_ui_controller",
+              "height": "1200",
+              "id": "2b98b9f66bc14638a867cf01a73bc76e",
+              "name": "projects/17581434432765359494/screens/2b98b9f66bc14638a867cf01a73bc76e",
+              "prompt": "A stack of premium paper samples in various weights and textures, from vellum to heavy cotton stock. Architectural composition, soft shadows, ivory and sage green tones. Editorial luxury style.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "IMAGE",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLveLceU14pjouKl-Nr6VUlGqIUDQGMoaQ_IEVJx9p3rwwxVaqXllfs-1DvjSlcuM1SZ-5eXrGQ5F96GvCf1WwNGlZvZB2O5T550xhA1nv76GxJFlxXyjHoVDEuCyqqfeI46W47NLO-B9c2viQwRAalRM6PboN8mO4HCOBg4P28Vxvh-yEWGBuKTCAKqk0uvveg75T-bymfwdxs3VH-Bsm5syqq69fAIkO7NeVMj01M5iac0e0o7o6MNivQ",
+                "name": "projects/17581434432765359494/files/f0ea24bb35324dd79a4d9e8c7c271b73"
+              },
+              "theme": {},
+              "title": "A stack of premium paper samples in various weights and textures, from vellum to heavy cotton stock. Architectural composition, soft shadows, ivory and sage green tones. Editorial luxury style.",
+              "width": "896"
+            },
+            {
+              "generatedBy": "interactive_ui_controller",
+              "height": "896",
+              "id": "ee0482d12ae44b7dab53cf45a975558b",
+              "name": "projects/17581434432765359494/screens/ee0482d12ae44b7dab53cf45a975558b",
+              "prompt": "A minimalist, high-end desk with a single elegant ink well, a glass pen, and a bespoke invitation card. Large negative space, quiet confidence, luxury brand aesthetic. Ivory and bronze accents.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "IMAGE",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvRl3f2gUBlBivPFSZPaZK1gGauAj42WynrmZt8QA-K3ss0J5Vg2IR15YieMu4dxTiLxHGBERSO1Wq-bdClW2TtUmC25NqRG-x4BRmRKSHMET66AGleZQ5U4QIJ5N-mAVKbtaz00ig6O31mYLpPQIoBLYDCYgljXOmTP0R8zzMOhbg6Lfz4_XiOUL1YjPPd_Z_FjG6VAFJmo0k-L5-zhLfkJeP8zvpx9J6GdmMdMl8dO9QIkjVQmuSbpeOH",
+                "name": "projects/17581434432765359494/files/56600967045c4068b69393a52bf458f8"
+              },
+              "theme": {},
+              "title": "A minimalist, high-end desk with a single elegant ink well, a glass pen, and a bespoke invitation card. Large negative space, quiet confidence, luxury brand aesthetic. Ivory and bronze accents.",
+              "width": "1200"
+            },
+            {
+              "generatedBy": "interactive_ui_controller",
+              "height": "896",
+              "id": "4f089fba33254cc3b5c600c6443a7350",
+              "name": "projects/17581434432765359494/screens/4f089fba33254cc3b5c600c6443a7350",
+              "prompt": "Close-up of a designer's hands carefully assembling a letterpress wedding invitation with a silk ribbon and wax seal. High-end atelier studio environment, soft natural light, focus on craftsmanship and tactile materials. Muted rose and charcoal tones.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "IMAGE",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLvPYuwVgAWOL7gur39oXu5miFhmJ4y-frVP0drMK8UF-9bCNAIUjMiwUdjK3651QZD1f58I2GEhTLrU515Bqu6Ey_m3TCamZZzH2XVQgn5u3lqr05ExDC6X7n-G5RWqz5AgU5kv2P6LZmppvZ9-7fYd0ucRIVt1fgJHXnEqxwL8wQLQyqNZLTBaH8a5Of2ZF8mffzZJGJJG_rP9LURmwpJZn78WrIfk-exZCoatLQp5GQC2n6deQf_Yej0v",
+                "name": "projects/17581434432765359494/files/b178cab4283c4d33acb78c738c610176"
+              },
+              "theme": {},
+              "title": "Close-up of a designer's hands carefully assembling a letterpress wedding invitation with a silk ribbon and wax seal. High-end atelier studio environment, soft natural light, focus on craftsmanship and tactile materials. Muted rose and charcoal tones.",
+              "width": "1200"
+            },
+            {
+              "designSystem": {
+                "designSystem": {
+                  "displayName": "Atelier Editorial",
+                  "styleGuidelines": "## Brand & Style\n\nThe visual identity is rooted in the \"Quiet Romance\" of artisanal craft. This design system bridges the gap between high-fashion editorial layouts and the tactile nature of premium stationery. It targets a discerning audience that values exclusivity, slow-living, and the permanence of ink on paper.\n\nThe aesthetic follows a **Minimalist / Modern Editorial** philosophy. It prioritizes the \"luxury of space,\" utilizing generous margins and deliberate asymmetry to guide the eye. Instead of digital-first trends, the UI mimics the physical properties of a high-end lookbook: crisp edges, flat surfaces, and high-contrast color pairings that evoke the feeling of fresh ink on heavy vellum.\n\n## Layout & Spacing\n\nThis design system employs a **Fixed Grid with Asymmetric Flex**. While content generally adheres to a 12-column grid, intentional \"break-outs\"\u00e2\u20ac\u201dwhere images or text blocks are offset from the grid\u00e2\u20ac\u201dare encouraged to mimic editorial page layouts.\n\n- **Vertical Rhythm:** Use massive section gaps (160px+) to allow the products to breathe. White space is treated as a physical material, not just a void.\n- **Desktop:** 12 columns, 32px gutters. Hero sections should often utilize a \"safe-center\" 8-column span to maintain readability and focus.\n- **Mobile:** 4 columns, 24px margins. Content should stack vertically but retain significant padding between blocks to prevent a \"cluttered\" mobile experience.\n\n## Elevation & Depth\n\nTo maintain a tactile, paper-based aesthetic, this design system avoids heavy shadows and traditional digital depth markers.\n\n- **Tonal Layering:** Depth is communicated through color. For example, a card might sit on a Deep Olive section using the Ivory color to pop forward.\n- **Inky Outlines:** Use 1px solid borders in Ink (#1A1A1A) with low opacity (10-20%) for subtle containment, or 100% opacity for bold, structural definition.\n- **Tactile Overlays:** For modal windows or high-touch areas, use a light \"Vellum\" effect: a subtle backdrop blur (4px) combined with an 85% opaque Ivory fill to simulate translucent paper.\n- **No Shadows:** Standard drop shadows are strictly avoided. If a \"lift\" is necessary, use a \"Hard Shadow\"\u00e2\u20ac\u201da solid 1px offset line in Bronze or Ink\u00e2\u20ac\u201dto keep the look graphic and flat.\n\n## Components\n\n### Buttons\nPrimary buttons are solid **Ink (#1A1A1A)** with **Ivory (#F9F7F2)** text, using the `label-caps` typography. Secondary buttons use a 1px Ink border with no fill. All buttons feature a \"hover\" state that shifts the background to Bronze (#B5935B) or adds a slight 4px horizontal offset to the text.\n\n### Editorial Product Cards\nCards feature a high-aspect-ratio image (e.g., 4:5) to showcase paper textures. Product names are set in small `label-caps` above the image, with the price in `body-md` below. No borders are used; the image itself defines the container.\n\n### Concierge Inquiry Form\nA minimalist, high-touch form. Inputs are designed as single horizontal lines (1px Ink) rather than boxes. Labels sit above the line in `micro-copy`. The \"Submit\" action is a text-link with a small Bronze arrow icon.\n\n### Navigation\nA \"Discreet\" top navigation bar. Links are widely spaced and set in `label-caps`. The brand mark is centered, with utility links (Search, Cart) right-aligned. The navigation background should be transparent, only becoming opaque Ivory on scroll.\n\n### Chips & Tags\nUsed for paper types or printing methods (e.g., \"Letterpress\", \"Hand-torn\"). These are small, 1px outlined rectangles with `micro-copy` text, ensuring they feel like small labels found on a swatch book.",
+                  "theme": {
+                    "bodyFont": "HANKEN_GROTESK",
+                    "bodyFontFamily": "Hanken Grotesk",
+                    "colorMode": "LIGHT",
+                    "colorVariant": "FIDELITY",
+                    "customColor": "#1a1a1a",
+                    "designMd": "---\nname: Atelier Editorial\ncolors:\n  surface: '#f8fbe7'\n  surface-dim: '#d8dcc9'\n  surface-bright: '#f8fbe7'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f6e2'\n  surface-container: '#edf0dc'\n  surface-container-high: '#e7ead6'\n  surface-container-highest: '#e1e4d1'\n  on-surface: '#191d11'\n  on-surface-variant: '#444748'\n  inverse-surface: '#2e3225'\n  inverse-on-surface: '#eff3df'\n  outline: '#747878'\n  outline-variant: '#c4c7c7'\n  surface-tint: '#5f5e5e'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1b'\n  on-primary-container: '#858383'\n  inverse-primary: '#c8c6c5'\n  secondary: '#5e5e5b'\n  on-secondary: '#ffffff'\n  secondary-container: '#e1dfdb'\n  on-secondary-container: '#63635f'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#2f140e'\n  on-tertiary-container: '#a47a70'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e2e1'\n  primary-fixed-dim: '#c8c6c5'\n  on-primary-fixed: '#1c1b1b'\n  on-primary-fixed-variant: '#474746'\n  secondary-fixed: '#e4e2dd'\n  secondary-fixed-dim: '#c8c6c2'\n  on-secondary-fixed: '#1b1c19'\n  on-secondary-fixed-variant: '#474744'\n  tertiary-fixed: '#ffdad2'\n  tertiary-fixed-dim: '#ecbbb0'\n  on-tertiary-fixed: '#2f140e'\n  on-tertiary-fixed-variant: '#613e36'\n  background: '#f8fbe7'\n  on-background: '#191d11'\n  surface-variant: '#e1e4d1'\ntypography:\n  display-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 80px\n    fontWeight: '400'\n    lineHeight: 90px\n    letterSpacing: -0.02em\n  display-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 54px\n    letterSpacing: -0.01em\n  headline-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 56px\n  headline-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  headline-md:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-caps:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  micro-copy:\n    fontFamily: Hanken Grotesk\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\n    letterSpacing: 0.05em\nspacing:\n  unit: 8px\n  container-max: 1440px\n  gutter: 32px\n  margin-desktop: 80px\n  margin-mobile: 24px\n  section-gap: 160px\n---\n\n## Brand & Style\n\nThe visual identity is rooted in the \"Quiet Romance\" of artisanal craft. This design system bridges the gap between high-fashion editorial layouts and the tactile nature of premium stationery. It targets a discerning audience that values exclusivity, slow-living, and the permanence of ink on paper.\n\nThe aesthetic follows a **Minimalist / Modern Editorial** philosophy. It prioritizes the \"luxury of space,\" utilizing generous margins and deliberate asymmetry to guide the eye. Instead of digital-first trends, the UI mimics the physical properties of a high-end lookbook: crisp edges, flat surfaces, and high-contrast color pairings that evoke the feeling of fresh ink on heavy vellum.\n\n## Colors\n\nThe palette is designed to replicate the physical materials of a boutique studio.\n\n- **Ink (#1A1A1A):** The primary driver of hierarchy. Used for all core typography and structural borders to maintain a high-contrast, printed aesthetic.\n- **Ivory (#F9F7F2):** The universal background color. It provides a warmer, more sophisticated foundation than pure white, simulating premium paper stock.\n- **Muted Rose (#D4A59A):** A romantic accent used sparingly for highlights, hover states, or soft calligraphic elements.\n- **Deep Olive (#3E4234):** A grounding neutral used for secondary backgrounds or subtle text to add depth without breaking the high-contrast rhythm.\n- **Bronze (#B5935B):** Reserved for \"foil\" moments\u00e2\u20ac\u201dspecial buttons, icons, or micro-details that signify luxury and craft.\n\n## Typography\n\nTypography is the cornerstone of this design system. It utilizes a dramatic contrast between an elegant, high-contrast Serif and a technical, wide-spaced Sans-Serif.\n\n- **Headlines:** `Bodoni Moda` is used for all major headings. Its vertical stress and sharp serifs evoke classic fashion mastheads. It should be typeset with tight tracking for a confident, editorial look.\n- **Body & Micro-copy:** `Hanken Grotesk` provides a modern, neutral counterpoint. For labels and navigation items, use the `label-caps` style with significant letter-spacing (0.15em) to create an airy, premium feel.\n- **Hierarchy:** Maintain large scale differences between display text and body copy to reinforce the studio\u00e2\u20ac\u2122s boutique, high-end positioning.\n\n## Layout & Spacing\n\nThis design system employs a **Fixed Grid with Asymmetric Flex**. While content generally adheres to a 12-column grid, intentional \"break-outs\"\u00e2\u20ac\u201dwhere images or text blocks are offset from the grid\u00e2\u20ac\u201dare encouraged to mimic editorial page layouts.\n\n- **Vertical Rhythm:** Use massive section gaps (160px+) to allow the products to breathe. White space is treated as a physical material, not just a void.\n- **Desktop:** 12 columns, 32px gutters. Hero sections should often utilize a \"safe-center\" 8-column span to maintain readability and focus.\n- **Mobile:** 4 columns, 24px margins. Content should stack vertically but retain significant padding between blocks to prevent a \"cluttered\" mobile experience.\n\n## Elevation & Depth\n\nTo maintain a tactile, paper-based aesthetic, this design system avoids heavy shadows and traditional digital depth markers.\n\n- **Tonal Layering:** Depth is communicated through color. For example, a card might sit on a Deep Olive section using the Ivory color to pop forward.\n- **Inky Outlines:** Use 1px solid borders in Ink (#1A1A1A) with low opacity (10-20%) for subtle containment, or 100% opacity for bold, structural definition.\n- **Tactile Overlays:** For modal windows or high-touch areas, use a light \"Vellum\" effect: a subtle backdrop blur (4px) combined with an 85% opaque Ivory fill to simulate translucent paper.\n- **No Shadows:** Standard drop shadows are strictly avoided. If a \"lift\" is necessary, use a \"Hard Shadow\"\u00e2\u20ac\u201da solid 1px offset line in Bronze or Ink\u00e2\u20ac\u201dto keep the look graphic and flat.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0)**. \n\nEvery UI element\u00e2\u20ac\u201dfrom buttons and input fields to product images\u00e2\u20ac\u201dmust feature crisp, 90-degree corners. This reinforces the \"cut paper\" aesthetic of a stationery studio and aligns with high-end architectural and editorial design. Circles are only permitted for specific functional icons (like a \"Close\" button or a play button), where they act as a geometric counterpoint to the otherwise rigid grid.\n\n## Components\n\n### Buttons\nPrimary buttons are solid **Ink (#1A1A1A)** with **Ivory (#F9F7F2)** text, using the `label-caps` typography. Secondary buttons use a 1px Ink border with no fill. All buttons feature a \"hover\" state that shifts the background to Bronze (#B5935B) or adds a slight 4px horizontal offset to the text.\n\n### Editorial Product Cards\nCards feature a high-aspect-ratio image (e.g., 4:5) to showcase paper textures. Product names are set in small `label-caps` above the image, with the price in `body-md` below. No borders are used; the image itself defines the container.\n\n### Concierge Inquiry Form\nA minimalist, high-touch form. Inputs are designed as single horizontal lines (1px Ink) rather than boxes. Labels sit above the line in `micro-copy`. The \"Submit\" action is a text-link with a small Bronze arrow icon.\n\n### Navigation\nA \"Discreet\" top navigation bar. Links are widely spaced and set in `label-caps`. The brand mark is centered, with utility links (Search, Cart) right-aligned. The navigation background should be transparent, only becoming opaque Ivory on scroll.\n\n### Chips & Tags\nUsed for paper types or printing methods (e.g., \"Letterpress\", \"Hand-torn\"). These are small, 1px outlined rectangles with `micro-copy` text, ensuring they feel like small labels found on a swatch book.",
+                    "font": "BODONI_MODA",
+                    "headlineFont": "BODONI_MODA",
+                    "headlineFontFamily": "Bodoni Moda",
+                    "labelFont": "HANKEN_GROTESK",
+                    "labelFontFamily": "Hanken Grotesk",
+                    "namedColors": {
+                      "background": "#f8fbe7",
+                      "error": "#ba1a1a",
+                      "error_container": "#ffdad6",
+                      "inverse_on_surface": "#eff3df",
+                      "inverse_primary": "#c8c6c5",
+                      "inverse_surface": "#2e3225",
+                      "on_background": "#191d11",
+                      "on_error": "#ffffff",
+                      "on_error_container": "#93000a",
+                      "on_primary": "#ffffff",
+                      "on_primary_container": "#858383",
+                      "on_primary_fixed": "#1c1b1b",
+                      "on_primary_fixed_variant": "#474746",
+                      "on_secondary": "#ffffff",
+                      "on_secondary_container": "#63635f",
+                      "on_secondary_fixed": "#1b1c19",
+                      "on_secondary_fixed_variant": "#474744",
+                      "on_surface": "#191d11",
+                      "on_surface_variant": "#444748",
+                      "on_tertiary": "#ffffff",
+                      "on_tertiary_container": "#a47a70",
+                      "on_tertiary_fixed": "#2f140e",
+                      "on_tertiary_fixed_variant": "#613e36",
+                      "outline": "#747878",
+                      "outline_variant": "#c4c7c7",
+                      "primary": "#000000",
+                      "primary_container": "#1c1b1b",
+                      "primary_fixed": "#e5e2e1",
+                      "primary_fixed_dim": "#c8c6c5",
+                      "secondary": "#5e5e5b",
+                      "secondary_container": "#e1dfdb",
+                      "secondary_fixed": "#e4e2dd",
+                      "secondary_fixed_dim": "#c8c6c2",
+                      "surface": "#f8fbe7",
+                      "surface_bright": "#f8fbe7",
+                      "surface_container": "#edf0dc",
+                      "surface_container_high": "#e7ead6",
+                      "surface_container_highest": "#e1e4d1",
+                      "surface_container_low": "#f2f6e2",
+                      "surface_container_lowest": "#ffffff",
+                      "surface_dim": "#d8dcc9",
+                      "surface_tint": "#5f5e5e",
+                      "surface_variant": "#e1e4d1",
+                      "tertiary": "#000000",
+                      "tertiary_container": "#2f140e",
+                      "tertiary_fixed": "#ffdad2",
+                      "tertiary_fixed_dim": "#ecbbb0"
+                    },
+                    "overrideNeutralColor": "#3e4234",
+                    "overridePrimaryColor": "#1a1a1a",
+                    "overrideSecondaryColor": "#f9f7f2",
+                    "overrideTertiaryColor": "#d4a59a",
+                    "spacing": {
+                      "container-max": "1440px",
+                      "gutter": "32px",
+                      "margin-desktop": "80px",
+                      "margin-mobile": "24px",
+                      "section-gap": "160px",
+                      "unit": "8px"
+                    },
+                    "spacingScale": 2,
+                    "typography": {
+                      "body-lg": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "18px",
+                        "fontWeight": "400",
+                        "lineHeight": "28px"
+                      },
+                      "body-md": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "16px",
+                        "fontWeight": "400",
+                        "lineHeight": "24px"
+                      },
+                      "display-lg": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "80px",
+                        "fontWeight": "400",
+                        "letterSpacing": "-0.02em",
+                        "lineHeight": "90px"
+                      },
+                      "display-lg-mobile": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "48px",
+                        "fontWeight": "400",
+                        "letterSpacing": "-0.01em",
+                        "lineHeight": "54px"
+                      },
+                      "headline-lg": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "48px",
+                        "fontWeight": "400",
+                        "lineHeight": "56px"
+                      },
+                      "headline-lg-mobile": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "32px",
+                        "fontWeight": "400",
+                        "lineHeight": "40px"
+                      },
+                      "headline-md": {
+                        "fontFamily": "Bodoni Moda",
+                        "fontSize": "32px",
+                        "fontWeight": "400",
+                        "lineHeight": "40px"
+                      },
+                      "label-caps": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "12px",
+                        "fontWeight": "600",
+                        "letterSpacing": "0.15em",
+                        "lineHeight": "16px"
+                      },
+                      "micro-copy": {
+                        "fontFamily": "Hanken Grotesk",
+                        "fontSize": "11px",
+                        "fontWeight": "400",
+                        "letterSpacing": "0.05em",
+                        "lineHeight": "14px"
+                      }
+                    }
+                  }
+                },
+                "name": "assets/f5eef6c774eb44779eb55257d5771c81",
+                "version": "1"
+              },
+              "deviceType": "DESKTOP",
+              "generatedBy": "figaro_agent",
+              "height": "8946",
+              "htmlCode": {
+                "downloadUrl": "https://contribution.usercontent.google.com/download?[redacted]",
+                "mimeType": "text/html",
+                "name": "projects/17581434432765359494/files/df7f04e029604562a18dadabd56bd8c2"
+              },
+              "id": "1a3a0e109b9c49a7ae759d0ca757363d",
+              "name": "projects/17581434432765359494/screens/1a3a0e109b9c49a7ae759d0ca757363d",
+              "prompt": "Design the \"Collections\" page for Vale & Vellum. \n        - Visual Style: Editorial luxury, asymmetric, generous whitespace, high-contrast typography (serif headers, sans-serif labels).\n        - Sections:\n          1. Global Navigation: Vale & Vellum logo, links to Home (/conceptually-home), Collections (/collections), Process (/process), Inquiry (/inquiry).\n          2. Hero: Full-bleed editorial hero using {{DATA:IMAGE:IMAGE_6}}. Headline: \"A quieter standard of luxury, made visible.\" Subhead: \"Hand-crafted stationery for private clients who notice the difference.\"\n          3. Collection Gallery: A lookbook-style grid of Signature Suites and Weekend Details. Use {{DATA:IMAGE:IMAGE_5}} to show material variety. Include descriptions about \"300gsm cotton stock,\" \"hand-mixed inks,\" and \"bespoke vellum wraps.\"\n          4. Provenance: A story panel about the atelier's process, using {{DATA:IMAGE:IMAGE_4}}. Focus on \"atelier detail,\" \"craft proof,\" and \"private appointments.\"\n          5. Concierge Path: A high-touch inquiry section using {{DATA:IMAGE:IMAGE_3}}. Form fields for event date, guest count, and \"Package path.\" Button: \"Request concierge access.\"\n          6. Footer: Clean, minimalist with navigation links and copyright.\n        - Tone: Sensorial, confident, and scarce. Avoid any SaaS-like patterns. Use rich colors (Ink, Ivory, Deep Olive, Bronze) instead of just beige.",
+              "screenMetadata": {
+                "agentType": "PRO_AGENT",
+                "status": "COMPLETE"
+              },
+              "screenType": "DESIGN",
+              "screenshot": {
+                "downloadUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsFSyDHfAm43k_YBBeo6GTpu5bkLuaBrrYCMZHHLRyu8cxxScFqYSwKfUg1UlGu3i4d4TR94WEJPNdORoEfIZWwSNgws5fGmz9v8hnspdZ8tNs6CreIdQFSiqk-sC53OSRYK0MKfaEHFjTaPlCpHXUsMY2x-n6LPBe2LOAagjZQjx0Lj68IY6GFtFaRiEwKAnvF7lMumLdNQu5wkEvVAvaWe-U9LUtbMO-BwtnwIf8JqVHK_iNc0atq8To",
+                "name": "projects/17581434432765359494/files/02e941b1e6084833a75f12825dcb8690"
+              },
+              "theme": {
+                "bodyFont": "HANKEN_GROTESK",
+                "bodyFontFamily": "Hanken Grotesk",
+                "colorMode": "LIGHT",
+                "colorVariant": "FIDELITY",
+                "customColor": "#1a1a1a",
+                "designMd": "---\nname: Atelier Editorial\ncolors:\n  surface: '#f8fbe7'\n  surface-dim: '#d8dcc9'\n  surface-bright: '#f8fbe7'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f6e2'\n  surface-container: '#edf0dc'\n  surface-container-high: '#e7ead6'\n  surface-container-highest: '#e1e4d1'\n  on-surface: '#191d11'\n  on-surface-variant: '#444748'\n  inverse-surface: '#2e3225'\n  inverse-on-surface: '#eff3df'\n  outline: '#747878'\n  outline-variant: '#c4c7c7'\n  surface-tint: '#5f5e5e'\n  primary: '#000000'\n  on-primary: '#ffffff'\n  primary-container: '#1c1b1b'\n  on-primary-container: '#858383'\n  inverse-primary: '#c8c6c5'\n  secondary: '#5e5e5b'\n  on-secondary: '#ffffff'\n  secondary-container: '#e1dfdb'\n  on-secondary-container: '#63635f'\n  tertiary: '#000000'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#2f140e'\n  on-tertiary-container: '#a47a70'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#e5e2e1'\n  primary-fixed-dim: '#c8c6c5'\n  on-primary-fixed: '#1c1b1b'\n  on-primary-fixed-variant: '#474746'\n  secondary-fixed: '#e4e2dd'\n  secondary-fixed-dim: '#c8c6c2'\n  on-secondary-fixed: '#1b1c19'\n  on-secondary-fixed-variant: '#474744'\n  tertiary-fixed: '#ffdad2'\n  tertiary-fixed-dim: '#ecbbb0'\n  on-tertiary-fixed: '#2f140e'\n  on-tertiary-fixed-variant: '#613e36'\n  background: '#f8fbe7'\n  on-background: '#191d11'\n  surface-variant: '#e1e4d1'\ntypography:\n  display-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 80px\n    fontWeight: '400'\n    lineHeight: 90px\n    letterSpacing: -0.02em\n  display-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 54px\n    letterSpacing: -0.01em\n  headline-lg:\n    fontFamily: Bodoni Moda\n    fontSize: 48px\n    fontWeight: '400'\n    lineHeight: 56px\n  headline-lg-mobile:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  headline-md:\n    fontFamily: Bodoni Moda\n    fontSize: 32px\n    fontWeight: '400'\n    lineHeight: 40px\n  body-lg:\n    fontFamily: Hanken Grotesk\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Hanken Grotesk\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  label-caps:\n    fontFamily: Hanken Grotesk\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.15em\n  micro-copy:\n    fontFamily: Hanken Grotesk\n    fontSize: 11px\n    fontWeight: '400'\n    lineHeight: 14px\n    letterSpacing: 0.05em\nspacing:\n  unit: 8px\n  container-max: 1440px\n  gutter: 32px\n  margin-desktop: 80px\n  margin-mobile: 24px\n  section-gap: 160px\n---\n\n## Brand & Style\n\nThe visual identity is rooted in the \"Quiet Romance\" of artisanal craft. This design system bridges the gap between high-fashion editorial layouts and the tactile nature of premium stationery. It targets a discerning audience that values exclusivity, slow-living, and the permanence of ink on paper.\n\nThe aesthetic follows a **Minimalist / Modern Editorial** philosophy. It prioritizes the \"luxury of space,\" utilizing generous margins and deliberate asymmetry to guide the eye. Instead of digital-first trends, the UI mimics the physical properties of a high-end lookbook: crisp edges, flat surfaces, and high-contrast color pairings that evoke the feeling of fresh ink on heavy vellum.\n\n## Colors\n\nThe palette is designed to replicate the physical materials of a boutique studio.\n\n- **Ink (#1A1A1A):** The primary driver of hierarchy. Used for all core typography and structural borders to maintain a high-contrast, printed aesthetic.\n- **Ivory (#F9F7F2):** The universal background color. It provides a warmer, more sophisticated foundation than pure white, simulating premium paper stock.\n- **Muted Rose (#D4A59A):** A romantic accent used sparingly for highlights, hover states, or soft calligraphic elements.\n- **Deep Olive (#3E4234):** A grounding neutral used for secondary backgrounds or subtle text to add depth without breaking the high-contrast rhythm.\n- **Bronze (#B5935B):** Reserved for \"foil\" moments\u00e2\u20ac\u201dspecial buttons, icons, or micro-details that signify luxury and craft.\n\n## Typography\n\nTypography is the cornerstone of this design system. It utilizes a dramatic contrast between an elegant, high-contrast Serif and a technical, wide-spaced Sans-Serif.\n\n- **Headlines:** `Bodoni Moda` is used for all major headings. Its vertical stress and sharp serifs evoke classic fashion mastheads. It should be typeset with tight tracking for a confident, editorial look.\n- **Body & Micro-copy:** `Hanken Grotesk` provides a modern, neutral counterpoint. For labels and navigation items, use the `label-caps` style with significant letter-spacing (0.15em) to create an airy, premium feel.\n- **Hierarchy:** Maintain large scale differences between display text and body copy to reinforce the studio\u00e2\u20ac\u2122s boutique, high-end positioning.\n\n## Layout & Spacing\n\nThis design system employs a **Fixed Grid with Asymmetric Flex**. While content generally adheres to a 12-column grid, intentional \"break-outs\"\u00e2\u20ac\u201dwhere images or text blocks are offset from the grid\u00e2\u20ac\u201dare encouraged to mimic editorial page layouts.\n\n- **Vertical Rhythm:** Use massive section gaps (160px+) to allow the products to breathe. White space is treated as a physical material, not just a void.\n- **Desktop:** 12 columns, 32px gutters. Hero sections should often utilize a \"safe-center\" 8-column span to maintain readability and focus.\n- **Mobile:** 4 columns, 24px margins. Content should stack vertically but retain significant padding between blocks to prevent a \"cluttered\" mobile experience.\n\n## Elevation & Depth\n\nTo maintain a tactile, paper-based aesthetic, this design system avoids heavy shadows and traditional digital depth markers.\n\n- **Tonal Layering:** Depth is communicated through color. For example, a card might sit on a Deep Olive section using the Ivory color to pop forward.\n- **Inky Outlines:** Use 1px solid borders in Ink (#1A1A1A) with low opacity (10-20%) for subtle containment, or 100% opacity for bold, structural definition.\n- **Tactile Overlays:** For modal windows or high-touch areas, use a light \"Vellum\" effect: a subtle backdrop blur (4px) combined with an 85% opaque Ivory fill to simulate translucent paper.\n- **No Shadows:** Standard drop shadows are strictly avoided. If a \"lift\" is necessary, use a \"Hard Shadow\"\u00e2\u20ac\u201da solid 1px offset line in Bronze or Ink\u00e2\u20ac\u201dto keep the look graphic and flat.\n\n## Shapes\n\nThe shape language is strictly **Sharp (0)**. \n\nEvery UI element\u00e2\u20ac\u201dfrom buttons and input fields to product images\u00e2\u20ac\u201dmust feature crisp, 90-degree corners. This reinforces the \"cut paper\" aesthetic of a stationery studio and aligns with high-end architectural and editorial design. Circles are only permitted for specific functional icons (like a \"Close\" button or a play button), where they act as a geometric counterpoint to the otherwise rigid grid.\n\n## Components\n\n### Buttons\nPrimary buttons are solid **Ink (#1A1A1A)** with **Ivory (#F9F7F2)** text, using the `label-caps` typography. Secondary buttons use a 1px Ink border with no fill. All buttons feature a \"hover\" state that shifts the background to Bronze (#B5935B) or adds a slight 4px horizontal offset to the text.\n\n### Editorial Product Cards\nCards feature a high-aspect-ratio image (e.g., 4:5) to showcase paper textures. Product names are set in small `label-caps` above the image, with the price in `body-md` below. No borders are used; the image itself defines the container.\n\n### Concierge Inquiry Form\nA minimalist, high-touch form. Inputs are designed as single horizontal lines (1px Ink) rather than boxes. Labels sit above the line in `micro-copy`. The \"Submit\" action is a text-link with a small Bronze arrow icon.\n\n### Navigation\nA \"Discreet\" top navigation bar. Links are widely spaced and set in `label-caps`. The brand mark is centered, with utility links (Search, Cart) right-aligned. The navigation background should be transparent, only becoming opaque Ivory on scroll.\n\n### Chips & Tags\nUsed for paper types or printing methods (e.g., \"Letterpress\", \"Hand-torn\"). These are small, 1px outlined rectangles with `micro-copy` text, ensuring they feel like small labels found on a swatch book.",
+                "font": "BODONI_MODA",
+                "headlineFont": "BODONI_MODA",
+                "headlineFontFamily": "Bodoni Moda",
+                "labelFont": "HANKEN_GROTESK",
+                "labelFontFamily": "Hanken Grotesk",
+                "namedColors": {
+                  "background": "#f8fbe7",
+                  "error": "#ba1a1a",
+                  "error_container": "#ffdad6",
+                  "inverse_on_surface": "#eff3df",
+                  "inverse_primary": "#c8c6c5",
+                  "inverse_surface": "#2e3225",
+                  "on_background": "#191d11",
+                  "on_error": "#ffffff",
+                  "on_error_container": "#93000a",
+                  "on_primary": "#ffffff",
+                  "on_primary_container": "#858383",
+                  "on_primary_fixed": "#1c1b1b",
+                  "on_primary_fixed_variant": "#474746",
+                  "on_secondary": "#ffffff",
+                  "on_secondary_container": "#63635f",
+                  "on_secondary_fixed": "#1b1c19",
+                  "on_secondary_fixed_variant": "#474744",
+                  "on_surface": "#191d11",
+                  "on_surface_variant": "#444748",
+                  "on_tertiary": "#ffffff",
+                  "on_tertiary_container": "#a47a70",
+                  "on_tertiary_fixed": "#2f140e",
+                  "on_tertiary_fixed_variant": "#613e36",
+                  "outline": "#747878",
+                  "outline_variant": "#c4c7c7",
+                  "primary": "#000000",
+                  "primary_container": "#1c1b1b",
+                  "primary_fixed": "#e5e2e1",
+                  "primary_fixed_dim": "#c8c6c5",
+                  "secondary": "#5e5e5b",
+                  "secondary_container": "#e1dfdb",
+                  "secondary_fixed": "#e4e2dd",
+                  "secondary_fixed_dim": "#c8c6c2",
+                  "surface": "#f8fbe7",
+                  "surface_bright": "#f8fbe7",
+                  "surface_container": "#edf0dc",
+                  "surface_container_high": "#e7ead6",
+                  "surface_container_highest": "#e1e4d1",
+                  "surface_container_low": "#f2f6e2",
+                  "surface_container_lowest": "#ffffff",
+                  "surface_dim": "#d8dcc9",
+                  "surface_tint": "#5f5e5e",
+                  "surface_variant": "#e1e4d1",
+                  "tertiary": "#000000",
+                  "tertiary_container": "#2f140e",
+                  "tertiary_fixed": "#ffdad2",
+                  "tertiary_fixed_dim": "#ecbbb0"
+                },
+                "overrideNeutralColor": "#3e4234",
+                "overridePrimaryColor": "#1a1a1a",
+                "overrideSecondaryColor": "#f9f7f2",
+                "overrideTertiaryColor": "#d4a59a",
+                "spacing": {
+                  "container-max": "1440px",
+                  "gutter": "32px",
+                  "margin-desktop": "80px",
+                  "margin-mobile": "24px",
+                  "section-gap": "160px",
+                  "unit": "8px"
+                },
+                "spacingScale": 2,
+                "typography": {
+                  "body-lg": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "18px",
+                    "fontWeight": "400",
+                    "lineHeight": "28px"
+                  },
+                  "body-md": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "16px",
+                    "fontWeight": "400",
+                    "lineHeight": "24px"
+                  },
+                  "display-lg": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "80px",
+                    "fontWeight": "400",
+                    "letterSpacing": "-0.02em",
+                    "lineHeight": "90px"
+                  },
+                  "display-lg-mobile": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "48px",
+                    "fontWeight": "400",
+                    "letterSpacing": "-0.01em",
+                    "lineHeight": "54px"
+                  },
+                  "headline-lg": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "48px",
+                    "fontWeight": "400",
+                    "lineHeight": "56px"
+                  },
+                  "headline-lg-mobile": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "32px",
+                    "fontWeight": "400",
+                    "lineHeight": "40px"
+                  },
+                  "headline-md": {
+                    "fontFamily": "Bodoni Moda",
+                    "fontSize": "32px",
+                    "fontWeight": "400",
+                    "lineHeight": "40px"
+                  },
+                  "label-caps": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "12px",
+                    "fontWeight": "600",
+                    "letterSpacing": "0.15em",
+                    "lineHeight": "16px"
+                  },
+                  "micro-copy": {
+                    "fontFamily": "Hanken Grotesk",
+                    "fontSize": "11px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.05em",
+                    "lineHeight": "14px"
+                  }
+                }
+              },
+              "title": "Vale & Vellum | Collections",
+              "width": "2560"
+            }
+          ],
+          "theme": {}
+        }
+      },
+      {
+        "text": "I have designed the **Collections** page for Vale & Vellum, establishing an editorial luxury aesthetic that emphasizes craftsmanship, tactile materiality, and exclusivity.\n\n### Design Highlights:\n*   **Tactile Visual Language:** The layout is anchored by high-fidelity macro photography of letterpress suites and hand-assembly moments, reinforcing the \"atelier\" brand positioning.\n*   **Editorial Composition:** I used an asymmetric, generous whitespace approach with a refined serif and sans-serif typographic hierarchy to avoid the \"generic template\" feel.\n*   **A Richer Palette:** Moving beyond basic beige, the design incorporates **Ink**, **Deep Olive**, and **Bronze** accents to create a sense of depth and warm confidence.\n*   **Concierge Inquiry:** The inquiry path is integrated as a high-touch, private dialogue rather than a standard contact form, capturing specific event details like guest count and package preference.\n\nThe design is fully responsive and uses consistent components across navigation and footers, ready for the conceptual multi-page site structure.\n\nHow would you like to refine the tactile details or the inquiry flow?"
+      },
+      {
+        "suggestion": "Make the \"Provenance\" section more interactive"
+      },
+      {
+        "suggestion": "Explore a \"Dark Mode\" version using Ink and Gold"
+      },
+      {
+        "suggestion": "Adjust the product grid for a more asymmetric look"
+      }
+    ],
+    "projectId": "17581434432765359494",
+    "sessionId": "7292350816464186982"
+  },
+  "rawGetScreens": [],
+  "rawVariants": null,
+  "screenId": "1a3a0e109b9c49a7ae759d0ca757363d",
+  "status": "generated",
+  "variants": [
+    {
+      "htmlUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzIzM2JiMGM0NTg5ZDQ3NDg4OWQ5NzNmZDExOWI1MTdjEgsSBxDuxJTq7RkYAZIBJAoKcHJvamVjdF9pZBIWQhQxNzU4MTQzNDQzMjc2NTM1OTQ5NA&filename=&opi=96797242",
+      "id": "1a3a0e109b9c49a7ae759d0ca757363d",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AP1WRLsFSyDHfAm43k_YBBeo6GTpu5bkLuaBrrYCMZHHLRyu8cxxScFqYSwKfUg1UlGu3i4d4TR94WEJPNdORoEfIZWwSNgws5fGmz9v8hnspdZ8tNs6CreIdQFSiqk-sC53OSRYK0MKfaEHFjTaPlCpHXUsMY2x-n6LPBe2LOAagjZQjx0Lj68IY6GFtFaRiEwKAnvF7lMumLdNQu5wkEvVAvaWe-U9LUtbMO-BwtnwIf8JqVHK_iNc0atq8To",
+      "label": "Base direction",
+      "projectId": "17581434432765359494",
+      "screenId": "1a3a0e109b9c49a7ae759d0ca757363d",
+      "sourcePath": "outputComponents[1].design.screens[4]",
+      "title": "Vale & Vellum | Collections"
+    }
+  ],
+  "warnings": []
+}

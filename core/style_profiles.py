@@ -154,9 +154,31 @@ def evaluate_project(root: str | Path, profile_id: str = "nexus_forge_nextjs") -
     if not profile:
         return {"ok": False, "profile_id": profile_id, "summary": "Style profile not found.", "checks": [], "gaps": ["style profile not found"]}
     base = Path(root).resolve()
+    single_landing = profile.get("id") == "nexus_forge_nextjs" and _is_single_landing_project(base)
+    web_contract = profile.get("id") == "nexus_forge_nextjs" and _is_web_contract_project(base)
+    stitch_native = profile.get("id") == "nexus_forge_nextjs" and _is_stitch_native_project(base)
+    required_paths = list(profile.get("required_paths") or [])
+    if single_landing or web_contract or stitch_native:
+        required_paths = [
+            relative
+            for relative in required_paths
+            if relative
+            not in {
+                "src/components/layout",
+                *({"src/services", "src/store", "src/hooks"} if single_landing or stitch_native else set()),
+            }
+        ]
+    if single_landing:
+        landing_component_path = _single_landing_component_path(base)
+        if landing_component_path and landing_component_path not in required_paths:
+            required_paths.insert(2, landing_component_path)
+    if web_contract and "src/components/WebContract" not in required_paths:
+        required_paths.insert(2, "src/components/WebContract")
+    if stitch_native and "src/components/Stitch" not in required_paths:
+        required_paths.insert(2, "src/components/Stitch")
     checks: list[dict[str, Any]] = []
     gaps: list[str] = []
-    for relative in profile.get("required_paths") or []:
+    for relative in required_paths:
         exists = (base / relative).exists()
         checks.append({"id": f"path:{relative}", "label": f"Required path: {relative}", "status": "passed" if exists else "failed"})
         if not exists:
@@ -167,7 +189,7 @@ def evaluate_project(root: str | Path, profile_id: str = "nexus_forge_nextjs") -
         if exists:
             gaps.append(f"Flat blob path is forbidden by style profile: {relative}")
     if profile.get("id") == "nexus_forge_nextjs":
-        checks.extend(_nextjs_shape_checks(base, gaps))
+        checks.extend(_nextjs_shape_checks(base, gaps, single_landing=single_landing, web_contract=web_contract, stitch_native=stitch_native))
     ok = not gaps
     return {
         "ok": ok,
@@ -199,7 +221,7 @@ def status(root: str | Path = "") -> dict[str, Any]:
     return result
 
 
-def _nextjs_shape_checks(base: Path, gaps: list[str]) -> list[dict[str, Any]]:
+def _nextjs_shape_checks(base: Path, gaps: list[str], *, single_landing: bool = False, web_contract: bool = False, stitch_native: bool = False) -> list[dict[str, Any]]:
     checks: list[dict[str, Any]] = []
     page = _read(base / "src/app/page.tsx")
     components_json = _read(base / "components.json")
@@ -210,16 +232,116 @@ def _nextjs_shape_checks(base: Path, gaps: list[str]) -> list[dict[str, Any]]:
     checks.append({"id": "thin_routes", "label": "Route files stay thin", "status": "failed" if route_blob else "passed"})
     if route_blob:
         gaps.append("src/app/page.tsx appears to mix route, UI state, and data access instead of composing feature components.")
-    for label, files in (("services", service_files), ("stores", store_files), ("hooks", hook_files)):
-        passed = bool(files)
-        checks.append({"id": f"has_{label}", "label": f"Has src/{label[:-1] if label.endswith('s') else label}", "status": "passed" if passed else "failed"})
-        if not passed:
-            gaps.append(f"NexusForge style expects src/{label} files.")
+    if single_landing:
+        landing_component = (base / "src/components/Landing/SingleLandingPage.tsx").exists() or (base / "src/components/Stitch/StitchNativePage.tsx").exists()
+        landing_content = (base / "src/lib/landingContent.ts").exists() or (base / "src/lib/stitchNativeContent.ts").exists()
+        checks.append({"id": "single_landing_component", "label": "Single landing component exists", "status": "passed" if landing_component else "failed"})
+        checks.append({"id": "single_landing_content", "label": "Landing content contract exists", "status": "passed" if landing_content else "failed"})
+        if not landing_component:
+            gaps.append("Single landing profile expects a landing component under src/components/Landing or src/components/Stitch.")
+        if not landing_content:
+            gaps.append("Single landing profile expects src/lib/landingContent.ts or src/lib/stitchNativeContent.ts.")
+    elif stitch_native:
+        native_component = (base / "src/components/Stitch/StitchNativePage.tsx").exists()
+        native_content = (base / "src/lib/stitchNativeContent.ts").exists()
+        checks.append({"id": "stitch_native_component", "label": "Stitch-native component exists", "status": "passed" if native_component else "failed"})
+        checks.append({"id": "stitch_native_content", "label": "Stitch-native content contract exists", "status": "passed" if native_content else "failed"})
+        if not native_component:
+            gaps.append("Stitch-native projects need src/components/Stitch/StitchNativePage.tsx.")
+        if not native_content:
+            gaps.append("Stitch-native projects need src/lib/stitchNativeContent.ts.")
+    elif web_contract:
+        contract_files = [
+            base / "src/lib/webProjectContract.ts",
+            base / "src/components/WebContract/ContractShell.tsx",
+            base / "src/components/WebContract/WebContractPage.tsx",
+        ]
+        contract_ok = all(path.exists() for path in contract_files)
+        checks.append({"id": "web_contract_surface", "label": "Web project contract surface exists", "status": "passed" if contract_ok else "failed"})
+        if not contract_ok:
+            gaps.append("Web contract projects need src/lib/webProjectContract.ts and src/components/WebContract shell/page components.")
+        for label, files in (("services", service_files), ("stores", store_files), ("hooks", hook_files)):
+            passed = bool(files)
+            checks.append({"id": f"has_{label}", "label": f"Has src/{label[:-1] if label.endswith('s') else label}", "status": "passed" if passed else "failed"})
+            if not passed:
+                gaps.append(f"NexusForge style expects src/{label} files.")
+    else:
+        for label, files in (("services", service_files), ("stores", store_files), ("hooks", hook_files)):
+            passed = bool(files)
+            checks.append({"id": f"has_{label}", "label": f"Has src/{label[:-1] if label.endswith('s') else label}", "status": "passed" if passed else "failed"})
+            if not passed:
+                gaps.append(f"NexusForge style expects src/{label} files.")
     aliases_ok = "@/components" in components_json and "@/lib" in components_json and "@/hooks" in components_json
     checks.append({"id": "components_aliases", "label": "components.json aliases", "status": "passed" if aliases_ok else "failed"})
     if not aliases_ok:
         gaps.append("components.json should declare @/components, @/lib, and @/hooks aliases.")
     return checks
+
+
+def _is_single_landing_project(base: Path) -> bool:
+    page = _read(base / "src/app/page.tsx")
+    explicit_landing = bool(
+        (base / "src/components/Landing/SingleLandingPage.tsx").exists()
+        and (base / "src/lib/landingContent.ts").exists()
+        and "SingleLandingPage" in page
+    )
+    native_landing = bool(
+        (base / "src/lib/stitchNativeContent.ts").exists()
+        and (base / "src/components/Stitch/StitchNativePage.tsx").exists()
+        and ("StitchNativePage" in page or "StitchPageSurface" in page)
+        and not _has_public_app_route_dirs(base)
+    )
+    return explicit_landing or native_landing
+
+
+def _is_stitch_native_project(base: Path) -> bool:
+    page = _read(base / "src/app/page.tsx")
+    return bool(
+        (base / "src/lib/stitchNativeContent.ts").exists()
+        and (base / "src/components/Stitch/StitchNativePage.tsx").exists()
+        and ("StitchNativePage" in page or "StitchPageSurface" in page or _has_public_app_route_dirs(base))
+    )
+
+
+def _is_web_contract_project(base: Path) -> bool:
+    page = _read(base / "src/app/page.tsx")
+    landing_home = _read(base / "src/components/Landing/HomePage.tsx")
+    contract = _read(base / "src/lib/webProjectContract.ts")
+    return bool(
+        (base / "src/lib/webProjectContract.ts").exists()
+        and (base / "src/components/WebContract/ContractShell.tsx").exists()
+        and (base / "src/components/WebContract/WebContractPage.tsx").exists()
+        and (
+            "WebContractPage" in page
+            or "DashboardPreviewPage" in page
+            or "ContractShell" in page
+            or "WebContractPage" in landing_home
+            or "DashboardPreviewPage" in landing_home
+            or "webProjectContract" in contract
+        )
+    )
+
+
+def _single_landing_component_path(base: Path) -> str:
+    if (base / "src/components/Stitch/StitchNativePage.tsx").exists():
+        return "src/components/Stitch"
+    if (base / "src/components/Landing/SingleLandingPage.tsx").exists():
+        return "src/components/Landing"
+    return ""
+
+
+def _has_public_app_route_dirs(base: Path) -> bool:
+    app_root = base / "src/app"
+    if not app_root.exists():
+        return False
+    for child in app_root.iterdir():
+        if not child.is_dir():
+            continue
+        name = child.name
+        if name == "api" or name.startswith("(") or name.startswith("_"):
+            continue
+        return True
+    return False
 
 
 def _read(path: Path) -> str:

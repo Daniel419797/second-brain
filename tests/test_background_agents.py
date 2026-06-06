@@ -16,21 +16,57 @@ def test_run_one_task_completes_pending_task(monkeypatch, tmp_path):
 
     assert result["id"] == task_id
     assert result["status"] == "done"
+    assert task_queue.get_task(task_id)["status"] == "done"
 
 
 def test_run_one_task_routes_autonomous_coding_task(monkeypatch, tmp_path):
     monkeypatch.setattr(task_queue, "DB_PATH", tmp_path / "tasks.sqlite3")
     calls = []
+    project_root = tmp_path / "coded-app"
+    project_root.mkdir()
+    changed_file = project_root / "README.md"
+    changed_file.write_text("# Coded app\n", encoding="utf-8")
+    coding_result = {
+        "agent_id": "senior_developer",
+        "agent_name": "Senior Developer",
+        "task_status": "done",
+        "summary": "Summary: coded. Next step: review. Risks: tests not run.",
+        "changed": [str(changed_file)],
+        "tested": ["verified file exists: README.md"],
+        "metadata": {
+            "project_root": str(project_root),
+            "project_inspection": {"summary": "Project inspected."},
+            "execution_plan": {"flow": ["inspect", "implement", "verify"]},
+            "responsibility_boundaries": ["routes stay thin", "domain logic lives outside UI"],
+            "scaffold_verification": {"status": "passed", "checks": ["verified file exists: README.md"]},
+            "product_studio_gates": {
+                "attempted": True,
+                "technical_ready": False,
+                "gates": [{"id": "install", "group": "install", "required": True, "status": "blocked"}],
+            },
+            "product_studio": {
+                "phases": [
+                    "requirements",
+                    "architecture",
+                    "implementation",
+                    "tests",
+                    "security",
+                    "performance",
+                    "ux",
+                    "deployment",
+                    "launch",
+                    "proof",
+                ],
+                "final_proof_report": {"technical_ready": False, "market_ready": False, "gaps": ["Tests not run."]},
+            },
+        },
+    }
     monkeypatch.setattr(background_agents.autonomous_coding, "should_handle_task", lambda task: True)
     monkeypatch.setattr(
         background_agents.autonomous_coding,
         "run_task",
         lambda task: calls.append(task["id"])
-        or {
-            "agent_id": "senior_developer",
-            "agent_name": "Senior Developer",
-            "summary": "Summary: coded. Next step: review. Risks: tests not run.",
-        },
+        or coding_result,
     )
     monkeypatch.setattr(background_agents.agents, "run_task", lambda task: (_ for _ in ()).throw(AssertionError("generic agent should not run")))
     monkeypatch.setattr(background_agents.knowledge_graph, "add_edge", lambda *args, **kwargs: None)
@@ -40,7 +76,8 @@ def test_run_one_task_routes_autonomous_coding_task(monkeypatch, tmp_path):
     result = background_agents.run_one_task()
 
     assert calls == [task_id]
-    assert result["status"] == "done"
+    assert result["status"] == "failed"
+    assert task_queue.get_task(task_id)["status"] == "failed"
 
 
 def test_start_and_stop_workers(monkeypatch, tmp_path):

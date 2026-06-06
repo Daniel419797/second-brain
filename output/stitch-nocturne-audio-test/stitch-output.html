@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="dark scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NOCTURNE AUDIO | Crafted for private clients who notice the difference.</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#3a342e",
+                        "background": "#17120e",
+                        "on-surface": "#ece0d8",
+                        "surface": "#17120e",
+                        "surface-container-low": "#201b16",
+                        "surface-bright": "#3f3833",
+                        "on-primary-container": "#827c79",
+                        "outline": "#998f89",
+                        "inverse-surface": "#ece0d8",
+                        "primary-container": "#14110f",
+                        "tertiary-container": "#200d00",
+                        "on-secondary-container": "#bdb8b0",
+                        "on-surface-variant": "#d0c4be",
+                        "outline-variant": "#4d4540",
+                        "surface-dim": "#17120e",
+                        "surface-container-high": "#2f2924",
+                        "on-secondary-fixed-variant": "#494640",
+                        "secondary-fixed-dim": "#cbc6bd",
+                        "secondary": "#cbc6bd",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#ccc5c1",
+                        "inverse-primary": "#625d5a",
+                        "surface-container-lowest": "#120d09",
+                        "on-background": "#ece0d8",
+                        "on-tertiary-fixed-variant": "#673c13",
+                        "primary-fixed": "#e9e1dd",
+                        "surface-container": "#241f1a",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#4a4643",
+                        "on-secondary-fixed": "#1d1b16",
+                        "on-tertiary": "#4d2700",
+                        "tertiary-fixed-dim": "#f9b986",
+                        "surface-variant": "#3a342e",
+                        "on-primary": "#34302d",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#352f2a",
+                        "secondary-fixed": "#e7e2d9",
+                        "primary": "#ccc5c1",
+                        "tertiary": "#f9b986",
+                        "tertiary-fixed": "#ffdcc2",
+                        "on-secondary": "#32302a",
+                        "on-tertiary-fixed": "#2e1500",
+                        "secondary-container": "#4c4942",
+                        "surface-tint": "#ccc5c1",
+                        "on-primary-fixed": "#1e1b19",
+                        "on-tertiary-container": "#a77244",
+                        "on-error": "#690005"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "section-gap": "160px",
+                        "margin-mobile": "20px",
+                        "unit": "8px",
+                        "margin-desktop": "80px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Bodoni Moda"],
+                        "headline-lg": ["Bodoni Moda"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Bodoni Moda"],
+                        "headline-md": ["Bodoni Moda"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.15em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+                        "display-lg": ["84px", { "lineHeight": "92px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #14110f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2f2924;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4d4540;
+        }
+    </style>
+</head>
+<body class="bg-primary-container text-on-surface antialiased selection:bg-surface-bright selection:text-on-surface min-h-screen flex flex-col relative overflow-x-hidden">
+<div class="noise-overlay"></div>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/20">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-gutter w-full">
+<div class="font-display-lg text-headline-md tracking-tighter text-on-surface cursor-pointer hover:opacity-70 transition-opacity">
+                NOCTURNE
+            </div>
+<nav class="hidden md:flex gap-12">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300" href="#atelier">Atelier</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300" href="#collections">Collections</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-on-surface transition-colors duration-300" href="#process">Process</a>
+</nav>
+<div>
+<a class="font-label-caps text-label-caps text-on-surface cursor-pointer transition-all duration-500 ease-out border-b border-transparent hover:border-outline pb-1" href="#concierge">
+                    Concierge
+                </a>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-end pb-32 px-margin-mobile md:px-margin-desktop pt-40">
+<!-- 3D Canvas Placeholder -->
+<div class="absolute inset-0 z-0 bg-surface flex items-center justify-center overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container via-transparent to-transparent z-10"></div>
+<img alt="Cinematic 3D render" class="w-full h-full object-cover opacity-30 mix-blend-luminosity transform scale-105 transition-transform duration-10000" data-alt="A cinematic, high-fidelity 3D render of a luxury over-ear headphone suspended in a pitch-black void. Dramatic, single-source rim lighting catches the machined titanium edges and the fine grain of the hand-stitched obsidian leather earpads. The aesthetic is extremely dark, minimalist, and editorial, resembling a high-end product photography studio setup. Sharp contrast between the absolute black background and the subtle metallic reflections of the audio hardware." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHHdhjPz8VAjaT7hgec1fq51ihiBSWwD93AwTdrjIUHvksTMu48abF6Kq3FUWjrNv2HBOpWFYTAYf65EKm4FMGzlbXXqCUYXfPNfPF6Zrm-XG2S2Epf-OmbgFQI_8tK0MmLYrJ2t-wWntosztN9pUa_dzlZRVkk7pd7kzDn53Au4BCX-4blOYuB-vDtCahUF_Ce6xqz7UYp_KoYxBpExuMJtKRjk42F3KoObWXVCA5ZiVbCpght3RipvRs-bLkHDHB5uljyY364R_B"/>
+</div>
+<div class="relative z-20 max-w-4xl">
+<h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-on-surface mb-6">
+                    Crafted for private clients who notice the difference.
+                </h1>
+<p class="font-body-md text-body-lg text-on-surface-variant max-w-xl mb-12">
+                    A quieter standard of luxury, made visible. Engineered precision meets tactile elegance in an auditory experience designed for the discerning few.
+                </p>
+<div class="flex gap-6 items-center">
+<a class="inline-flex items-center justify-center bg-on-surface text-primary-container px-8 py-4 font-label-caps text-label-caps hover:bg-surface-tint transition-colors duration-300" href="#concierge">
+                        Request concierge access
+                    </a>
+</div>
+</div>
+<div class="absolute bottom-12 right-margin-mobile md:right-margin-desktop z-20 flex flex-col items-end gap-2 text-on-surface-variant/50">
+<span class="font-label-caps text-label-caps tracking-widest">SCROLL</span>
+<div class="w-px h-12 bg-on-surface-variant/30"></div>
+</div>
+</section>
+<!-- Provenance Section (The Atelier) -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface-container-highest" id="atelier">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 md:col-start-2 z-10">
+<span class="font-label-caps text-label-caps text-outline mb-6 block">01 — PROVENANCE</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-8">
+                        The Atelier.
+                    </h2>
+<p class="font-body-md text-body-lg text-on-surface-variant mb-12 leading-relaxed">
+                        Every component is a testament to restraint. Hand-stitched full-grain leather meets precision-machined aerospace titanium. There are no superfluous details, only materials selected for acoustic integrity and tactile permanence.
+                    </p>
+<a class="inline-flex items-center gap-4 text-on-surface hover:text-tertiary transition-colors font-label-caps text-label-caps group" href="#">
+                        Explore the materials
+                        <div class="w-8 h-px bg-on-surface group-hover:bg-tertiary group-hover:w-12 transition-all duration-300"></div>
+</a>
+</div>
+<div class="md:col-span-6 md:col-start-7 relative mt-16 md:mt-0">
+<div class="aspect-[3/4] bg-surface-container-low overflow-hidden relative">
+<img alt="Macro leather detail" class="w-full h-full object-cover opacity-80 mix-blend-luminosity hover:opacity-100 transition-opacity duration-700" data-alt="A macro, extreme close-up shot of luxurious black full-grain leather being hand-stitched with dark metallic thread. The lighting is low-key and dramatic, casting deep shadows that emphasize the organic texture of the leather against the cold, sharp edge of a titanium tool resting nearby. The color palette is strictly monochromatic with subtle warm bronze highlights catching the metallic elements. The mood is quiet, focused, and deeply artisanal, reflecting a 'quiet luxury' aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWW8Nr5c_yJwpx8BhnKuQM_riS6APjMUcjQXQWjVdll9CNfXESrVlP3WTz5WbZqwvhao6aKISS6ApguEwzRC80b0r7b19t8-sDvNgA6N4AyTpmqGPzU6v1U8CDFpXTmn_da40ywI58g_gaeeNCeYJwJIUfjPlhaNl0VA_vyMQjTugDEgut0x1sXm5eZjqljsFaQ_9Uzq96gYUgWbOaEWt7kSEuOAY6jw4_EByztOPAjJ-nnMxKie_NHUAzEZ0JgKNG9CWTGrCYcSDR"/>
+</div>
+<!-- Decorative element -->
+<div class="absolute -bottom-8 -left-8 w-48 h-48 border border-outline-variant/30 z-0 hidden md:block"></div>
+</div>
+</div>
+</section>
+<!-- Collection Section -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-primary-container" id="collections">
+<div class="flex flex-col md:flex-row justify-between items-end mb-24">
+<div>
+<span class="font-label-caps text-label-caps text-outline mb-6 block">02 — THE COLLECTION</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">
+                        Instruments of silence.
+                    </h2>
+</div>
+<div class="mt-8 md:mt-0">
+<a class="font-label-caps text-label-caps text-on-surface border-b border-on-surface/30 hover:border-on-surface pb-1 transition-all" href="#">View all models</a>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Product Card 1 -->
+<div class="group cursor-pointer">
+<div class="aspect-square bg-surface-container-high mb-8 overflow-hidden relative">
+<img alt="Model N-01" class="w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out" data-alt="A sleek, minimalist over-ear headphone resting on a dark slate surface. The headphones feature matte black titanium earcups and a slender, geometric headband. The lighting is soft and directional, creating a moody, chiaroscuro effect that highlights the sharp, 0px radius architectural lines of the product. The environment is entirely dark charcoal and ink tones, exuding a premium, nocturnal audio lounge vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeuK7ATg9FMeCjwnurIAo9KIxNB9LLS-Sq1skRsVKBgQ_InC6x6_VSj9_frVKJ4j0lFnD7SWax0RrPlqFItFGdJ8w2VKnUKc6iSynBOhk5OnX_1XUAGxFYwhoK_tZCAP9lkGX15Fuwv2HCUlNwge4hRWIsjEtNU-p9lZo4D37b6_R7cKjIzUsrLU7GEFwfeeFZnNl8z_L2nRj8eOeRHogYjXHIiq4wPRv7jfyctEhLNlWHQpm_EhrXhOzYQbSL0W7lBpYBU5G2unZj"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Model N-01</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Reference Standard Acoustic Profile</p>
+</div>
+<span class="font-label-caps text-label-caps text-outline">EDITION OF 500</span>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group cursor-pointer mt-0 md:mt-32">
+<div class="aspect-square bg-surface-container-high mb-8 overflow-hidden relative">
+<img alt="Model N-02" class="w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 ease-out" data-alt="A close-up side profile of a high-end headphone resting against a textured charcoal acoustic panel. The earcup features a distinct brushed bronze accent ring around a deep black mesh grille. The lighting is low and atmospheric, emphasizing the premium tactile materials—cold metal against warm, soft leather. The composition uses heavy negative space, pushing the product slightly off-center to create a modern, editorial layout typical of luxury lookbooks." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrUTgfcsRrx1QwSXcC2HyB3uSnHyxGWeUVKsTLlBTJk17ijB5rdehUr6f2dzT2nlY-EXW81eS1ZYvmUCW6_nk-C00ZVZQsJcJkMWOZcqhtD6UpzhteyEvCm5FOi4EmoJ7FbYkpwJwHmWB9uSwhDMF0CtcXp0e88Gz8KqaxqkQiG3lmvPODs93GyclE28SppCmrybMWKPQvAYyY45IYzQc4NDXTlWlup5h-zLTcEKejRJjEkxrRhKR-VMXB9zdxKijwyzXoe_ccj278"/>
+</div>
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Model N-02</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Closed-Back Immersion Profile</p>
+</div>
+<span class="font-label-caps text-label-caps text-outline">EDITION OF 250</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Concierge Form Section -->
+<section class="py-section-gap px-margin-mobile md:px-margin-desktop bg-surface border-t border-outline-variant/10" id="concierge">
+<div class="max-w-3xl mx-auto">
+<span class="font-label-caps text-label-caps text-outline mb-6 block text-center">03 — CONCIERGE</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-16 text-center">
+                    Request a private audition.
+                </h2>
+<form class="space-y-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="relative">
+<input class="w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors peer placeholder-transparent" id="name" placeholder="Name" type="text"/>
+<label class="absolute left-0 -top-4 font-label-caps text-label-caps text-on-surface-variant peer-placeholder-shown:text-body-md peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-label-caps peer-focus:text-tertiary transition-all" for="name">Full Name</label>
+</div>
+<div class="relative">
+<input class="w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors peer placeholder-transparent" id="email" placeholder="Email" type="email"/>
+<label class="absolute left-0 -top-4 font-label-caps text-label-caps text-on-surface-variant peer-placeholder-shown:text-body-md peer-placeholder-shown:top-3 peer-focus:-top-4 peer-focus:text-label-caps peer-focus:text-tertiary transition-all" for="email">Email Address</label>
+</div>
+</div>
+<div class="relative">
+<select class="w-full bg-transparent border-0 border-b border-on-surface/40 px-0 py-3 font-body-md text-body-md text-on-surface focus:ring-0 focus:border-tertiary transition-colors appearance-none" id="interest">
+<option class="bg-surface-container-highest text-on-surface-variant" disabled="" selected="" value="">Select an area of interest</option>
+<option class="bg-surface-container-highest text-on-surface" value="n01">Model N-01 Inquiry</option>
+<option class="bg-surface-container-highest text-on-surface" value="n02">Model N-02 Inquiry</option>
+<option class="bg-surface-container-highest text-on-surface" value="bespoke">Bespoke Commission</option>
+</select>
+<span class="material-symbols-outlined absolute right-0 top-3 pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+<div class="flex justify-end mt-16">
+<button class="bg-transparent border border-tertiary text-tertiary px-12 py-4 font-label-caps text-label-caps hover:bg-tertiary hover:text-primary-container transition-colors duration-300" type="submit">
+                            Submit Inquiry
+                        </button>
+</div>
+</form>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant/10">
+<div class="flex flex-col gap-gutter px-margin-mobile md:px-margin-desktop py-section-gap max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-12">
+<div class="font-display-lg text-headline-lg text-on-surface tracking-tighter">
+                    NOCTURNE
+                </div>
+<nav class="flex flex-wrap gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors" href="#">Privacy</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors" href="#">Terms</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors" href="#">Contact</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-tertiary transition-colors" href="#">Press</a>
+</nav>
+</div>
+<div class="flex justify-between items-center border-t border-outline-variant/10 pt-8">
+<p class="font-label-caps text-label-caps text-on-surface-variant">
+                    © 2024 NOCTURNE AUDIO. ALL RIGHTS RESERVED.
+                </p>
+<div class="flex gap-4">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">arrow_outward</span>
+</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Simple script for header backdrop blur intensity on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-background/90', 'border-outline-variant/30');
+                header.classList.remove('bg-background/80', 'border-outline-variant/20');
+            } else {
+                header.classList.add('bg-background/80', 'border-outline-variant/20');
+                header.classList.remove('bg-background/90', 'border-outline-variant/30');
+            }
+        });
+    </script>
+</body></html>
