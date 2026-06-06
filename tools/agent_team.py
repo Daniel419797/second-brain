@@ -10,6 +10,10 @@ from core import agent_blackboard, agent_thought_bus, agents, agent_office, appr
 
 def execute(inputs: dict[str, Any]) -> str:
     action = str(inputs.get("action") or "status").lower()
+    if action in {"run_diagnostics", "diagnostics", "doctor"}:
+        return _run_diagnostics(inputs)
+    if action in {"monitor_task", "monitor_diagnostics", "diagnostics_status"}:
+        return _monitor_task(inputs)
     if action == "create_task":
         return _create_task(inputs)
     if action == "list_tasks":
@@ -51,6 +55,51 @@ def execute(inputs: dict[str, Any]) -> str:
     return "Unknown agent team action."
 
 
+def _run_diagnostics(inputs: dict[str, Any]) -> str:
+    profile = _diagnostic_profile(inputs)
+    root = str(inputs.get("root") or "").strip()
+    title = str(inputs.get("title") or inputs.get("target") or "Run Friday diagnostics").strip()
+    description = str(inputs.get("description") or "").strip() or (
+        f"Run {profile} diagnostics for Friday and report evidence-backed results. "
+        "Write decisions, progress, and final evidence to task messages, the blackboard, and the thought bus."
+    )
+    task_id = agents.create_task(
+        title,
+        description=description,
+        agent_id="doctor",
+        priority=_int(inputs.get("priority"), 2),
+        input_data={
+            "source": "diagnostics_request",
+            "diagnostic_profile": profile,
+            "root": root,
+            "handoff_required": True,
+            "auto_report_required": True,
+        },
+    )
+    task_queue.post_message(task_id, "friday", f"Friday handed this diagnostic request to Doctor agent with profile {profile}.")
+    try:
+        agent_thought_bus.post_thought(
+            "friday",
+            "delegation",
+            f"Diagnostic request delegated to Doctor as task #{task_id}.",
+            {"task_id": task_id, "agent_id": "doctor", "profile": profile, "root": root},
+            target_agent_id="doctor",
+            task_id=task_id,
+            confidence=0.9,
+            priority=1,
+            visibility="surface",
+            metadata={"source": "agent_team.run_diagnostics"},
+        )
+    except Exception:
+        pass
+    workers = background_agents.start_workers(count=1)
+    worker_note = f" Agent workers running: {workers}." if workers else " Agent workers did not start; the task is still queued."
+    return (
+        f"Diagnostics handed to Doctor agent as task #{task_id} using the {profile} profile."
+        f"{worker_note} Monitor it with: show task {task_id}."
+    )
+
+
 def _create_task(inputs: dict[str, Any]) -> str:
     title = str(inputs.get("title") or inputs.get("target") or "").strip()
     description = str(inputs.get("description") or title).strip()
@@ -73,6 +122,34 @@ def _list_tasks(inputs: dict[str, Any]) -> str:
     if not tasks:
         return "No tasks found."
     return "\n".join(_format_task(task) for task in tasks)
+
+
+def _monitor_task(inputs: dict[str, Any]) -> str:
+    task_id = _task_id(inputs)
+    task = task_queue.get_task(task_id) if task_id is not None else _latest_doctor_task()
+    if not task:
+        return "No Doctor diagnostic task found."
+    task_id = int(task["id"])
+    messages = list(reversed(task_queue.get_messages(task_id, limit=_int(inputs.get("limit"), 12))))
+    thoughts = agent_thought_bus.list_thoughts(task_id=task_id, limit=8)
+    blackboard = agent_blackboard.list_items(task_id=task_id, limit=8)
+    output = task.get("output") if isinstance(task.get("output"), dict) else {}
+    report = output.get("diagnostic_report") if isinstance(output.get("diagnostic_report"), dict) else {}
+    lines = [_format_task(task)]
+    if report:
+        lines.append(f"Diagnostic status: {report.get('overall_status')} - {report.get('summary')}")
+        checks = report.get("checks") or []
+        if checks:
+            lines.append("Checks: " + "; ".join(f"{item.get('name')}={item.get('status')}" for item in checks[:8]))
+    if messages:
+        lines.append("Messages: " + " | ".join(f"{item['sender']}: {item['message']}" for item in messages[-6:]))
+    decisions = [item for item in thoughts if item.get("packet_type") == "decision"]
+    if decisions:
+        lines.append("Decisions: " + " | ".join(str(item.get("summary") or "") for item in decisions[:4]))
+    evidence = [item for item in blackboard if item.get("item_type") in {"evidence", "decision", "progress"}]
+    if evidence:
+        lines.append("Blackboard: " + " | ".join(f"{item.get('item_type')}: {item.get('title')}" for item in evidence[:5]))
+    return "\n".join(lines)
 
 
 def _list_questions(inputs: dict[str, Any]) -> str:
@@ -196,6 +273,20 @@ def _task_id(inputs: dict[str, Any]) -> int | None:
     raw = inputs.get("task_id") or inputs.get("target") or ""
     match = re.search(r"\d+", str(raw))
     return int(match.group(0)) if match else None
+
+
+def _latest_doctor_task() -> dict[str, Any] | None:
+    tasks = task_queue.list_tasks(agent_id="doctor", limit=20)
+    return tasks[0] if tasks else None
+
+
+def _diagnostic_profile(inputs: dict[str, Any]) -> str:
+    text = " ".join(str(inputs.get(key) or "") for key in ("profile", "title", "description", "target", "scope")).lower()
+    if re.search(r"\b(deep|full|all|everything|complete)\b", text):
+        return "deep"
+    if re.search(r"\b(quick|fast|light)\b", text):
+        return "quick"
+    return "standard"
 
 
 def _int(value: Any, default: int) -> int:

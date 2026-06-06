@@ -74,6 +74,14 @@ INTENT_SPECS: dict[str, IntentSpec] = {
         min_confidence=0.78,
         required_slots=("title",),
     ),
+    "run_diagnostics": IntentSpec(
+        name="run_diagnostics",
+        description="Delegate self, system, repo, provider, build, test, or production diagnostics to the Doctor agent.",
+        tool_name="agent_team",
+        tool_action="run_diagnostics",
+        risk="queues_background_work",
+        min_confidence=0.82,
+    ),
     "list_tasks": IntentSpec(
         name="list_tasks",
         description="List agent tasks, optionally filtered by status.",
@@ -468,6 +476,17 @@ def _tool_input(spec: IntentSpec, slots: dict[str, Any]) -> dict[str, Any]:
             payload["description"] = description
         if agent_id:
             payload["agent_id"] = agent_id
+        return payload
+    if spec.name == "run_diagnostics":
+        payload = {
+            "action": action,
+            "title": _slot_text(slots, "title", "request") or "Run Friday diagnostics",
+            "description": _slot_text(slots, "description", "request") or "Run evidence-backed Friday diagnostics.",
+            "profile": _slot_text(slots, "profile", "scope") or "standard",
+        }
+        root = _slot_text(slots, "root")
+        if root:
+            payload["root"] = root
         return payload
     if spec.name == "list_tasks":
         status = _task_status(_slot_text(slots, "status"))
@@ -911,6 +930,28 @@ def _classify_agent_task(text: str) -> IntentResult | None:
     return None
 
 
+def _classify_diagnostics(text: str) -> IntentResult | None:
+    lowered = text.lower()
+    if not re.search(r"\b(?:diagnostic|diagnostics|diagnose|health\s+check|self\s+test|self\s+diagnostic|system\s+check|doctor)\b", lowered):
+        return None
+    if re.fullmatch(r"(?:what|why|how|when|where|who)\b.+", lowered):
+        return None
+    if not re.search(r"\b(?:run|start|perform|do|check|scan|test|diagnose|give|have|tell|ask)\b", lowered):
+        return None
+    profile = "deep" if re.search(r"\b(?:deep|full|all|everything|complete)\b", lowered) else "quick" if re.search(r"\b(?:quick|fast|light)\b", lowered) else "standard"
+    return IntentResult(
+        "run_diagnostics",
+        0.92,
+        {
+            "title": "Run Friday diagnostics",
+            "description": text,
+            "profile": profile,
+        },
+        "rules",
+        "explicit diagnostics request",
+    )
+
+
 def _classify_task_status(text: str) -> IntentResult | None:
     lowered = text.lower()
     if re.search(r"\b(?:agent|agents|team|tasks?|friday)\b", lowered):
@@ -969,6 +1010,7 @@ _RULE_CLASSIFIERS: tuple[RuleClassifier, ...] = (
     _classify_academic_project,
     _classify_project_ideas,
     _classify_coding_project,
+    _classify_diagnostics,
     _classify_agent_task,
     _classify_task_status,
     _classify_reminder,
@@ -1096,6 +1138,14 @@ def _normalize_slots(intent: str, slots: dict[str, Any]) -> dict[str, Any]:
         title = _slot_text(normalized, "title", "task", "goal", "request")
         if title:
             normalized["title"] = title
+    if intent == "run_diagnostics":
+        profile = _slot_text(normalized, "profile", "scope", "request", "description").lower()
+        if re.search(r"\b(?:deep|full|all|everything|complete)\b", profile):
+            normalized["profile"] = "deep"
+        elif re.search(r"\b(?:quick|fast|light)\b", profile):
+            normalized["profile"] = "quick"
+        else:
+            normalized["profile"] = _slot_text(normalized, "profile") or "standard"
     if intent == "create_reminder":
         title = _slot_text(normalized, "title", "task", "reminder")
         if title:
@@ -1260,6 +1310,9 @@ def _agent_id(text: str) -> str:
         "senior developer": "senior_developer",
         "product": "product_manager",
         "product manager": "product_manager",
+        "doctor": "doctor",
+        "diagnostics": "doctor",
+        "diagnostic": "doctor",
     }
     return aliases.get(lowered, "" if lowered in {"team", "agent", "agents"} else lowered.replace(" ", "_"))
 

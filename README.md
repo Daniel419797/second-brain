@@ -261,7 +261,7 @@ The protected dashboard also exposes a Cognition panel and `/cognition/*` API en
 
 ## V2 Local Agent Team
 
-The v2 foundation is local-first. Friday now has a persistent SQLite task queue, background workers, the 14-agent roster from the v2 PDF, episodic logging, procedural skill learning, competence maps, and voice/direct commands for checking the team.
+The v2 foundation is local-first. Friday now has a persistent SQLite task queue, background workers, a specialist agent roster, episodic logging, procedural skill learning, competence maps, and voice/direct commands for checking the team.
 
 The source-of-truth completion tracker is [docs/v2_status.md](docs/v2_status.md), which is mapped directly to `JARVIS_v2_Phase_Planning_v3.pdf`.
 
@@ -276,6 +276,10 @@ Implemented local v2 commands:
 - `list agents`
 - `show agent offices`
 - `show QA office`
+- `run diagnostics`
+- `run quick diagnostics`
+- `monitor diagnostics`
+- `show Doctor office`
 - `start agents`
 - `stop agents`
 - `queue task research free speech APIs`
@@ -288,6 +292,8 @@ Implemented local v2 commands:
 Task data lives in `data/task_queue.sqlite3`. Tasks include `pending`, `active`, `blocked`, `done`, `failed`, and `cancelled` states, plus persisted inter-agent messages. A task can also have a future `scheduled_at` timestamp; workers will skip it until that time.
 
 Each agent also has a virtual office, exposed through `GET /agents/offices` and the dashboard Office Floor. An office shows the agent's room, status, current focus, progress, provider chain, recent task messages, and task counts, so you and Friday/CEO can see what the team is doing without opening every task one by one.
+
+The Doctor agent owns diagnostics. Diagnostic requests such as `run diagnostics`, `run quick diagnostics`, `run full diagnostics`, `diagnose yourself`, or `health check` are handed to Doctor as background tasks. Friday immediately replies with the Doctor task ID as proof of handoff, starts a worker, and keeps the conversation free while Doctor runs. Doctor writes progress and decisions to task messages, the agent blackboard, and the thought bus; final reports are stored under `data/doctor_reports/` and surfaced through task output and notifications.
 
 Relevant v2 config:
 
@@ -316,7 +322,7 @@ Friday can speak first during voice sessions without waiting for you to say her 
 ```json
 "proactive_speech_enabled": true,
 "proactive_speech_in_fast_voice": true,
-"proactive_speech_sources": "reminders,calendar,agent_tasks",
+"proactive_speech_sources": "reminders,calendar,agent_tasks,notifications",
 "proactive_speech_max_per_hour": 3,
 "proactive_speech_quiet_hours_start": "22:00",
 "proactive_speech_quiet_hours_end": "08:00"
@@ -717,6 +723,16 @@ python jarvis.py --debug
 
 The log prints separate `stt_total`, `brain`, `tts`, and `e2e` timings.
 With `--debug`, normal voice mode also prints `[WAKE] score=...` once per second so you can tell whether the microphone is producing wake-word signal.
+
+Doctor diagnostics:
+
+```powershell
+python scripts/friday_doctor.py --profile quick --json
+python scripts/friday_doctor.py --profile standard --json
+python scripts/friday_doctor.py --profile deep --json
+```
+
+In conversation, say `run diagnostics`, `run quick diagnostics`, or `run full diagnostics`. Friday hands the request to the Doctor agent as a background task, gives you the task ID immediately, and reports back when the task finishes. Use `monitor diagnostics` or `show task <id>` to inspect progress, decisions, evidence, and partial results while Doctor is working.
 
 Latency checks:
 

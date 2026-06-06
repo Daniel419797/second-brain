@@ -70,3 +70,22 @@ def test_agent_task_notifications_include_blocked_and_high_priority_done(monkeyp
     assert any("needs your approval" in message for message in messages)
     assert any("Finish plan" in message for message in messages)
     assert not any("Low priority cleanup" in message for message in messages)
+
+
+def test_doctor_done_notification_reports_diagnostic_status(monkeypatch, tmp_path):
+    isolate_proactive(monkeypatch, tmp_path, {"proactive_speech_sources": "agent_tasks"})
+    task_id = task_queue.create_task("Run diagnostics", agent_id="doctor", priority=2)
+    task_queue.complete_task(
+        task_id,
+        {
+            "diagnostic_report": {
+                "overall_status": "fail",
+                "summary": "Summary: diagnostics found repo validation issues.",
+            }
+        },
+    )
+
+    messages = [item["message"] for item in proactive_speech.collect_notifications()]
+
+    assert any("Doctor diagnostics completed with status fail" in message for message in messages)
+    assert any("repo validation issues" in message for message in messages)

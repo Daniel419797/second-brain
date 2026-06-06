@@ -542,6 +542,32 @@ def test_direct_desktop_task_bypasses_llm(monkeypatch):
     assert called == []
 
 
+def test_run_diagnostics_routes_to_doctor_agent(monkeypatch, tmp_path):
+    memory.wipe_all()
+    called = []
+    tool_inputs = []
+    monkeypatch.setattr(orchestrator.permissions, "DB_PATH", tmp_path / "permissions.sqlite3")
+    monkeypatch.setattr(orchestrator.llm, "ask", lambda *args, **kwargs: called.append(True))
+    monkeypatch.setattr(
+        orchestrator.agent_team,
+        "execute",
+        lambda inputs: tool_inputs.append(inputs) or "Diagnostics handed to Doctor agent as task #12 using the standard profile.",
+    )
+
+    reply = orchestrator.handle_command("run diagnostics")
+
+    assert reply == "Diagnostics handed to Doctor agent as task #12 using the standard profile."
+    assert tool_inputs == [
+        {
+            "action": "run_diagnostics",
+            "title": "Run Friday diagnostics",
+            "description": "run diagnostics",
+            "profile": "standard",
+        }
+    ]
+    assert called == []
+
+
 def test_direct_deep_app_integrations_bypass_llm(monkeypatch):
     memory.wipe_all()
     called = []

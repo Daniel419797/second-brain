@@ -24,6 +24,7 @@ ROOM_NAMES = {
     "data_scientist": "Data Lab",
     "qa_engineer": "QA Lab",
     "code_reviewer": "Review Desk",
+    "doctor": "Diagnostics Bay",
 }
 
 

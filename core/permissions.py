@@ -59,6 +59,10 @@ DEFAULT_RULES: list[dict[str, str]] = [
     {"key": "app_integrations.create_sheet", "label": "Create local sheets", "category": "Integrations", "mode": "allow", "description": "Create local CSV sheets."},
     {"key": "app_integrations.index_workspace", "label": "Index workspace", "category": "Workspace", "mode": "allow", "description": "Scan project files into the local workspace index."},
     {"key": "app_integrations.search_workspace", "label": "Search workspace", "category": "Workspace", "mode": "allow", "description": "Search the local workspace index."},
+    {"key": "agent_team.status", "label": "Read agent team status", "category": "Agent Team", "mode": "allow", "description": "Read agent roster, task status, offices, thoughts, and blackboard summaries."},
+    {"key": "agent_team.queue_task", "label": "Queue background agent tasks", "category": "Agent Team", "mode": "allow", "description": "Create low-risk background tasks for Friday's agent team."},
+    {"key": "agent_team.diagnostics", "label": "Run Doctor diagnostics", "category": "Agent Team", "mode": "allow", "description": "Hand self, system, repo, provider, build, and test diagnostics to the Doctor agent."},
+    {"key": "agent_team.workers", "label": "Control local agent workers", "category": "Agent Team", "mode": "allow", "description": "Start, stop, or run one local background agent worker."},
     {"key": "phone_bridge.status", "label": "Read phone bridge status", "category": "Phone", "mode": "allow", "description": "Read Android bridge status, registered devices, ADB state, and battery."},
     {"key": "phone_bridge.notify", "label": "Notify phone", "category": "Phone", "mode": "allow", "description": "Send ntfy push notifications to the Android phone."},
     {"key": "phone_bridge.ring", "label": "Ring/find phone", "category": "Phone", "mode": "allow", "description": "Send urgent phone alerts or ADB attention signals."},
@@ -387,6 +391,14 @@ def key_for_tool(tool_name: str, tool_input: dict[str, Any] | None = None) -> st
         return _canonical_key(f"pc_control.{action or 'action'}")
     if name == "app_integrations":
         return _canonical_key(f"app_integrations.{action or 'action'}")
+    if name == "agent_team":
+        if action in {"run_diagnostics", "diagnostics", "doctor"}:
+            return "agent_team.diagnostics"
+        if action in {"create_task", "assign_task", "reassign_task", "approve_task", "cancel_task"}:
+            return "agent_team.queue_task"
+        if action in {"start_workers", "stop_workers", "run_one"}:
+            return "agent_team.workers"
+        return "agent_team.status"
     if name == "phone_bridge":
         if action in {"status", "list_devices", "battery", "battery_status", "events"}:
             return "phone_bridge.status"

@@ -15,11 +15,13 @@ def test_agent_roster_contains_v2_roles():
     assert any(agent["id"] == "senior_developer" for agent in roster)
     assert any(agent["id"] == "lead_researcher" for agent in roster)
     assert any(agent["id"] == "customer_support" for agent in roster)
+    assert any(agent["id"] == "doctor" for agent in roster)
 
 
 def test_choose_agent_from_task_text():
     assert agents.choose_agent("review this code for bugs") == "code_reviewer"
     assert agents.choose_agent("research free APIs") == "research_analyst"
+    assert agents.choose_agent("run system diagnostics") == "doctor"
 
 
 def test_create_task_selects_agent(monkeypatch, tmp_path):

@@ -84,6 +84,7 @@ PRE_DIRECT_INTENTS = {
     "start_coding_project",
     "project_ideas",
     "create_agent_task",
+    "run_diagnostics",
     "create_reminder",
     "generate_image",
     "search_workspace",
@@ -186,6 +187,12 @@ TOOL_HINTS = (
     "task",
     "queue task",
     "assign",
+    "diagnostic",
+    "diagnostics",
+    "diagnose",
+    "health check",
+    "self test",
+    "doctor",
     "working on",
     "permission",
     "permissions",
@@ -1374,6 +1381,18 @@ def _direct_agent_team(text: str) -> str:
             return _voice_tool_result(agent_team.execute({"action": "office", "agent_id": agent_id}))
     if re.fullmatch(r"(?:list|show)\s+(?:the\s+)?(?:agents|agent roster|team roster)", lowered):
         return _voice_tool_result(agent_team.execute({"action": "roster"}))
+    if re.fullmatch(
+        r"(?:run|start|perform|do)\s+(?:(quick|fast|light|deep|full|all|complete)\s+)?(?:friday\s+|self\s+|system\s+|repo\s+|all\s+)?(?:diagnostic|diagnostics|health\s+check|self\s+test)",
+        lowered,
+    ) or re.fullmatch(r"(?:diagnose yourself|run doctor|doctor check)", lowered):
+        profile = "deep" if re.search(r"\b(?:deep|full|all|complete)\b", lowered) else "quick" if re.search(r"\b(?:quick|fast|light)\b", lowered) else "standard"
+        return _voice_tool_result(agent_team.execute({"action": "run_diagnostics", "profile": profile, "description": cleaned}))
+    match = re.fullmatch(r"(?:monitor|show|open|check)\s+(?:the\s+)?(?:doctor|diagnostics?|diagnostic task)(?:\s+(?:task\s+)?#?(\d+))?", cleaned, re.IGNORECASE)
+    if match:
+        payload: dict[str, Any] = {"action": "monitor_diagnostics", "limit": 12}
+        if match.group(1):
+            payload["task_id"] = match.group(1)
+        return _voice_tool_result(agent_team.execute(payload))
     if re.fullmatch(r"start\s+(?:the\s+)?(?:agents|agent workers|background agents)", lowered):
         return _voice_tool_result(agent_team.execute({"action": "start_workers"}))
     if re.fullmatch(r"stop\s+(?:the\s+)?(?:agents|agent workers|background agents)", lowered):

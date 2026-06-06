@@ -232,10 +232,20 @@ def _agent_task_notifications(now: dt.datetime) -> list[dict[str, str]]:
             {
                 "key": f"task:{task.get('id')}:done",
                 "source": "agent_tasks",
-                "message": f"Task {task.get('id')} is done: {task.get('title')}.",
+                "message": _done_task_message(task),
             }
         )
     return items
+
+
+def _done_task_message(task: dict[str, Any]) -> str:
+    if str(task.get("agent_id") or "") == "doctor":
+        output = task.get("output") if isinstance(task.get("output"), dict) else {}
+        report = output.get("diagnostic_report") if isinstance(output.get("diagnostic_report"), dict) else {}
+        status = str(report.get("overall_status") or output.get("diagnostic_status") or "complete")
+        summary = str(report.get("summary") or output.get("summary") or task.get("title") or "Diagnostics completed.")
+        return f"Doctor diagnostics completed with status {status}: {summary[:420]}"
+    return f"Task {task.get('id')} is done: {task.get('title')}."
 
 
 def _notification_center_notifications(now: dt.datetime) -> list[dict[str, str]]:

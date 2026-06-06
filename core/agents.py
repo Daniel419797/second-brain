@@ -7,7 +7,7 @@ import re
 from dataclasses import dataclass
 from typing import Any
 
-from core import agent_blackboard, agent_lifecycle, agent_memory, agent_quality_manager, agent_thought_bus, competence, design_providers, llm, memory, research, skill_library, task_contracts, task_queue
+from core import agent_blackboard, agent_lifecycle, agent_memory, agent_quality_manager, agent_thought_bus, competence, design_providers, doctor_agent, llm, memory, research, skill_library, task_contracts, task_queue
 from core.config import config_value
 
 
@@ -39,6 +39,7 @@ ROSTER: tuple[AgentProfile, ...] = (
     AgentProfile("data_scientist", "Data Scientist / ML", "Data analysis, metrics, and ML plans.", ("data", "analysis", "chart", "model", "dataset")),
     AgentProfile("qa_engineer", "QA Engineer", "Test plans, regression checks, and acceptance criteria.", ("qa", "quality", "bug", "regression", "test")),
     AgentProfile("code_reviewer", "Code Reviewer", "Code review, risks, and maintainability feedback.", ("review", "style", "bug", "quality")),
+    AgentProfile("doctor", "Doctor", "Self, system, repo, provider, build, test, and production diagnostics with evidence-backed reports.", ("diagnostic", "diagnostics", "doctor", "health", "self test", "self diagnostic", "system check", "readiness", "smoke", "build")),
     AgentProfile("finance_admin", "Finance / Admin Agent", "Invoices, expenses, API-cost budgets, and payment approval preparation.", ("invoice", "payment", "budget", "revenue", "expense", "profit")),
     AgentProfile("customer_support", "Customer Support Agent", "Client replies, support triage, status updates, and escalation notes.", ("support", "customer", "reply", "ticket", "client message")),
 )
@@ -88,6 +89,13 @@ def normalize_agent_id(value: str) -> str:
         "qa": "qa_engineer",
         "reviewer": "code_reviewer",
         "code reviewer": "code_reviewer",
+        "doctor": "doctor",
+        "diagnostic": "doctor",
+        "diagnostics": "doctor",
+        "health check": "doctor",
+        "system check": "doctor",
+        "self diagnostic": "doctor",
+        "self diagnostics": "doctor",
         "finance": "finance_admin",
         "admin": "finance_admin",
         "customer support": "customer_support",
@@ -128,6 +136,7 @@ def create_task(
     agent_id: str = "",
     priority: int = 5,
     scheduled_at: Any | None = None,
+    input_data: dict[str, Any] | None = None,
 ) -> int:
     selected_agent = normalize_agent_id(agent_id) if agent_id else choose_agent(f"{title} {description}")
     if selected_agent not in {agent.id for agent in _all_profiles()}:
@@ -137,7 +146,7 @@ def create_task(
         description=description or title,
         agent_id=selected_agent,
         priority=priority,
-        input_data={"source": "user"},
+        input_data={"source": "user", **(input_data or {})},
         scheduled_at=scheduled_at,
     )
     try:
@@ -174,6 +183,8 @@ def approve_guarded_task(task_id: int, confirmation: str) -> bool:
 
 def run_task(task: dict[str, Any]) -> dict[str, Any]:
     agent = get_agent(str(task.get("agent_id") or "research_analyst"))
+    if agent.id == "doctor":
+        return doctor_agent.run_task(task)
     title = str(task.get("title") or "")
     description = str(task.get("description") or title)
     task_text = f"{title}\n{description}"
@@ -238,6 +249,12 @@ def run_task(task: dict[str, Any]) -> dict[str, Any]:
 
 
 def _agent_capability(agent_id: str) -> dict[str, Any]:
+    if str(agent_id or "") == "doctor":
+        return {
+            "execution": "diagnostic_runner",
+            "can_write_files": True,
+            "summary": "Doctor runs explicit repo/system diagnostics and writes reports under data/doctor_reports.",
+        }
     if str(agent_id or "") == "senior_developer":
         return {
             "execution": "text_only_unless_autonomous_coding_routed",
@@ -466,6 +483,7 @@ def _infer_task_type(text: str) -> str:
         "design": ("design", "ui", "ux", "figma"),
         "security": ("security", "vulnerability", "scan", "harden"),
         "deployment": ("deploy", "release", "server", "render", "vercel"),
+        "diagnostics": ("diagnostic", "diagnostics", "health check", "smoke test", "doctor"),
     }.items():
         if any(word in lowered for word in words):
             return name
