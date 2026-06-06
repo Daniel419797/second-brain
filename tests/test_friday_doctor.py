@@ -1,8 +1,19 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from core import agent_blackboard, agent_thought_bus, doctor_agent, notification_center, task_contracts, task_queue
 from scripts import friday_doctor
 from tools import agent_team
+
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def test_api_dockerfile_includes_doctor_scripts():
+    dockerfile = (ROOT / "deploy" / "Dockerfile.api").read_text(encoding="utf-8")
+
+    assert "COPY scripts ./scripts" in dockerfile
 
 
 def test_friday_doctor_runner_returns_structured_report(monkeypatch, tmp_path):

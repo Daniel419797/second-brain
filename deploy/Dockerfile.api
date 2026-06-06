@@ -12,6 +12,7 @@ COPY api ./api
 COPY core ./core
 COPY input ./input
 COPY output ./output
+COPY scripts ./scripts
 COPY tools ./tools
 COPY config.json jarvis.py ./
 
