@@ -5581,40 +5581,38 @@ def create_app() -> FastAPI:
 
     @app.websocket("/ws/logs")
     async def log_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            api_auth.decode_token(token, token_type="access")
-        except api_auth.AuthError:
-            await websocket.close(code=1008)
+        if await _accept_or_close_websocket_auth(websocket, token) is None:
             return
         await websocket.accept()
         last_payload = ""
         try:
             while True:
+                if await _websocket_disconnected(websocket):
+                    return
                 payload = _recent_logs(100)
                 text = "\n".join(payload.get("lines") or [])
                 if text != last_payload:
                     last_payload = text
-                    await websocket.send_json(payload)
+                await websocket.send_json(payload)
                 await asyncio.sleep(2.0)
         except WebSocketDisconnect:
             return
 
     @app.websocket("/ws/dashboard")
     async def dashboard_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            api_auth.decode_token(token, token_type="access")
-        except api_auth.AuthError:
-            await websocket.close(code=1008)
+        if await _accept_or_close_websocket_auth(websocket, token) is None:
             return
         await websocket.accept()
         last_payload = ""
         try:
             while True:
+                if await _websocket_disconnected(websocket):
+                    return
                 payload = await asyncio.to_thread(_dashboard_snapshot)
                 text = _stream_payload_signature(payload)
                 if text != last_payload:
                     last_payload = text
-                    await websocket.send_json(payload)
+                await websocket.send_json(payload)
                 await asyncio.sleep(float(config_value("dashboard_stream_interval_seconds", 2.0)))
         except WebSocketDisconnect:
             return
@@ -5651,35 +5649,26 @@ def create_app() -> FastAPI:
 
     @app.websocket("/ws/notifications")
     async def notification_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            api_auth.decode_token(token, token_type="access")
-        except api_auth.AuthError:
-            await websocket.close(code=1008)
+        if await _accept_or_close_websocket_auth(websocket, token) is None:
             return
         await websocket.accept()
         last_payload = ""
         try:
             while True:
+                if await _websocket_disconnected(websocket):
+                    return
                 payload = await asyncio.to_thread(_notification_stream_payload)
                 text = _stream_payload_signature(payload)
                 if text != last_payload:
                     last_payload = text
-                    await websocket.send_json(payload)
+                await websocket.send_json(payload)
                 await asyncio.sleep(float(config_value("notification_stream_interval_seconds", 1.0)))
         except WebSocketDisconnect:
             return
 
     @app.websocket("/ws/voice/deepgram")
     async def voice_deepgram_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            api_auth.decode_token(token, token_type="access")
-        except api_auth.AuthError:
-            await websocket.accept()
-            try:
-                await websocket.send_json({"type": "error", "message": "Voice session expired. Log in again."})
-            except Exception:
-                pass
-            await websocket.close(code=1008)
+        if await _accept_or_close_websocket_auth(websocket, token) is None:
             return
         await websocket.accept()
         dg_socket = None
@@ -5803,10 +5792,7 @@ def create_app() -> FastAPI:
 
     @app.websocket("/ws/chat")
     async def chat_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            api_auth.decode_token(token, token_type="access")
-        except api_auth.AuthError:
-            await websocket.close(code=1008)
+        if await _accept_or_close_websocket_auth(websocket, token) is None:
             return
         await websocket.accept()
         try:
@@ -6829,23 +6815,54 @@ def _strip_stream_volatiles(value: Any) -> Any:
 
 
 async def _stream_snapshot_payload(websocket: WebSocket, token: str, builder: Any, interval_key: str, default_interval: float) -> None:
-    try:
-        api_auth.decode_token(token, token_type="access")
-    except api_auth.AuthError:
-        await websocket.close(code=1008)
+    if await _accept_or_close_websocket_auth(websocket, token) is None:
         return
     await websocket.accept()
     last_payload = ""
     try:
         while True:
+            if await _websocket_disconnected(websocket):
+                return
             payload = await asyncio.to_thread(builder)
             text = _stream_payload_signature(payload)
             if text != last_payload:
                 last_payload = text
-                await websocket.send_json(payload)
+            await websocket.send_json(payload)
             await asyncio.sleep(float(config_value(interval_key, default_interval)))
     except WebSocketDisconnect:
         return
+
+
+async def _accept_or_close_websocket_auth(websocket: WebSocket, token: str) -> dict[str, Any] | None:
+    try:
+        return api_auth.decode_token(str(token or "").strip(), token_type="access")
+    except api_auth.AuthError:
+        await _close_websocket_auth_error(websocket)
+        return None
+
+
+async def _close_websocket_auth_error(websocket: WebSocket) -> None:
+    try:
+        await websocket.accept()
+        await websocket.send_json({"type": "auth_error", "message": "Session expired. Log in again."})
+    except Exception:
+        pass
+    try:
+        await websocket.close(code=1008)
+    except Exception:
+        pass
+
+
+async def _websocket_disconnected(websocket: WebSocket, timeout: float = 0.01) -> bool:
+    try:
+        message = await asyncio.wait_for(websocket.receive(), timeout=timeout)
+    except asyncio.TimeoutError:
+        return False
+    except WebSocketDisconnect:
+        return True
+    except Exception:
+        return True
+    return str(message.get("type") or "") == "websocket.disconnect"
 
 
 def _notification_stream_payload() -> dict[str, Any]:

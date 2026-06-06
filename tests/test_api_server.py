@@ -2,7 +2,9 @@ import base64
 import sys
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
+from starlette.websockets import WebSocketDisconnect
 
 from api import server
 from core import adaptive_attention, agency_mode, agent_blackboard, agent_council, agent_lifecycle, agent_memory, agent_office, agent_quality_manager, agent_scheduler, agent_simulation_sandbox, agent_thought_bus, android_companion, api_auth, app_apprenticeship, app_integrations, app_operators, app_state_memory, autobiographical_memory, autonomous_debugger, autonomous_learning, autonomous_qa_lab, backup_recovery, barge_in, browser_extension_bridge, capability_center, code_change_simulator, command_graph, context_aware_silence, continuity_brain, contextual_workspace, conversation_continuity, daily_companion, decision_memory, deep_project_autopilot, deployment_brain, desktop_tasks, dev_server_copilot, do_not_forget, emotion_tone, emotional_timing, environment_awareness, error_radar, evaluation_lab, event_nervous_system, executive_capabilities, failure_autopsy, focus_protection, goal_regulation, google_workspace, learning_coach, live_workspace_coach, local_file_intelligence, local_voice_brain, long_term_learning, meeting_study_companion, memory_constitution, memory_debate, mission_control, model_benchmark_lab, model_router_brain, notification_center, offline_survival, operating_rhythm, os_autopilot, pc_awareness, pc_timeline, permissions, personal_command_memory, personal_crm, personal_data_timeline, personal_finance, personal_knowledge_vault, personal_life_os, personal_safety_guardian, personal_taste_engine, phone_bridge, phone_mesh, private_embedding_memory, privacy_vault, project_autopilot, project_cto, project_memory, project_watchdog, proactive_guardian, reality_check, refactor_planner, release_manager, reliability_score, research_briefings, sandbox_simulation, self_debugger, self_reflection, self_update, semantic_search, skill_evolution, skill_improvement, skill_library, skill_training_studio, task_contracts, task_queue, test_build_monitor, trust_proof, version_guardian, vision_skill_learning, visual_monitor, voice_reliability, workspace_brain, world_model
@@ -156,6 +158,16 @@ def test_api_requires_bearer_token(monkeypatch, tmp_path):
     assert response.status_code == 401
 
 
+def test_api_root_is_public_liveness(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert response.json()["ok"] is True
+    assert response.json()["health"] == "/health"
+
+
 def test_api_allows_local_dashboard_cors_preflight(monkeypatch, tmp_path):
     client = _client(monkeypatch, tmp_path)
 
@@ -219,6 +231,18 @@ def test_api_decorates_task_progress_and_streams_tasks(monkeypatch, tmp_path):
     assert dashboard["tasks"][0]["progress_percent"] == 55
     assert "agentQuality" in dashboard
     assert "skillsSummary" in dashboard
+
+
+def test_api_websocket_invalid_token_reports_auth_error(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+
+    with client.websocket_connect("/ws/tasks?token=not-a-valid-token") as websocket:
+        payload = websocket.receive_json()
+        assert payload["type"] == "auth_error"
+        assert "Session expired" in payload["message"]
+        with pytest.raises(WebSocketDisconnect) as exc:
+            websocket.receive_json()
+        assert exc.value.code == 1008
 
 
 def test_api_streams_chat_and_notifications(monkeypatch, tmp_path):

@@ -117,6 +117,15 @@ export function wsUrl(path, token) {
   return `${API_URL.replace(/^http/, "ws")}${path}?token=${encodeURIComponent(token)}`;
 }
 
+export function isWebSocketAuthClose(event) {
+  const code = Number(event?.code || 0);
+  return code === 1008 || code === 4001 || code === 4401;
+}
+
+export function isWebSocketAuthPayload(payload) {
+  return String(payload?.type || "") === "auth_error";
+}
+
 function defaultValueFor(key) {
   if (["tasks", "agents", "offices", "missions", "approvals", "audit", "projectReferences"].includes(key)) return [];
   if (key === "logs") return { lines: [] };

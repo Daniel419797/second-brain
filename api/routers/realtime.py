@@ -13,20 +13,19 @@ def register_routes(app: Any, ctx: Any) -> None:
 
     @router.websocket("/ws/tasks")
     async def task_stream(websocket: WebSocket, token: str = "") -> None:
-        try:
-            ctx.api_auth.decode_token(token, token_type="access")
-        except ctx.api_auth.AuthError:
-            await websocket.close(code=1008)
+        if await ctx._accept_or_close_websocket_auth(websocket, token) is None:
             return
         await websocket.accept()
         last_payload = ""
         try:
             while True:
+                if await ctx._websocket_disconnected(websocket):
+                    return
                 payload = await asyncio.to_thread(ctx._task_stream_payload)
                 text = ctx._stream_payload_signature(payload)
                 if text != last_payload:
                     last_payload = text
-                    await websocket.send_json(payload)
+                await websocket.send_json(payload)
                 await asyncio.sleep(1.0)
         except WebSocketDisconnect:
             return

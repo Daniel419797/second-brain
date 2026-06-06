@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AlertTriangle, Bot, CheckCircle2, CircleAlert, FlaskConical, Loader2, ShieldCheck } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { wsUrl } from "@/services/fridayApi";
+import { isWebSocketAuthClose, isWebSocketAuthPayload, wsUrl } from "@/services/fridayApi";
 
 export function ReliabilityView() {
   const { api, data, refresh, token, interfaceFor } = useDashboard();
@@ -31,13 +31,24 @@ export function ReliabilityView() {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          if (isWebSocketAuthPayload(payload)) {
+            cancelled = true;
+            setStatus(payload.message || "Session expired. Log in again.");
+            socket?.close();
+            return;
+          }
           setLab(payload);
           setLoading(false);
         } catch {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
+        if (isWebSocketAuthClose(event)) {
+          cancelled = true;
+          setStatus("Session expired. Log in again.");
+          return;
+        }
         if (!cancelled) reconnectTimer = window.setTimeout(connect, 2500);
       };
       socket.onerror = () => {

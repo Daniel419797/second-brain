@@ -29,6 +29,10 @@ class ChatAttachmentRequest(BaseModel):
 def register_routes(app: Any, ctx: Any) -> None:
     router = APIRouter()
 
+    @router.get("/")
+    def root() -> dict[str, Any]:
+        return {"ok": True, "name": "Friday", "api": "v2", "health": "/health"}
+
     @router.post("/auth/login")
     def login(request: LoginRequest, response: Response) -> dict[str, Any]:
         if not ctx.api_auth.authenticate(request.username, request.password):

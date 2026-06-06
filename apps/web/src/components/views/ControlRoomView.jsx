@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Bot, Cable, CheckCircle2, CircleDollarSign, Database, Loader2, PauseOctagon, RefreshCcw, ShieldCheck, Zap } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { wsUrl } from "@/services/fridayApi";
+import { isWebSocketAuthClose, isWebSocketAuthPayload, wsUrl } from "@/services/fridayApi";
 
 export function ControlRoomView() {
   const { api, data, token, refresh, interfaceFor } = useDashboard();
@@ -41,13 +41,24 @@ export function ControlRoomView() {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          if (isWebSocketAuthPayload(payload)) {
+            cancelled = true;
+            setMessage(payload.message || "Session expired. Log in again.");
+            socket?.close();
+            return;
+          }
           liveRef.current = true;
           setRoom(payload);
         } catch {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
+        if (isWebSocketAuthClose(event)) {
+          cancelled = true;
+          setMessage("Session expired. Log in again.");
+          return;
+        }
         if (!cancelled) reconnectTimer = window.setTimeout(connect, 2500);
       };
       socket.onerror = () => {

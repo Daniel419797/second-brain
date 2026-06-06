@@ -1,7 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createFridayApi, isAuthError, loadDashboardSnapshot, sendFridayMessage, sendFridayVoiceMessage, wsUrl } from "@/services/fridayApi";
+import {
+  createFridayApi,
+  isAuthError,
+  isWebSocketAuthClose,
+  isWebSocketAuthPayload,
+  loadDashboardSnapshot,
+  sendFridayMessage,
+  sendFridayVoiceMessage,
+  wsUrl
+} from "@/services/fridayApi";
 
 const INITIAL_DATA = {
   status: null,
@@ -56,6 +65,23 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
   const chatSocketRef = useRef(null);
   const dashboardLiveRef = useRef(false);
 
+  const expireSession = useCallback((message = "Session expired. Please log in again.") => {
+    onAuthExpired?.();
+    setGlobalError(message);
+  }, [onAuthExpired, setGlobalError]);
+
+  const handleSocketClose = useCallback((event) => {
+    if (!isWebSocketAuthClose(event)) return false;
+    expireSession();
+    return true;
+  }, [expireSession]);
+
+  const handleSocketPayload = useCallback((payload) => {
+    if (!isWebSocketAuthPayload(payload)) return false;
+    expireSession(payload.message || "Session expired. Please log in again.");
+    return true;
+  }, [expireSession]);
+
   useEffect(() => {
     try {
       window.localStorage.setItem("friday.chat.history", JSON.stringify(chatMessages.slice(-80)));
@@ -93,6 +119,11 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          if (handleSocketPayload(payload)) {
+            cancelled = true;
+            socket?.close();
+            return;
+          }
           if (fallbackTimer) {
             window.clearTimeout(fallbackTimer);
             fallbackTimer = null;
@@ -104,8 +135,12 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
         dashboardLiveRef.current = false;
+        if (handleSocketClose(event)) {
+          cancelled = true;
+          return;
+        }
         if (!cancelled) {
           reconnectTimer = window.setTimeout(connect, 2000);
         }
@@ -125,7 +160,7 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       if (fallbackTimer) window.clearTimeout(fallbackTimer);
       socket?.close();
     };
-  }, [refresh, token]);
+  }, [handleSocketClose, handleSocketPayload, refresh, token]);
 
   useEffect(() => {
     if (!token) return;
@@ -138,13 +173,22 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          if (handleSocketPayload(payload)) {
+            cancelled = true;
+            socket?.close();
+            return;
+          }
           setLiveTimestamp(payload.timestamp || new Date().toISOString());
           setData((current) => ({ ...current, notifications: payload }));
         } catch {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
+        if (handleSocketClose(event)) {
+          cancelled = true;
+          return;
+        }
         if (!cancelled) {
           reconnectTimer = window.setTimeout(connect, 2000);
         }
@@ -160,7 +204,7 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       if (reconnectTimer) window.clearTimeout(reconnectTimer);
       socket?.close();
     };
-  }, [token]);
+  }, [handleSocketClose, handleSocketPayload, token]);
 
   useEffect(() => {
     if (!token) return;
@@ -173,13 +217,22 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          if (handleSocketPayload(payload)) {
+            cancelled = true;
+            socket?.close();
+            return;
+          }
           setLiveTimestamp(payload.timestamp || new Date().toISOString());
           setData((current) => mergeTaskPayload(current, payload));
         } catch {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
+        if (handleSocketClose(event)) {
+          cancelled = true;
+          return;
+        }
         if (!cancelled) {
           reconnectTimer = window.setTimeout(connect, 2000);
         }
@@ -195,7 +248,7 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       if (reconnectTimer) window.clearTimeout(reconnectTimer);
       socket?.close();
     };
-  }, [token]);
+  }, [handleSocketClose, handleSocketPayload, token]);
 
   useEffect(() => {
     if (!token) return;
@@ -209,7 +262,11 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
-          if (payload.type === "reply") {
+          if (handleSocketPayload(payload)) {
+            cancelled = true;
+            setChatBusy(false);
+            socket?.close();
+          } else if (payload.type === "reply") {
             setChatBusy(false);
             setChatMessages((items) => [
               ...items,
@@ -227,9 +284,13 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
         if (chatSocketRef.current === socket) chatSocketRef.current = null;
         if (!cancelled) setChatBusy(false);
+        if (handleSocketClose(event)) {
+          cancelled = true;
+          return;
+        }
         if (!cancelled) {
           reconnectTimer = window.setTimeout(connect, 2000);
         }
@@ -246,7 +307,7 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
       if (chatSocketRef.current === socket) chatSocketRef.current = null;
       socket?.close();
     };
-  }, [setGlobalError, token]);
+  }, [handleSocketClose, handleSocketPayload, setGlobalError, token]);
 
   async function chat(message) {
     const text = message.trim();
@@ -260,11 +321,11 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
         socket.send(JSON.stringify({ id: chatId("chat"), message: text }));
       } catch (err) {
         setChatBusy(false);
-        await sendChatOverHttp(api, text, setChatMessages, setGlobalError);
+        await sendChatOverHttp(api, text, setChatMessages, setGlobalError, expireSession);
       }
       return;
     }
-    await sendChatOverHttp(api, text, setChatMessages, setGlobalError);
+    await sendChatOverHttp(api, text, setChatMessages, setGlobalError, expireSession);
   }
 
   async function voiceChat(message) {
@@ -295,7 +356,7 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
     }
   }
 
-  async function sendChatOverHttp(apiClient, text, updateMessages, reportError) {
+  async function sendChatOverHttp(apiClient, text, updateMessages, reportError, authExpired) {
     setChatBusy(true);
     try {
       const reply = await sendFridayMessage(apiClient, text);
@@ -304,6 +365,10 @@ export function useFridayData(token, setGlobalError, onAuthExpired) {
         { id: chatId("friday"), role: "friday", text: reply.reply || "", timestamp: reply.timestamp || new Date().toISOString() }
       ]);
     } catch (err) {
+      if (isAuthError(err)) {
+        authExpired?.();
+        return;
+      }
       updateMessages((items) => [
         ...items,
         { id: chatId("system"), role: "system", text: err.message || "Friday chat failed.", timestamp: new Date().toISOString() }

@@ -24,7 +24,7 @@ import {
   Video
 } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { wsUrl } from "@/services/fridayApi";
+import { isWebSocketAuthClose, isWebSocketAuthPayload, wsUrl } from "@/services/fridayApi";
 
 export function IntegrationsView() {
   const { api, data, token, interfaceFor } = useDashboard();
@@ -66,6 +66,12 @@ export function IntegrationsView() {
       socket.onmessage = (event) => {
         try {
           const payload = JSON.parse(event.data);
+          if (isWebSocketAuthPayload(payload)) {
+            cancelled = true;
+            setStatus(payload.message || "Session expired. Log in again.");
+            socket?.close();
+            return;
+          }
           liveRef.current = true;
           setDashboard(payload);
           setLoading(false);
@@ -73,7 +79,12 @@ export function IntegrationsView() {
           return;
         }
       };
-      socket.onclose = () => {
+      socket.onclose = (event) => {
+        if (isWebSocketAuthClose(event)) {
+          cancelled = true;
+          setStatus("Session expired. Log in again.");
+          return;
+        }
         if (!cancelled) reconnectTimer = window.setTimeout(connect, 2500);
       };
       socket.onerror = () => {
