@@ -5308,7 +5308,7 @@ def create_app() -> FastAPI:
             while True:
                 payload = await websocket.receive_json()
                 request_id = str(payload.get("id") or "")
-                message = " ".join(str(payload.get("message") or "").split())
+                message = _normalize_chat_message(payload.get("message"))
                 timestamp = dt.datetime.now(dt.timezone.utc).astimezone().isoformat(timespec="seconds")
                 if not message:
                     await websocket.send_json({"type": "error", "id": request_id, "message": "Message is empty.", "timestamp": timestamp})
@@ -5611,6 +5611,13 @@ ALLOWED_CHAT_ATTACHMENT_SUFFIXES = {
     ".ppt",
     ".pptx",
 }
+
+
+def _normalize_chat_message(value: Any) -> str:
+    text = str(value or "").replace("\x00", " ")
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = "\n".join(re.sub(r"[ \t]+$", "", line) for line in text.split("\n"))
+    return text.strip()
 
 
 def _store_chat_attachment(request: ChatAttachmentRequest) -> dict[str, Any]:

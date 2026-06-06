@@ -43,6 +43,17 @@ def test_pc_control_tool_schema_includes_desktop_task():
     assert "desktop_task" in pc_tool["input_schema"]["properties"]["action"]["enum"]
 
 
+def test_system_prompt_appends_conversation_style(monkeypatch):
+    monkeypatch.setattr(llm, "load_config", lambda: {"system_prompt": "Base safety contract.", "user_name": "Daniel"})
+
+    prompt = llm._system_prompt()
+
+    assert "Base safety contract." in prompt
+    assert "Conversational style:" in prompt
+    assert "ongoing conversation" in prompt
+    assert "User name: Daniel." in prompt
+
+
 def test_app_integrations_tool_schema_includes_workspace_index():
     tool = next(tool for tool in llm.TOOL_DEFINITIONS if tool["name"] == "app_integrations")
 

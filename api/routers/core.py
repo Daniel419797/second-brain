@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import re
 from typing import Any
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Response, status
@@ -66,7 +67,7 @@ def register_routes(app: Any, ctx: Any) -> None:
 
     @router.post("/chat")
     def chat(request: ChatRequest, _user: str = Depends(ctx.require_user)) -> dict[str, Any]:
-        message = " ".join(str(request.message or "").split())
+        message = _normalize_chat_message(request.message)
         if not message:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Message is empty.")
         reply = ctx.orchestrator.handle_command(message)
@@ -78,7 +79,7 @@ def register_routes(app: Any, ctx: Any) -> None:
 
     @router.post("/voice/chat")
     def voice_chat(request: ChatRequest, _user: str = Depends(ctx.require_user)) -> dict[str, Any]:
-        message = " ".join(str(request.message or "").split())
+        message = _normalize_chat_message(request.message)
         if not message:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Message is empty.")
         with ctx.llm.voice_route():
@@ -96,3 +97,10 @@ def register_routes(app: Any, ctx: Any) -> None:
         return ctx._store_chat_attachment(request)
 
     app.include_router(router)
+
+
+def _normalize_chat_message(value: Any) -> str:
+    text = str(value or "").replace("\x00", " ")
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = "\n".join(re.sub(r"[ \t]+$", "", line) for line in text.split("\n"))
+    return text.strip()

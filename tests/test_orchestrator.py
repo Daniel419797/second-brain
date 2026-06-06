@@ -77,7 +77,9 @@ def test_handle_command_includes_recent_conversation(monkeypatch):
     monkeypatch.setattr(orchestrator.llm, "ask", fake_ask)
 
     assert orchestrator.handle_command("new question") == "Fresh answer."
-    assert captured["messages"] == [
+    assert captured["messages"][0]["role"] == "user"
+    assert "Conversation style for this turn" in captured["messages"][0]["content"]
+    assert captured["messages"][-3:] == [
         {"role": "user", "content": "old question"},
         {"role": "assistant", "content": "old answer"},
         {"role": "user", "content": "new question"},
@@ -201,6 +203,16 @@ def test_direct_thanks_bypasses_llm(monkeypatch):
     monkeypatch.setattr(orchestrator, "config_value", lambda key, default=None: "friday,computer,jarvis" if key == "attention_names" else default)
 
     assert orchestrator.handle_command("Thank you Friday") == "You're welcome."
+    assert called == []
+
+
+def test_direct_greeting_uses_conversational_reply(monkeypatch):
+    memory.wipe_all()
+    called = []
+    monkeypatch.setattr(orchestrator.llm, "ask", lambda *args, **kwargs: called.append(True))
+    monkeypatch.setattr(orchestrator, "config_value", lambda key, default=None: "friday,computer,jarvis" if key == "attention_names" else default)
+
+    assert orchestrator.handle_command("hello Friday") == "Hey. What are we getting into today?"
     assert called == []
 
 

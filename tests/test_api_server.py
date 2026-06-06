@@ -248,6 +248,24 @@ def test_api_streams_chat_and_notifications(monkeypatch, tmp_path):
     assert notifications["items"][0]["title"] == "Realtime notice"
 
 
+def test_api_stream_chat_preserves_multiline_messages(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    token = _token(client)
+    calls = []
+    monkeypatch.setattr(server.orchestrator, "handle_command", lambda message: calls.append(message) or f"Echo: {message}")
+    raw = " Friday,\n\nreview this:\n- alpha  "
+    expected = "Friday,\n\nreview this:\n- alpha"
+
+    with client.websocket_connect(f"/ws/chat?token={token}") as websocket:
+        websocket.send_json({"id": "chat-1", "message": raw})
+        ack = websocket.receive_json()
+        reply = websocket.receive_json()
+
+    assert ack["message"] == expected
+    assert reply["reply"] == f"Echo: {expected}"
+    assert calls == [expected]
+
+
 def test_api_gateway_and_control_room_endpoints(monkeypatch, tmp_path):
     client = _client(monkeypatch, tmp_path)
     headers = {"Authorization": f"Bearer {_token(client)}"}
@@ -428,6 +446,21 @@ def test_api_chat_routes_to_friday_orchestrator(monkeypatch, tmp_path):
     assert response.json()["reply"] == "Ready."
     assert response.json()["message"] == "Friday, team status"
     assert calls == ["Friday, team status"]
+
+
+def test_api_chat_preserves_multiline_messages(monkeypatch, tmp_path):
+    client = _client(monkeypatch, tmp_path)
+    headers = {"Authorization": f"Bearer {_token(client)}"}
+    calls = []
+    monkeypatch.setattr(server.orchestrator, "handle_command", lambda text: calls.append(text) or "Ready.")
+    raw = " Friday,\n\nreview this:\n- alpha  "
+    expected = "Friday,\n\nreview this:\n- alpha"
+
+    response = client.post("/chat", json={"message": raw}, headers=headers)
+
+    assert response.status_code == 200
+    assert response.json()["message"] == expected
+    assert calls == [expected]
 
 
 def test_api_stores_chat_attachment(monkeypatch, tmp_path):

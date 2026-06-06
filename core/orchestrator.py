@@ -759,6 +759,9 @@ def _conversation_messages(user_text: str, facts: list[str]) -> list[dict[str, A
     messages = memory.get_messages()[-max_messages:]
     if not messages or messages[-1].get("content") != user_text:
         messages.append({"role": "user", "content": user_text})
+    style = _conversation_style_context(user_text)
+    if style:
+        messages = [{"role": "user", "content": style}] + messages
     context = memory.build_context(user_text, facts=facts)
     if context:
         messages = [{"role": "user", "content": "Relevant context:\n" + context}] + messages
@@ -766,6 +769,26 @@ def _conversation_messages(user_text: str, facts: list[str]) -> list[dict[str, A
     if cognitive:
         messages = [{"role": "user", "content": cognitive}] + messages
     return messages
+
+
+def _conversation_style_context(user_text: str) -> str:
+    if not bool(config_value("conversation_style_context_enabled", True)):
+        return ""
+    lines = [
+        "Conversation style for this turn:",
+        "- Treat this as an ongoing chat, not a stateless command.",
+        "- Respond to the user's actual wording; a brief acknowledgement is okay when it makes the reply feel more human.",
+        "- Keep the useful answer close to the top, and use recent messages for continuity.",
+        "- If the user is asking for an action, execute or route the action first, then summarize plainly.",
+        "- Avoid canned closers, generic reassurance, and repeated status-bot phrasing.",
+    ]
+    try:
+        guidance = emotion_tone.response_guidance(user_text)
+        if guidance.get("should_adjust_reply"):
+            lines.append(f"- Tone guidance: {guidance.get('need')}")
+    except Exception:
+        pass
+    return "\n".join(lines)
 
 
 def _cognitive_context_for(user_text: str) -> str:
@@ -928,12 +951,13 @@ def _direct_personal_command_memory(text: str) -> str:
 def _direct_small_talk(text: str) -> str:
     lowered = text.lower()
     addressed = _strip_assistant_names(lowered)
-    if lowered in {"hello", "hi", "hey", "hey jarvis", "jarvis"}:
-        return "I'm here."
+    if addressed in {"hello", "hi", "hey"} or lowered in {"hey jarvis", "jarvis"}:
+        name = _remembered_name()
+        return f"Hey {name}. What are we getting into today?" if name else "Hey. What are we getting into today?"
     if re.fullmatch(r"(?:thanks|thank you|thank you very much|appreciate it)", addressed):
         return "You're welcome."
     if re.fullmatch(r"(?:how are you|how are you doing|how are you doing today|how's it going)", addressed):
-        return "I'm doing well. Ready when you are."
+        return "I'm good. What are you thinking through?"
     if re.fullmatch(
         r"(?:what are you doing|what're you doing|what are you working on|what're you working on|what are you up to|are you doing anything)",
         addressed,

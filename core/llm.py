@@ -38,11 +38,28 @@ FALLBACK_SYSTEM_PROMPT = (
     "Prefer tool use over text for actionable commands."
 )
 
+DEFAULT_CONVERSATION_STYLE_PROMPT = (
+    "Conversational style: Treat typed chat as an ongoing conversation, not a command line. "
+    "Sound present, warm, and specific; acknowledge the user's actual wording when useful, then answer or act. "
+    "For greetings and casual check-ins, answer naturally in one or two sentences and invite the next thought without listing capabilities. "
+    "Use recent context naturally, vary phrasing, and avoid canned status-bot lines. "
+    "For simple asks, be concise; for planning, debugging, or building, use a few short paragraphs if that is clearer. "
+    "Do not add generic cheerleading, apology loops, or 'let me know if you need anything else' filler. "
+    "Do not say 'command', 'system online', or narrate internal routing unless the user asks about internals. "
+    "For voice interactions, stay brief but still natural."
+)
+
 
 def _system_prompt() -> str:
     cfg = load_config()
     prompt = cfg.get("system_prompt") or FALLBACK_SYSTEM_PROMPT
-    return prompt + f"\nToday's date and time: {_dt.datetime.now().isoformat(timespec='seconds')}. User name: {cfg.get('user_name', 'User')}."
+    pieces = [str(prompt).strip()]
+    if bool(cfg.get("conversation_style_prompt_enabled", True)):
+        style_prompt = str(cfg.get("conversation_style_prompt") or DEFAULT_CONVERSATION_STYLE_PROMPT).strip()
+        if style_prompt and style_prompt not in pieces[0]:
+            pieces.append(style_prompt)
+    pieces.append(f"Today's date and time: {_dt.datetime.now().isoformat(timespec='seconds')}. User name: {cfg.get('user_name', 'User')}.")
+    return "\n".join(part for part in pieces if part)
 
 
 SYSTEM_PROMPT = _system_prompt()

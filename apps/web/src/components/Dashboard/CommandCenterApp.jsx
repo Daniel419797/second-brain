@@ -28,6 +28,7 @@ export default function CommandCenterApp({ children }) {
   const approvalCount = data.approvalSummary?.count || data.approvals?.length || 0;
   const notificationCount = data.notifications?.unread_count || data.notifications?.items?.length || 0;
   const activeView = viewFromPath(pathname);
+  const chatSurface = activeView === "chat";
   const activeInterface = useMemo(() => interfaceFor(data, activeView), [data, activeView]);
   const activeChrome = useMemo(() => chromeCopy(data), [data]);
   const toggleSystemIntelligence = useCallback(() => {
@@ -61,25 +62,26 @@ export default function CommandCenterApp({ children }) {
         items={NAV_ITEMS}
         activeView={activeView}
         collapsed={sidebarCollapsed}
-        online={data.status?.running}
         onToggle={() => setSidebarCollapsed((value) => !value)}
       />
-      <div className="h-full min-w-0 overflow-hidden border-r border-friday-line">
-        <TopNav
-          activeView={activeView}
-          approvalCount={approvalCount}
-          notificationCount={notificationCount}
-          activeMission={activeMission}
-          interfaceCopy={activeInterface}
-          chrome={activeChrome}
-          busy={busy}
-          onRefresh={refresh}
-          intelligenceOpen={intelligenceOpen}
-          onOpenIntelligence={toggleSystemIntelligence}
-          onStartWorkers={startWorkers}
-          onLogout={session.logout}
-        />
-        <section className="h-[calc(100dvh-64px)] min-w-0 overflow-hidden">
+      <div className={`h-full min-w-0 overflow-hidden ${chatSurface ? "border-r border-[#2f2f2f]" : "border-r border-friday-line"}`}>
+        {!chatSurface ? (
+          <TopNav
+            activeView={activeView}
+            approvalCount={approvalCount}
+            notificationCount={notificationCount}
+            activeMission={activeMission}
+            interfaceCopy={activeInterface}
+            chrome={activeChrome}
+            busy={busy}
+            onRefresh={refresh}
+            intelligenceOpen={intelligenceOpen}
+            onOpenIntelligence={toggleSystemIntelligence}
+            onStartWorkers={startWorkers}
+            onLogout={session.logout}
+          />
+        ) : null}
+        <section className={`${chatSurface ? "h-dvh" : "h-[calc(100dvh-64px)]"} min-w-0 overflow-hidden`}>
           {session.error ? <p className="text-sm text-friday-danger">{session.error}</p> : null}
           <DashboardProvider
             value={{
